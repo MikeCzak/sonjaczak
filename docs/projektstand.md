@@ -4,8 +4,26 @@ Stand: 2026-11-02 (übernommen aus dem Projektstand-Doc auf claude.ai; ab jetzt 
 
 ## Aktueller Stand
 
-Der VPS ist aufgeräumt, aktualisiert und abgesichert. Die Symfony-Version ist entschieden (8.1); mit dem
-Projekt-Setup wurde noch nicht begonnen.
+Der VPS ist aufgeräumt, aktualisiert und abgesichert. Lokal läuft Symfony 8.1.10 (Skeleton) im Template
+dunglas/symfony-docker; Git-Repo ist angelegt (noch ohne GitHub-Remote). Doctrine/PostgreSQL ist noch nicht installiert.
+
+**Projekt-Setup**
+
+- [x] Git-Repo (Branch `main`), `.gitignore` mit `/instructions_draft.md`; `.idea/` und `.DS_Store` über globale Ignore-Datei
+- [x] Template dunglas/symfony-docker übernommen (Commit `92d0d49`, ohne dessen `docs/`, `.devcontainer/`, `README.md`)
+- [x] Symfony 8.1 per `SYMFONY_VERSION=8.1.*` installiert; `LICENSE` und `AGENTS.md` des Skeletons entfernt,
+      `composer.json` auf `sonjaczak/website` / `proprietary` angepasst
+- [x] Dockerfile, Compose-Dateien und `frankenphp/` gemeinsam durchgegangen
+- [ ] Doctrine (`symfony/orm-pack`) installieren → PostgreSQL-Container kommt per Flex-Rezept; vorher Image-Version
+      und RAM-Bedarf prüfen
+
+**Vor dem ersten Deploy prüfen** (aus der Durchsicht des Templates)
+
+- `opcache.memory_consumption = 256` in `frankenphp/conf.d/10-app.ini`: tatsächlichen Verbrauch messen, ggf. senken (850 MiB RAM)
+- Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
+- `docker-entrypoint.sh` führt Migrationen bei jedem Containerstart aus: mit dem geplanten Deploy-Schritt „danach Migrationen“ abstimmen
+- Anzahl der FrankenPHP-Worker und deren RAM-Bedarf in der FrankenPHP-Doku prüfen
+- CI braucht PHP ≥ 8.5.12 (`composer.json` → `"php": ">=8.5.12"`)
 
 **Server vorbereiten**
 
@@ -28,7 +46,7 @@ Projekt-Setup wurde noch nicht begonnen.
 Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
 Erst danach werden Features gebaut.
 
-1. Lokales Projekt mit dem Template dunglas/symfony-docker aufsetzen (Symfony 8.1), CLAUDE.md und docs/projektstand.md hineinlegen, ab hier mit Claude Code in der IDE: Dockerfile gemeinsam durchgehen.
+1. Projekt-Setup abschließen: Doctrine mit PostgreSQL (siehe oben).
 2. GitHub-Repository anlegen; Pipeline zuerst nur mit Tests (PHPUnit, PHPStan).
 3. Build-Stage: Produktions-Image bauen, mit Commit-Hash taggen, nach ghcr.io pushen.
 4. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
