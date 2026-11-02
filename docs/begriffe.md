@@ -111,6 +111,33 @@ als Umgebungsvariable auf dem Server.
 **`composer dump-env prod`** – Kompiliert die `.env`-Dateien in `.env.local.php`, damit Prod sie nicht bei jedem
 Request parsen muss.
 
+**Bootstrapping** – Das erstmalige Anlegen des Symfony-Projekts. Bei uns hat das der Entrypoint beim ersten
+Containerstart erledigt (`composer create-project symfony/skeleton`), weil `composer.json` nur `{}` enthielt.
+Die Ordner `config/`, `bin/`, `public/` usw. haben dabei die Rezepte der Grundpakete angelegt.
+
+**Composer-Plugin** – Paket, das Code bei jedem Composer-Lauf ausführt (z. B. Flex). Muss in `composer.json` unter
+`allow-plugins` ausdrücklich erlaubt werden.
+
+**`recipes-contrib`** – Community-Rezepte. Bei uns aus (`"allow-contrib": false`), daher z. B. die PHPStan-Konfiguration
+von Hand.
+
+## Tests und CI
+
+**PHPUnit** – Test-Framework. Konfiguration `phpunit.dist.xml` (bricht auch bei Deprecations/Warnungen ab), Tests in
+`tests/`. `KernelTestCase` bootet Symfony und gibt Zugriff auf Services; `WebTestCase` simuliert HTTP-Requests.
+
+**Test-Umgebung** – `APP_ENV=test`, Werte aus `.env.test`. Eigene Datenbank `app_test` (Suffix aus
+`config/packages/doctrine.yaml`), damit Tests nie die Dev-Daten verändern.
+
+**PHPStan** – Statische Analyse: findet Typfehler, ohne den Code auszuführen. Level 0–10, `max` = strengstes.
+Konfiguration `phpstan.dist.neon`. Die Symfony-Erweiterung liest den kompilierten Container
+(`var/cache/dev/App_KernelDevDebugContainer.xml`), um zu wissen, welche Klasse hinter einem Service steckt.
+
+**GitHub Actions** – CI von GitHub. Workflows in `.github/workflows/*.yaml`; ein Workflow hat Jobs, ein Job hat
+Steps. Läuft bei jedem Push auf `main` und bei Pull Requests.
+
+**Dependabot** – GitHub-Dienst, der Pull Requests für Updates von Abhängigkeiten anlegt (`.github/dependabot.yaml`).
+
 ## Datenbank
 
 **Doctrine DBAL** – Datenbank-Abstraktionsschicht (Verbindung, SQL ausführen).

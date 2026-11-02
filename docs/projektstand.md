@@ -22,6 +22,20 @@ keine Migrationen, keine CI.
 - RAM lokal im Leerlauf (Dev-Image, Mac): php ~91 MiB, database ~22 MiB; `shared_buffers` = 128MB (Standard,
       wird erst bei Nutzung belegt). Nur Anhaltspunkt, auf dem Server mit Prod-Image neu messen.
 
+**CI** (`.github/workflows/ci.yaml`, Basis: Template-CI)
+
+- [x] PHPUnit 13 über `symfony/test-pack`; erster Test `tests/DatabaseConnectionTest.php` (Kernel bootet, Test-DB erreichbar)
+- [x] PHPStan 2 auf Level max mit Symfony-, Doctrine- und PHPUnit-Erweiterung (`phpstan.dist.neon`); Erweiterungen
+      manuell eingebunden statt über das Composer-Plugin `phpstan/extension-installer`
+- [x] Job „Tests“: Dev-Image bauen (mit GitHub-Actions-Cache), Container starten, HTTP/Mercure prüfen, Test-DB
+      anlegen, Migrationen, PHPUnit, Schema-Validierung, PHPStan – alles im Container, also mit PHP 8.5.12 wie lokal
+- [x] Job „Lint“ (super-linter) des Templates entfernt: schwer, prüft auch Markdown-Stil und PHP ohne `vendor/`;
+      später ggf. gezielt php-cs-fixer und zizmor (Workflow-Sicherheit) ergänzen
+- [ ] Ersten Lauf auf GitHub prüfen
+- Dependabot (`.github/dependabot.yaml`) ist aktiv: wöchentliche PRs für Docker-Images, Composer und Actions
+- PHPStan-Analyse von DQL/Entities (`objectManagerLoader`) ergänzen, sobald es Entities gibt
+- Startseite (`/`) fehlt noch bewusst: kommt mit dem ersten Twig-Template, wenn Übersetzungsschema und CSS-Framework festgelegt sind
+
 **Vor dem ersten Deploy prüfen** (aus der Durchsicht des Templates)
 
 - `opcache.memory_consumption = 256` in `frankenphp/conf.d/10-app.ini`: tatsächlichen Verbrauch messen, ggf. senken (850 MiB RAM)
@@ -59,7 +73,7 @@ keine Migrationen, keine CI.
 Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
 Erst danach werden Features gebaut.
 
-1. CI-Pipeline zuerst nur mit Tests (PHPUnit, PHPStan); Template-CI `.github/workflows/ci.yaml` als Ausgangspunkt durchgehen.
+1. CI-Pipeline mit Tests: eingerichtet, erster Lauf auf GitHub noch zu prüfen (siehe „CI“ unten).
 2. Build-Stage: Produktions-Image bauen, mit Commit-Hash taggen, nach ghcr.io pushen.
 3. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
 4. DNS für sonjaczak.com auf den VPS zeigen lassen; HTTPS über Caddy/FrankenPHP.

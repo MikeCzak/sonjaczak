@@ -48,7 +48,16 @@ docker compose exec php bin/console …     # Symfony-Konsole
 docker compose exec php composer …        # Composer
 ```
 
-<!-- TODO nach dem Setup ergänzen: Tests (PHPUnit), statische Analyse (PHPStan), Coding-Standard -->
+Tests und statische Analyse (laufen genauso in der CI, siehe `.github/workflows/ci.yaml`):
+
+```bash
+docker compose exec php bin/phpunit                                          # Tests (Test-DB app_test)
+docker compose exec php vendor/bin/phpstan analyse --memory-limit=512M       # PHPStan, Level max
+docker compose exec php bin/console -e test doctrine:database:create         # Test-DB einmalig anlegen
+```
+
+<!-- TODO: Coding-Standard (php-cs-fixer) -->
+
 
 ## Harte Regeln
 
