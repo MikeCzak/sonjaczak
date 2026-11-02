@@ -4,8 +4,9 @@ Stand: 2026-11-02 (übernommen aus dem Projektstand-Doc auf claude.ai; ab jetzt 
 
 ## Aktueller Stand
 
-Der VPS ist aufgeräumt, aktualisiert und abgesichert. Lokal läuft Symfony 8.1.10 (Skeleton) im Template
-dunglas/symfony-docker; Git-Repo ist angelegt (noch ohne GitHub-Remote). Doctrine/PostgreSQL ist noch nicht installiert.
+Der VPS ist aufgeräumt, aktualisiert und abgesichert. Lokal laufen Symfony 8.1.10 (Skeleton) im Template
+dunglas/symfony-docker und Doctrine ORM mit PostgreSQL 18.6; das Repo liegt auf GitHub. Noch keine Entities,
+keine Migrationen, keine CI.
 
 **Projekt-Setup**
 
@@ -14,14 +15,26 @@ dunglas/symfony-docker; Git-Repo ist angelegt (noch ohne GitHub-Remote). Doctrin
 - [x] Symfony 8.1 per `SYMFONY_VERSION=8.1.*` installiert; `LICENSE` und `AGENTS.md` des Skeletons entfernt,
       `composer.json` auf `sonjaczak/website` / `proprietary` angepasst
 - [x] Dockerfile, Compose-Dateien und `frankenphp/` gemeinsam durchgegangen
-- [ ] Doctrine (`symfony/orm-pack`) installieren → PostgreSQL-Container kommt per Flex-Rezept; vorher Image-Version
-      und RAM-Bedarf prüfen
+- [x] GitHub-Remote eingerichtet und gepusht
+- [x] Doctrine (`symfony/orm-pack`, Flex-Rezept doctrine-bundle 3.0) installiert; auf PostgreSQL 18 angeglichen
+      (Image-Tag, `serverVersion` in `compose.yaml` und `.env`, Volume auf `/var/lib/postgresql`, weil PGDATA ab 18
+      unter `/var/lib/postgresql/18/docker` liegt). Persistenz über `down`/`up` geprüft.
+- RAM lokal im Leerlauf (Dev-Image, Mac): php ~91 MiB, database ~22 MiB; `shared_buffers` = 128MB (Standard,
+      wird erst bei Nutzung belegt). Nur Anhaltspunkt, auf dem Server mit Prod-Image neu messen.
 
 **Vor dem ersten Deploy prüfen** (aus der Durchsicht des Templates)
 
 - `opcache.memory_consumption = 256` in `frankenphp/conf.d/10-app.ini`: tatsächlichen Verbrauch messen, ggf. senken (850 MiB RAM)
 - Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
-- `docker-entrypoint.sh` führt Migrationen bei jedem Containerstart aus: mit dem geplanten Deploy-Schritt „danach Migrationen“ abstimmen
+- `docker-entrypoint.sh` führt Migrationen bei jedem Containerstart aus: mit dem geplanten Deploy-Schritt „danach Migrationen“ abstimmen.
+  Achtung: Der Entrypoint sucht in `./migrations`, das Migrations-Rezept legt sie aber in `src/Migrations` ab →
+  der automatische Lauf greift derzeit nie.
+- `POSTGRES_PASSWORD` hat in `compose.yaml` den Standard `!ChangeMe!`: in `compose.prod.yaml` ohne Standardwert
+  erzwingen (wie `APP_SECRET`), Wert aus der Umgebungsdatei auf dem Server
+- `shared_buffers` (128MB Standard) für den Server in `compose.prod.yaml` begrenzen
+- Auf dem Server nur `-f compose.yaml -f compose.prod.yaml` verwenden, damit `compose.override.yaml`
+  (veröffentlicht Port 5432) nicht geladen wird
+- Backups der Datenbank (DSGVO) einplanen
 - Anzahl der FrankenPHP-Worker und deren RAM-Bedarf in der FrankenPHP-Doku prüfen
 - CI braucht PHP ≥ 8.5.12 (`composer.json` → `"php": ">=8.5.12"`)
 
@@ -46,12 +59,11 @@ dunglas/symfony-docker; Git-Repo ist angelegt (noch ohne GitHub-Remote). Doctrin
 Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
 Erst danach werden Features gebaut.
 
-1. Projekt-Setup abschließen: Doctrine mit PostgreSQL (siehe oben).
-2. GitHub-Repository anlegen; Pipeline zuerst nur mit Tests (PHPUnit, PHPStan).
-3. Build-Stage: Produktions-Image bauen, mit Commit-Hash taggen, nach ghcr.io pushen.
-4. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
-5. DNS für sonjaczak.com auf den VPS zeigen lassen; HTTPS über Caddy/FrankenPHP.
-6. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
+1. CI-Pipeline zuerst nur mit Tests (PHPUnit, PHPStan); Template-CI `.github/workflows/ci.yaml` als Ausgangspunkt durchgehen.
+2. Build-Stage: Produktions-Image bauen, mit Commit-Hash taggen, nach ghcr.io pushen.
+3. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
+4. DNS für sonjaczak.com auf den VPS zeigen lassen; HTTPS über Caddy/FrankenPHP.
+5. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
 
 **Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)
 und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
@@ -65,6 +77,7 @@ und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
 | PHP-Server | FrankenPHP über Template dunglas/symfony-docker | Ein Container statt Nginx + PHP-FPM; automatisches HTTPS über Caddy |
 | Symfony-Version | 8.1, danach Minor-Upgrades alle 6 Monate bis 8.4 LTS | Neues Projekt ohne Altcode; bis 8.4 LTS nur kleine Minor-Upgrades statt späterem Major-Sprung von 7.4; aktuelle Doku passt. Quelle: symfony.com/releases (8.1: Support bis Jan. 2027) |
 | Datenbank | PostgreSQL (Standard des Templates) in eigenem Container, ohne veröffentlichten Port | Kein Umbau des Templates nötig; Docker umgeht ufw für veröffentlichte Ports |
+| PostgreSQL-Version | 18 (`postgres:18-alpine`) | Längster Support (bis Nov. 2030, Quelle: postgresql.org/support/versioning); Major-Upgrades erfordern Datenmigration, daher spät wie möglich |
 | CI/CD | GitHub Actions, Images in ghcr.io, Deploy per SSH | Kein eigener Runner nötig; Rollback über vorheriges Image-Tag |
 | Builds | Images nur in der CI bauen, nie auf dem Server | Server hat ~850 MiB RAM |
 | Test-App | smart-ui.mikeczak.com offline genommen | Spart RAM; FrankenPHP kann 80/443 direkt belegen, kein Reverse Proxy nötig |

@@ -23,7 +23,7 @@ Aktueller Stand, Entscheidungen und offene Punkte: @docs/projektstand.md
 
 ## Tech-Stack
 
-- PHP, Symfony 8.x (Start mit 8.1, Minor-Upgrades bis 8.4 LTS), Twig, Doctrine ORM, PostgreSQL (Standard des Templates)
+- PHP, Symfony 8.x (Start mit 8.1, Minor-Upgrades bis 8.4 LTS), Twig, Doctrine ORM, PostgreSQL 18 (Standard des Templates)
 - Lokal und in Produktion Docker Compose, Basis ist das Template `dunglas/symfony-docker`
   (FrankenPHP/Caddy in einem Container, Service-Name `php`).
 - Hauptmenü mit KnpMenuBundle (eigener `MenuBuilder`)
