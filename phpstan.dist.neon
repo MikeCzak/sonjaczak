@@ -1,0 +1,22 @@
+# Extensions are included manually instead of via phpstan/extension-installer (avoids an extra Composer plugin)
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    level: max
+    # Front controllers (bin/, public/) and tests/bootstrap.php come from Flex recipes and are left as generated,
+    # so that `composer recipes:update` stays conflict-free
+    paths:
+        - config/
+        - src/
+        - tests/
+    excludePaths:
+        - tests/bootstrap.php
+    symfony:
+        # Compiled dev container, lets PHPStan resolve service types; exists after the first request or cache:warmup
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
