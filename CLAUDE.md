@@ -4,6 +4,7 @@ Website für Sonja Czak, Sängerin und Gesangslehrerin. Entwickelt von Mike (Web
 langjährige Symfony-Erfahrung, aber erstes Projekt von Grund auf).
 
 Aktueller Stand, Entscheidungen und offene Punkte: @docs/projektstand.md
+Begriffe: `docs/begriffe.md` · Lokaler Entwicklungs-Workflow: `docs/entwicklung.md`
 
 ## Wie wir arbeiten
 
@@ -18,6 +19,10 @@ Aktueller Stand, Entscheidungen und offene Punkte: @docs/projektstand.md
   Konfigurationsoption oder API-Signatur gegen die offizielle Doku (symfony.com/doc, Doctrine-, Docker-,
   FrankenPHP-, GitHub-Docs) oder den installierten Code (`vendor/`, `composer.lock`) prüfen und die Quelle
   nennen. Mike prüft gegen Primärquellen.
+- **Phase 1 (bis zum ersten Deploy):** Claude setzt zügig um und erklärt knapp. Neue Begriffe kommen nach
+  `docs/begriffe.md`, Punkte zum späteren Nachlesen in `docs/projektstand.md`. Ausführliche Erklärungen holen
+  wir nach dem ersten Deploy nach. Weiterhin vorher fragen: alles am Server, Secrets, Entscheidungen mit
+  echten Alternativen.
 - **Projektstand pflegen:** Wenn ein Schritt abgeschlossen oder eine Entscheidung getroffen ist,
   `docs/projektstand.md` aktualisieren und kurz sagen, was sich geändert hat.
 
