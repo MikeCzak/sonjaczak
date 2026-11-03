@@ -92,7 +92,9 @@ Erst danach werden Features gebaut.
 
 1. Deployment: Repo-Teil fertig (`deploy/deploy.sh`, Job „Deploy“, `compose.prod.yaml`). Server-Einrichtung,
    GitHub-Environment und DNS erledigt (2026-11-03, `docs/deployment.md` B–D; A-Record → `85.215.162.84`, VPS hat
-   kein IPv6, daher kein AAAA-Record). Erster Deploy erfolgreich, RAM gemessen. Offen: Rollback testen.
+   kein IPv6, daher kein AAAA-Record). Erster Deploy erfolgreich, RAM gemessen. Rollback getestet
+   (2026-11-03: Re-run des Deploy-Jobs von `9cd534a` nach Deploy von `86b0932`; nur php neu gestartet, die Datenbank
+   lief durch). **Phase 1 abgeschlossen.**
 2. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
 
 **Nach dem ersten Deploy gemeinsam klären (Verständnis)**
