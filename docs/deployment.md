@@ -90,11 +90,16 @@ Die Werte zusätzlich im Passwort-Manager ablegen.
 
 1. Auf GitHub: Settings → Developer settings → Personal access tokens → **Tokens (classic)** → Generate new token.
    Name z. B. `sonjaczak-server-pull`, Ablaufdatum setzen (Erinnerung eintragen!), **nur** Scope `read:packages`.
-2. Auf dem Server als `deploy` anmelden (Token einfügen, Enter, dann Strg+D):
+2. Auf dem Server als `deploy` anmelden:
 
 ```bash
+sudo -v      # zuerst das sudo-Passwort von mike eingeben, damit der folgende Befehl nicht danach fragt
 sudo -u deploy -H docker login ghcr.io -u MikeCzak --password-stdin
+# jetzt den Token einfügen, Enter, dann Strg+D → erwartet: "Login Succeeded"
 ```
+
+`-H` setzt `HOME` auf das Home-Verzeichnis von `deploy` (`man sudo`), damit Docker die Zugangsdaten dort ablegt und
+nicht in mikes Home.
 
 Docker speichert den Token in `/home/deploy/.docker/config.json` (unverschlüsselt, nur für deploy lesbar).
 Läuft der Token ab, schlägt der Deploy beim `docker pull` fehl → neuen Token anlegen, Schritt wiederholen.
@@ -151,7 +156,8 @@ Im Browser lässt sich unter Repo → Settings → Environments → production z
 Bei der Domain `sonjaczak.com` im IONOS-DNS:
 
 - **A-Record** für `@` → IPv4 des VPS (ersetzt den bisherigen Eintrag `217.160.0.99`)
-- **AAAA-Record** für `@` → IPv6 des VPS (ersetzt `2001:8d8:100f:f000::200`)
+- **AAAA-Record** für `@` → IPv6 des VPS (ersetzt `2001:8d8:100f:f000::200`). Hat der VPS kein IPv6 (unser Fall),
+  den alten AAAA-Record **löschen** – sonst landen IPv6-Besucher und ggf. Let's Encrypt beim alten IONOS-Webspace.
 - **MX-Records (`mx00/mx01.ionos.de`) und SPF-TXT nicht anfassen** – die sind für Mail.
 - `www` hat derzeit keinen Eintrag; Weiterleitung `www` → ohne `www` richten wir später ein.
 

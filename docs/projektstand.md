@@ -85,10 +85,15 @@ keine Migrationen, keine CI.
 Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
 Erst danach werden Features gebaut.
 
-1. Deployment: Repo-Teil fertig (`deploy/deploy.sh`, Job „Deploy“, `compose.prod.yaml`). Offen: Server-Einrichtung,
-   GitHub-Environment, DNS (Anleitung `docs/deployment.md`, Teile B–D), dann erster Deploy, RAM auf dem Server
-   messen, Rollback testen.
+1. Deployment: Repo-Teil fertig (`deploy/deploy.sh`, Job „Deploy“, `compose.prod.yaml`). Server-Einrichtung,
+   GitHub-Environment und DNS erledigt (2026-11-03, `docs/deployment.md` B–D; A-Record → `85.215.162.84`, VPS hat
+   kein IPv6, daher kein AAAA-Record). Offen: erster Deploy, RAM auf dem Server messen, Rollback testen.
 2. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
+
+**Nach dem ersten Deploy gemeinsam klären (Verständnis)**
+
+- Warum `docker login --password-stdin` mit Strg+D abgeschlossen wird: stdin, Dateiende (EOF), wie Programme
+  Eingaben aus Pipes und vom Terminal lesen
 
 **Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)
 und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
