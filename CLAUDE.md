@@ -5,6 +5,7 @@ langjährige Symfony-Erfahrung, aber erstes Projekt von Grund auf).
 
 Aktueller Stand, Entscheidungen und offene Punkte: @docs/projektstand.md
 Begriffe: `docs/begriffe.md` · Lokaler Entwicklungs-Workflow: `docs/entwicklung.md` · Deployment: `docs/deployment.md`
+· Erklärungen zum Setup: `docs/erklaerungen/`
 
 ## Wie wir arbeiten
 

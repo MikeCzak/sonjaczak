@@ -1,0 +1,27 @@
+# Erklärungen zum Setup
+
+Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demselben Aufbau:
+
+1. **Konzepte** – was dahintersteckt und warum es das gibt
+2. **Zeile für Zeile** – die konkrete Datei im Repo
+3. **Alternativen** – was man stattdessen hätte tun können, und warum wir es nicht getan haben
+4. **Sicherheit und Best Practices** – Risiken und wie das Setup damit umgeht
+
+| Datei | Inhalt |
+|---|---|
+| [01-grundkonzepte.md](01-grundkonzepte.md) | Container, Images, Layer, Registry, Compose, Volumes, Netzwerke; PHP-Ausführungsmodelle; Symfony Flex |
+| [02-dockerfile.md](02-dockerfile.md) | `Dockerfile` Zeile für Zeile, Multi-Stage-Builds |
+| [03-compose-und-frankenphp.md](03-compose-und-frankenphp.md) | `compose*.yaml`, `Caddyfile`, Entrypoint, PHP-ini-Dateien |
+| [04-composer.md](04-composer.md) | `composer.json` Zeile für Zeile, Lock-Dateien, Flex und Recipes |
+| [05-ci-cd.md](05-ci-cd.md) | `.github/workflows/ci.yaml` Zeile für Zeile, `deploy/deploy.sh`, Secrets |
+| [06-stdin-und-eof.md](06-stdin-und-eof.md) | Warum `docker login --password-stdin` mit Strg+D endet |
+
+Ergänzend: [../begriffe.md](../begriffe.md) (Glossar), [../entwicklung.md](../entwicklung.md) (lokaler Workflow),
+[../deployment.md](../deployment.md) (Server-Einrichtung, Rollback).
+
+**Zu den Quellen:** Fakten zu Optionen und Standardwerten sind gegen die verlinkte Primärquelle oder den installierten
+Code geprüft (Stand 2026-11-03). Stellen, die Einschätzung oder Begründung sind, sind als solche formuliert. Wo etwas
+nicht geprüft wurde, steht „(nicht geprüft)“.
+
+Geprüfte Versionen im Image: FrankenPHP 1.13.4, PHP 8.5.12, Caddy 2.11.7, Basis Debian 13 „trixie“
+(`frankenphp version`, `/etc/os-release` im Image `dunglas/frankenphp:1-php8.5`).

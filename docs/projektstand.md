@@ -97,10 +97,17 @@ Erst danach werden Features gebaut.
    lief durch). **Phase 1 abgeschlossen.**
 2. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
 
-**Nach dem ersten Deploy gemeinsam klären (Verständnis)**
+**Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
+CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.
 
-- Warum `docker login --password-stdin` mit Strg+D abgeschlossen wird: stdin, Dateiende (EOF), wie Programme
-  Eingaben aus Pipes und vom Terminal lesen
+**Kandidaten aus der Durchsicht (2026-11-03), noch nicht entschieden**
+
+- Symfony Language Server aus dem Dev-Image entfernen (lädt ungepinnt die neueste Version, wird nicht genutzt)
+- `composer audit` als CI-Schritt
+- GitHub Actions auf Commit-SHA statt Tag pinnen; zizmor für Workflow-Sicherheit
+- Image-Scan auf bekannte Schwachstellen (`docker scout` oder Trivy) in der CI
+- HTTPS-Check in der CI aktivieren und Healthcheck/Smoke-Test gegen eine echte Seite, sobald es die Startseite gibt
+- Ungenutzten `allow-plugins`-Eintrag `php-http/discovery` entfernen
 
 **Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)
 und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
