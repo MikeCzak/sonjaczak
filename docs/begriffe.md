@@ -148,6 +148,24 @@ im Workflow. Damit lädt die CI das Image nach ghcr.io, ohne dass wir ein eigene
 **Personal Access Token (classic)** – Token für einen GitHub-Account mit frei wählbaren Rechten (Scopes). Der Server
 braucht einen mit nur `read:packages`, um das private Image herunterzuladen.
 
+**GitHub-Environment** – Benannte Zielumgebung (bei uns `production`) mit eigenen Secrets. Nur Jobs mit
+`environment: production` sehen diese Secrets.
+
+**Forced Command** – Option in `~/.ssh/authorized_keys` (`command="…"`): Egal was der Client verlangt, sshd führt nur
+diesen Befehl aus; der verlangte Befehl steht in `SSH_ORIGINAL_COMMAND`. `restrict` schaltet zusätzlich
+Port-Forwarding, Agent-Forwarding und Terminal ab. Siehe `man sshd`, Abschnitt AUTHORIZED_KEYS FILE FORMAT.
+
+**`known_hosts` / Host-Key** – Jeder SSH-Server hat einen eigenen Schlüssel. Ist er in `known_hosts` hinterlegt,
+erkennt der Client, wenn sich ein anderer Rechner als der Server ausgibt. In der CI als Secret `SSH_KNOWN_HOSTS`.
+
+**Compose-`.env`** – Datei `.env` neben den Compose-Dateien (oder `--env-file`). Compose setzt ihre Werte in
+`${…}`-Platzhalter ein. Hat nichts mit Symfonys `.env` zu tun. Auf dem Server: `/srv/sonjaczak/.env`.
+
+**`${VAR:?Meldung}`** – Compose-Platzhalter ohne Standardwert: Fehlt `VAR` oder ist leer, bricht Compose mit der
+Meldung ab.
+
+**Rollback** – Zurück auf eine frühere Version: `deploy.sh` mit dem Hash eines älteren Commits.
+
 **Dependabot** – GitHub-Dienst, der Pull Requests für Updates von Abhängigkeiten anlegt (`.github/dependabot.yaml`).
 
 ## Datenbank

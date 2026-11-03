@@ -48,19 +48,20 @@ keine Migrationen, keine CI.
 
 - `opcache.memory_consumption = 256` in `frankenphp/conf.d/10-app.ini`: tatsächlichen Verbrauch messen, ggf. senken (850 MiB RAM)
 - Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
-- `docker-entrypoint.sh` führt Migrationen bei jedem Containerstart aus: mit dem geplanten Deploy-Schritt „danach Migrationen“ abstimmen.
-  Achtung: Der Entrypoint sucht in `./migrations`, das Migrations-Rezept legt sie aber in `src/Migrations` ab →
-  der automatische Lauf greift derzeit nie.
-- `POSTGRES_PASSWORD` hat in `compose.yaml` den Standard `!ChangeMe!`: in `compose.prod.yaml` ohne Standardwert
-  erzwingen (wie `APP_SECRET`), Wert aus der Umgebungsdatei auf dem Server
-- `shared_buffers` (128MB Standard) für den Server in `compose.prod.yaml` begrenzen
-- Auf dem Server nur `-f compose.yaml -f compose.prod.yaml` verwenden, damit `compose.override.yaml`
-  (veröffentlicht Port 5432) nicht geladen wird
-- Backups der Datenbank (DSGVO) einplanen
-- Repo ist privat → Image in ghcr.io ist privat. Server braucht zum Pullen einen Personal Access Token (classic) mit
-  nur `read:packages` (Quelle: GitHub-Doku „Working with the Container registry“)
+- [x] Migrationen: führt `deploy.sh` explizit aus. Der Entrypoint sucht in `./migrations`, das Rezept legt sie in
+      `src/Migrations` ab → sein automatischer Lauf greift nie; das ist so gewollt (nur eine Stelle führt Migrationen aus)
+- [x] `POSTGRES_PASSWORD`, `APP_SECRET`, `CADDY_MERCURE_JWT_SECRET` in `compose.prod.yaml` Pflicht (`${VAR:?…}`)
+- [x] PostgreSQL in Prod: `shared_buffers=32MB`, `max_connections=20`, `restart: unless-stopped` (lokal mit Prod-Image
+      getestet: database ~18 MiB im Leerlauf)
+- [x] Server lädt nur `compose.yaml` + `compose.prod.yaml` (in `deploy.sh` festgelegt) → kein DB-Port veröffentlicht
+- [x] Image privat → Personal Access Token (classic) mit nur `read:packages` auf dem Server (`docs/deployment.md`, B4)
+- [x] FrankenPHP-Worker: Standard 2 × CPU (Quelle: frankenphp.dev/docs/config) → 2 auf dem Server
+- [ ] Nach dem ersten Deploy: RAM auf dem Server messen; `opcache.memory_consumption = 256` ggf. senken
+- [ ] Backups der Datenbank (DSGVO) einrichten – spätestens bevor echte Daten erfasst werden
+- [ ] `www.sonjaczak.com` → Weiterleitung auf `sonjaczak.com` (DNS + Caddy)
+- [ ] Ablaufdatum des ghcr-Tokens im Kalender eintragen
+- Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
 - Alte Images in ghcr.io aufräumen (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit 1 Monat Vorlauf)
-- Anzahl der FrankenPHP-Worker und deren RAM-Bedarf in der FrankenPHP-Doku prüfen
 - CI braucht PHP ≥ 8.5.12 (`composer.json` → `"php": ">=8.5.12"`)
 
 **Server vorbereiten**
@@ -84,9 +85,10 @@ keine Migrationen, keine CI.
 Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
 Erst danach werden Features gebaut.
 
-1. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
-2. DNS für sonjaczak.com auf den VPS zeigen lassen; HTTPS über Caddy/FrankenPHP.
-3. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
+1. Deployment: Repo-Teil fertig (`deploy/deploy.sh`, Job „Deploy“, `compose.prod.yaml`). Offen: Server-Einrichtung,
+   GitHub-Environment, DNS (Anleitung `docs/deployment.md`, Teile B–D), dann erster Deploy, RAM auf dem Server
+   messen, Rollback testen.
+2. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
 
 **Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)
 und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
