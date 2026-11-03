@@ -136,6 +136,18 @@ Konfiguration `phpstan.dist.neon`. Die Symfony-Erweiterung liest den kompilierte
 **GitHub Actions** – CI von GitHub. Workflows in `.github/workflows/*.yaml`; ein Workflow hat Jobs, ein Job hat
 Steps. Läuft bei jedem Push auf `main` und bei Pull Requests.
 
+**Docker Bake** – Build-Werkzeug von Docker (`docker buildx bake`), das mehrere Images aus einer Beschreibung baut.
+Kann Compose-Dateien lesen: Jeder Service mit `build:` wird ein Build-Ziel, das Feld `image:` wird zum Tag.
+
+**Smoke-Test** – Minimaltest „startet es überhaupt?“. Bei uns im Build-Job: Prod-Image starten, Symfony-Infos
+ausgeben, eine DB-Abfrage – erst dann wird das Image hochgeladen.
+
+**`GITHUB_TOKEN`** – Token, den GitHub für jeden Workflow-Lauf automatisch erzeugt; Rechte über `permissions:`
+im Workflow. Damit lädt die CI das Image nach ghcr.io, ohne dass wir ein eigenes Secret anlegen müssen.
+
+**Personal Access Token (classic)** – Token für einen GitHub-Account mit frei wählbaren Rechten (Scopes). Der Server
+braucht einen mit nur `read:packages`, um das private Image herunterzuladen.
+
 **Dependabot** – GitHub-Dienst, der Pull Requests für Updates von Abhängigkeiten anlegt (`.github/dependabot.yaml`).
 
 ## Datenbank

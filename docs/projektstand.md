@@ -31,7 +31,14 @@ keine Migrationen, keine CI.
       anlegen, Migrationen, PHPUnit, Schema-Validierung, PHPStan – alles im Container, also mit PHP 8.5.12 wie lokal
 - [x] Job „Lint“ (super-linter) des Templates entfernt: schwer, prüft auch Markdown-Stil und PHP ohne `vendor/`;
       später ggf. gezielt php-cs-fixer und zizmor (Workflow-Sicherheit) ergänzen
-- [ ] Ersten Lauf auf GitHub prüfen
+- [x] Ersten Lauf auf GitHub geprüft: grün
+- [x] Job „Build“ (nur bei Push auf `main`, nach grünen Tests): Prod-Image über Bake aus `compose.yaml` +
+      `compose.prod.yaml` bauen, Prod-Stack starten, Smoke-Test (`bin/console about`, DB-Abfrage), dann Push nach
+      `ghcr.io/mikeczak/sonjaczak/app-php-prod:<commit-hash>`. Login mit `GITHUB_TOKEN` (`packages: write`).
+- `compose.prod.yaml`: `image: ${IMAGES_PREFIX}app-php-prod:${IMAGE_TAG}` – CI und Server nutzen denselben Namen
+- Prod-Image lokal getestet (2026-11-03): 301 MB, läuft als www-data, Symfony prod/ohne Debug, OPcache an;
+  RAM im Leerlauf php ~107 MiB, database ~27 MiB (Mac, arm64)
+- [ ] Ersten Build-Lauf auf GitHub prüfen
 - Dependabot (`.github/dependabot.yaml`) ist aktiv: wöchentliche PRs für Docker-Images, Composer und Actions
 - PHPStan-Analyse von DQL/Entities (`objectManagerLoader`) ergänzen, sobald es Entities gibt
 - Startseite (`/`) fehlt noch bewusst: kommt mit dem ersten Twig-Template, wenn Übersetzungsschema und CSS-Framework festgelegt sind
@@ -49,6 +56,10 @@ keine Migrationen, keine CI.
 - Auf dem Server nur `-f compose.yaml -f compose.prod.yaml` verwenden, damit `compose.override.yaml`
   (veröffentlicht Port 5432) nicht geladen wird
 - Backups der Datenbank (DSGVO) einplanen
+- Server-Architektur prüfen (`uname -m`, erwartet `x86_64`): Die CI baut auf `ubuntu-latest` nur für amd64
+- Repo ist privat → Image in ghcr.io ist privat. Server braucht zum Pullen einen Personal Access Token (classic) mit
+  nur `read:packages` (Quelle: GitHub-Doku „Working with the Container registry“)
+- Alte Images in ghcr.io aufräumen (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit 1 Monat Vorlauf)
 - Anzahl der FrankenPHP-Worker und deren RAM-Bedarf in der FrankenPHP-Doku prüfen
 - CI braucht PHP ≥ 8.5.12 (`composer.json` → `"php": ">=8.5.12"`)
 
@@ -73,11 +84,10 @@ keine Migrationen, keine CI.
 Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
 Erst danach werden Features gebaut.
 
-1. CI-Pipeline mit Tests: eingerichtet, erster Lauf auf GitHub noch zu prüfen (siehe „CI“ unten).
-2. Build-Stage: Produktions-Image bauen, mit Commit-Hash taggen, nach ghcr.io pushen.
-3. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
-4. DNS für sonjaczak.com auf den VPS zeigen lassen; HTTPS über Caddy/FrankenPHP.
-5. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
+1. Build-Stage: eingerichtet, erster Lauf auf GitHub noch zu prüfen (siehe „CI“ unten).
+2. Auf dem Server einen deploy-Benutzer ohne sudo anlegen; Deploy-Stage per SSH (docker compose pull/up, danach Migrationen, alte Images aufräumen).
+3. DNS für sonjaczak.com auf den VPS zeigen lassen; HTTPS über Caddy/FrankenPHP.
+4. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
 
 **Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)
 und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
