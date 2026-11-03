@@ -1,12 +1,16 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-02 (übernommen aus dem Projektstand-Doc auf claude.ai; ab jetzt ist diese Datei maßgeblich)
+Stand: 2026-11-03 (übernommen aus dem Projektstand-Doc auf claude.ai; ab jetzt ist diese Datei maßgeblich)
 
 ## Aktueller Stand
 
-Der VPS ist aufgeräumt, aktualisiert und abgesichert. Lokal laufen Symfony 8.1.10 (Skeleton) im Template
-dunglas/symfony-docker und Doctrine ORM mit PostgreSQL 18.6; das Repo liegt auf GitHub. Noch keine Entities,
-keine Migrationen, keine CI.
+**Phase 1 erreicht (2026-11-03):** Jeder Push auf `main` läuft durch Tests → Build → Deploy und geht automatisch auf
+https://sonjaczak.com live (erster Deploy: Commit `9cd534a`, CI-Lauf 41657250962). Symfony 8.1.10 (Skeleton) im
+Template dunglas/symfony-docker, Doctrine ORM mit PostgreSQL 18.6. Zertifikat von Let's Encrypt (90 Tage, Caddy
+erneuert selbst), HTTP leitet auf HTTPS um (308). Noch keine Startseite (404), keine Entities, keine Migrationen.
+
+RAM auf dem Server nach dem ersten Deploy (Leerlauf): php 159 MiB, database 35 MiB; Server gesamt 462 MiB belegt,
+386 MiB verfügbar, 37 MiB Swap genutzt.
 
 **Projekt-Setup**
 
@@ -56,7 +60,8 @@ keine Migrationen, keine CI.
 - [x] Server lädt nur `compose.yaml` + `compose.prod.yaml` (in `deploy.sh` festgelegt) → kein DB-Port veröffentlicht
 - [x] Image privat → Personal Access Token (classic) mit nur `read:packages` auf dem Server (`docs/deployment.md`, B4)
 - [x] FrankenPHP-Worker: Standard 2 × CPU (Quelle: frankenphp.dev/docs/config) → 2 auf dem Server
-- [ ] Nach dem ersten Deploy: RAM auf dem Server messen; `opcache.memory_consumption = 256` ggf. senken
+- [x] Nach dem ersten Deploy: RAM auf dem Server gemessen (siehe „Aktueller Stand“)
+- [ ] `opcache.memory_consumption = 256` ggf. senken: tatsächliche OPcache-Belegung messen, sobald die App gewachsen ist
 - [ ] Backups der Datenbank (DSGVO) einrichten – spätestens bevor echte Daten erfasst werden
 - [ ] `www.sonjaczak.com` → Weiterleitung auf `sonjaczak.com` (DNS + Caddy)
 - [ ] Ablaufdatum des ghcr-Tokens im Kalender eintragen
@@ -87,7 +92,7 @@ Erst danach werden Features gebaut.
 
 1. Deployment: Repo-Teil fertig (`deploy/deploy.sh`, Job „Deploy“, `compose.prod.yaml`). Server-Einrichtung,
    GitHub-Environment und DNS erledigt (2026-11-03, `docs/deployment.md` B–D; A-Record → `85.215.162.84`, VPS hat
-   kein IPv6, daher kein AAAA-Record). Offen: erster Deploy, RAM auf dem Server messen, Rollback testen.
+   kein IPv6, daher kein AAAA-Record). Erster Deploy erfolgreich, RAM gemessen. Offen: Rollback testen.
 2. Planung der App: Anforderungen, Datenmodell (ER-Diagramm), Rollenkonzept.
 
 **Nach dem ersten Deploy gemeinsam klären (Verständnis)**
