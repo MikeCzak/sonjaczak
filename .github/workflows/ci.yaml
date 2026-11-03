@@ -77,6 +77,7 @@ jobs:
       # Dummy values, only for the smoke test below; real secrets live on the server
       APP_SECRET: ci-smoke-test
       CADDY_MERCURE_JWT_SECRET: ci-smoke-test-mercure-jwt-secret
+      POSTGRES_PASSWORD: ci-smoke-test
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -110,3 +111,32 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push image
         run: docker push "${IMAGES_PREFIX}app-php-prod:${IMAGE_TAG}"
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    # Secrets of the "production" environment are only available to this job
+    environment: production
+    # Never run two deployments at once, and never cancel a running one
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    permissions: {}
+    steps:
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          # Pinned host key instead of trusting whatever answers on first connect
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Deploy
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          IMAGE_TAG: ${{ github.sha }}
+        # The key's forced command on the server runs deploy.sh with this hash as its only input
+        run: ssh -o BatchMode=yes "deploy@${SSH_HOST}" "$IMAGE_TAG"

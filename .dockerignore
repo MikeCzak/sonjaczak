@@ -32,3 +32,6 @@ vendor/
 .env.local
 .env.local.php
 .env.test
+# Shipped inside the prod image so that deploy/deploy.sh can extract them (must come after the compose ignores above)
+!compose.yaml
+!compose.prod.yaml
