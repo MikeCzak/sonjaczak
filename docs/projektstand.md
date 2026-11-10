@@ -95,8 +95,10 @@ Erst danach werden Features gebaut.
    kein IPv6, daher kein AAAA-Record). Erster Deploy erfolgreich, RAM gemessen. Rollback getestet
    (2026-11-03: Re-run des Deploy-Jobs von `9cd534a` nach Deploy von `86b0932`; nur php neu gestartet, die Datenbank
    lief durch). **Phase 1 abgeschlossen.**
-2. **Aktuell:** Planung der App (Phase 2). Ablauf und erste Fragenrunde in `docs/planung/anforderungen.md` –
-   wartet auf Mikes Antworten. Danach Datenmodell (ER-Diagramm), Rollenkonzept, Seitenstruktur.
+2. **Aktuell:** Planung der App (Phase 2). Erste Fragenrunde in `docs/planung/anforderungen.md` beantwortet
+   (2026-11-07): zuerst die öffentlichen Seiten. Fragen zu deren Inhalten in `docs/planung/inhalte.md` – wartet auf
+   Mikes Antworten. Danach Seitenstruktur und erstes Template; Datenmodell (ER-Diagramm) und Rollenkonzept für den
+   Admin-Bereich folgen.
 
 **Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
 CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.
