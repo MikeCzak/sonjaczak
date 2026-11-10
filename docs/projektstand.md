@@ -96,9 +96,10 @@ Erst danach werden Features gebaut.
    (2026-11-03: Re-run des Deploy-Jobs von `9cd534a` nach Deploy von `86b0932`; nur php neu gestartet, die Datenbank
    lief durch). **Phase 1 abgeschlossen.**
 2. **Aktuell:** Planung der App (Phase 2). Erste Fragenrunde in `docs/planung/anforderungen.md` beantwortet
-   (2026-11-07): zuerst die öffentlichen Seiten. Fragen zu deren Inhalten in `docs/planung/inhalte.md` – wartet auf
-   Mikes Antworten. Danach Seitenstruktur und erstes Template; Datenmodell (ER-Diagramm) und Rollenkonzept für den
-   Admin-Bereich folgen.
+   (2026-11-07): zuerst die öffentlichen Seiten. Inhalte in `docs/planung/inhalte.md` weitgehend beantwortet
+   (2026-11-11). Seitenstruktur in `docs/planung/seitenstruktur.md` festgelegt (Routen, Menü, Übersetzungsschema,
+   CSS-Framework). Nächster Schritt: dort Abschnitt 10, Schritt 1 (Pakete, Asset-Build in Dockerfile/CI). Datenmodell
+   (ER-Diagramm) und Rollenkonzept für den Admin-Bereich folgen nach dem ersten Release.
 
 **Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
 CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.
@@ -129,12 +130,15 @@ und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
 | Builds | Images nur in der CI bauen, nie auf dem Server | Server hat ~850 MiB RAM |
 | Test-App | smart-ui.mikeczak.com offline genommen | Spart RAM; FrankenPHP kann 80/443 direkt belegen, kein Reverse Proxy nötig |
 | Arbeitsumgebung | Ab Repo-Anlage mit Claude Code in der IDE; CLAUDE.md und dieses Dokument liegen im Repo | Direkter Zugriff auf die Codebase; Projektstand wird mit dem Code versioniert |
+| Referenzmaterial | `claude_references/` nur lokal, in `.gitignore` (2026-11-11) | Enthält eine echte Honorarnote (DSGVO) und große Originalbilder; ins Repo kommen nur Web-Versionen |
+| CSS-Framework | Bootstrap 5.3 mit `symfonycasts/sass-bundle`, Assets über AssetMapper (2026-11-11) | Fertige Komponenten (Navbar, Formulare, Accordion), Erfahrung vorhanden; kein Node nötig. Details: `docs/planung/seitenstruktur.md` |
+| Übersetzungen | YAML, Domains `messages` (Zweck-Schlüssel), `content` (Seite.Abschnitt), `validators` (2026-11-11) | Lange Texte lesbarer als XLIFF; `content` wandert später teilweise ins CMS |
+| Seitenstruktur | Deutsche URLs ohne Sprachpräfix; Impressum als Abschnitt auf `/kontakt`; Ansprache „Sie“, nur Unterricht „Du“; Logo „Sonja Czak“; Google Maps nur als Link (2026-11-11) | Siehe `docs/planung/seitenstruktur.md` |
 
 ## Offene Entscheidungen
 
 | Thema | Optionen | Wann |
 |---|---|---|
-| CSS-Framework | Bootstrap (viel Erfahrung) oder Tailwind | Vor dem ersten Template |
 | Symfony UX | Turbo, Live Components oder Kombination für die dynamischen Formulare | Bei Booking- und Lessons-Formular |
 | Mail-Versand | Externer SMTP-Dienst für Formular-Mails | Vor dem ersten Formular |
 | Postfächer | Mail-Hosting für Sonjas Adressen unter sonjaczak.com | Unabhängig, sobald Domain-Setup steht |

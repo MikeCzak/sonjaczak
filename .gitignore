@@ -1,4 +1,6 @@
 /instructions_draft.md
+# Reference material (original photos, sample invoice with personal data) – stays local only
+/claude_references/
 
 ###> symfony/framework-bundle ###
 /.env.local
