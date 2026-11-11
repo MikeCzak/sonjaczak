@@ -60,6 +60,10 @@ docker compose exec php bin/console sass:build --watch    # kompiliert bei jeder
 Die SCSS-Dateien bearbeitest du ganz normal in der IDE auf dem Mac; über den Bind-Mount sieht der Container jede
 Änderung sofort, `--watch` baut neu, im Browser neu laden.
 
+**Reihenfolge beachten:** erst `sass:build`, dann ggf. `cache:clear` – umgekehrt liefert AssetMapper weiter das
+alte CSS aus (bis zum nächsten `cache:clear`). Nach einer neuen Datei unter `config/packages/` braucht auch die
+Testumgebung einmal `docker compose exec php bin/console -e test cache:clear`.
+
 Einmalig reicht `docker compose exec php bin/console sass:build`. Ohne kompiliertes CSS zeigt Symfony einen
 Fehler, dass die Datei fehlt (Status 500). In der CI und beim Bau des Prod-Images passiert das automatisch.
 
