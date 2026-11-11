@@ -45,7 +45,30 @@ form:
     label:
         name: Name
         email: E-Mail
+        phone: Telefon
         message: Nachricht
+        honeypot: Bitte leer lassen
+    required_note: Mit * markierte Felder sind Pflichtfelder.
+
+# Inquiry forms (templates/_partials/inquiry_form.html.twig). "formal" = Sie, "informal" = Du (lessons).
+# The last key part is the value of App\Inquiry\InquiryStatus.
+inquiry:
+    formal:
+        sent: Danke für Ihre Nachricht! Sonja meldet sich so bald wie möglich bei Ihnen.
+        rate_limited: Sie haben in kurzer Zeit mehrere Nachrichten gesendet. Bitte versuchen Sie es später noch einmal oder schreiben Sie direkt an %email%.
+        failed: Ihre Nachricht konnte gerade nicht gesendet werden. Bitte versuchen Sie es später noch einmal oder schreiben Sie direkt an %email%.
+        privacy_hint: Ihre Angaben werden nur verwendet, um Ihre Anfrage zu beantworten. Mehr dazu in der
+    send_another: Weitere Nachricht senden
+    privacy_link: Datenschutzerklärung
+
+# Mails to Sonja (templates/email/)
+mail:
+    subject:
+        contact: 'Kontaktanfrage von %name%'
+    contact:
+        intro: Neue Nachricht über das Kontaktformular auf sonjaczak.com.
+    empty: –
+    reply_hint: '„Antworten“ schreibt direkt an die Person, die das Formular ausgefüllt hat.'
 
 placeholder:
     content_follows: Inhalte folgen in Kürze.

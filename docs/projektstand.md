@@ -141,10 +141,17 @@ Erst danach werden Features gebaut.
    - [ ] Schritt 6: Formulare mit Mailversand – Plan in `docs/planung/formulare.md`, freigegeben (2026-11-11):
          IONOS-SMTP (`smtp.ionos.de`), synchron, ohne Session/Cookies, nichts in der DB. Absender
          `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com`, `Reply-To` = Besucher:in.
-     - [ ] 6a: `symfony/mailer` 8.1.10 (Absender global in `config/packages/mailer.yaml`, Tests immer `null://null`),
+     - [x] 6a: `symfony/mailer` 8.1.10 (Absender global in `config/packages/mailer.yaml`, Tests immer `null://null`),
            Mailpit v1.33.1 nur lokal (UI auf `127.0.0.1:8025`, ~12 MiB). `MAILER_DSN` Pflicht in `compose.prod.yaml`
-           → vor dem Push in `/srv/sonjaczak/.env` eintragen (`deployment.md` B3). Offen: Testversand vom Server.
-     - [ ] 6b Kontakt · 6c Booking · 6d Unterricht · 6e Datenschutzerklärung
+           in `/srv/sonjaczak/.env` (`deployment.md` B3). Testversand vom Server angekommen (2026-11-11).
+     - [x] 6b (2026-11-11): Kontaktformular auf `/kontakt`. `symfony/form`, `validator`, `security-csrf` (zustandslos,
+           Rezept), `rate-limiter` (5/h pro IP, filesystem-Cache). Datenklassen `src/Inquiry/`, Form-Types `src/Form/`
+           (gemeinsame Felder in `InquiryType`, Lockfeld `HoneypotType`), Versand in `InquiryProcessor` (Log ohne
+           Formulardaten). Partial `_partials/inquiry_form.html.twig` für alle drei Formulare (Sie/Du über `address`).
+           Mail nur Text (`templates/email/inquiry/`). Seite setzt weiterhin kein Cookie (Test). Lokal per Mailpit
+           geprüft. Datenschutzerklärung dafür vorgezogen (2026-11-12): Abschnitt „Kontaktformular und E-Mail“
+           (keine Speicherung, Versand über IONOS, Rate Limiter mit Prüfwert statt IP, max. 1 h).
+     - [ ] 6c Booking · 6d Unterricht · 6e Datenschutzerklärung um Booking-/Unterrichtsformular ergänzen
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
      - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
        Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`

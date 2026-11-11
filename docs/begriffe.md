@@ -247,3 +247,33 @@ am Handy also die kleine. Bei uns erzeugt das Makro `templates/_macros/image.htm
 abhängt (`animation-timeline: view()` bzw. ein benannter `view-timeline`). Läuft ohne JavaScript; laut MDN
 „Baseline 2026“. Bei uns `assets/styles/partials/_motion.scss`, abgeschaltet bei „Bewegung reduzieren“
 (`prefers-reduced-motion`).
+
+## Formulare und Mail
+
+**Symfony Mailer / `MAILER_DSN`** – Verschickt Mails; die DSN sagt, wohin (`smtps://user:pass@smtp.ionos.de:465`
+am Server, `smtp://mailer:1025` lokal = Mailpit, `null://null` in Tests und CI). Absender in
+`config/packages/mailer.yaml`, Empfänger `app.contact_email` in `config/services.yaml`.
+
+**Mailpit** – Lokaler „Fake-Mailserver“, fängt alle Mails ab und zeigt sie auf http://localhost:8025. Nur in
+`compose.override.yaml`, nie in Produktion.
+
+**Reply-To** – Mail-Header für die Antwortadresse. Wir senden *von* `anfrage@sonjaczak.com` (IONOS nimmt nur die
+eigene Domain an), „Antworten“ geht aber an die Person aus dem Formular.
+
+**Form-Type / Datenklasse** – Der Form-Type (`src/Form/…Type.php`) beschreibt die Felder, die Datenklasse
+(`src/Inquiry/…Inquiry.php`) hält die Werte und die Validierungsregeln (Attribute wie `#[Assert\NotBlank]`).
+Gemeinsame Felder über `getParent()` (`InquiryType`).
+
+**Zustandsloses CSRF** – Schutz davor, dass eine fremde Seite das Formular im Namen der Besucher:in abschickt.
+Statt eines Tokens in der Session prüft Symfony die Header `Sec-Fetch-Site`, `Origin` bzw. `Referer`
+(`config/packages/csrf.yaml`). Braucht keine Session und kein Cookie.
+
+**Honeypot** – Für Menschen unsichtbares Feld (`App\Form\HoneypotType`). Bots füllen es aus; dann tun wir so, als
+wäre gesendet worden, und verschicken nichts.
+
+**Rate Limiter** – Begrenzt Anfragen pro Zeitraum, bei uns 5 Mails pro IP und Stunde
+(`config/packages/rate_limiter.yaml`). Gespeichert im Cache, als HMAC der IP.
+
+**Post/Redirect/Get (PRG)** – Nach erfolgreichem POST leitet der Server per 303 auf eine GET-Seite um. So schickt
+ein Neuladen das Formular nicht noch einmal ab. Bei uns `?gesendet=1#anfrage` statt einer Flash-Message (die
+bräuchte eine Session).

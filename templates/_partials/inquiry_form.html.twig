@@ -1,0 +1,29 @@
+{#
+    Inquiry form with its status messages, shared by contact, booking and lessons.
+    Expects: form, status (App\Inquiry\InquiryStatus or null), sent (bool), page_url (the page without query),
+    address ('formal' for "Sie", 'informal' for "Du").
+#}
+<div id="anfrage" class="sc-inquiry">
+    {% if sent %}
+        <div class="alert alert-success" role="status">
+            <p>{{ ('inquiry.' ~ address ~ '.sent')|trans }}</p>
+            <a class="alert-link" href="{{ page_url }}#anfrage">{{ 'inquiry.send_another'|trans }}</a>
+        </div>
+    {% else %}
+        {% if status is not null %}
+            <div class="alert alert-danger" role="alert">
+                {{ ('inquiry.' ~ address ~ '.' ~ status.value)|trans({'%email%': contact_email}) }}
+            </div>
+        {% endif %}
+
+        {{ form_start(form, {action: page_url ~ '#anfrage'}) }}
+            {{ form_widget(form) }}
+            <p class="small">{{ 'form.required_note'|trans }}</p>
+            <button type="submit" class="btn btn-primary">{{ 'action.send'|trans }}</button>
+            <p class="small mt-3">
+                {{ ('inquiry.' ~ address ~ '.privacy_hint')|trans }}
+                <a href="{{ path('app_privacy') }}">{{ 'inquiry.privacy_link'|trans }}</a>.
+            </p>
+        {{ form_end(form) }}
+    {% endif %}
+</div>

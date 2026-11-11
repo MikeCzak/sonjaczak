@@ -1,0 +1,9 @@
+framework:
+    rate_limiter:
+        # Inquiry forms: at most 5 mails per client IP and hour (see App\Inquiry\InquiryProcessor).
+        # Stored in the default pool cache.rate_limiter (filesystem in var/cache), no Redis needed.
+        inquiry:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+

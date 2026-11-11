@@ -9,8 +9,20 @@
         <div class="container">
             <h1>{{ 'title.contact'|trans }}</h1>
             <hr class="sc-accent-line">
-            <p class="col-lg-8 fs-5">{{ 'contact.intro'|trans({}, 'content') }}</p>
-            <p><a class="btn btn-primary" href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
+            <div class="col-lg-8">
+                <p class="fs-5">{{ 'contact.intro'|trans({}, 'content') }}</p>
+                {{ include('_partials/inquiry_form.html.twig', {
+                    form: form,
+                    status: inquiry_status,
+                    sent: inquiry_sent,
+                    page_url: path('app_contact'),
+                    address: 'formal',
+                }) }}
+                <p class="mt-4">
+                    {{ 'contact.email_alternative'|trans({}, 'content') }}
+                    <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+                </p>
+            </div>
 
             <p class="col-lg-8 mt-5">{{ 'contact.hint'|trans({}, 'content') }}</p>
             <ul class="sc-list">

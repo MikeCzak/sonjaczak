@@ -163,7 +163,8 @@ lessons:
 
 contact:
     # Draft
-    intro: Sie haben eine Frage oder möchten Sonja kennenlernen? Schreiben Sie ihr eine E-Mail.
+    intro: Sie haben eine Frage oder möchten Sonja kennenlernen? Schreiben Sie ihr eine Nachricht.
+    email_alternative: 'Oder direkt per E-Mail:'
     hint: 'Für einen Auftritt oder den Gesangsunterricht finden Sie alle Infos auf den jeweiligen Seiten:'
 
 # Legal texts. Checked against the primary sources on 2026-11-11 (see docs/planung/seitenstruktur.md, section 3):
@@ -211,12 +212,17 @@ privacy:
     fonts:
         heading: Schriften
         body: Alle Schriften werden von diesem Server geladen. Es besteht keine Verbindung zu Google Fonts oder anderen externen Anbietern.
+    # Covers the contact form since step 6b; booking and lessons forms follow in step 6e
     email:
-        heading: Kontakt per E-Mail
+        heading: Kontaktformular und E-Mail
         body: |-
-            Wenn Sie eine E-Mail schreiben, werden Ihre Angaben (Name, E-Mail-Adresse, Inhalt der Nachricht und was Sie sonst mitteilen) verarbeitet, um Ihre Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf einen Vertrag zielt (zum Beispiel eine Buchung oder Unterricht), sonst Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in der Beantwortung Ihrer Anfrage.
+            Wenn Sie das Kontaktformular nutzen oder eine E-Mail schreiben, werden Ihre Angaben verarbeitet, um Ihre Anfrage zu beantworten: beim Formular Name, E-Mail-Adresse, Nachricht und, falls angegeben, Telefonnummer; bei einer E-Mail Ihre Adresse, der Inhalt und was Sie sonst mitteilen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf einen Vertrag zielt (zum Beispiel eine Buchung oder Unterricht), sonst Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in der Beantwortung Ihrer Anfrage.
+
+            Die Angaben aus dem Formular werden nicht auf dem Webserver oder in einer Datenbank gespeichert, sondern verschlüsselt als E-Mail an das Postfach %email% gesendet. Mailversand und Postfach betreibt IONOS (siehe „Hosting“) als Auftragsverarbeiterin.
 
             Sie sind nicht verpflichtet, Daten anzugeben, ohne Ihre Angaben kann Ihre Anfrage aber nicht beantwortet werden. Die Daten werden gelöscht, sobald die Anfrage erledigt ist. Kommt ein Vertrag zustande, gelten die gesetzlichen Aufbewahrungspflichten.
+
+            Zum Schutz vor Spam und Missbrauch ist die Zahl der Anfragen pro Stunde begrenzt. Dafür speichert der Server nicht Ihre IP-Adresse, sondern einen daraus mit einem geheimen Schlüssel berechneten Prüfwert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt im Schutz vor Missbrauch. Der Wert verfällt nach einer Stunde und wird spätestens bei der nächsten Aktualisierung der Website gelöscht.
     links:
         heading: Links zu anderen Websites
         body: >-

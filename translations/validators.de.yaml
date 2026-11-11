@@ -1,0 +1,5 @@
+# Messages for our own constraints; Symfony's built-in messages are translated by the Validator component itself.
+# Neutral wording (no "Sie"/"Du"): the lessons page addresses visitors with "Du".
+inquiry:
+    phone:
+        invalid: Erlaubt sind Ziffern, Leerzeichen und + / ( ) -.

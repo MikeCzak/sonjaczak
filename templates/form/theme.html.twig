@@ -1,0 +1,9 @@
+{# Additions to bootstrap_5_layout.html.twig (config/packages/twig.yaml) #}
+
+{# App\Form\HoneypotType: off-screen rather than display:none, which some bots skip; hidden from screen readers #}
+{% block honeypot_row %}
+    <div class="sc-hp" aria-hidden="true">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endblock %}

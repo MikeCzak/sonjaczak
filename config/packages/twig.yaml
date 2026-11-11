@@ -1,8 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
+    form_themes: ['bootstrap_5_layout.html.twig', 'form/theme.html.twig']
     # Contact data used in several templates; data, not text, so not in the translation files
     globals:
-        contact_email: 'music@sonjaczak.com'
+        contact_email: '%app.contact_email%'
         youtube_url: 'https://www.youtube.com/@redmulletmusic'
         band_url: 'https://www.redmulletmusic.at'
 

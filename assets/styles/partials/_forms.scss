@@ -1,0 +1,16 @@
+// Forms (inquiry forms, templates/_partials/inquiry_form.html.twig)
+
+// Symfony adds the class "required" to the labels of required fields
+.form-label.required::after {
+    content: " *";
+    color: var(--sc-accent-text);
+}
+
+// Honeypot (App\Form\HoneypotType): off-screen for people, still a normal field for bots
+.sc-hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

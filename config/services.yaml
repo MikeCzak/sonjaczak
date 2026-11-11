@@ -7,6 +7,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Public address and recipient of all inquiry forms (sender: config/packages/mailer.yaml)
+    app.contact_email: 'music@sonjaczak.com'
 
 services:
     # default configuration for services in *this* file
