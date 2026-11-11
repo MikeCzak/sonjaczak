@@ -1,0 +1,268 @@
+// Design tokens as CSS custom properties.
+//
+// Bootstrap's Sass variables are fixed at compile time, but we need to switch at runtime between the
+// design variants (data-design="a|b|c" on <html>, preview during step 3) and between the two areas
+// (.theme-stage / .theme-lessons on <body>). So all colors and fonts are --sc-* properties, and the
+// Bootstrap runtime properties (--bs-*) point to them.
+//
+// Contrast (WCAG AA, 4.5:1 for body text) is shown live on /_design.
+//   --sc-accent       decorative color for surfaces, lines, buttons
+//   --sc-accent-text  accent color that is safe for text and links on --sc-bg
+//   --sc-on-accent    text color on --sc-accent surfaces
+
+// Variant A (default): classic and elegant
+:root {
+    --sc-font-body: 'Jost', system-ui, sans-serif;
+    --sc-font-heading: 'Cormorant Garamond', Georgia, serif;
+    --sc-font-hero: 'Great Vibes', cursive;
+    --sc-font-logo: 'Great Vibes', cursive;
+    --sc-heading-weight: 600;
+    --sc-heading-transform: none;
+    --sc-heading-spacing: normal;
+    --sc-hero-size: clamp(3.5rem, 10vw, 7rem);
+
+    --sc-bg: #f8f5f2;
+    --sc-surface: #efe9e3;
+    --sc-text: #2b2724;
+    --sc-text-rgb: 43, 39, 36;
+    --sc-muted: #6b625b;
+    --sc-border: #ddd4cc;
+    --sc-accent: #a3262a;
+    --sc-accent-text: #a3262a;
+    --sc-accent-text-rgb: 163, 38, 42;
+    --sc-on-accent: #ffffff;
+    --sc-hero-overlay: linear-gradient(90deg, rgba(23, 21, 26, 0.65) 0%, rgba(23, 21, 26, 0.1) 70%);
+    --sc-hero-text: #ffffff;
+}
+
+// Variant B: modern and clear
+[data-design='b'] {
+    --sc-font-body: 'Inter', system-ui, sans-serif;
+    --sc-font-heading: 'Montserrat', system-ui, sans-serif;
+    --sc-font-hero: 'Montserrat', system-ui, sans-serif;
+    --sc-heading-weight: 700;
+    --sc-heading-transform: uppercase;
+    --sc-heading-spacing: 0.04em;
+    --sc-hero-size: clamp(2.5rem, 7vw, 5rem);
+
+    --sc-bg: #ffffff;
+    --sc-surface: #f2f2f4;
+    --sc-text: #17151a;
+    --sc-text-rgb: 23, 21, 26;
+    --sc-muted: #5c5a63;
+    --sc-border: #dedde2;
+    --sc-accent: #c0262d;
+    --sc-accent-text: #c0262d;
+    --sc-accent-text-rgb: 192, 38, 45;
+    --sc-on-accent: #ffffff;
+}
+
+// Variant C: dark, stage-like
+[data-design='c'] {
+    --sc-font-body: 'Inter', system-ui, sans-serif;
+    --sc-font-heading: 'Playfair Display', Georgia, serif;
+    --sc-font-hero: 'Playfair Display', Georgia, serif;
+    --sc-heading-weight: 700;
+    --sc-heading-transform: none;
+    --sc-heading-spacing: normal;
+    --sc-hero-size: clamp(3rem, 9vw, 6.5rem);
+
+    --sc-bg: #121014;
+    --sc-surface: #1e1b21;
+    --sc-text: #f3eee8;
+    --sc-text-rgb: 243, 238, 232;
+    --sc-muted: #b5ada6;
+    --sc-border: #34303a;
+    --sc-accent: #ef5350;
+    --sc-accent-text: #ef5350;
+    --sc-accent-text-rgb: 239, 83, 80;
+    --sc-on-accent: #121014;
+    --sc-hero-overlay: linear-gradient(0deg, rgba(18, 16, 20, 0.95) 0%, rgba(18, 16, 20, 0.2) 60%);
+}
+
+// Lessons area: lively look of the flyer, in every variant
+.theme-lessons {
+    --sc-font-heading: 'Montserrat', system-ui, sans-serif;
+    --sc-heading-weight: 800;
+    --sc-heading-transform: uppercase;
+    --sc-heading-spacing: 0.02em;
+
+    --sc-accent: #ff2e73;
+    --sc-accent-text: #d10f50;
+    --sc-accent-text-rgb: 209, 15, 80;
+    --sc-on-accent: #17151a;
+}
+
+[data-design='a'] .theme-lessons,
+:root:not([data-design]) .theme-lessons,
+[data-design='b'] .theme-lessons {
+    --sc-bg: #f8f5f2;
+    --sc-surface: #eee7eb;
+    --sc-text: #17151a;
+    --sc-text-rgb: 23, 21, 26;
+    --sc-muted: #5c5a63;
+}
+
+// On the dark variant the flyer pink is readable as text
+[data-design='c'] .theme-lessons {
+    --sc-accent-text: #ff2e73;
+    --sc-accent-text-rgb: 255, 46, 115;
+}
+
+// Bootstrap runtime properties point to the tokens of the current element
+body,
+.theme-lessons,
+.theme-stage {
+    --bs-body-bg: var(--sc-bg);
+    --bs-body-color: var(--sc-text);
+    --bs-body-color-rgb: var(--sc-text-rgb);
+    --bs-body-font-family: var(--sc-font-body);
+    --bs-emphasis-color: var(--sc-text);
+    --bs-emphasis-color-rgb: var(--sc-text-rgb);
+    --bs-secondary-color: var(--sc-muted);
+    --bs-tertiary-bg: var(--sc-surface);
+    --bs-secondary-bg: var(--sc-surface);
+    --bs-border-color: var(--sc-border);
+    --bs-link-color: var(--sc-accent-text);
+    --bs-link-color-rgb: var(--sc-accent-text-rgb);
+    --bs-link-hover-color: var(--sc-text);
+    --bs-link-hover-color-rgb: var(--sc-text-rgb);
+
+    background-color: var(--sc-bg);
+    color: var(--sc-text);
+    font-family: var(--sc-font-body);
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--sc-font-heading);
+    font-weight: var(--sc-heading-weight);
+    text-transform: var(--sc-heading-transform);
+    letter-spacing: var(--sc-heading-spacing);
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--sc-accent);
+    --bs-btn-border-color: var(--sc-accent);
+    --bs-btn-color: var(--sc-on-accent);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--sc-accent) 85%, #000);
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--sc-accent) 85%, #000);
+    --bs-btn-hover-color: var(--sc-on-accent);
+    --bs-btn-active-bg: color-mix(in srgb, var(--sc-accent) 75%, #000);
+    --bs-btn-active-border-color: color-mix(in srgb, var(--sc-accent) 75%, #000);
+    --bs-btn-active-color: var(--sc-on-accent);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--sc-accent);
+    box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--sc-accent) 25%, transparent);
+}
+
+// Header and logo
+.sc-header {
+    background-color: var(--sc-bg);
+    border-bottom: 1px solid var(--sc-border);
+}
+
+.navbar-brand {
+    font-family: var(--sc-font-logo);
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.navbar .nav-link.active {
+    color: var(--sc-accent-text);
+}
+
+// Hero with full-width photo
+.sc-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(80vh, 48rem);
+    background-image: var(--sc-hero-overlay), var(--sc-hero-image);
+    background-size: cover;
+    background-position: var(--sc-hero-position, center);
+    color: var(--sc-hero-text, #fff);
+
+    h1 {
+        font-family: var(--sc-font-hero);
+        font-size: var(--sc-hero-size);
+        line-height: 1.05;
+    }
+
+    .lead {
+        font-family: var(--sc-font-body);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+}
+
+.sc-hero--home {
+    --sc-hero-image: url('../images/hero-sonja.jpg');
+    --sc-hero-position: 70% 30%;
+}
+
+[data-design='c'] .sc-hero--home {
+    --sc-hero-image: url('../images/hero-band.jpg');
+    --sc-hero-position: 75% 20%;
+}
+
+// Hero headline in variant A uses the script font, which needs no uppercase/tracking
+[data-design='b'] .sc-hero h1 {
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+// Alternating content sections
+.sc-section {
+    padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+.sc-section--surface {
+    background-color: var(--sc-surface);
+}
+
+.sc-accent-line {
+    width: 4rem;
+    height: 3px;
+    background-color: var(--sc-accent);
+    border: 0;
+    opacity: 1;
+    margin-block: 1rem 1.5rem;
+}
+
+// Design preview switcher (step 3, temporary). Shown while a preview is active (class set in <head>).
+.sc-design-switcher {
+    display: none;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1080;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    background: #17151a;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    font: 600 0.875rem/1 system-ui, sans-serif;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+
+    a {
+        color: #fff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+    }
+
+    a[aria-current='true'] {
+        background: #fff;
+        color: #17151a;
+    }
+}
+
+.sc-preview .sc-design-switcher {
+    display: flex;
+}

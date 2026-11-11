@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %}{{ block('title') is not empty ? ' – ' }}{{ 'site.name'|trans }}</title>
         <meta name="description" content="{% block meta_description %}{{ 'meta.description'|trans }}{% endblock %}">
+        {% block meta_robots %}{% endblock %}
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221em%22 font-size=%22110%22>♪</text></svg>">
+        {{ include('_partials/design_preview_script.html.twig') }}
         {% block stylesheets %}
         {% endblock %}
 
@@ -29,5 +31,6 @@
         </main>
 
         {{ include('_partials/footer.html.twig') }}
+        {{ include('_partials/design_preview_switcher.html.twig') }}
     </body>
 </html>

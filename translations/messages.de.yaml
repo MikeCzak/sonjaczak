@@ -31,6 +31,13 @@ title:
 
 action:
     more: Mehr erfahren
+    send: Senden
+
+form:
+    label:
+        name: Name
+        email: E-Mail
+        message: Nachricht
 
 placeholder:
     content_follows: Inhalte folgen in Kürze.
@@ -40,3 +47,23 @@ footer:
     youtube: YouTube
     imprint: Impressum
     privacy: Datenschutz
+
+# Design preview and style guide (step 3, temporary until the design decision)
+design_preview:
+    label: Designvorschau
+    end: Beenden
+
+styleguide:
+    title: Styleguide
+    intro: Vergleich der Designvarianten. Die gewählte Variante gilt für alle Seiten, solange dieser Browser-Tab offen ist.
+    variant_a: A – Klassisch-elegant
+    variant_b: B – Modern-klar
+    variant_c: C – Bühne (dunkel)
+    logo: Logo
+    logo_hint: Handschriftliche Schriften für den Schriftzug. Unabhängig von der Variante wählbar.
+    typography: Schrift
+    colors: Farben und Kontrast
+    colors_hint: Kontrast nach WCAG 2.1. Fließtext braucht mindestens 4,5:1 (AA), große Schrift 3:1.
+    sample_text: Beispieltext
+    components: Bedienelemente
+    lessons_area: Bereich Unterricht

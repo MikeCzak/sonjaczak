@@ -113,7 +113,14 @@ Erst danach werden Features gebaut.
          unübersetzte Schlüssel, aktive Menüpunkte, Impressum-Anker, fehlende Übersetzungen
          (`debug:translation --only-missing`). CI: `lint:twig`, `lint:yaml`, HTTPS-Check aktiv, Smoke-Test ruft `/`
          am Prod-Stack ab (lokal nachgestellt: grün; php 114 MiB, database 27 MiB im Leerlauf, Mac).
-   - [ ] Schritt 3: Design-Entwurf (Schriften, Farben, Logo „Sonja Czak“) in zwei Varianten
+   - [ ] Schritt 3: Design-Entwurf – **umgesetzt, wartet auf Entscheidung** (2026-11-11). Drei Varianten:
+         A klassisch-elegant (Cormorant Garamond + Jost), B modern-klar (Montserrat + Inter), C Bühne/dunkel
+         (Playfair Display + Inter); Unterricht in allen Varianten in Flyer-Optik (Montserrat, Pink). Logo-Kandidaten:
+         Great Vibes, Allura, Parisienne, Dancing Script. Vorschau über `/_design` und `?design=a|b|c` (auch in
+         Produktion, nicht verlinkt, `noindex`). Schriften lokal (Fontsource 5.3.0, OFL 1.1, `OFL.txt` je Schrift),
+         Hero-Bilder in Web-Größe (`assets/images/`, ohne Metadaten). Nach der Entscheidung: Variante festschreiben,
+         Umschalter und ungenutzte Schriften entfernen, Logo als SVG mit Pfaden (laut OFL-FAQ 1.1 erlaubt).
+         Nebenbei: Prod-Image enthielt kein `/etc/mime.types` → woff2 ohne Content-Type; im Dockerfile ergänzt.
    - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
          existieren). Ursache im Browser auf der Run-Seite bzw. in den Abrechnungs-/Kontoeinstellungen prüfen.
 
@@ -125,7 +132,13 @@ Erst danach werden Features gebaut.
 - Auf Packagist gibt es `twbs/bootstrap` v6.0.0-alpha.1; wir bleiben bei `^5.3`, Major-Upgrade erst nach Release von 6.
 - Das Sass-Bundle (v0.10.0) pinnt Dart Sass 1.69.7 (`vendor/symfonycasts/sass-bundle/src/SassBinary.php`). Eine
   neuere Version ginge über die Option `binary`; aktuell nicht nötig.
-- Das kompilierte CSS enthält ganz Bootstrap (228 KB komprimiert, vor gzip). Später nur benutzte Teile importieren.
+- Das kompilierte CSS enthält ganz Bootstrap (237 KB komprimiert, vor gzip). Später nur benutzte Teile importieren.
+- Kontrast: Flyer-Pink `#FF2E73` erreicht als Text auf Creme nur 3,28:1 → nur für Flächen (mit dunkler Schrift,
+  5,08:1); für Text/Links `#D10F50` (4,96:1). Variante C: dunkle Schrift auf rotem Button (5,43:1).
+- Bildnachweis: Porträt `hero-sonja.jpg` von Doris Sporer (Nennung im Impressum oder am Bild, Schritt 4);
+  Bandfoto `hero-band.jpg` – Urheber:in laut Metadaten „Michael Czak“, bitte bestätigen.
+- Die Designvorschau nutzt Inline-Scripts. Falls später eine Content-Security-Policy kommt, berücksichtigen
+  (bzw. die Vorschau ist bis dahin entfernt).
 
 **Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
 CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.

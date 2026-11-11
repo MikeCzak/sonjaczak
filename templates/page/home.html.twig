@@ -1,20 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <section class="py-5 text-center bg-body-secondary">
-        <div class="container py-5">
-            <h1 class="display-4">{{ 'site.name'|trans }}</h1>
-            <p class="lead">{{ 'site.tagline'|trans }}</p>
+    <section class="sc-hero sc-hero--home">
+        <div class="container pb-5">
+            <h1>{{ 'site.name'|trans }}</h1>
+            <p class="lead mb-0">{{ 'site.tagline'|trans }}</p>
             {% set claim = 'home.hero.claim'|trans({}, 'content') %}
             {% if claim is not empty %}
-                <p class="mt-4">{{ claim }}</p>
+                <p class="mt-3 fs-5">{{ claim }}</p>
             {% endif %}
         </div>
     </section>
 
-    <section class="py-5">
+    <section class="sc-section">
         <div class="container">
             <h2>{{ 'home.intro.heading'|trans({}, 'content') }}</h2>
+            <hr class="sc-accent-line">
             {% set intro = 'home.intro.body'|trans({}, 'content') %}
             {% if intro is not empty %}
                 <p>{{ intro }}</p>
@@ -27,15 +28,21 @@
         heading: 'home.offers.solo.heading'|trans({}, 'content'),
         body: 'home.offers.solo.body'|trans({}, 'content'),
         url: path('app_booking_solo'),
+        surface: true,
     }) }}
     {{ include('page/_offer.html.twig', {
         heading: 'home.offers.band.heading'|trans({}, 'content'),
         body: 'home.offers.band.body'|trans({}, 'content'),
         url: path('app_booking_band'),
+        surface: false,
     }) }}
-    {{ include('page/_offer.html.twig', {
-        heading: 'home.offers.lessons.heading'|trans({}, 'content'),
-        body: 'home.offers.lessons.body'|trans({}, 'content'),
-        url: path('app_lessons'),
-    }) }}
+    {# The lessons offer already shows the lively look of its area #}
+    <div class="theme-lessons">
+        {{ include('page/_offer.html.twig', {
+            heading: 'home.offers.lessons.heading'|trans({}, 'content'),
+            body: 'home.offers.lessons.body'|trans({}, 'content'),
+            url: path('app_lessons'),
+            surface: true,
+        }) }}
+    </div>
 {% endblock %}

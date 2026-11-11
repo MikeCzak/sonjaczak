@@ -1,5 +1,7 @@
-// Bootstrap variable overrides (colors, fonts, spacing) go above the import
+// Bootstrap variable overrides (compile time) go above the import.
+// Colors and fonts that differ per design variant or area are CSS custom properties, see partials/_design.scss.
 
 @import 'bootstrap';
 
-// Own styles go below the import
+@import 'partials/fonts';
+@import 'partials/design';

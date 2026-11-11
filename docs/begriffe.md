@@ -213,3 +213,13 @@ in Sass geschrieben; über Sass-Variablen passen wir Farben und Schriften an. Da
 
 **Twig-Global** – Variable, die in jedem Template verfügbar ist, ohne dass der Controller sie übergibt. Bei uns
 in `config/packages/twig.yaml`: `contact_email`, `youtube_url`.
+
+**CSS Custom Property (CSS-Variable)** – Wert wie `--sc-accent: #a3262a`, der im Browser zur Laufzeit gilt und
+vererbt wird. Anders als Sass-Variablen (beim Kompilieren fest eingesetzt) lassen sie sich pro Bereich überschreiben.
+Bei uns: Design-Tokens `--sc-*` in `assets/styles/partials/_design.scss`, auf die Bootstraps `--bs-*` zeigen.
+
+**WCAG-Kontrast** – Verhältnis der Helligkeit von Text- und Hintergrundfarbe nach den Web Content Accessibility
+Guidelines. Stufe AA: mindestens 4,5:1 für Fließtext, 3:1 für große Schrift. Live angezeigt auf `/_design`.
+
+**OFL (SIL Open Font License)** – Freie Schriftlizenz. Nutzung als Webfont erlaubt, wenn der Lizenztext mitgeliefert
+wird (`assets/fonts/<schrift>/OFL.txt`); Logos aus den Schriftumrissen sind ausdrücklich erlaubt (OFL-FAQ 1.1).

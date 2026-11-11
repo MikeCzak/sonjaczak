@@ -56,7 +56,19 @@ docker compose exec php bin/console sass:build --watch    # kompiliert bei jeder
 ```
 
 Einmalig reicht `docker compose exec php bin/console sass:build`. Ohne kompiliertes CSS zeigt Symfony einen
-Fehler, dass die Datei fehlt. In der CI und beim Bau des Prod-Images passiert das automatisch.
+Fehler, dass die Datei fehlt (Status 500). In der CI und beim Bau des Prod-Images passiert das automatisch.
+
+**Nach jedem `docker compose down` + `up` neu bauen:** Das Ergebnis liegt in `var/sass/`, und `var/` ist ein
+anonymes Volume, das mit dem Container gelöscht wird. Danach liefert jede Seite 500, bis `sass:build` gelaufen ist.
+
+## Designvorschau (Schritt 3, vorübergehend)
+
+Bis zur Entscheidung zwischen den Designvarianten:
+
+- `https://localhost/_design` – Styleguide: Logo-Kandidaten, Schrift, Farben mit Kontrastwerten, Bedienelemente
+- `?design=a`, `?design=b`, `?design=c` an einer beliebigen URL wählt die Variante; sie bleibt für den Browser-Tab
+  gespeichert (sessionStorage), unten rechts erscheint ein Umschalter. `?design=off` beendet die Vorschau.
+- Funktioniert genauso auf https://sonjaczak.com (für Sonja), die Seite `/_design` ist nicht verlinkt und `noindex`.
 
 ## Häufige Befehle
 

@@ -1,8 +1,9 @@
-{# One offer section on the home page. Expects translated heading and body, and the target url. #}
-<section class="py-5 border-top">
+{# One offer section on the home page. Expects translated heading and body, the target url and surface (bool). #}
+<section class="sc-section{{ surface ? ' sc-section--surface' }}">
     <div class="container">
         <h2>{{ heading }}</h2>
-        <p>{{ body }}</p>
-        <a href="{{ url }}">{{ 'action.more'|trans }}</a>
+        <hr class="sc-accent-line">
+        <p class="col-lg-8">{{ body }}</p>
+        <a class="btn btn-primary" href="{{ url }}">{{ 'action.more'|trans }}</a>
     </div>
 </section>

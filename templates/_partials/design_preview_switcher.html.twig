@@ -1,0 +1,13 @@
+{# Design preview (step 3, temporary): visible only while a preview is active, see design_preview_script #}
+<nav class="sc-design-switcher" aria-label="{{ 'design_preview.label'|trans }}">
+    <span>{{ 'design_preview.label'|trans }}</span>
+    {% for variant in ['a', 'b', 'c'] %}
+        <a href="?design={{ variant }}" data-design-link="{{ variant }}">{{ variant|upper }}</a>
+    {% endfor %}
+    <a href="?design=off">{{ 'design_preview.end'|trans }}</a>
+</nav>
+<script>
+    document.querySelectorAll('[data-design-link]').forEach((link) => {
+        link.setAttribute('aria-current', String(link.dataset.designLink === document.documentElement.dataset.design));
+    });
+</script>

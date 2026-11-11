@@ -24,6 +24,7 @@
  */
 return [
     'app' => ['path' => './assets/app.js', 'entrypoint' => true],
+    'design' => ['path' => './assets/design.js', 'entrypoint' => true],
     'bootstrap' => ['version' => '5.3.8'],
     '@popperjs/core' => ['version' => '2.11.8'],
 ];

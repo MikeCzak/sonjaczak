@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'styleguide.title'|trans }}{% endblock %}
+
+{% block meta_robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block importmap %}{{ importmap(['app', 'design']) }}{% endblock %}
+
+{% macro swatches() %}
+    {# Each swatch shows foreground on background; assets/design.js adds the WCAG contrast ratio #}
+    <div class="row g-3">
+        {% for pair in [
+            {fg: '--sc-text', bg: '--sc-bg'},
+            {fg: '--sc-muted', bg: '--sc-bg'},
+            {fg: '--sc-accent-text', bg: '--sc-bg'},
+            {fg: '--sc-text', bg: '--sc-surface'},
+            {fg: '--sc-on-accent', bg: '--sc-accent'},
+        ] %}
+            <div class="col-sm-6 col-lg-4">
+                <div class="border rounded p-3" data-contrast style="color: var({{ pair.fg }}); background-color: var({{ pair.bg }});">
+                    <div class="fw-semibold">{{ 'styleguide.sample_text'|trans }}</div>
+                    <code class="d-block small" style="color: inherit;">{{ pair.fg }} / {{ pair.bg }}</code>
+                    <span class="small" data-contrast-result></span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1>{{ 'styleguide.title'|trans }}</h1>
+        <p class="lead">{{ 'styleguide.intro'|trans }}</p>
+        <p>
+            {% for variant, label in {a: 'styleguide.variant_a'|trans, b: 'styleguide.variant_b'|trans, c: 'styleguide.variant_c'|trans} %}
+                <a class="btn btn-outline-secondary me-2 mb-2" href="?design={{ variant }}">{{ label }}</a>
+            {% endfor %}
+        </p>
+
+        <h2 class="mt-5">{{ 'styleguide.logo'|trans }}</h2>
+        <p>{{ 'styleguide.logo_hint'|trans }}</p>
+        <div class="row g-3">
+            {% for font in logo_fonts %}
+                <div class="col-md-6">
+                    <div class="border rounded p-4 text-center" data-logo-candidate>
+                        <div style="font-family: '{{ font }}', cursive; font-size: 3.5rem; line-height: 1.2;">{{ 'site.name'|trans }}</div>
+                        <div class="small text-body-secondary mt-2">{{ font }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="mt-5">{{ 'styleguide.typography'|trans }}</h2>
+        <h1>{{ 'home.offers.solo.heading'|trans({}, 'content') }}</h1>
+        <h2>{{ 'home.offers.band.heading'|trans({}, 'content') }}</h2>
+        <h3>{{ 'home.offers.lessons.heading'|trans({}, 'content') }}</h3>
+        <p class="lead">{{ 'site.tagline'|trans }}</p>
+        <p class="col-lg-8">{{ 'home.offers.solo.body'|trans({}, 'content') }} {{ 'home.offers.band.body'|trans({}, 'content') }}
+            <a href="{{ path('app_booking') }}">{{ 'action.more'|trans }}</a></p>
+
+        <h2 class="mt-5">{{ 'styleguide.colors'|trans }}</h2>
+        <p>{{ 'styleguide.colors_hint'|trans }}</p>
+        {{ _self.swatches() }}
+
+        <h2 class="mt-5">{{ 'styleguide.components'|trans }}</h2>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <p>
+                    <a class="btn btn-primary" href="#">{{ 'action.more'|trans }}</a>
+                    <a class="btn btn-outline-secondary" href="#">{{ 'action.more'|trans }}</a>
+                </p>
+                <form onsubmit="return false">
+                    <div class="mb-3">
+                        <label class="form-label" for="sg-name">{{ 'form.label.name'|trans }}</label>
+                        <input class="form-control" id="sg-name" type="text">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="sg-email">{{ 'form.label.email'|trans }}</label>
+                        <input class="form-control" id="sg-email" type="email">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="sg-message">{{ 'form.label.message'|trans }}</label>
+                        <textarea class="form-control" id="sg-message" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">{{ 'action.send'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="container mt-5">{{ 'styleguide.lessons_area'|trans }}</h2>
+    <div class="theme-lessons">
+        <section class="sc-section">
+            <div class="container">
+                <h2>{{ 'home.offers.lessons.heading'|trans({}, 'content') }}</h2>
+                <hr class="sc-accent-line">
+                <p class="col-lg-8">{{ 'home.offers.lessons.body'|trans({}, 'content') }}
+                    <a href="{{ path('app_lessons') }}">{{ 'action.more'|trans }}</a></p>
+                <p><a class="btn btn-primary" href="#">{{ 'action.more'|trans }}</a></p>
+                {{ _self.swatches() }}
+            </div>
+        </section>
+    </div>
+{% endblock %}

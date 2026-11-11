@@ -25,6 +25,7 @@ final class PublicPagesTest extends WebTestCase
         yield 'lessons' => ['/unterricht'];
         yield 'contact' => ['/kontakt'];
         yield 'privacy' => ['/datenschutz'];
+        yield 'style guide' => ['/_design'];
     }
 
     #[DataProvider('publicUrls')]
@@ -41,7 +42,7 @@ final class PublicPagesTest extends WebTestCase
         // A missing translation is rendered as its key, e.g. "nav.home"; this also covers the menu labels,
         // which debug:translation cannot see because they are set in PHP (App\Menu\MenuBuilder)
         $text = $crawler->filter('title')->text().' '.$crawler->filter('body')->text();
-        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home)\.[a-z_]+/', $text);
+        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|form|design_preview|styleguide)\.[a-z_]+/', $text);
     }
 
     public function testCurrentPageIsMarkedInMenu(): void
@@ -51,6 +52,15 @@ final class PublicPagesTest extends WebTestCase
 
         self::assertSelectorTextSame('#main-nav [aria-current="page"]', 'Solo');
         self::assertSelectorTextSame('#main-nav .nav-link.active', 'Booking');
+    }
+
+    public function testStyleGuideIsHiddenFromSearchEngines(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/_design');
+
+        self::assertSelectorExists('meta[name="robots"][content="noindex, nofollow"]');
+        self::assertSelectorCount(4, '[data-logo-candidate]');
     }
 
     public function testImprintAnchorExists(): void

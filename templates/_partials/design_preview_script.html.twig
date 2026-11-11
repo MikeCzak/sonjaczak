@@ -1,0 +1,35 @@
+{#
+    Design preview (step 3, temporary, remove after the decision).
+    ?design=a|b|c selects a variant and is remembered for this browser tab (sessionStorage, no cookie),
+    ?design=off ends the preview. Inline and blocking on purpose: the attribute must be set before the
+    first paint, otherwise the page flashes in the default variant.
+#}
+<script>
+    (() => {
+        const variants = ['a', 'b', 'c'];
+        const key = 'sc-design';
+        let design = new URLSearchParams(window.location.search).get('design');
+        try {
+            if (design === 'off') {
+                sessionStorage.removeItem(key);
+                return;
+            }
+            if (variants.includes(design)) {
+                sessionStorage.setItem(key, design);
+            } else {
+                design = sessionStorage.getItem(key);
+            }
+        } catch (e) {
+            // Storage blocked: the preview then only works for the current page
+        }
+        if (!variants.includes(design)) {
+            return;
+        }
+        const root = document.documentElement;
+        root.dataset.design = design;
+        root.classList.add('sc-preview');
+        if (design === 'c') {
+            root.dataset.bsTheme = 'dark';
+        }
+    })();
+</script>
