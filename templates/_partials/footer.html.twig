@@ -1,0 +1,12 @@
+<footer class="border-top py-4 mt-5">
+    <div class="container d-flex flex-column flex-md-row gap-3 justify-content-between">
+        <ul class="list-unstyled mb-0">
+            <li>{{ 'footer.email'|trans }}: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a></li>
+            <li><a href="{{ youtube_url }}" rel="noopener">{{ 'footer.youtube'|trans }}</a></li>
+        </ul>
+        <ul class="list-inline mb-0">
+            <li class="list-inline-item"><a href="{{ path('app_contact', {_fragment: 'impressum'}) }}">{{ 'footer.imprint'|trans }}</a></li>
+            <li class="list-inline-item"><a href="{{ path('app_privacy') }}">{{ 'footer.privacy'|trans }}</a></li>
+        </ul>
+    </div>
+</footer>

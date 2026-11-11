@@ -105,7 +105,15 @@ Erst danach werden Features gebaut.
          und löscht danach `var/dart-sass` und `vendor/twbs` (nur zur Build-Zeit nötig); Prod-Image lokal 305 MB
          (vorher 301 MB). CI-Job „Tests“ baut Sass vor PHPUnit. Nebenbei Symfony 8.1.10 → 8.1.11 (Security-Release,
          `composer audit` meldete 10 Hinweise).
-   - [ ] Schritt 2: Layout, Menü (KnpMenuBundle), Übersetzungsdateien, Home mit Platzhaltern
+   - [x] Schritt 2 (2026-11-11): Layout (`base.html.twig`, Header, Footer), Hauptmenü mit KnpMenuBundle 3.8.0
+         (`App\Menu\MenuBuilder`, eigenes Bootstrap-Template `templates/menu/main.html.twig`), alle Routen aus
+         `seitenstruktur.md` als Platzhalterseiten, Startseite mit Hero, Kurzvorstellung (leer, ausgeblendet) und
+         drei Angeboten. Übersetzungen in `messages.de.yaml` und `content.de.yaml`; Kontaktdaten als Twig-Globals
+         (`music@sonjaczak.com`, YouTube; Telefon vorerst nicht). Tests: jede Seite 200 mit Layout und ohne
+         unübersetzte Schlüssel, aktive Menüpunkte, Impressum-Anker, fehlende Übersetzungen
+         (`debug:translation --only-missing`). CI: `lint:twig`, `lint:yaml`, HTTPS-Check aktiv, Smoke-Test ruft `/`
+         am Prod-Stack ab (lokal nachgestellt: grün; php 114 MiB, database 27 MiB im Leerlauf, Mac).
+   - [ ] Schritt 3: Design-Entwurf (Schriften, Farben, Logo „Sonja Czak“) in zwei Varianten
    - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
          existieren). Ursache im Browser auf der Run-Seite bzw. in den Abrechnungs-/Kontoeinstellungen prüfen.
 
@@ -128,7 +136,6 @@ CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen d
 - `composer audit` als CI-Schritt
 - GitHub Actions auf Commit-SHA statt Tag pinnen; zizmor für Workflow-Sicherheit
 - Image-Scan auf bekannte Schwachstellen (`docker scout` oder Trivy) in der CI
-- HTTPS-Check in der CI aktivieren und Healthcheck/Smoke-Test gegen eine echte Seite, sobald es die Startseite gibt
 - Ungenutzten `allow-plugins`-Eintrag `php-http/discovery` entfernen
 
 **Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)

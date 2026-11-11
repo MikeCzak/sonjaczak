@@ -205,3 +205,11 @@ in Sass geschrieben; über Sass-Variablen passen wir Farben und Schriften an. Da
 
 **Übersetzungsdomain** – Eine Gruppe von Übersetzungen in einer eigenen Datei, z. B. `messages.de.yaml`,
 `content.de.yaml`. Schema: `docs/planung/seitenstruktur.md`, Abschnitt 5.
+
+**KnpMenuBundle / MenuBuilder** – Bundle zum Aufbau von Menüs als Baum. `App\Menu\MenuBuilder` legt die Einträge an
+(Beschriftung = Übersetzungsschlüssel, Ziel = Route); `knp_menu_render('main', …)` gibt sie über das Template
+`templates/menu/main.html.twig` aus. Welcher Eintrag aktiv ist, erkennt das Bundle an der aktuellen Route
+(`RouteVoter`).
+
+**Twig-Global** – Variable, die in jedem Template verfügbar ist, ohne dass der Controller sie übergibt. Bei uns
+in `config/packages/twig.yaml`: `contact_email`, `youtube_url`.

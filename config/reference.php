@@ -967,6 +967,16 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     embed_sourcemap?: bool|Param|null, // Deprecated: Option "embed_sourcemap" at "symfonycasts_sass.embed_sourcemap" is deprecated. Use "sass_options.embed_source_map" instead". // Default: null
  * }
+ * @psalm-type KnpMenuConfig = array{
+ *     providers?: array{
+ *         builder_alias?: bool|Param, // Default: true
+ *     },
+ *     twig?: array{
+ *         template?: scalar|Param|null, // Default: "@KnpMenu/menu.html.twig"
+ *     },
+ *     route_voter?: bool|Param, // Default: true
+ *     default_renderer?: scalar|Param|null, // Default: "twig"
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -976,6 +986,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     doctrine_migrations?: DoctrineMigrationsConfig,
  *     twig?: TwigConfig,
  *     symfonycasts_sass?: SymfonycastsSassConfig,
+ *     knp_menu?: KnpMenuConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -985,6 +996,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
  *         symfonycasts_sass?: SymfonycastsSassConfig,
+ *         knp_menu?: KnpMenuConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -995,6 +1007,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
  *         symfonycasts_sass?: SymfonycastsSassConfig,
+ *         knp_menu?: KnpMenuConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1005,6 +1018,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
  *         symfonycasts_sass?: SymfonycastsSassConfig,
+ *         knp_menu?: KnpMenuConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

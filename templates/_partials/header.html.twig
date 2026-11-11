@@ -1,0 +1,15 @@
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" aria-label="{{ 'nav.label'|trans }}">
+        <div class="container">
+            {# Text until the logo exists #}
+            <a class="navbar-brand" href="{{ path('app_home') }}">{{ 'site.name'|trans }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav"
+                    aria-controls="main-nav" aria-expanded="false" aria-label="{{ 'nav.toggle'|trans }}">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="main-nav">
+                {{ knp_menu_render('main', {template: 'menu/main.html.twig'}) }}
+            </div>
+        </div>
+    </nav>
+</header>

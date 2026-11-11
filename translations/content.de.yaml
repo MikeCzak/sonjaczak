@@ -1,0 +1,21 @@
+# Page content, grouped by page and section. Parts of this move to the CMS later.
+# An empty string hides the section in the template.
+
+home:
+    hero:
+        # One sentence by Sonja, editable in the CMS later
+        claim: ''
+    intro:
+        heading: Willkommen
+        # Short introduction (one paragraph), text by Mike
+        body: ''
+    offers:
+        solo:
+            heading: Sonja solo
+            body: Gesang und Stagepiano für Trauungen, Taufen und andere besondere Anlässe in der Steiermark.
+        band:
+            heading: Sonja mit Band
+            body: Mit der Band Red Mullet für Hochzeiten, Galas, Firmenfeiern, Bälle und Silvesterpartys.
+        lessons:
+            heading: Gesangsunterricht
+            body: Unterricht für Anfänger:innen und Fortgeschrittene ab 12 Jahren – Pop, Rock, Funk, Soul, Musical und Jazz.

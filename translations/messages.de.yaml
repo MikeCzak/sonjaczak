@@ -1,0 +1,42 @@
+# User interface texts. Keys describe their purpose (see docs/planung/seitenstruktur.md, section 5).
+
+site:
+    name: Sonja Czak
+    tagline: Sängerin & Gesangslehrerin
+
+meta:
+    description: Sonja Czak – Sängerin und Gesangslehrerin aus Frohnleiten. Musik für Trauungen, Taufen und Feiern, Auftritte mit Band und Gesangsunterricht in Rein bei Graz.
+
+nav:
+    label: Hauptnavigation
+    toggle: Menü öffnen
+    submenu_toggle: Untermenü „%label%“ öffnen
+    home: Home
+    about: Über mich
+    booking: Booking
+    booking_solo: Solo
+    booking_band: Band
+    lessons: Unterricht
+    contact: Kontakt
+
+title:
+    about: Über mich
+    booking: Booking
+    booking_solo: Sonja solo
+    booking_band: Sonja mit Band
+    lessons: Gesangsunterricht
+    contact: Kontakt
+    imprint: Impressum
+    privacy: Datenschutz
+
+action:
+    more: Mehr erfahren
+
+placeholder:
+    content_follows: Inhalte folgen in Kürze.
+
+footer:
+    email: E-Mail
+    youtube: YouTube
+    imprint: Impressum
+    privacy: Datenschutz

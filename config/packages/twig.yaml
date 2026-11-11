@@ -1,5 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
+    # Contact data used in several templates; data, not text, so not in the translation files
+    globals:
+        contact_email: 'music@sonjaczak.com'
+        youtube_url: 'https://www.youtube.com/@redmulletmusic'
 
 when@test:
     twig:

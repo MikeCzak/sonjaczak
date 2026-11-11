@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="py-5 text-center bg-body-secondary">
+        <div class="container py-5">
+            <h1 class="display-4">{{ 'site.name'|trans }}</h1>
+            <p class="lead">{{ 'site.tagline'|trans }}</p>
+            {% set claim = 'home.hero.claim'|trans({}, 'content') %}
+            {% if claim is not empty %}
+                <p class="mt-4">{{ claim }}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <h2>{{ 'home.intro.heading'|trans({}, 'content') }}</h2>
+            {% set intro = 'home.intro.body'|trans({}, 'content') %}
+            {% if intro is not empty %}
+                <p>{{ intro }}</p>
+            {% endif %}
+            <a href="{{ path('app_about') }}">{{ 'action.more'|trans }}</a>
+        </div>
+    </section>
+
+    {{ include('page/_offer.html.twig', {
+        heading: 'home.offers.solo.heading'|trans({}, 'content'),
+        body: 'home.offers.solo.body'|trans({}, 'content'),
+        url: path('app_booking_solo'),
+    }) }}
+    {{ include('page/_offer.html.twig', {
+        heading: 'home.offers.band.heading'|trans({}, 'content'),
+        body: 'home.offers.band.body'|trans({}, 'content'),
+        url: path('app_booking_band'),
+    }) }}
+    {{ include('page/_offer.html.twig', {
+        heading: 'home.offers.lessons.heading'|trans({}, 'content'),
+        body: 'home.offers.lessons.body'|trans({}, 'content'),
+        url: path('app_lessons'),
+    }) }}
+{% endblock %}

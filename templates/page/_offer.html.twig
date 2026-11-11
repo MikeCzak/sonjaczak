@@ -1,0 +1,8 @@
+{# One offer section on the home page. Expects translated heading and body, and the target url. #}
+<section class="py-5 border-top">
+    <div class="container">
+        <h2>{{ heading }}</h2>
+        <p>{{ body }}</p>
+        <a href="{{ url }}">{{ 'action.more'|trans }}</a>
+    </div>
+</section>

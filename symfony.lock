@@ -35,6 +35,9 @@
             "src/Migrations/.gitignore"
         ]
     },
+    "knplabs/knp-menu-bundle": {
+        "version": "v3.8.0"
+    },
     "phpstan/phpstan": {
         "version": "2.3.4"
     },

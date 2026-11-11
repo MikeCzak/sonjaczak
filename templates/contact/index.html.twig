@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.contact'|trans }}{% endblock %}
+
+{% block body %}
+    {{ include('_partials/placeholder.html.twig', {heading: 'title.contact'|trans}) }}
+
+    <section id="impressum" class="container pb-5">
+        <h2>{{ 'title.imprint'|trans }}</h2>
+        <p>{{ 'placeholder.content_follows'|trans }}</p>
+    </section>
+{% endblock %}

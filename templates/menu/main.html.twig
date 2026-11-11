@@ -1,0 +1,33 @@
+{#
+    Renders the KnpMenu "main" menu (App\Menu\MenuBuilder) as Bootstrap 5 navbar items.
+    Variables from KnpMenu's TwigRenderer: item (root), options, matcher.
+    Items with children get a link to their own page plus a separate dropdown toggle,
+    because a Bootstrap dropdown toggle only opens the menu and does not navigate.
+#}
+<ul class="navbar-nav ms-auto">
+    {% for entry in item.children|filter(child => child.displayed) %}
+        {% set is_current = matcher.isCurrent(entry) %}
+        {% set is_active = is_current or matcher.isAncestor(entry) %}
+        {% if entry.hasChildren %}
+            <li class="nav-item dropdown d-flex flex-wrap align-items-center">
+                <a class="nav-link{{ is_active ? ' active' }}" href="{{ entry.uri }}"{% if is_current %} aria-current="page"{% endif %}>{{ entry.label|trans }}</a>
+                <button type="button" class="btn nav-link dropdown-toggle dropdown-toggle-split border-0"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">{{ 'nav.submenu_toggle'|trans({'%label%': entry.label|trans}) }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-lg-end">
+                    {% for child in entry.children|filter(child => child.displayed) %}
+                        {% set child_current = matcher.isCurrent(child) %}
+                        <li>
+                            <a class="dropdown-item{{ child_current ? ' active' }}" href="{{ child.uri }}"{% if child_current %} aria-current="page"{% endif %}>{{ child.label|trans }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link{{ is_active ? ' active' }}" href="{{ entry.uri }}"{% if is_current %} aria-current="page"{% endif %}>{{ entry.label|trans }}</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
