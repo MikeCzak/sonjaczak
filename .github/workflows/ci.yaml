@@ -52,6 +52,9 @@ jobs:
         run: docker compose exec -T php bin/console -e test doctrine:database:create
       - name: Run migrations
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction --allow-no-migration
+      # Rendered templates reference the compiled CSS, which is not part of the repository
+      - name: Build Sass
+        run: docker compose exec -T php bin/console -e test sass:build
       - name: Run PHPUnit
         run: docker compose exec -T php bin/phpunit
       - name: Doctrine Schema Validator

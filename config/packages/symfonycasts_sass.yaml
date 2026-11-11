@@ -1,0 +1,15 @@
+symfonycasts_sass:
+    root_sass:
+        - 'assets/styles/app.scss'
+    sass_options:
+        # Lets app.scss import Bootstrap as 'bootstrap' instead of a relative path into vendor/
+        load_path:
+            - '%kernel.project_dir%/vendor/twbs/bootstrap/scss'
+        # Hide deprecation warnings from Bootstrap itself, keep the ones from our own code
+        quiet_deps: true
+
+when@prod:
+    symfonycasts_sass:
+        sass_options:
+            style: compressed
+            source_map: false

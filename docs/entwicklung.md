@@ -46,6 +46,18 @@ Wann **neu bauen** (`docker compose up --build --wait`)? Nur wenn sich `Dockerfi
 `frankenphp/` geändert haben – z. B. nachdem ein Flex-Rezept eine PHP-Extension ins Dockerfile geschrieben hat.
 Normale Code-Änderungen brauchen das nie.
 
+## CSS bearbeiten (Sass)
+
+Das CSS entsteht aus `assets/styles/app.scss` (Bootstrap + eigene Styles). Nach einer Änderung muss Sass neu
+kompilieren. Während du am CSS arbeitest, in einem zweiten Terminal:
+
+```bash
+docker compose exec php bin/console sass:build --watch    # kompiliert bei jeder Änderung neu, Strg+C beendet
+```
+
+Einmalig reicht `docker compose exec php bin/console sass:build`. Ohne kompiliertes CSS zeigt Symfony einen
+Fehler, dass die Datei fehlt. In der CI und beim Bau des Prod-Images passiert das automatisch.
+
 ## Häufige Befehle
 
 ```bash

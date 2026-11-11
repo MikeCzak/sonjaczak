@@ -22,6 +22,8 @@
 **/Dockerfile
 **/Thumbs.db
 .github/
+# Local reference material (contains personal data), never part of an image
+claude_references/
 docs/
 public/bundles/
 tests/

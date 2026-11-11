@@ -185,3 +185,23 @@ deshalb hängt das Volume an `/var/lib/postgresql`.
 
 **`shared_buffers`** – Arbeitsspeicher, den PostgreSQL als Cache für Tabellendaten nutzt. Standard 128MB, wird
 erst bei Bedarf belegt. Für den Server begrenzen wir ihn.
+
+## Frontend
+
+**Twig** – Template-Sprache von Symfony. Templates liegen in `templates/`, `base.html.twig` ist das Grundgerüst,
+von dem alle Seiten erben.
+
+**AssetMapper** – Symfony-Komponente, die CSS, JavaScript und Bilder aus `assets/` ausliefert, ohne Node und
+ohne Bundler (Webpack). In Produktion kopiert `asset-map:compile` alles nach `public/assets/` und hängt einen Hash
+an den Dateinamen (`app-fSic5N9.css`), damit Browser nach einem Deploy nie eine alte Version aus dem Cache nehmen.
+
+**Importmap** – Browser-Standard, der Namen wie `bootstrap` einer JavaScript-Datei zuordnet, damit `import
+'bootstrap'` ohne Bundler funktioniert. Bei uns: `importmap.php`. Externe Pakete lädt `importmap:install` nach
+`assets/vendor/` (nicht im Repo). Dependabot aktualisiert sie nicht; Prüfen mit `importmap:outdated`.
+
+**Sass / Dart Sass** – Sprache, die zu CSS kompiliert wird (Variablen, Verschachtelung, Importe). Bootstrap ist
+in Sass geschrieben; über Sass-Variablen passen wir Farben und Schriften an. Dart Sass ist der Compiler; das
+`symfonycasts/sass-bundle` lädt ihn als Binärdatei nach `var/dart-sass/`. Ergebnis: `var/sass/`.
+
+**Übersetzungsdomain** – Eine Gruppe von Übersetzungen in einer eigenen Datei, z. B. `messages.de.yaml`,
+`content.de.yaml`. Schema: `docs/planung/seitenstruktur.md`, Abschnitt 5.

@@ -98,8 +98,26 @@ Erst danach werden Features gebaut.
 2. **Aktuell:** Planung der App (Phase 2). Erste Fragenrunde in `docs/planung/anforderungen.md` beantwortet
    (2026-11-07): zuerst die öffentlichen Seiten. Inhalte in `docs/planung/inhalte.md` weitgehend beantwortet
    (2026-11-11). Seitenstruktur in `docs/planung/seitenstruktur.md` festgelegt (Routen, Menü, Übersetzungsschema,
-   CSS-Framework). Nächster Schritt: dort Abschnitt 10, Schritt 1 (Pakete, Asset-Build in Dockerfile/CI). Datenmodell
-   (ER-Diagramm) und Rollenkonzept für den Admin-Bereich folgen nach dem ersten Release.
+   CSS-Framework). Datenmodell (ER-Diagramm) und Rollenkonzept für den Admin-Bereich folgen nach dem ersten Release.
+3. **Umsetzung erstes Release** (Plan: `docs/planung/seitenstruktur.md`, Abschnitt 10)
+   - [x] Schritt 1 (2026-11-11): Twig, Translation (`de`), AssetMapper, Sass-Bundle und Bootstrap 5.3.8 (Sass aus
+         `twbs/bootstrap`, JavaScript über die Importmap). Prod-Builder führt `sass:build` vor `asset-map:compile` aus
+         und löscht danach `var/dart-sass` und `vendor/twbs` (nur zur Build-Zeit nötig); Prod-Image lokal 305 MB
+         (vorher 301 MB). CI-Job „Tests“ baut Sass vor PHPUnit. Nebenbei Symfony 8.1.10 → 8.1.11 (Security-Release,
+         `composer audit` meldete 10 Hinweise).
+   - [ ] Schritt 2: Layout, Menü (KnpMenuBundle), Übersetzungsdateien, Home mit Platzhaltern
+   - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
+         existieren). Ursache im Browser auf der Run-Seite bzw. in den Abrechnungs-/Kontoeinstellungen prüfen.
+
+**Zu beachten (Frontend)**
+
+- Bootstrap-JavaScript steht in `importmap.php` auf 5.3.8, das Sass-Paket in `composer.json` auf `^5.3`.
+  Dependabot aktualisiert nur das Composer-Paket → bei Updates die Importmap-Version mit `importmap:require
+  bootstrap@<version>` nachziehen (`importmap:outdated` zeigt Abweichungen).
+- Auf Packagist gibt es `twbs/bootstrap` v6.0.0-alpha.1; wir bleiben bei `^5.3`, Major-Upgrade erst nach Release von 6.
+- Das Sass-Bundle (v0.10.0) pinnt Dart Sass 1.69.7 (`vendor/symfonycasts/sass-bundle/src/SassBinary.php`). Eine
+  neuere Version ginge über die Option `binary`; aktuell nicht nötig.
+- Das kompilierte CSS enthält ganz Bootstrap (228 KB komprimiert, vor gzip). Später nur benutzte Teile importieren.
 
 **Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
 CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.

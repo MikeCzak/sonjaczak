@@ -113,7 +113,11 @@ RUN <<-EOF
 	composer dump-env prod
 	composer run-script --no-dev post-install-cmd
 	if [ -f importmap.php ]; then
+		# Sass must be compiled before asset-map:compile picks up the built CSS
+		php bin/console sass:build
 		php bin/console asset-map:compile
+		# The Sass binary and the Bootstrap sources (no PHP code) are only needed at build time
+		rm -rf var/dart-sass vendor/twbs
 	fi
 	chmod +x bin/console
 	chmod -R g=u var
