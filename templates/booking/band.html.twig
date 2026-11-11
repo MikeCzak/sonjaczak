@@ -1,7 +1,35 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.booking_band'|trans }}{% endblock %}
+{% block meta_description %}{{ 'meta.booking_band'|trans }}{% endblock %}
 
 {% block body %}
-    {{ include('_partials/placeholder.html.twig', {heading: 'title.booking_band'|trans}) }}
+    <section class="sc-hero sc-hero--band">
+        <div class="container pb-5">
+            <h1>{{ 'title.booking_band'|trans }}</h1>
+            {% set claim = 'booking_band.hero.claim'|trans({}, 'content') %}
+            {% if claim is not empty %}
+                <p class="col-lg-7 fs-5 mb-0">{{ claim }}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="sc-section">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <h2>{{ 'booking_band.occasions.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    {{ text.list('booking_band.occasions.items'|trans({}, 'content'), 'sc-list') }}
+                </div>
+                <div class="col-md-6">
+                    <h2>{{ 'booking_band.website.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    <p>{{ 'booking_band.website.body'|trans({}, 'content') }}</p>
+                    <a class="btn btn-primary" href="{{ band_url }}" rel="noopener">{{ 'booking_band.website.link'|trans({}, 'content') }}</a>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

@@ -1,0 +1,9 @@
+{# Inquiry by e-mail until the forms exist (step 6). Expects translated heading, body and mail subject. #}
+<section class="sc-section sc-section--surface">
+    <div class="container">
+        <h2>{{ heading }}</h2>
+        <hr class="sc-accent-line">
+        <p class="col-lg-8">{{ body }}</p>
+        <a class="btn btn-primary" href="mailto:{{ contact_email }}?subject={{ subject|url_encode }}">{{ 'action.inquiry_mail'|trans }}</a>
+    </div>
+</section>

@@ -1,12 +1,30 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'title.contact'|trans }}{% endblock %}
+{% block meta_description %}{{ 'meta.contact'|trans }}{% endblock %}
 
 {% block body %}
-    {{ include('_partials/placeholder.html.twig', {heading: 'title.contact'|trans}) }}
+    <section class="sc-section">
+        <div class="container">
+            <h1>{{ 'title.contact'|trans }}</h1>
+            <hr class="sc-accent-line">
+            <p class="col-lg-8 fs-5">{{ 'contact.intro'|trans({}, 'content') }}</p>
+            <p><a class="btn btn-primary" href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
 
-    <section id="impressum" class="container pb-5">
-        <h2>{{ 'title.imprint'|trans }}</h2>
-        <p>{{ 'placeholder.content_follows'|trans }}</p>
+            <p class="col-lg-8 mt-5">{{ 'contact.hint'|trans({}, 'content') }}</p>
+            <ul class="sc-list">
+                <li><a href="{{ path('app_booking_solo') }}">{{ 'title.booking_solo'|trans }}</a></li>
+                <li><a href="{{ path('app_booking_band') }}">{{ 'title.booking_band'|trans }}</a></li>
+                <li><a href="{{ path('app_lessons') }}">{{ 'title.lessons'|trans }}</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="impressum" class="sc-section sc-section--surface">
+        <div class="container">
+            <h2>{{ 'title.imprint'|trans }}</h2>
+            <hr class="sc-accent-line">
+            <p>{{ 'placeholder.content_follows'|trans }}</p>
+        </div>
     </section>
 {% endblock %}

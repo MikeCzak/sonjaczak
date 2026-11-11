@@ -1,0 +1,15 @@
+{# Render multi-line translations: blank lines separate paragraphs, line breaks separate list items. #}
+
+{% macro paragraphs(text, class = '') %}
+    {%- for paragraph in text|split("\n\n") -%}
+        <p{% if class %} class="{{ class }}"{% endif %}>{{ paragraph }}</p>
+    {%- endfor -%}
+{% endmacro %}
+
+{% macro list(text, class = '') %}
+    <ul{% if class %} class="{{ class }}"{% endif %}>
+        {%- for item in text|split("\n") -%}
+            <li>{{ item }}</li>
+        {%- endfor -%}
+    </ul>
+{% endmacro %}

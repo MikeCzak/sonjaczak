@@ -6,6 +6,13 @@ site:
 
 meta:
     description: Sonja Czak – Sängerin und Gesangslehrerin aus Frohnleiten. Musik für Trauungen, Taufen und Feiern, Auftritte mit Band und Gesangsunterricht in Rein bei Graz.
+    about: Sonja Czak studierte Jazz- und Populargesang in Wien und ist seit 2012 als Sängerin und Gesangslehrerin in der Steiermark tätig.
+    booking: Sonja Czak buchen – solo mit Gesang und Stagepiano für Trauung und Taufe oder mit der Band Red Mullet für Hochzeit, Gala und Firmenfeier.
+    booking_solo: Gesang und Stagepiano für Trauung, Taufe, Agape und Feiern in der Steiermark – Sonja Czak aus Frohnleiten.
+    booking_band: Sonja Czak mit der Band Red Mullet – Live-Musik für Hochzeit, Gala, Firmenfeier, Ball und Silvesterparty.
+    lessons: Gesangsunterricht bei Sonja Czak am Bundesgymnasium Rein bei Graz – ab 12 Jahren, Pop, Rock, Funk, Soul, Musical und Jazz.
+    contact: Kontakt zu Sonja Czak, Sängerin und Gesangslehrerin aus Frohnleiten, und Impressum.
+    privacy: Datenschutzerklärung von sonjaczak.com.
 
 nav:
     label: Hauptnavigation
@@ -31,6 +38,7 @@ title:
 
 action:
     more: Mehr erfahren
+    inquiry_mail: Anfrage per E-Mail
     send: Senden
 
 form:

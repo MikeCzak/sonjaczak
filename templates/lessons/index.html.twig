@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.lessons'|trans }}{% endblock %}
+{% block meta_description %}{{ 'meta.lessons'|trans }}{% endblock %}
 
 {% block body %}
     <section class="sc-hero sc-hero--lessons">
@@ -11,7 +13,75 @@
 
     <section class="sc-section">
         <div class="container">
-            <p>{{ 'placeholder.content_follows'|trans }}</p>
+            <p class="col-lg-8 fs-5">{{ 'lessons.intro'|trans({}, 'content') }}</p>
+            <div class="row g-5 mt-0">
+                <div class="col-md-6">
+                    <h2>{{ 'lessons.content.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    {{ text.list('lessons.content.items'|trans({}, 'content'), 'sc-list') }}
+                    <p>{{ 'lessons.content.styles'|trans({}, 'content') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h2>{{ 'lessons.audience.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    <p>{{ 'lessons.audience.body'|trans({}, 'content') }}</p>
+                </div>
+            </div>
         </div>
     </section>
+
+    <section class="sc-section sc-section--surface">
+        <div class="container">
+            <h2>{{ 'lessons.teacher.heading'|trans({}, 'content') }}</h2>
+            <hr class="sc-accent-line">
+            <p class="col-lg-8">{{ 'lessons.teacher.body'|trans({}, 'content') }}</p>
+            <a href="{{ path('app_about') }}">{{ 'lessons.teacher.link'|trans({}, 'content') }}</a>
+        </div>
+    </section>
+
+    <section class="sc-section">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <h2>{{ 'lessons.location.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    {% set address = 'lessons.location.address'|trans({}, 'content') %}
+                    <address>{{ address|nl2br }}</address>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ address|replace({"\n": ', '})|url_encode }}" rel="noopener">{{ 'lessons.location.map_link'|trans({}, 'content') }}</a>
+                </div>
+                <div class="col-md-4">
+                    <h2>{{ 'lessons.dates.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    <p>{{ 'lessons.dates.body'|trans({}, 'content') }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h2>{{ 'lessons.prices.heading'|trans({}, 'content') }}</h2>
+                    <hr class="sc-accent-line">
+                    <p>{{ 'lessons.prices.body'|trans({}, 'content') }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Texts by Sonja, hidden while empty #}
+    {% for section in [
+        {heading: 'lessons.rules.heading'|trans({}, 'content'), body: 'lessons.rules.body'|trans({}, 'content')},
+        {heading: 'lessons.faq.heading'|trans({}, 'content'), body: 'lessons.faq.body'|trans({}, 'content')},
+    ] %}
+        {% if section.body is not empty %}
+            <section class="sc-section">
+                <div class="container">
+                    <h2>{{ section.heading }}</h2>
+                    <hr class="sc-accent-line">
+                    {{ text.paragraphs(section.body) }}
+                </div>
+            </section>
+        {% endif %}
+    {% endfor %}
+
+    {{ include('_partials/mail_inquiry.html.twig', {
+        heading: 'lessons.inquiry.heading'|trans({}, 'content'),
+        body: 'lessons.inquiry.body'|trans({}, 'content'),
+        subject: 'lessons.inquiry.mail_subject'|trans({}, 'content'),
+    }) }}
 {% endblock %}

@@ -1,5 +1,7 @@
 # Page content, grouped by page and section. Parts of this move to the CMS later.
 # An empty string hides the section in the template.
+# Multi-line values (|-): a blank line starts a new paragraph, in lists every line is one item.
+# "Draft" marks texts written by Claude from the known facts, to be reviewed by Mike.
 
 home:
     hero:
@@ -7,8 +9,11 @@ home:
         claim: ''
     intro:
         heading: Willkommen
-        # Short introduction (one paragraph), text by Mike
-        body: ''
+        # Draft
+        body: >-
+            Sonja Czak ist Sängerin und Gesangslehrerin aus Frohnleiten. Sie singt bei Trauungen, Taufen und Feiern in
+            der Steiermark – solo mit Stagepiano oder gemeinsam mit der Band Red Mullet – und unterrichtet Gesang am
+            Bundesgymnasium Rein bei Graz.
     offers:
         solo:
             heading: Sonja solo
@@ -20,9 +25,143 @@ home:
             heading: Gesangsunterricht
             body: Unterricht für Anfänger:innen und Fortgeschrittene ab 12 Jahren – Pop, Rock, Funk, Soul, Musical und Jazz.
 
+about:
+    # Paragraph 1 by Mike (inhalte.md E39), paragraph 2 draft
+    body: |-
+        Sonja studierte in Wien Jazz- und Populargesang sowie Instrumental- und Gesangspädagogik und ist seit 2012 hauptberuflich als Sängerin und Gesangslehrerin tätig. Live-Erfahrung in unterschiedlichsten Formationen – von Ska-Punk über Funk bis Jazz – prägt ihren Unterricht ebenso wie Workshops und die Arbeit mit renommierten Musiker:innen.
+
+        Heute verbindet sie beides: Als Sängerin gestaltet sie Trauungen, Taufen und Feiern in der Steiermark, solo mit Gesang und Stagepiano oder mit ihrer Band Red Mullet. Als Gesangslehrerin unterrichtet sie am Bundesgymnasium Rein Jugendliche und Erwachsene und begleitet sie dabei, ihre eigene Stimme zu finden.
+    image_alt: Porträt von Sonja Czak
+
 booking:
     # Overview with one image section per offer
     solo:
         body: Gesang und Stagepiano für Trauungen, Taufen und andere besondere Anlässe in der Steiermark.
     band:
         body: Mit der Band Red Mullet für Hochzeiten, Galas, Firmenfeiern, Bälle und Silvesterpartys.
+
+booking_solo:
+    # Draft
+    intro: >-
+        Gesang und Stagepiano für die besonderen Momente: Sonja gestaltet Ihre Trauung, Taufe oder Feier musikalisch
+        und stimmt die Musik auf Ihre Wünsche und den Ablauf des Tages ab.
+    occasions:
+        heading: Anlässe
+        items: |-
+            Trauung – standesamtlich, kirchlich oder frei
+            Taufe
+            Agape
+            Firmenfeier
+            Geburtstag
+    services:
+        heading: Was dabei ist
+        items: |-
+            Gesang und Stagepiano
+            Eigener Lautsprecher und Mikrofon
+            Alle Stative
+        note: Ein Mikrofon für Reden gibt es auf Anfrage.
+    region:
+        heading: Region und Preise
+        body: >-
+            Sonja tritt in der ganzen Steiermark auf. Ab 15 km Entfernung von Frohnleiten fallen Fahrtkosten an.
+            Preise erhalten Sie auf Anfrage.
+    process:
+        heading: So läuft eine Buchung ab
+        items: |-
+            Anfrage: Sie schreiben Sonja mit Datum, Ort und Anlass.
+            Gespräch: Persönlich, telefonisch oder per E-Mail klären Sie gemeinsam Ablauf und Musikwünsche.
+            Angebot: Sie erhalten ein Angebot.
+            Bestätigung: Mit Ihrer Bestätigung ist der Termin fix.
+    cancellation:
+        heading: Stornobedingungen
+        intro: 'Bei einer Absage fallen Stornogebühren an, gestaffelt nach dem Datum der Absage:'
+        items: |-
+            Bis 90 Tage vor dem Termin: Einbehalt der Anzahlung (25 % der Gesamtgage)
+            90 bis 60 Tage vor dem Termin: 50 % der vereinbarten Gage
+            60 bis 14 Tage vor dem Termin: 75 % der vereinbarten Gage
+            Ab 14 Tage vor dem Termin oder bei Nicht-Erscheinen: 100 % der vereinbarten Gage
+        clauses: |-
+            Berechnungsbasis: Alle Stornogebühren beziehen sich auf die reine Gage (ohne eventuelle Fahrtkosten).
+            Verschiebung: Bei einer Terminverschiebung kann aus Kulanz auf Stornogebühren verzichtet werden, sofern der neue Termin frei ist und fest gebucht wird.
+            Höhere Gewalt: Bei behördlichen Verboten oder unvorhersehbaren Katastrophen entfällt die Stornopflicht.
+            Krankheit der Sängerin: Fällt Sonja selbst aus, entfällt das Honorar; nach Verfügbarkeit sucht sie aktiv nach gleichwertigem Ersatz.
+    inquiry:
+        heading: Anfrage
+        # Draft
+        body: Schreiben Sie Sonja mit Datum, Ort und Anlass – sie meldet sich bei Ihnen.
+        mail_subject: Anfrage Booking solo
+
+booking_band:
+    hero:
+        # Draft (inhalte.md D33: one sentence by Mike)
+        claim: Mit Red Mullet steht Sonja als Frontfrau einer Live-Band auf der Bühne – für Feste, die in Erinnerung bleiben.
+    occasions:
+        heading: Anlässe
+        items: |-
+            Hochzeit
+            Gala
+            Firmenfeier
+            Ball
+            Silvesterparty
+    website:
+        heading: Anfragen und Hörproben
+        body: Anfragen für die Band laufen direkt über die Website von Red Mullet. Dort finden Sie auch Hörproben und Videos.
+        link: Zur Website von Red Mullet
+
+lessons:
+    # Draft
+    intro: >-
+        Du möchtest singen lernen oder deine Stimme weiterentwickeln? Im Gesangsunterricht bei Sonja arbeitest du an
+        Songs, die du selbst auswählst, und findest Schritt für Schritt deine eigene Stimme.
+    content:
+        heading: Was du lernst
+        items: |-
+            Atemtechnik und Stimmbildung
+            Mikrofontechnik
+            Selbst ausgewählte Songs erarbeiten
+            Die eigene Stimme finden
+        styles: 'Stilrichtungen: Pop, Rock, Funk, Soul, Musical und Jazz.'
+    audience:
+        heading: Für wen
+        body: Für alle ab 12 Jahren – egal, ob du gerade anfängst oder schon Erfahrung hast.
+    teacher:
+        heading: Deine Lehrerin
+        # By Mike (inhalte.md E39)
+        body: >-
+            Sonja studierte in Wien Jazz- und Populargesang sowie Instrumental- und Gesangspädagogik und ist seit 2012
+            hauptberuflich als Sängerin und Gesangslehrerin tätig. Live-Erfahrung in unterschiedlichsten Formationen –
+            von Ska-Punk über Funk bis Jazz – prägt ihren Unterricht ebenso wie Workshops und die Arbeit mit
+            renommierten Musiker:innen.
+        link: Mehr über Sonja
+    location:
+        heading: Ort
+        address: |-
+            Bundesgymnasium Rein
+            Rein 1
+            8103 Rein
+        map_link: In Google Maps öffnen
+    dates:
+        heading: Termine
+        body: >-
+            Der Unterricht richtet sich nach dem Schuljahr und den Schulferien. Ein Semester hat 15 Einheiten und
+            beginnt meist im Oktober. Unterrichtet wird an einem fixen Tag pro Woche, die Uhrzeit vereinbarst du mit Sonja.
+    prices:
+        heading: Preise
+        body: € 495,– pro Semester (15 Einheiten, entspricht € 33,– pro Einheit). Unterricht zu zweit ist auf Anfrage möglich.
+    # Rules (cancellations, make-up lessons) and FAQ: texts by Sonja, still open (inhalte.md E42, E44)
+    rules:
+        heading: Regeln
+        body: ''
+    faq:
+        heading: Häufige Fragen
+        body: ''
+    inquiry:
+        heading: Anmeldung und Fragen
+        # Draft
+        body: Schreib Sonja, welche Uhrzeit dir passt und ob du schon Erfahrung hast – sie meldet sich bei dir.
+        mail_subject: Gesangsunterricht
+
+contact:
+    # Draft
+    intro: Sie haben eine Frage oder möchten Sonja kennenlernen? Schreiben Sie ihr eine E-Mail.
+    hint: 'Für einen Auftritt oder den Gesangsunterricht finden Sie alle Infos auf den jeweiligen Seiten:'

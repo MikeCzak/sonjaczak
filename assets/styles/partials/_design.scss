@@ -121,6 +121,32 @@ h1, h2, h3, h4, h5, h6,
     --bs-btn-active-color: var(--sc-on-accent);
 }
 
+.btn-outline-primary {
+    --bs-btn-color: var(--sc-accent-text);
+    --bs-btn-border-color: var(--sc-accent);
+    --bs-btn-hover-bg: var(--sc-accent);
+    --bs-btn-hover-border-color: var(--sc-accent);
+    --bs-btn-hover-color: var(--sc-on-accent);
+    --bs-btn-active-bg: var(--sc-accent);
+    --bs-btn-active-border-color: var(--sc-accent);
+    --bs-btn-active-color: var(--sc-on-accent);
+}
+
+// Bootstrap colors the open item with its (blue) primary; use the neutral surface and the default icon
+.accordion {
+    --bs-accordion-bg: var(--sc-bg);
+    --bs-accordion-color: var(--sc-text);
+    --bs-accordion-border-color: var(--sc-border);
+    --bs-accordion-active-bg: var(--sc-surface);
+    --bs-accordion-active-color: var(--sc-text);
+    --bs-accordion-btn-active-icon: var(--bs-accordion-btn-icon);
+    --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--sc-accent) 25%, transparent);
+}
+
+.accordion-button {
+    font-family: var(--sc-font-body);
+}
+
 .form-control:focus,
 .form-select:focus {
     border-color: var(--sc-accent);
@@ -231,6 +257,29 @@ h1, h2, h3, h4, h5, h6,
     border: 0;
     opacity: 1;
     margin-block: 1rem 1.5rem;
+}
+
+// Lists with accent-colored markers; numbered steps
+.sc-list,
+.sc-steps {
+    padding-left: 1.25rem;
+
+    li::marker {
+        color: var(--sc-accent-text);
+        font-weight: 600;
+    }
+
+    li + li {
+        margin-top: 0.4rem;
+    }
+}
+
+// Portrait next to text: same crop on every screen width
+.sc-portrait {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 70% 30%;
 }
 
 // Design preview switcher (step 3, temporary). Shown while a preview is active (class set in <head>).

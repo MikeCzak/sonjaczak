@@ -4,6 +4,7 @@ twig:
     globals:
         contact_email: 'music@sonjaczak.com'
         youtube_url: 'https://www.youtube.com/@redmulletmusic'
+        band_url: 'https://www.redmulletmusic.at'
 
 when@test:
     twig:
