@@ -115,7 +115,7 @@ Erst danach werden Features gebaut.
          am Prod-Stack ab (lokal nachgestellt: grün; php 114 MiB, database 27 MiB im Leerlauf, Mac).
    - [ ] Schritt 3: Design-Entwurf – **umgesetzt, wartet auf Entscheidung** (2026-11-11). Drei Varianten:
          A klassisch-elegant (Cormorant Garamond + Jost), B modern-klar (Montserrat + Inter), C Bühne/dunkel
-         (Playfair Display + Inter); Akzentfarbe Petrol in allen Varianten (Rot verworfen: zu nah an Red Mullet);
+         (Playfair Display + Inter); Akzentfarbe Petrol in A und B, Gold in C (Rot verworfen: zu nah an Red Mullet);
          Unterricht im selben Stil wie die übrigen Seiten (Flyer-Pink verworfen, 2026-11-11). Logo-Kandidaten:
          Great Vibes, Allura, Parisienne, Dancing Script. Vorschau über `/_design` und `?design=a|b|c` (auch in
          Produktion, nicht verlinkt, `noindex`). Schriften lokal (Fontsource 5.3.0, OFL 1.1, `OFL.txt` je Schrift),
@@ -136,7 +136,7 @@ Erst danach werden Features gebaut.
   neuere Version ginge über die Option `binary`; aktuell nicht nötig.
 - Das kompilierte CSS enthält ganz Bootstrap (237 KB komprimiert, vor gzip). Später nur benutzte Teile importieren.
 - Kontrast Petrol (WCAG AA ≥ 4,5:1): A `#1F5F66` auf Creme 6,70:1, weiße Schrift darauf 7,27:1; B `#1A6670` auf
-  Weiß 6,61:1; C `#5FB8B8` auf Dunkel 8,14:1, Buttons mit dunkler Schrift.
+  Weiß 6,61:1. Variante C mit Gold `#D4AF5A` statt Petrol: auf Dunkel 9,08:1, Buttons mit dunkler Schrift.
 - Bildnachweis: Porträt `hero-sonja.jpg` von Doris Sporer (Nennung im Impressum oder am Bild, Schritt 4);
   Bandfoto `hero-band.jpg` – Urheber:in laut Metadaten „Michael Czak“, bitte bestätigen.
 - Die Designvorschau nutzt Inline-Scripts. Falls später eine Content-Security-Policy kommt, berücksichtigen
