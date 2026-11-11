@@ -212,9 +212,9 @@ in Sass geschrieben; über Sass-Variablen passen wir Farben und Schriften an. Da
 (`RouteVoter`).
 
 **Twig-Global** – Variable, die in jedem Template verfügbar ist, ohne dass der Controller sie übergibt. Bei uns
-in `config/packages/twig.yaml`: `contact_email`, `youtube_url`.
+in `config/packages/twig.yaml`: `contact_email`, `youtube_url`, `band_url`.
 
-**CSS Custom Property (CSS-Variable)** – Wert wie `--sc-accent: #a3262a`, der im Browser zur Laufzeit gilt und
+**CSS Custom Property (CSS-Variable)** – Wert wie `--sc-accent: #1f5f66`, der im Browser zur Laufzeit gilt und
 vererbt wird. Anders als Sass-Variablen (beim Kompilieren fest eingesetzt) lassen sie sich pro Bereich überschreiben.
 Bei uns: Design-Tokens `--sc-*` in `assets/styles/partials/_design.scss`, auf die Bootstraps `--bs-*` zeigen.
 
@@ -223,3 +223,15 @@ Guidelines. Stufe AA: mindestens 4,5:1 für Fließtext, 3:1 für große Schrift.
 
 **OFL (SIL Open Font License)** – Freie Schriftlizenz. Nutzung als Webfont erlaubt, wenn der Lizenztext mitgeliefert
 wird (`assets/fonts/<schrift>/OFL.txt`); Logos aus den Schriftumrissen sind ausdrücklich erlaubt (OFL-FAQ 1.1).
+
+**Twig-Makro** – Wiederverwendbarer Template-Baustein mit Parametern, ähnlich einer Funktion
+(`{% macro name(param) %}`, Einbinden mit `{% import … as text %}`). Bei uns `templates/_macros/text.html.twig`:
+mehrzeilige Übersetzungen als Absätze (Leerzeile) oder Liste (Zeilenumbruch) ausgeben.
+
+**Fehler-Template** – Eigene Seite für HTTP-Fehler, z. B. `templates/bundles/TwigBundle/Exception/error404.html.twig`
+überschreibt die Standardseite für 404. Nur ohne Debug-Modus (Produktion) sichtbar; lokal Vorschau unter
+`/_error/404`.
+
+**IP-Kürzung (`ip_mask`)** – Caddy-Logfilter, der von einer IP-Adresse nur den Netzanteil behält. Bei uns IPv4 /24
+(letzter Block wird 0), IPv6 /48 (`frankenphp/Caddyfile`). Das Zugriffsprotokoll enthält dadurch keine Adresse eines
+einzelnen Anschlusses mehr (Datenschutz).

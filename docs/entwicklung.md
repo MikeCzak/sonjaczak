@@ -117,6 +117,14 @@ Bis zur Entscheidung zwischen den Designvarianten:
   gespeichert (sessionStorage), unten rechts erscheint ein Umschalter. `?design=off` beendet die Vorschau.
 - Funktioniert genauso auf https://sonjaczak.com (für Sonja), die Seite `/_design` ist nicht verlinkt und `noindex`.
 
+## Texte und Fehlerseite
+
+- Seitentexte stehen in `translations/content.de.yaml` (Seite.Abschnitt), Oberflächentexte in `messages.de.yaml`.
+  Mehrzeilige Werte (`|-`): Leerzeile = neuer Absatz, in Listen ist jede Zeile ein Punkt. Ein leerer Text (`''`)
+  blendet den Abschnitt aus. Entwürfe von Claude sind mit `# Draft` markiert.
+- Nach dem Ändern prüfen: `docker compose exec php bin/console debug:translation de --only-missing`.
+- Die 404-Seite zeigt Symfony nur ohne Debug-Modus. Lokal ansehen: https://localhost/_error/404
+
 ## Häufige Befehle
 
 ```bash

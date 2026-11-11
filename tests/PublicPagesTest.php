@@ -42,7 +42,7 @@ final class PublicPagesTest extends WebTestCase
         // A missing translation is rendered as its key, e.g. "nav.home"; this also covers the menu labels,
         // which debug:translation cannot see because they are set in PHP (App\Menu\MenuBuilder)
         $text = $crawler->filter('title')->text().' '.$crawler->filter('body')->text();
-        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|form|design_preview|styleguide)\.[a-z_]+/', $text);
+        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|error|form|design_preview|styleguide)\.[a-z_]+/', $text);
     }
 
     public function testCurrentPageIsMarkedInMenu(): void
@@ -61,6 +61,18 @@ final class PublicPagesTest extends WebTestCase
 
         self::assertSelectorExists('meta[name="robots"][content="noindex, nofollow"]');
         self::assertSelectorCount(4, '[data-logo-candidate]');
+    }
+
+    public function testNotFoundPageUsesLayout(): void
+    {
+        // Only without debug Symfony renders the error template instead of the developer exception page
+        $client = self::createClient(['debug' => false]);
+        $client->request('GET', '/diese-seite-gibt-es-nicht');
+
+        self::assertResponseStatusCodeSame(404);
+        self::assertSelectorTextContains('h1', 'Dieser Ton wurde leider nicht getroffen.');
+        self::assertSelectorExists('header #main-nav .navbar-nav');
+        self::assertSelectorExists('meta[name="robots"][content="noindex"]');
     }
 
     public function testImprintAnchorExists(): void

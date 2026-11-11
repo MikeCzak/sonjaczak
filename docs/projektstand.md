@@ -126,14 +126,26 @@ Erst danach werden Features gebaut.
          (sonja_sax_profil, Simon Reithofer). Auf schmalen Bildschirmen Abdunklung von unten statt von links. Nach der Entscheidung: Variante festschreiben,
          Umschalter und ungenutzte Schriften entfernen, Logo als SVG mit Pfaden (laut OFL-FAQ 1.1 erlaubt).
          Nebenbei: Prod-Image enthielt kein `/etc/mime.types` → woff2 ohne Content-Type; im Dockerfile ergänzt.
+   - [x] Schritt 4 (2026-11-11), Seiten mit Inhalt: Über mich, Booking solo (Anlässe, Leistungen, Region, Ablauf,
+         Stornobedingungen), Booking Band (Link zu redmulletmusic.at), Unterricht (Inhalte, Lehrerin, Ort mit
+         Maps-Link, Termine, Preise), Kontakt, Impressum (`/kontakt#impressum`), Datenschutzerklärung, 404-Seite.
+         Anfrage vorerst per `mailto:` mit Betreff (Formulare in Schritt 6). Fehlende Texte als Entwurf von Claude
+         (`# Draft` in `content.de.yaml`). Caddy kürzt IP-Adressen im Zugriffsprotokoll (`ip_mask 24 48`).
+         `symfony/asset` nachinstalliert (für `asset()`, Teil der AssetMapper-Installation).
+   - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
+     - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
+       Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`
+     - Zweiter schneller Kontaktweg neben der E-Mail (EuGH C-298/07: Kontaktformular genügt, Telefon nicht
+       zwingend) → kommt mit den Formularen (Schritt 6) oder vorher Telefonnummer im Impressum
+     - IONOS: Auftragsverarbeitungsvertrag im Kundenkonto abschließen bzw. prüfen; Rechenzentrum des VPS prüfen
+       (falls außerhalb der EU: Datenschutzerklärung ergänzen)
+     - Anbieter des Postfachs `music@sonjaczak.com` in der Datenschutzerklärung nennen (Empfänger)
+     - Entwürfe durchsehen (`# Draft`), KI-Bilder (Kennzeichnung oder Austausch), Regeln und FAQ von Sonja
+     - Nach dem Deploy: gekürzte IPs in den Server-Logs prüfen (`docker compose logs php`)
    - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
          existieren). Ursache im Browser auf der Run-Seite bzw. in den Abrechnungs-/Kontoeinstellungen prüfen.
 
 **Zu beachten (Frontend)**
-
-- KI-generierte Bilder (`hero-wedding.jpg`, `hero-lessons.jpg`): vor dem Live-Gang klären, ob sie bleiben oder durch
-  echte Fotos ersetzt werden, und ob ein Hinweis „KI-generiert“ nötig ist. Bildnachweis für Simon Reithofer und
-  Doris Sporer ins Impressum.
 
 - Bootstrap-JavaScript steht in `importmap.php` auf 5.3.8, das Sass-Paket in `composer.json` auf `^5.3`.
   Dependabot aktualisiert nur das Composer-Paket → bei Updates die Importmap-Version mit `importmap:require
@@ -144,8 +156,8 @@ Erst danach werden Features gebaut.
 - Das kompilierte CSS enthält ganz Bootstrap (237 KB komprimiert, vor gzip). Später nur benutzte Teile importieren.
 - Kontrast Petrol (WCAG AA ≥ 4,5:1): A `#1F5F66` auf Creme 6,70:1, weiße Schrift darauf 7,27:1; B `#1A6670` auf
   Weiß 6,61:1. Variante C mit Gold `#D4AF5A` statt Petrol: auf Dunkel 9,08:1, Buttons mit dunkler Schrift.
-- Bildnachweis: Porträt `hero-sonja.jpg` von Doris Sporer (Nennung im Impressum oder am Bild, Schritt 4);
-  Bandfoto `hero-band.jpg` – Urheber:in laut Metadaten „Michael Czak“, bitte bestätigen.
+- Bildnachweis im Impressum: Doris Sporer (Porträts), Simon Reithofer (`hero-sax.jpg`), Michael Czak (Bandfoto,
+  bestätigt 2026-11-11). KI-Bilder (`hero-wedding.jpg`, `hero-lessons.jpg`): Kennzeichnung noch offen.
 - Die Designvorschau nutzt Inline-Scripts. Falls später eine Content-Security-Policy kommt, berücksichtigen
   (bzw. die Vorschau ist bis dahin entfernt).
 

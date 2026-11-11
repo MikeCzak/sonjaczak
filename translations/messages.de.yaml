@@ -50,6 +50,13 @@ form:
 placeholder:
     content_follows: Inhalte folgen in Kürze.
 
+error:
+    not_found:
+        title: Seite nicht gefunden
+        heading: Dieser Ton wurde leider nicht getroffen.
+        body: Die Seite, die Sie suchen, gibt es nicht (mehr). Vielleicht hilft einer dieser Wege weiter.
+        home: Zur Startseite
+
 footer:
     email: E-Mail
     youtube: YouTube
