@@ -19,3 +19,10 @@ home:
         lessons:
             heading: Gesangsunterricht
             body: Unterricht für Anfänger:innen und Fortgeschrittene ab 12 Jahren – Pop, Rock, Funk, Soul, Musical und Jazz.
+
+booking:
+    # Overview with one image section per offer
+    solo:
+        body: Gesang und Stagepiano für Trauungen, Taufen und andere besondere Anlässe in der Steiermark.
+    band:
+        body: Mit der Band Red Mullet für Hochzeiten, Galas, Firmenfeiern, Bälle und Silvesterpartys.

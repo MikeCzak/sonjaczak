@@ -3,5 +3,21 @@
 {% block title %}{{ 'title.booking'|trans }}{% endblock %}
 
 {% block body %}
-    {{ include('_partials/placeholder.html.twig', {heading: 'title.booking'|trans}) }}
+    <div class="container pt-5 pb-4">
+        <h1>{{ 'title.booking'|trans }}</h1>
+        <hr class="sc-accent-line mb-0">
+    </div>
+
+    {{ include('booking/_section.html.twig', {
+        modifier: 'solo',
+        heading: 'title.booking_solo'|trans,
+        body: 'booking.solo.body'|trans({}, 'content'),
+        url: path('app_booking_solo'),
+    }) }}
+    {{ include('booking/_section.html.twig', {
+        modifier: 'band',
+        heading: 'title.booking_band'|trans,
+        body: 'booking.band.body'|trans({}, 'content'),
+        url: path('app_booking_band'),
+    }) }}
 {% endblock %}

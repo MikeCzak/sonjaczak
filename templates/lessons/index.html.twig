@@ -3,5 +3,15 @@
 {% block title %}{{ 'title.lessons'|trans }}{% endblock %}
 
 {% block body %}
-    {{ include('_partials/placeholder.html.twig', {heading: 'title.lessons'|trans}) }}
+    <section class="sc-hero sc-hero--lessons">
+        <div class="container pb-5">
+            <h1>{{ 'title.lessons'|trans }}</h1>
+        </div>
+    </section>
+
+    <section class="sc-section">
+        <div class="container">
+            <p>{{ 'placeholder.content_follows'|trans }}</p>
+        </div>
+    </section>
 {% endblock %}

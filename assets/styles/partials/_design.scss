@@ -173,8 +173,40 @@ h1, h2, h3, h4, h5, h6,
 }
 
 [data-design='c'] .sc-hero--home {
+    --sc-hero-image: url('../images/hero-sax.jpg');
+    --sc-hero-position: 60% 30%;
+}
+
+// On narrow screens the hero text spans the full width, so darken from the bottom instead of from the left
+@include media-breakpoint-down(md) {
+    :root:not([data-design='c']) {
+        --sc-hero-overlay: linear-gradient(0deg, rgba(23, 21, 26, 0.8) 0%, rgba(23, 21, 26, 0.1) 65%);
+    }
+}
+
+// Image sections below each other (booking overview): lower than a page hero
+.sc-hero--section {
+    min-height: min(70vh, 40rem);
+
+    h2 {
+        font-family: var(--sc-font-heading);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+    }
+}
+
+.sc-hero--solo {
+    --sc-hero-image: url('../images/hero-wedding.jpg');
+    --sc-hero-position: 70% 40%;
+}
+
+.sc-hero--band {
     --sc-hero-image: url('../images/hero-band.jpg');
     --sc-hero-position: 75% 20%;
+}
+
+.sc-hero--lessons {
+    --sc-hero-image: url('../images/hero-lessons.jpg');
+    --sc-hero-position: 70% 35%;
 }
 
 // Hero headline in variant A uses the script font, which needs no uppercase/tracking

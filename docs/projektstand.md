@@ -120,13 +120,20 @@ Erst danach werden Features gebaut.
          Great Vibes, Allura, Parisienne, Dancing Script. Vorschau über `/_design` und `?design=a|b|c` (auch in
          Produktion, nicht verlinkt, `noindex`). Schriften lokal (Fontsource 5.3.0, OFL 1.1, `OFL.txt` je Schrift),
          Hero-Bilder in Web-Größe (`assets/images/`, ohne Metadaten); Startseite derzeit mit `hero-sonja2.jpg`
-         (SonjaR_222, s/w), `hero-sonja.jpg` bis zur Entscheidung zum Vergleich. Nach der Entscheidung: Variante festschreiben,
+         (SonjaR_222, s/w), `hero-sonja.jpg` bis zur Entscheidung zum Vergleich.
+         Aus Schritt 4 vorgezogen (2026-11-11): `/booking` als Übersicht mit zwei Bild-Sections (`hero-wedding.jpg`,
+         `hero-band.jpg`), Unterricht mit Hero (`hero-lessons.jpg`), Variante C auf Home mit `hero-sax.jpg`
+         (sonja_sax_profil, Simon Reithofer). Auf schmalen Bildschirmen Abdunklung von unten statt von links. Nach der Entscheidung: Variante festschreiben,
          Umschalter und ungenutzte Schriften entfernen, Logo als SVG mit Pfaden (laut OFL-FAQ 1.1 erlaubt).
          Nebenbei: Prod-Image enthielt kein `/etc/mime.types` → woff2 ohne Content-Type; im Dockerfile ergänzt.
    - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
          existieren). Ursache im Browser auf der Run-Seite bzw. in den Abrechnungs-/Kontoeinstellungen prüfen.
 
 **Zu beachten (Frontend)**
+
+- KI-generierte Bilder (`hero-wedding.jpg`, `hero-lessons.jpg`): vor dem Live-Gang klären, ob sie bleiben oder durch
+  echte Fotos ersetzt werden, und ob ein Hinweis „KI-generiert“ nötig ist. Bildnachweis für Simon Reithofer und
+  Doris Sporer ins Impressum.
 
 - Bootstrap-JavaScript steht in `importmap.php` auf 5.3.8, das Sass-Paket in `composer.json` auf `^5.3`.
   Dependabot aktualisiert nur das Composer-Paket → bei Updates die Importmap-Version mit `importmap:require

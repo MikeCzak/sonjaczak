@@ -1,0 +1,8 @@
+{# One image section on the booking overview. Expects modifier (image), translated heading and body, and the target url. #}
+<section class="sc-hero sc-hero--section sc-hero--{{ modifier }}">
+    <div class="container pb-5">
+        <h2>{{ heading }}</h2>
+        <p class="col-lg-6 fs-5">{{ body }}</p>
+        <a class="btn btn-primary" href="{{ url }}">{{ 'action.more'|trans }}</a>
+    </div>
+</section>
