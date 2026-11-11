@@ -1,0 +1,62 @@
+// Subtle scroll effects, CSS only (scroll-driven animations, Baseline 2026 according to MDN).
+// Browsers without support and visitors who prefer reduced motion get the static page.
+//
+// Each section provides a named view timeline (its progress through the viewport); the moving element inside
+// uses it. The timeline stays tied to the section, which does not move itself.
+
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .sc-hero {
+            view-timeline: --sc-hero block;
+        }
+
+        // Page hero at the top: while it scrolls out, the photo zooms in slightly and drifts down (parallax)
+        .sc-hero:not(.sc-hero--section) .sc-hero__image {
+            animation: sc-hero-exit linear both;
+            animation-timeline: --sc-hero;
+            animation-range: exit;
+        }
+
+        // Image sections further down: gentle parallax during the whole pass through the viewport
+        .sc-hero--section .sc-hero__image {
+            animation: sc-parallax linear both;
+            animation-timeline: --sc-hero;
+            animation-range: cover;
+        }
+
+        .sc-section {
+            view-timeline: --sc-section block;
+        }
+
+        // Content fades in and rises a little while its section enters the viewport
+        .sc-section > .container {
+            animation: sc-reveal linear both;
+            animation-timeline: --sc-section;
+            animation-range: entry 0% entry 70%;
+        }
+    }
+}
+
+// scale() keeps the edges covered: 8 % larger, moved by half of that
+@keyframes sc-hero-exit {
+    to {
+        transform: translateY(4%) scale(1.08);
+    }
+}
+
+@keyframes sc-parallax {
+    from {
+        transform: translateY(-3%) scale(1.06);
+    }
+
+    to {
+        transform: translateY(3%) scale(1.06);
+    }
+}
+
+@keyframes sc-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(1.5rem);
+    }
+}

@@ -132,6 +132,12 @@ Erst danach werden Features gebaut.
          Anfrage vorerst per `mailto:` mit Betreff (Formulare in Schritt 6). Fehlende Texte als Entwurf von Claude
          (`# Draft` in `content.de.yaml`). Caddy kürzt IP-Adressen im Zugriffsprotokoll (`ip_mask 24 48`).
          `symfony/asset` nachinstalliert (für `asset()`, Teil der AssetMapper-Installation).
+   - [x] Schritt 5 (2026-11-11): `bin/build-images` (ImageMagick auf dem Mac) erzeugt WebP in 640/1280/1920 px und
+         ein JPEG (1280 px) als Ersatz, Maße in `config/packages/images.yaml`. Hero und Booking-Sections als
+         `<picture>` mit `srcset` statt CSS-Hintergrund (Makro `image()`); Handy lädt 8–20 KB, Desktop 34–69 KB pro
+         Bild. Scroll-Effekte nur mit CSS (`_motion.scss`): Hero zoomt beim Hinausscrollen, Booking-Sections mit
+         Parallax, Abschnitte blenden ein; aus bei „Bewegung reduzieren“. Effekte im Browser beurteilen (Headless-
+         Screenshots zeigen keine Bewegung).
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
      - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
        Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`

@@ -108,6 +108,9 @@ laufen lassen, `assets/images/` und `config/packages/images.yaml` committen. Dan
 - `sizes` (Standard: volle Breite) sagt dem Browser, wie breit das Bild angezeigt wird, damit er die passende Datei
   wählt, z. B. `'(min-width: 992px) 40vw, 100vw'` für ein Bild neben Text.
 
+**Scroll-Effekte** stehen in `assets/styles/partials/_motion.scss` (Stärke über die Werte in den `@keyframes`).
+Zum Prüfen ohne Effekte: in macOS unter Bedienungshilfen → Anzeige → „Bewegung reduzieren“ einschalten.
+
 Originale gehören nicht ins Repo (`claude_references/` ist ignoriert). Bildnachweis im Impressum ergänzen
 (`imprint.credits` in `content.de.yaml`).
 

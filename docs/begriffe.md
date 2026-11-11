@@ -235,3 +235,15 @@ mehrzeilige Übersetzungen als Absätze (Leerzeile) oder Liste (Zeilenumbruch) a
 **IP-Kürzung (`ip_mask`)** – Caddy-Logfilter, der von einer IP-Adresse nur den Netzanteil behält. Bei uns IPv4 /24
 (letzter Block wird 0), IPv6 /48 (`frankenphp/Caddyfile`). Das Zugriffsprotokoll enthält dadurch keine Adresse eines
 einzelnen Anschlusses mehr (Datenschutz).
+
+**srcset / sizes** – Attribute an `<img>` bzw. `<source>`: `srcset` listet dieselbe Grafik in mehreren Breiten
+(`bild-640.webp 640w, …`), `sizes` sagt, wie breit sie angezeigt wird. Der Browser lädt dann nur die passende Datei,
+am Handy also die kleine. Bei uns erzeugt das Makro `templates/_macros/image.html.twig` das Markup.
+
+**WebP** – Bildformat, bei Fotos deutlich kleiner als JPEG bei gleicher Qualität. Wir liefern WebP über
+`<picture><source type="image/webp">` und ein JPEG als Ersatz für Browser ohne WebP (z. B. Safari auf macOS vor 11).
+
+**Scroll-driven Animation** – CSS-Animation, deren Fortschritt nicht von der Zeit, sondern von der Scrollposition
+abhängt (`animation-timeline: view()` bzw. ein benannter `view-timeline`). Läuft ohne JavaScript; laut MDN
+„Baseline 2026“. Bei uns `assets/styles/partials/_motion.scss`, abgeschaltet bei „Bewegung reduzieren“
+(`prefers-reduced-motion`).
