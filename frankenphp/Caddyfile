@@ -18,6 +18,9 @@
 			request>uri query {
 				replace authorization REDACTED
 			}
+			# Privacy: keep only the network part of client addresses (IPv4 /24, IPv6 /48), see the privacy policy
+			request>remote_ip ip_mask 24 48
+			request>client_ip ip_mask 24 48
 		}
 	}
 

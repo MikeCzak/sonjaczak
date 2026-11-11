@@ -42,7 +42,7 @@ final class PublicPagesTest extends WebTestCase
         // A missing translation is rendered as its key, e.g. "nav.home"; this also covers the menu labels,
         // which debug:translation cannot see because they are set in PHP (App\Menu\MenuBuilder)
         $text = $crawler->filter('title')->text().' '.$crawler->filter('body')->text();
-        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|form|design_preview|styleguide)\.[a-z_]+/', $text);
+        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|form|design_preview|styleguide)\.[a-z_]+/', $text);
     }
 
     public function testCurrentPageIsMarkedInMenu(): void
@@ -69,5 +69,9 @@ final class PublicPagesTest extends WebTestCase
         $client->request('GET', '/kontakt');
 
         self::assertSelectorExists('#impressum');
+        // § 5 Abs. 1 ECG: name, geographic address and e-mail address
+        self::assertSelectorTextContains('#impressum address', 'Sonja Riepl');
+        self::assertSelectorTextContains('#impressum address', '8130 Frohnleiten');
+        self::assertSelectorExists('#impressum address a[href^="mailto:"]');
     }
 }

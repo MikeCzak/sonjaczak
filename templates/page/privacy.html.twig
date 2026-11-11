@@ -1,7 +1,35 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.privacy'|trans }}{% endblock %}
+{% block meta_description %}{{ 'meta.privacy'|trans }}{% endblock %}
 
 {% block body %}
-    {{ include('_partials/placeholder.html.twig', {heading: 'title.privacy'|trans}) }}
+    <section class="sc-section">
+        <div class="container">
+            <div class="sc-prose">
+            <h1>{{ 'title.privacy'|trans }}</h1>
+            <hr class="sc-accent-line">
+            <p>{{ 'privacy.intro'|trans({}, 'content') }}</p>
+
+            <h2 class="h4 mt-5">{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
+            {{ include('_partials/controller_address.html.twig') }}
+
+            {% for section in [
+                {heading: 'privacy.hosting.heading'|trans({}, 'content'), body: 'privacy.hosting.body'|trans({}, 'content')},
+                {heading: 'privacy.logs.heading'|trans({}, 'content'), body: 'privacy.logs.body'|trans({}, 'content')},
+                {heading: 'privacy.cookies.heading'|trans({}, 'content'), body: 'privacy.cookies.body'|trans({}, 'content')},
+                {heading: 'privacy.fonts.heading'|trans({}, 'content'), body: 'privacy.fonts.body'|trans({}, 'content')},
+                {heading: 'privacy.email.heading'|trans({}, 'content'), body: 'privacy.email.body'|trans({}, 'content')},
+                {heading: 'privacy.links.heading'|trans({}, 'content'), body: 'privacy.links.body'|trans({}, 'content')},
+                {heading: 'privacy.rights.heading'|trans({}, 'content'), body: 'privacy.rights.body'|trans({}, 'content')},
+            ] %}
+                <h2 class="h4 mt-5">{{ section.heading }}</h2>
+                {{ text.paragraphs(section.body) }}
+            {% endfor %}
+
+            <p class="text-body-secondary mt-5 mb-0">{{ 'privacy.updated'|trans({}, 'content') }}</p>
+            </div>
+        </div>
+    </section>
 {% endblock %}

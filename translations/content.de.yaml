@@ -165,3 +165,68 @@ contact:
     # Draft
     intro: Sie haben eine Frage oder möchten Sonja kennenlernen? Schreiben Sie ihr eine E-Mail.
     hint: 'Für einen Auftritt oder den Gesangsunterricht finden Sie alle Infos auf den jeweiligen Seiten:'
+
+# Legal texts. Checked against the primary sources on 2026-11-11 (see docs/planung/seitenstruktur.md, section 3):
+# § 5 Abs. 1 ECG and § 25 MedienG (RIS), Art. 13 GDPR (EUR-Lex). A draft, not legal advice.
+imprint:
+    provider:
+        heading: Medieninhaberin und Diensteanbieterin
+        name: Sonja Riepl
+        address: |-
+            Adriach-Rabenstein 83
+            8130 Frohnleiten
+            Österreich
+        purpose: 'Unternehmensgegenstand: Auftritte als Sängerin und Gesangsunterricht'
+    # Depends on the legal form (inhalte.md F46, open): supervisory authority, chamber, professional title and
+    # applicable regulations (§ 5 Abs. 1 Z 5 and 6 ECG). Hidden while empty.
+    profession: ''
+    credits:
+        heading: Bildnachweis
+        body: 'Fotos: Doris Sporer, Simon Reithofer, Michael Czak'
+
+privacy:
+    intro: >-
+        Diese Erklärung informiert Sie darüber, welche personenbezogenen Daten beim Besuch dieser Website verarbeitet
+        werden, zu welchem Zweck und welche Rechte Sie haben.
+    controller:
+        heading: Verantwortliche
+    hosting:
+        heading: Hosting
+        body: >-
+            Diese Website läuft auf einem Server der IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, Deutschland.
+            IONOS verarbeitet die Daten als Auftragsverarbeiterin nach Art. 28 DSGVO, ausschließlich nach Weisung der
+            Verantwortlichen.
+    logs:
+        heading: Zugriffsprotokoll
+        body: |-
+            Bei jedem Aufruf einer Seite speichert der Webserver automatisch technische Angaben: Datum und Uhrzeit, aufgerufene Adresse, Statuscode und übertragene Datenmenge, Angaben zu Ihrem Browser (zum Beispiel Browsertyp und Betriebssystem) und, sofern Ihr Browser sie übermittelt, die Seite, von der Sie gekommen sind. Ihre IP-Adresse wird vor dem Speichern gekürzt (bei IPv4 um den letzten von vier Blöcken), sodass sie keinem einzelnen Anschluss mehr zugeordnet werden kann.
+
+            Zweck ist ein sicherer und stabiler Betrieb der Website, etwa um Fehler und Angriffe zu erkennen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in diesem Zweck. Die Protokolle werden automatisch überschrieben, sobald sie eine festgelegte Größe erreichen, und spätestens bei der nächsten Aktualisierung der Website gelöscht.
+    cookies:
+        heading: Cookies und lokale Speicherung
+        body: |-
+            Diese Website setzt keine Cookies und verwendet keine Analyse- oder Werbedienste.
+
+            Nur wenn Sie die Designvorschau über einen speziellen Link öffnen, merkt sich Ihr Browser die gewählte Variante im Sitzungsspeicher (sessionStorage). Dieser Wert verlässt Ihr Gerät nicht und wird beim Schließen des Tabs gelöscht.
+    fonts:
+        heading: Schriften
+        body: Alle Schriften werden von diesem Server geladen. Es besteht keine Verbindung zu Google Fonts oder anderen externen Anbietern.
+    email:
+        heading: Kontakt per E-Mail
+        body: |-
+            Wenn Sie eine E-Mail schreiben, werden Ihre Angaben (Name, E-Mail-Adresse, Inhalt der Nachricht und was Sie sonst mitteilen) verarbeitet, um Ihre Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf einen Vertrag zielt (zum Beispiel eine Buchung oder Unterricht), sonst Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in der Beantwortung Ihrer Anfrage.
+
+            Sie sind nicht verpflichtet, Daten anzugeben, ohne Ihre Angaben kann Ihre Anfrage aber nicht beantwortet werden. Die Daten werden gelöscht, sobald die Anfrage erledigt ist. Kommt ein Vertrag zustande, gelten die gesetzlichen Aufbewahrungspflichten.
+    links:
+        heading: Links zu anderen Websites
+        body: >-
+            Diese Website verlinkt auf YouTube, Google Maps und die Website der Band Red Mullet. Inhalte dieser Anbieter
+            werden nicht eingebettet: Daten werden erst übertragen, wenn Sie einem Link folgen. Dann gilt die
+            Datenschutzerklärung des jeweiligen Anbieters.
+    rights:
+        heading: Ihre Rechte
+        body: |-
+            Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch gegen die Verarbeitung (Art. 21). Wenden Sie sich dazu an die oben genannte E-Mail-Adresse. Eine automatisierte Entscheidungsfindung einschließlich Profiling findet nicht statt.
+
+            Wenn Sie meinen, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstößt, können Sie sich bei der Aufsichtsbehörde beschweren. In Österreich ist das die Datenschutzbehörde, Barichgasse 40–42, 1030 Wien, dsb@dsb.gv.at.
+    updated: 'Stand: November 2026'
