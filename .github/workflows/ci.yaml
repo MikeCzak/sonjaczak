@@ -39,12 +39,9 @@ jobs:
             *.cache-from=type=gha,scope=${{github.ref}}
             *.cache-from=type=gha,scope=refs/heads/main
             *.cache-to=type=gha,scope=${{github.ref}},mode=max
+      # The entrypoint compiles Sass on start (dev image), so rendered pages find their CSS
       - name: Start services
         run: docker compose up --wait --no-build
-      # Rendered pages (HTTPS check, PHPUnit) reference the compiled CSS, which is not part of the repository.
-      # The output in var/sass/ does not depend on the environment, so this serves dev and test.
-      - name: Build Sass
-        run: docker compose exec -T php bin/console sass:build
       - name: Check HTTP reachability
         run: curl -v --fail-with-body http://localhost
       - name: Check HTTPS reachability

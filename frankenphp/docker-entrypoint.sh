@@ -11,6 +11,13 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 	# Or about an error in project initialization
 	php bin/console -V
 
+	# Dev and CI only: compile Sass on every start, because var/ (holding the built CSS) is recreated with the
+	# container. The prod image already contains the compiled assets and no longer has the Sass sources.
+	# Not fatal: without CSS only the pages fail, the console stays usable to fix the cause.
+	if [ "$APP_ENV" != 'prod' ] && [ -f config/packages/symfonycasts_sass.yaml ]; then
+		php bin/console sass:build || echo 'Sass build failed, pages return 500 until "bin/console sass:build" succeeds.'
+	fi
+
 	if grep -q ^DATABASE_URL= .env; then
 		echo 'Waiting for database to be ready...'
 		ATTEMPTS_LEFT_TO_REACH_DATABASE=60
