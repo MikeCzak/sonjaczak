@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/image.html.twig' as media %}
 {% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.about'|trans }}{% endblock %}
@@ -18,8 +19,11 @@
                     </p>
                 </div>
                 <div class="col-lg-5">
-                    <img class="img-fluid rounded sc-portrait" src="{{ asset('images/hero-sonja.jpg') }}"
-                         alt="{{ 'about.image_alt'|trans({}, 'content') }}" width="1920" height="1277" loading="lazy">
+                    {{ media.image('hero-sonja', 'about.image_alt'|trans({}, 'content'), {
+                        class: 'img-fluid rounded sc-portrait',
+                        sizes: '(min-width: 992px) 40vw, 100vw',
+                        priority: true,
+                    }) }}
                 </div>
             </div>
         </div>

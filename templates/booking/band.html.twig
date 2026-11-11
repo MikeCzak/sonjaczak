@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/image.html.twig' as media %}
 {% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.booking_band'|trans }}{% endblock %}
 {% block meta_description %}{{ 'meta.booking_band'|trans }}{% endblock %}
 
 {% block body %}
-    <section class="sc-hero sc-hero--band">
+    <section class="sc-hero">
+        {{ media.image('hero-band', '', {class: 'sc-hero__image', position: '75% 20%', priority: true}) }}
         <div class="container pb-5">
             <h1>{{ 'title.booking_band'|trans }}</h1>
             {% set claim = 'booking_band.hero.claim'|trans({}, 'content') %}

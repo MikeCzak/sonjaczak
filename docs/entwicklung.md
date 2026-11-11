@@ -68,45 +68,48 @@ außerhalb von `prod`). Nötig ist das, weil das Ergebnis in `var/sass/` liegt u
 mit dem Container gelöscht wird. Schlägt der Build fehl, startet der Container trotzdem; Seiten liefern dann 500,
 bis `sass:build` erfolgreich war (Meldung in `docker compose logs php`).
 
-## Bilder für die Website vorbereiten
+## Bilder für die Website
 
-Originalfotos sind oft 5000 px breit und mehrere MB groß, und sie enthalten Metadaten (Kamera, Autor, teils
-GPS-Position). Für die Website wird jedes Bild einmal verkleinert und von Metadaten befreit. Werkzeug: ImageMagick
-auf dem Mac (`brew install imagemagick`, Befehl `magick`).
+Originalfotos sind oft 5000 px breit, mehrere MB groß und enthalten Metadaten (Kamera, Autor, teils GPS-Position).
+Das Skript `bin/build-images` erzeugt daraus die Web-Versionen. Es läuft **auf dem Mac**, nicht im Container, weil
+nur der Mac die Originale in `claude_references/` hat. Voraussetzung: ImageMagick (`brew install imagemagick`).
 
 ```bash
-magick claude_references/images/doris_sporer/SonjaR_222.jpg \
-  -auto-orient -strip -resize '1920x>' -quality 78 -interlace JPEG \
-  assets/images/hero-sonja2.jpg
+bin/build-images
 ```
 
-| Option | Wirkung |
+Pro Bild entstehen:
+
+| Datei | Zweck |
 |---|---|
-| `-auto-orient` | dreht das Bild laut EXIF-Ausrichtung richtig, bevor die Metadaten wegfallen |
-| `-strip` | entfernt alle Metadaten (EXIF, IPTC, Farbprofil-Kommentare) |
-| `-resize '1920x>'` | höchstens 1920 px breit, Höhe proportional; `>` heißt „nur verkleinern“, kleinere Bilder bleiben unverändert |
-| `-quality 78` | JPEG-Qualität; 75–82 ist für Fotos kaum sichtbar verlustbehaftet |
-| `-interlace JPEG` | progressives JPEG: lädt zuerst unscharf, dann scharf |
+| `assets/images/<name>-640.webp`, `-1280.webp`, `-1920.webp` | WebP in drei Breiten, nie breiter als das Original |
+| `assets/images/<name>.jpg` | JPEG (1280 px) für Browser ohne WebP |
+| `config/packages/images.yaml` | Breiten und Maße aller Bilder (Twig-Global `images`), nicht von Hand bearbeiten |
 
-Prüfen: `magick identify assets/images/hero-sonja2.jpg` (Größe), `ls -l assets/images/` (Dateigröße, Ziel: unter
-ca. 250 KB für ein Vollbild). Mehrere Größen für Handy/Desktop (`srcset`) und WebP kommen in Schritt 5.
+Alle Dateien werden ohne Metadaten gespeichert (`-strip`), Qualität 78.
 
-**Bild austauschen:** Die Hero-Bilder stehen als CSS-Variable in `assets/styles/partials/_design.scss`:
+**Neues Bild:** eine Zeile `<name>|<Pfad in claude_references>` in der Liste `IMAGES` im Skript ergänzen, Skript
+laufen lassen, `assets/images/` und `config/packages/images.yaml` committen. Danach einmal
+`docker compose exec php bin/console cache:clear`, damit Symfony die neue Liste kennt.
 
-```scss
-.sc-hero--home {
-    --sc-hero-image: url('../images/hero-sonja2.jpg');   // Pfad relativ zu assets/styles/
-    --sc-hero-position: 60% 35%;                          // welcher Bildausschnitt sichtbar bleibt (x y)
-}
+**Im Template einbinden** mit dem Makro aus `templates/_macros/image.html.twig`:
+
+```twig
+{% import '_macros/image.html.twig' as media %}
+{{ media.image('hero-sonja2', '', {class: 'sc-hero__image', position: '60% 35%', priority: true}) }}
 ```
 
-`--sc-hero-position` bestimmt beim Zuschneiden den Fixpunkt: `50% 50%` ist die Mitte, `60% 35%` hält die Stelle
-etwas rechts der Mitte im oberen Drittel (das Gesicht) im Bild. Nach der Änderung baut `sass:build --watch` neu bzw.
-`docker compose exec php bin/console sass:build`. AssetMapper hängt beim Ausliefern einen Hash an den Dateinamen,
-deshalb sehen Besucher:innen nach einem Deploy sofort das neue Bild.
+- Zweites Argument: Alternativtext. Leer (`''`) nur bei dekorativen Bildern, deren Inhalt schon im Text steht
+  (z. B. Hero mit dem Namen als Überschrift).
+- `position` bestimmt beim Zuschneiden den Fixpunkt: `50% 50%` ist die Mitte, `60% 35%` hält die Stelle etwas
+  rechts der Mitte im oberen Drittel (das Gesicht) im Bild.
+- `priority: true` nur für das erste Bild einer Seite (lädt sofort); alle anderen laden erst, wenn sie in die Nähe
+  des sichtbaren Bereichs kommen.
+- `sizes` (Standard: volle Breite) sagt dem Browser, wie breit das Bild angezeigt wird, damit er die passende Datei
+  wählt, z. B. `'(min-width: 992px) 40vw, 100vw'` für ein Bild neben Text.
 
-Originale gehören nicht ins Repo (`claude_references/` ist ignoriert), nur die verkleinerten Versionen in
-`assets/images/`. Bildnachweis nicht vergessen (Impressum).
+Originale gehören nicht ins Repo (`claude_references/` ist ignoriert). Bildnachweis im Impressum ergänzen
+(`imprint.credits` in `content.de.yaml`).
 
 ## Designvorschau (Schritt 3, vorübergehend)
 

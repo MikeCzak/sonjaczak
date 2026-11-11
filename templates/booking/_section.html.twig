@@ -1,5 +1,7 @@
-{# One image section on the booking overview. Expects modifier (image), translated heading and body, and the target url. #}
-<section class="sc-hero sc-hero--section sc-hero--{{ modifier }}">
+{# One image section on the booking overview. Expects image (name), position (crop), translated heading and body, the target url and priority (first section). #}
+{% import '_macros/image.html.twig' as media %}
+<section class="sc-hero sc-hero--section">
+    {{ media.image(image, '', {class: 'sc-hero__image', position: position, priority: priority}) }}
     <div class="container pb-5">
         <h2>{{ heading }}</h2>
         <p class="col-lg-6 fs-5">{{ body }}</p>

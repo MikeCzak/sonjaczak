@@ -10,13 +10,17 @@
     </div>
 
     {{ include('booking/_section.html.twig', {
-        modifier: 'solo',
+        image: 'hero-wedding',
+        position: '70% 40%',
+        priority: true,
         heading: 'title.booking_solo'|trans,
         body: 'booking.solo.body'|trans({}, 'content'),
         url: path('app_booking_solo'),
     }) }}
     {{ include('booking/_section.html.twig', {
-        modifier: 'band',
+        image: 'hero-band',
+        position: '75% 20%',
+        priority: false,
         heading: 'title.booking_band'|trans,
         body: 'booking.band.body'|trans({}, 'content'),
         url: path('app_booking_band'),

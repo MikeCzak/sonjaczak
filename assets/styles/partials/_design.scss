@@ -172,13 +172,22 @@ h1, h2, h3, h4, h5, h6,
 // Hero with full-width photo
 .sc-hero {
     position: relative;
+    // Own stacking context: image and overlay sit behind the text, but not behind the page
+    isolation: isolate;
+    overflow: hidden;
     display: flex;
     align-items: flex-end;
     min-height: min(80vh, 48rem);
-    background-image: var(--sc-hero-overlay), var(--sc-hero-image);
-    background-size: cover;
-    background-position: var(--sc-hero-position, center);
     color: var(--sc-hero-text, #fff);
+
+    // Darkens the photo where the text is (direction depends on variant and screen width)
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: var(--sc-hero-overlay);
+    }
 
     h1 {
         font-family: var(--sc-font-hero);
@@ -193,14 +202,24 @@ h1, h2, h3, h4, h5, h6,
     }
 }
 
-.sc-hero--home {
-    --sc-hero-image: url('../images/hero-sonja2.jpg');
-    --sc-hero-position: 60% 35%;
+// Photo filling the hero, cropped around its object-position (set per image in the template)
+.sc-hero__image {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-[data-design='c'] .sc-hero--home {
-    --sc-hero-image: url('../images/hero-sax.jpg');
-    --sc-hero-position: 60% 30%;
+// Design preview: variant C shows its own photo on the home page
+.sc-hero__image--variant-c,
+[data-design='c'] .sc-hero--home .sc-hero__image:not(.sc-hero__image--variant-c) {
+    display: none;
+}
+
+[data-design='c'] .sc-hero--home .sc-hero__image--variant-c {
+    display: block;
 }
 
 // On narrow screens the hero text spans the full width, so darken from the bottom instead of from the left
@@ -218,21 +237,6 @@ h1, h2, h3, h4, h5, h6,
         font-family: var(--sc-font-heading);
         font-size: clamp(2rem, 5vw, 3.5rem);
     }
-}
-
-.sc-hero--solo {
-    --sc-hero-image: url('../images/hero-wedding.jpg');
-    --sc-hero-position: 70% 40%;
-}
-
-.sc-hero--band {
-    --sc-hero-image: url('../images/hero-band.jpg');
-    --sc-hero-position: 75% 20%;
-}
-
-.sc-hero--lessons {
-    --sc-hero-image: url('../images/hero-lessons.jpg');
-    --sc-hero-position: 70% 35%;
 }
 
 // Hero headline in variant A uses the script font, which needs no uppercase/tracking

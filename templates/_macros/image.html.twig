@@ -1,0 +1,24 @@
+{#
+ # Responsive image from bin/build-images: WebP in several widths, JPEG fallback.
+ # The widths and size come from the Twig global "images" (config/packages/images.yaml).
+ # Options:
+ #   sizes     how wide the image is shown, so the browser picks a file (default: full viewport width)
+ #   class     CSS classes of the <img>
+ #   position  object-position, the point that stays visible when the image is cropped (default: center)
+ #   priority  true for the first image of a page: loaded at once and with high priority, otherwise lazily
+ #}
+{% macro image(name, alt, options = {}) %}
+    {%- set image = images[name] -%}
+    {%- set priority = options.priority ?? false -%}
+    <picture>
+        <source type="image/webp" sizes="{{ options.sizes ?? '100vw' }}" srcset="
+            {%- for width in image.widths -%}
+                {{ asset('images/' ~ name ~ '-' ~ width ~ '.webp') }} {{ width }}w{{ not loop.last ? ', ' }}
+            {%- endfor -%}
+        ">
+        <img src="{{ asset('images/' ~ name ~ '.jpg') }}" alt="{{ alt }}" width="{{ image.width }}" height="{{ image.height }}"
+            {%- if options.class is defined %} class="{{ options.class }}"{% endif %}
+            {%- if options.position is defined %} style="object-position: {{ options.position }}"{% endif %}
+            {%- if priority %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async">
+    </picture>
+{%- endmacro %}

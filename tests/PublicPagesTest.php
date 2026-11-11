@@ -63,6 +63,16 @@ final class PublicPagesTest extends WebTestCase
         self::assertSelectorCount(4, '[data-logo-candidate]');
     }
 
+    public function testHeroImageIsResponsive(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/');
+
+        // WebP in several widths, JPEG fallback; the first image loads with high priority, not lazily
+        self::assertSelectorExists('.sc-hero picture source[type="image/webp"][srcset*="640w"][srcset*="1920w"]');
+        self::assertSelectorExists('.sc-hero img[src$=".jpg"][width][height][fetchpriority="high"]');
+    }
+
     public function testNotFoundPageUsesLayout(): void
     {
         // Only without debug Symfony renders the error template instead of the developer exception page

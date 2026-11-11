@@ -1,7 +1,12 @@
 {% extends 'base.html.twig' %}
+{% import '_macros/image.html.twig' as media %}
 
 {% block body %}
     <section class="sc-hero sc-hero--home">
+        {# Decorative: the heading names what the photo shows #}
+        {{ media.image('hero-sonja2', '', {class: 'sc-hero__image', position: '60% 35%', priority: true}) }}
+        {# Design preview: variant C shows another photo (CSS switches), lazy so A and B never load it #}
+        {{ media.image('hero-sax', '', {class: 'sc-hero__image sc-hero__image--variant-c', position: '60% 30%'}) }}
         <div class="container pb-5">
             <h1>{{ 'site.name'|trans }}</h1>
             <p class="lead mb-0">{{ 'site.tagline'|trans }}</p>
