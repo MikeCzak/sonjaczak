@@ -138,6 +138,13 @@ Erst danach werden Features gebaut.
          Bild. Scroll-Effekte nur mit CSS (`_motion.scss`): Hero zoomt beim Hinausscrollen, Booking-Sections mit
          Parallax, Abschnitte blenden ein; aus bei „Bewegung reduzieren“. Effekte im Browser beurteilen (Headless-
          Screenshots zeigen keine Bewegung).
+   - [ ] Schritt 6: Formulare mit Mailversand – Plan in `docs/planung/formulare.md`, freigegeben (2026-11-11):
+         IONOS-SMTP (`smtp.ionos.de`), synchron, ohne Session/Cookies, nichts in der DB. Absender
+         `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com`, `Reply-To` = Besucher:in.
+     - [ ] 6a: `symfony/mailer` 8.1.10 (Absender global in `config/packages/mailer.yaml`, Tests immer `null://null`),
+           Mailpit v1.33.1 nur lokal (UI auf `127.0.0.1:8025`, ~12 MiB). `MAILER_DSN` Pflicht in `compose.prod.yaml`
+           → vor dem Push in `/srv/sonjaczak/.env` eintragen (`deployment.md` B3). Offen: Testversand vom Server.
+     - [ ] 6b Kontakt · 6c Booking · 6d Unterricht · 6e Datenschutzerklärung
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
      - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
        Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`

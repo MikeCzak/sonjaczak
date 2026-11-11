@@ -82,6 +82,7 @@ jobs:
       APP_SECRET: ci-smoke-test
       CADDY_MERCURE_JWT_SECRET: ci-smoke-test-mercure-jwt-secret
       POSTGRES_PASSWORD: ci-smoke-test
+      MAILER_DSN: null://null
     steps:
       - name: Checkout code
         uses: actions/checkout@v7

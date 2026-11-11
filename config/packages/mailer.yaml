@@ -1,0 +1,14 @@
+framework:
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+        # IONOS only accepts the mailbox we log in with (or the same domain) as sender
+        envelope:
+            sender: 'anfrage@sonjaczak.com'
+        headers:
+            From: 'Website sonjaczak.com <anfrage@sonjaczak.com>'
+
+when@test:
+    framework:
+        mailer:
+            # Never deliver from tests, even if the container sets MAILER_DSN (e.g. to Mailpit)
+            dsn: 'null://null'

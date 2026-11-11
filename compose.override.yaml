@@ -22,6 +22,8 @@ services:
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-develop}"
       APP_ENV: "${APP_ENV:-dev}"
+      # Local mail catcher (service "mailer" below); the test environment overrides this with null://null
+      MAILER_DSN: "smtp://mailer:1025"
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
@@ -34,3 +36,15 @@ services:
     ports:
       - "5432"
 ###< doctrine/doctrine-bundle ###
+
+###> symfony/mailer ###
+  # Catches all mails locally, web UI on http://localhost:8025. Not part of production.
+  mailer:
+    image: axllent/mailpit:v1.33.1
+    ports:
+      # Web UI only, bound to the host's loopback; php reaches SMTP on port 1025 over the Compose network
+      - "127.0.0.1:8025:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+###< symfony/mailer ###
