@@ -49,11 +49,16 @@ Normale Code-Änderungen brauchen das nie.
 ## CSS bearbeiten (Sass)
 
 Das CSS entsteht aus `assets/styles/app.scss` (Bootstrap + eigene Styles). Nach einer Änderung muss Sass neu
-kompilieren. Während du am CSS arbeitest, in einem zweiten Terminal:
+kompilieren. Der Befehl läuft **im Container** (dort liegen PHP und der Sass-Compiler); du startest ihn aber vom Mac
+aus, im Projektordner, mit `docker compose exec`. Während du am CSS arbeitest, in einem zweiten Terminal
+(z. B. zweiter Tab im Terminal der IDE):
 
 ```bash
 docker compose exec php bin/console sass:build --watch    # kompiliert bei jeder Änderung neu, Strg+C beendet
 ```
+
+Die SCSS-Dateien bearbeitest du ganz normal in der IDE auf dem Mac; über den Bind-Mount sieht der Container jede
+Änderung sofort, `--watch` baut neu, im Browser neu laden.
 
 Einmalig reicht `docker compose exec php bin/console sass:build`. Ohne kompiliertes CSS zeigt Symfony einen
 Fehler, dass die Datei fehlt (Status 500). In der CI und beim Bau des Prod-Images passiert das automatisch.

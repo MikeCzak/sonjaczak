@@ -85,10 +85,9 @@ templates/
 └── bundles/TwigBundle/Exception/error404.html.twig
 ```
 
-**Zwei Stimmungen (A7):** Booking elegant/ruhig, Unterricht bunt/lebendig. Umsetzung über eine Klasse am `<body>`
-(z. B. `theme-stage` bzw. `theme-lessons`), die Farben und Akzente über CSS-Variablen umschaltet. Home, Über mich und
-Kontakt bekommen das ruhige Grunddesign. So bleibt es *ein* Layout, und du kannst beide Varianten nebeneinander sehen,
-bevor du entscheidest (A7/A8: „muss ich sehen“).
+**Ein Stil für alle Seiten (A7, geändert 2026-11-11):** Ursprünglich Booking elegant/ruhig und Unterricht
+bunt/lebendig in Flyer-Optik (Pink). Nach Ansicht des Entwurfs verworfen: Das Pink schlug sich mit dem Akzent; der
+Unterricht bekommt denselben Stil wie die übrigen Seiten.
 
 **Leere Platzhalter (B19):** Der Satz im Hero, Regeln und FAQ beim Unterricht, Stimmen, Auftritte: Abschnitte, deren
 Text leer ist, werden nicht angezeigt. So kann die Seite online gehen, bevor alle Texte da sind.
@@ -176,7 +175,8 @@ ausführen. Das passiert beim Image-Bau in der CI, nicht auf dem Server.
   „Sonja Czak“. Im Impressum steht bis zur Namensänderung „Sonja Riepl“.
 
 Der Flyer (`Gesangsunterricht_Sonja_Riepl_A4.svg`) nutzt Dunkelgrau `#17151A`, Pink `#FF2E73` und Creme `#F8F5F2`.
-Das wäre ein Kandidat für die „lebendige“ Unterrichtsvariante.
+Pink wurde im Entwurf ausprobiert und verworfen (siehe Abschnitt 4). Akzentfarbe: Petrol statt Rot, weil Rot zu nah
+am Auftritt der Band Red Mullet ist.
 
 ## 8. Dritte Dienste, Mail, Statistik, Suchmaschinen
 

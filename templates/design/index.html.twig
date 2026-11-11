@@ -88,17 +88,4 @@
         </div>
     </div>
 
-    <h2 class="container mt-5">{{ 'styleguide.lessons_area'|trans }}</h2>
-    <div class="theme-lessons">
-        <section class="sc-section">
-            <div class="container">
-                <h2>{{ 'home.offers.lessons.heading'|trans({}, 'content') }}</h2>
-                <hr class="sc-accent-line">
-                <p class="col-lg-8">{{ 'home.offers.lessons.body'|trans({}, 'content') }}
-                    <a href="{{ path('app_lessons') }}">{{ 'action.more'|trans }}</a></p>
-                <p><a class="btn btn-primary" href="#">{{ 'action.more'|trans }}</a></p>
-                {{ _self.swatches() }}
-            </div>
-        </section>
-    </div>
 {% endblock %}

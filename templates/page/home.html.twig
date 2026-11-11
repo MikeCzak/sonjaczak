@@ -36,13 +36,10 @@
         url: path('app_booking_band'),
         surface: false,
     }) }}
-    {# The lessons offer already shows the lively look of its area #}
-    <div class="theme-lessons">
-        {{ include('page/_offer.html.twig', {
-            heading: 'home.offers.lessons.heading'|trans({}, 'content'),
-            body: 'home.offers.lessons.body'|trans({}, 'content'),
-            url: path('app_lessons'),
-            surface: true,
-        }) }}
-    </div>
+    {{ include('page/_offer.html.twig', {
+        heading: 'home.offers.lessons.heading'|trans({}, 'content'),
+        body: 'home.offers.lessons.body'|trans({}, 'content'),
+        url: path('app_lessons'),
+        surface: true,
+    }) }}
 {% endblock %}

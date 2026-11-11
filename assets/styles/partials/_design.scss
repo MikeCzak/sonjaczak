@@ -1,9 +1,8 @@
 // Design tokens as CSS custom properties.
 //
-// Bootstrap's Sass variables are fixed at compile time, but we need to switch at runtime between the
-// design variants (data-design="a|b|c" on <html>, preview during step 3) and between the two areas
-// (.theme-stage / .theme-lessons on <body>). So all colors and fonts are --sc-* properties, and the
-// Bootstrap runtime properties (--bs-*) point to them.
+// Bootstrap's Sass variables are fixed at compile time, but during the design preview (step 3) we switch
+// at runtime between the variants (data-design="a|b|c" on <html>). So all colors and fonts are --sc-*
+// properties, and the Bootstrap runtime properties (--bs-*) point to them.
 //
 // Contrast (WCAG AA, 4.5:1 for body text) is shown live on /_design.
 //   --sc-accent       decorative color for surfaces, lines, buttons
@@ -27,9 +26,9 @@
     --sc-text-rgb: 43, 39, 36;
     --sc-muted: #6b625b;
     --sc-border: #ddd4cc;
-    --sc-accent: #a3262a;
-    --sc-accent-text: #a3262a;
-    --sc-accent-text-rgb: 163, 38, 42;
+    --sc-accent: #1f5f66;
+    --sc-accent-text: #1f5f66;
+    --sc-accent-text-rgb: 31, 95, 102;
     --sc-on-accent: #ffffff;
     --sc-hero-overlay: linear-gradient(90deg, rgba(23, 21, 26, 0.65) 0%, rgba(23, 21, 26, 0.1) 70%);
     --sc-hero-text: #ffffff;
@@ -51,9 +50,9 @@
     --sc-text-rgb: 23, 21, 26;
     --sc-muted: #5c5a63;
     --sc-border: #dedde2;
-    --sc-accent: #c0262d;
-    --sc-accent-text: #c0262d;
-    --sc-accent-text-rgb: 192, 38, 45;
+    --sc-accent: #1a6670;
+    --sc-accent-text: #1a6670;
+    --sc-accent-text-rgb: 26, 102, 112;
     --sc-on-accent: #ffffff;
 }
 
@@ -73,46 +72,15 @@
     --sc-text-rgb: 243, 238, 232;
     --sc-muted: #b5ada6;
     --sc-border: #34303a;
-    --sc-accent: #ef5350;
-    --sc-accent-text: #ef5350;
-    --sc-accent-text-rgb: 239, 83, 80;
+    --sc-accent: #5fb8b8;
+    --sc-accent-text: #5fb8b8;
+    --sc-accent-text-rgb: 95, 184, 184;
     --sc-on-accent: #121014;
     --sc-hero-overlay: linear-gradient(0deg, rgba(18, 16, 20, 0.95) 0%, rgba(18, 16, 20, 0.2) 60%);
 }
 
-// Lessons area: lively look of the flyer, in every variant
-.theme-lessons {
-    --sc-font-heading: 'Montserrat', system-ui, sans-serif;
-    --sc-heading-weight: 800;
-    --sc-heading-transform: uppercase;
-    --sc-heading-spacing: 0.02em;
-
-    --sc-accent: #ff2e73;
-    --sc-accent-text: #d10f50;
-    --sc-accent-text-rgb: 209, 15, 80;
-    --sc-on-accent: #17151a;
-}
-
-[data-design='a'] .theme-lessons,
-:root:not([data-design]) .theme-lessons,
-[data-design='b'] .theme-lessons {
-    --sc-bg: #f8f5f2;
-    --sc-surface: #eee7eb;
-    --sc-text: #17151a;
-    --sc-text-rgb: 23, 21, 26;
-    --sc-muted: #5c5a63;
-}
-
-// On the dark variant the flyer pink is readable as text
-[data-design='c'] .theme-lessons {
-    --sc-accent-text: #ff2e73;
-    --sc-accent-text-rgb: 255, 46, 115;
-}
-
-// Bootstrap runtime properties point to the tokens of the current element
-body,
-.theme-lessons,
-.theme-stage {
+// Bootstrap runtime properties point to the tokens
+body {
     --bs-body-bg: var(--sc-bg);
     --bs-body-color: var(--sc-text);
     --bs-body-color-rgb: var(--sc-text-rgb);

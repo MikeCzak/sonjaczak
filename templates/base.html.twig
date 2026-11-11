@@ -22,8 +22,7 @@
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
         {% endif %}
     </head>
-    {# Theme class switches colors per area: theme-stage (calm, performances) or theme-lessons (lively) #}
-    <body class="{% block theme %}theme-stage{% endblock %} d-flex flex-column min-vh-100">
+    <body class="d-flex flex-column min-vh-100">
         {{ include('_partials/header.html.twig') }}
 
         <main class="flex-grow-1">
