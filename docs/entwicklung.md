@@ -58,8 +58,50 @@ docker compose exec php bin/console sass:build --watch    # kompiliert bei jeder
 Einmalig reicht `docker compose exec php bin/console sass:build`. Ohne kompiliertes CSS zeigt Symfony einen
 Fehler, dass die Datei fehlt (Status 500). In der CI und beim Bau des Prod-Images passiert das automatisch.
 
-**Nach jedem `docker compose down` + `up` neu bauen:** Das Ergebnis liegt in `var/sass/`, und `var/` ist ein
-anonymes Volume, das mit dem Container gelöscht wird. Danach liefert jede Seite 500, bis `sass:build` gelaufen ist.
+Beim Start des Containers baut der Entrypoint das CSS automatisch (`frankenphp/docker-entrypoint.sh`, nur
+außerhalb von `prod`). Nötig ist das, weil das Ergebnis in `var/sass/` liegt und `var/` ein anonymes Volume ist, das
+mit dem Container gelöscht wird. Schlägt der Build fehl, startet der Container trotzdem; Seiten liefern dann 500,
+bis `sass:build` erfolgreich war (Meldung in `docker compose logs php`).
+
+## Bilder für die Website vorbereiten
+
+Originalfotos sind oft 5000 px breit und mehrere MB groß, und sie enthalten Metadaten (Kamera, Autor, teils
+GPS-Position). Für die Website wird jedes Bild einmal verkleinert und von Metadaten befreit. Werkzeug: ImageMagick
+auf dem Mac (`brew install imagemagick`, Befehl `magick`).
+
+```bash
+magick claude_references/images/doris_sporer/SonjaR_222.jpg \
+  -auto-orient -strip -resize '1920x>' -quality 78 -interlace JPEG \
+  assets/images/hero-sonja2.jpg
+```
+
+| Option | Wirkung |
+|---|---|
+| `-auto-orient` | dreht das Bild laut EXIF-Ausrichtung richtig, bevor die Metadaten wegfallen |
+| `-strip` | entfernt alle Metadaten (EXIF, IPTC, Farbprofil-Kommentare) |
+| `-resize '1920x>'` | höchstens 1920 px breit, Höhe proportional; `>` heißt „nur verkleinern“, kleinere Bilder bleiben unverändert |
+| `-quality 78` | JPEG-Qualität; 75–82 ist für Fotos kaum sichtbar verlustbehaftet |
+| `-interlace JPEG` | progressives JPEG: lädt zuerst unscharf, dann scharf |
+
+Prüfen: `magick identify assets/images/hero-sonja2.jpg` (Größe), `ls -l assets/images/` (Dateigröße, Ziel: unter
+ca. 250 KB für ein Vollbild). Mehrere Größen für Handy/Desktop (`srcset`) und WebP kommen in Schritt 5.
+
+**Bild austauschen:** Die Hero-Bilder stehen als CSS-Variable in `assets/styles/partials/_design.scss`:
+
+```scss
+.sc-hero--home {
+    --sc-hero-image: url('../images/hero-sonja2.jpg');   // Pfad relativ zu assets/styles/
+    --sc-hero-position: 60% 35%;                          // welcher Bildausschnitt sichtbar bleibt (x y)
+}
+```
+
+`--sc-hero-position` bestimmt beim Zuschneiden den Fixpunkt: `50% 50%` ist die Mitte, `60% 35%` hält die Stelle
+etwas rechts der Mitte im oberen Drittel (das Gesicht) im Bild. Nach der Änderung baut `sass:build --watch` neu bzw.
+`docker compose exec php bin/console sass:build`. AssetMapper hängt beim Ausliefern einen Hash an den Dateinamen,
+deshalb sehen Besucher:innen nach einem Deploy sofort das neue Bild.
+
+Originale gehören nicht ins Repo (`claude_references/` ist ignoriert), nur die verkleinerten Versionen in
+`assets/images/`. Bildnachweis nicht vergessen (Impressum).
 
 ## Designvorschau (Schritt 3, vorübergehend)
 

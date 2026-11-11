@@ -118,7 +118,8 @@ Erst danach werden Features gebaut.
          (Playfair Display + Inter); Unterricht in allen Varianten in Flyer-Optik (Montserrat, Pink). Logo-Kandidaten:
          Great Vibes, Allura, Parisienne, Dancing Script. Vorschau über `/_design` und `?design=a|b|c` (auch in
          Produktion, nicht verlinkt, `noindex`). Schriften lokal (Fontsource 5.3.0, OFL 1.1, `OFL.txt` je Schrift),
-         Hero-Bilder in Web-Größe (`assets/images/`, ohne Metadaten). Nach der Entscheidung: Variante festschreiben,
+         Hero-Bilder in Web-Größe (`assets/images/`, ohne Metadaten); Startseite derzeit mit `hero-sonja2.jpg`
+         (SonjaR_222, s/w), `hero-sonja.jpg` bis zur Entscheidung zum Vergleich. Nach der Entscheidung: Variante festschreiben,
          Umschalter und ungenutzte Schriften entfernen, Logo als SVG mit Pfaden (laut OFL-FAQ 1.1 erlaubt).
          Nebenbei: Prod-Image enthielt kein `/etc/mime.types` → woff2 ohne Content-Type; im Dockerfile ergänzt.
    - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
