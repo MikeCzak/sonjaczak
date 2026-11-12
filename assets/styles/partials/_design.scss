@@ -1,20 +1,20 @@
 // Design tokens as CSS custom properties.
 //
-// Bootstrap's Sass variables are fixed at compile time, but during the design preview (step 3) we switch
-// at runtime between the variants (data-design="a|b|c" on <html>). So all colors and fonts are --sc-*
-// properties, and the Bootstrap runtime properties (--bs-*) point to them.
+// Bootstrap's Sass variables are fixed at compile time, but the theme is chosen at runtime (data-theme on <html>,
+// App\Theme\Theme). So all colors and fonts are --sc-* properties, and the Bootstrap runtime properties (--bs-*)
+// point to them. Other themes override the tokens in partials/themes/.
 //
 // Contrast (WCAG AA, 4.5:1 for body text) is shown live on /_design.
 //   --sc-accent       decorative color for surfaces, lines, buttons
 //   --sc-accent-text  accent color that is safe for text and links on --sc-bg
 //   --sc-on-accent    text color on --sc-accent surfaces
 
-// Variant A (default): classic and elegant
+// Theme "classic" (default, design variant A): classic and elegant
 :root {
     --sc-font-body: 'Jost', system-ui, sans-serif;
     --sc-font-heading: 'Cormorant Garamond', Georgia, serif;
-    --sc-font-hero: 'Great Vibes', cursive;
-    --sc-font-logo: 'Great Vibes', cursive;
+    --sc-font-hero: 'Allura', cursive;
+    --sc-font-logo: 'Allura', cursive;
     --sc-heading-weight: 600;
     --sc-heading-transform: none;
     --sc-heading-spacing: normal;
@@ -32,51 +32,6 @@
     --sc-on-accent: #ffffff;
     --sc-hero-overlay: linear-gradient(90deg, rgba(23, 21, 26, 0.65) 0%, rgba(23, 21, 26, 0.1) 70%);
     --sc-hero-text: #ffffff;
-}
-
-// Variant B: modern and clear
-[data-design='b'] {
-    --sc-font-body: 'Inter', system-ui, sans-serif;
-    --sc-font-heading: 'Montserrat', system-ui, sans-serif;
-    --sc-font-hero: 'Montserrat', system-ui, sans-serif;
-    --sc-heading-weight: 700;
-    --sc-heading-transform: uppercase;
-    --sc-heading-spacing: 0.04em;
-    --sc-hero-size: clamp(2.5rem, 7vw, 5rem);
-
-    --sc-bg: #ffffff;
-    --sc-surface: #f2f2f4;
-    --sc-text: #17151a;
-    --sc-text-rgb: 23, 21, 26;
-    --sc-muted: #5c5a63;
-    --sc-border: #dedde2;
-    --sc-accent: #1a6670;
-    --sc-accent-text: #1a6670;
-    --sc-accent-text-rgb: 26, 102, 112;
-    --sc-on-accent: #ffffff;
-}
-
-// Variant C: dark, stage-like
-[data-design='c'] {
-    --sc-font-body: 'Inter', system-ui, sans-serif;
-    --sc-font-heading: 'Playfair Display', Georgia, serif;
-    --sc-font-hero: 'Playfair Display', Georgia, serif;
-    --sc-heading-weight: 700;
-    --sc-heading-transform: none;
-    --sc-heading-spacing: normal;
-    --sc-hero-size: clamp(3rem, 9vw, 6.5rem);
-
-    --sc-bg: #121014;
-    --sc-surface: #1e1b21;
-    --sc-text: #f3eee8;
-    --sc-text-rgb: 243, 238, 232;
-    --sc-muted: #b5ada6;
-    --sc-border: #34303a;
-    --sc-accent: #d4af5a;
-    --sc-accent-text: #d4af5a;
-    --sc-accent-text-rgb: 212, 175, 90;
-    --sc-on-accent: #121014;
-    --sc-hero-overlay: linear-gradient(0deg, rgba(18, 16, 20, 0.95) 0%, rgba(18, 16, 20, 0.2) 60%);
 }
 
 // Bootstrap runtime properties point to the tokens
@@ -212,6 +167,59 @@ h1, h2, h3, h4, h5, h6,
     object-fit: cover;
 }
 
+// Home page slider (assets/slider.js): the slides fill the hero like a single photo
+.sc-hero__slides {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+
+    .carousel-item {
+        height: 100%;
+    }
+}
+
+.sc-slider-controls {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1;
+    display: flex;
+    gap: 0.5rem;
+
+    &[hidden] {
+        display: none;
+    }
+
+    // Narrow screens: the hero text spans the full width at the bottom, so the controls go to the top
+    @include media-breakpoint-down(md) {
+        top: 1rem;
+        bottom: auto;
+    }
+}
+
+.sc-slider-button {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 1.25rem;
+    line-height: 1;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.55);
+    }
+
+    &:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+    }
+}
+
 // Label of AI-generated images (image() macro): small, but readable on any photo
 .sc-ai-label {
     position: absolute;
@@ -228,19 +236,9 @@ h1, h2, h3, h4, h5, h6,
     letter-spacing: 0.02em;
 }
 
-// Design preview: variant C shows its own photo on the home page
-.sc-hero__image--variant-c,
-[data-design='c'] .sc-hero--home .sc-hero__image:not(.sc-hero__image--variant-c) {
-    display: none;
-}
-
-[data-design='c'] .sc-hero--home .sc-hero__image--variant-c {
-    display: block;
-}
-
 // On narrow screens the hero text spans the full width, so darken from the bottom instead of from the left
 @include media-breakpoint-down(md) {
-    :root:not([data-design='c']) {
+    :root:not([data-theme='stage']) {
         --sc-hero-overlay: linear-gradient(0deg, rgba(23, 21, 26, 0.8) 0%, rgba(23, 21, 26, 0.1) 65%);
     }
 }
@@ -253,12 +251,6 @@ h1, h2, h3, h4, h5, h6,
         font-family: var(--sc-font-heading);
         font-size: clamp(2rem, 5vw, 3.5rem);
     }
-}
-
-// Hero headline in variant A uses the script font, which needs no uppercase/tracking
-[data-design='b'] .sc-hero h1 {
-    font-weight: 800;
-    text-transform: uppercase;
 }
 
 // Alternating content sections
@@ -305,38 +297,4 @@ h1, h2, h3, h4, h5, h6,
     aspect-ratio: 4 / 5;
     object-fit: cover;
     object-position: 70% 30%;
-}
-
-// Design preview switcher (step 3, temporary). Shown while a preview is active (class set in <head>).
-.sc-design-switcher {
-    display: none;
-    position: fixed;
-    right: 1rem;
-    bottom: 1rem;
-    z-index: 1080;
-    gap: 0.5rem;
-    align-items: center;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-    background: #17151a;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    color: #fff;
-    font: 600 0.875rem/1 system-ui, sans-serif;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
-
-    a {
-        color: #fff;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        text-decoration: none;
-    }
-
-    a[aria-current='true'] {
-        background: #fff;
-        color: #17151a;
-    }
-}
-
-.sc-preview .sc-design-switcher {
-    display: flex;
 }

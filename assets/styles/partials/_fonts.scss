@@ -3,35 +3,11 @@
 // Browsers only download a font when a rendered element actually uses it.
 
 @font-face {
-    font-family: 'Great Vibes';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('../fonts/great-vibes/great-vibes-latin-400-normal.woff2') format('woff2');
-}
-
-@font-face {
     font-family: 'Allura';
     font-style: normal;
     font-weight: 400;
     font-display: swap;
     src: url('../fonts/allura/allura-latin-400-normal.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Parisienne';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('../fonts/parisienne/parisienne-latin-400-normal.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Dancing Script';
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url('../fonts/dancing-script/dancing-script-latin-500-normal.woff2') format('woff2');
 }
 
 @font-face {

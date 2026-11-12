@@ -203,9 +203,7 @@ privacy:
     cookies:
         heading: Cookies und lokale Speicherung
         body: |-
-            Diese Website setzt keine Cookies und verwendet keine Analyse- oder Werbedienste.
-
-            Nur wenn Sie die Designvorschau über einen speziellen Link öffnen, merkt sich Ihr Browser die gewählte Variante im Sitzungsspeicher (sessionStorage). Dieser Wert verlässt Ihr Gerät nicht und wird beim Schließen des Tabs gelöscht.
+            Diese Website setzt keine Cookies, speichert nichts in Ihrem Browser und verwendet keine Analyse- oder Werbedienste.
     fonts:
         heading: Schriften
         body: Alle Schriften werden von diesem Server geladen. Es besteht keine Verbindung zu Google Fonts oder anderen externen Anbietern.

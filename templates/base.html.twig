@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="de">
+{# Active theme from App\Theme\SiteSettings; ?theme=<value> previews another one on this page only #}
+{% set theme = site.theme(app.request ? app.request.query.get('theme') : null) %}
+<html lang="de" data-theme="{{ theme.value }}"{% if theme.dark %} data-bs-theme="dark"{% endif %}>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +9,6 @@
         <meta name="description" content="{% block meta_description %}{{ 'meta.description'|trans }}{% endblock %}">
         {% block meta_robots %}{% endblock %}
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221em%22 font-size=%22110%22>♪</text></svg>">
-        {{ include('_partials/design_preview_script.html.twig') }}
         {% block stylesheets %}
         {% endblock %}
 
@@ -30,6 +31,5 @@
         </main>
 
         {{ include('_partials/footer.html.twig') }}
-        {{ include('_partials/design_preview_switcher.html.twig') }}
     </body>
 </html>

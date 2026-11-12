@@ -115,10 +115,17 @@ Erst danach werden Features gebaut.
          unübersetzte Schlüssel, aktive Menüpunkte, Impressum-Anker, fehlende Übersetzungen
          (`debug:translation --only-missing`). CI: `lint:twig`, `lint:yaml`, HTTPS-Check aktiv, Smoke-Test ruft `/`
          am Prod-Stack ab (lokal nachgestellt: grün; php 114 MiB, database 27 MiB im Leerlauf, Mac).
-   - [ ] Schritt 3: Design-Entwurf – **entschieden (2026-11-12), Umsetzung folgt:** Variante A, Logo in Allura (als SVG),
-         Startseite mit Slider statt Einzelbild (vorerst `hero-sonja2`, `hero-sax`; automatisch, Klick/Wischen,
-         Pause-Knopf). B und C bleiben als „Themes“ erhalten, aktives Theme vorerst aus der Konfiguration. Später im
-         Admin-Bereich: Dropdown für das Theme (auch saisonale Themes) und Verwaltung der Slider-Bilder.
+   - [x] Schritt 3: Design – **entschieden und umgesetzt (2026-11-12):** Variante A als Theme `classic` (Standard),
+         B und C bleiben als Themes `modern` und `stage` erhalten (`App\Theme\Theme`, Partials in
+         `assets/styles/partials/themes/`). Aktives Theme und Slider-Bilder liefert `App\Theme\SiteSettings`, vorerst
+         aus `config/services.yaml`; später aus der Datenbank, eingestellt von Sonja im Admin-Bereich (Dropdown für das
+         Theme, auch saisonale Themes; Verwaltung der Slider-Bilder). Vorschau per `?theme=…` nur für die eine Seite,
+         ohne sessionStorage und ohne Inline-Script (Umschalter entfernt, Datenschutzerklärung angepasst).
+         Logo und Hero-Überschrift in Allura; Great Vibes, Parisienne und Dancing Script entfernt. Logo als SVG mit
+         Pfaden steht noch aus (laut OFL-FAQ 1.1 erlaubt; braucht ein Werkzeug wie fontTools).
+         Startseite: Slider mit Bootstrap-Carousel (`assets/slider.js`) über `hero-sonja2` und `hero-sax`, Wechsel alle
+         6 s mit Überblendung, Pfeile, Wischen, Tastatur, Pause-Knopf (WCAG 2.2.2), kein Autoplay bei „Bewegung
+         reduzieren“; ohne JavaScript nur das erste Bild.
          Bisheriger Stand (2026-11-11), drei Varianten:
          A klassisch-elegant (Cormorant Garamond + Jost), B modern-klar (Montserrat + Inter), C Bühne/dunkel
          (Playfair Display + Inter); Akzentfarbe Petrol in A und B, Gold in C (Rot verworfen: zu nah an Red Mullet);
@@ -205,8 +212,6 @@ Erst danach werden Features gebaut.
   Weiß 6,61:1. Variante C mit Gold `#D4AF5A` statt Petrol: auf Dunkel 9,08:1, Buttons mit dunkler Schrift.
 - Bildnachweis im Impressum: Doris Sporer (Porträts), Simon Reithofer (`hero-sax.jpg`), Michael Czak (Bandfoto,
   bestätigt 2026-11-11). KI-Bilder (`hero-wedding.jpg`, `hero-lessons.jpg`): Kennzeichnung noch offen.
-- Die Designvorschau nutzt Inline-Scripts. Falls später eine Content-Security-Policy kommt, berücksichtigen
-  (bzw. die Vorschau ist bis dahin entfernt).
 
 **Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
 CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.

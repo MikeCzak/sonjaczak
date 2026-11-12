@@ -118,14 +118,19 @@ Zum Prüfen ohne Effekte: in macOS unter Bedienungshilfen → Anzeige → „Bew
 Originale gehören nicht ins Repo (`claude_references/` ist ignoriert). Bildnachweis im Impressum ergänzen
 (`imprint.credits` in `content.de.yaml`).
 
-## Designvorschau (Schritt 3, vorübergehend)
+## Themes und Slider
 
-Bis zur Entscheidung zwischen den Designvarianten:
-
-- `https://localhost/_design` – Styleguide: Logo-Kandidaten, Schrift, Farben mit Kontrastwerten, Bedienelemente
-- `?design=a`, `?design=b`, `?design=c` an einer beliebigen URL wählt die Variante; sie bleibt für den Browser-Tab
-  gespeichert (sessionStorage), unten rechts erscheint ein Umschalter. `?design=off` beendet die Vorschau.
-- Funktioniert genauso auf https://sonjaczak.com (für Sonja), die Seite `/_design` ist nicht verlinkt und `noindex`.
+- **Aktives Theme:** Parameter `app.theme` in `config/services.yaml` (Werte aus `App\Theme\Theme`: `classic`,
+  `modern`, `stage`). Der Server setzt es als `data-theme` auf `<html>`. Später stellt Sonja es im Admin-Bereich ein.
+- **Vorschau:** `?theme=modern` oder `?theme=stage` an eine beliebige URL hängen. Gilt nur für diese eine Seite, der
+  Browser speichert nichts. `https://localhost/_design` zeigt Schrift, Farben mit Kontrastwerten und Bedienelemente
+  je Theme (nicht verlinkt, `noindex`, auch in Produktion erreichbar).
+- **Neues Theme** (z. B. Weihnachten): Fall in `src/Theme/Theme.php`, Partial
+  `assets/styles/partials/themes/_<wert>.scss` mit `[data-theme='<wert>'] { --sc-…: …; }` und Import in `app.scss`,
+  Übersetzung `theme.<wert>` in `messages.de.yaml`. Überschrieben werden nur die `--sc-*`-Tokens, die anders sein
+  sollen; alles andere erbt vom Standard-Theme (`_design.scss`).
+- **Slider der Startseite:** Bilder und Ausschnitt in `app.home_slides` (`config/services.yaml`), Reihenfolge wie
+  dort. Ein neues Bild vorher mit `bin/build-images` erzeugen (Abschnitt „Bilder“).
 
 ## Texte und Fehlerseite
 

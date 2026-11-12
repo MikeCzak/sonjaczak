@@ -2,11 +2,40 @@
 {% import '_macros/image.html.twig' as media %}
 
 {% block body %}
-    <section class="sc-hero sc-hero--home">
-        {# Decorative: the heading names what the photo shows #}
-        {{ media.image('hero-sonja2', '', {class: 'sc-hero__image', position: '60% 35%', priority: true}) }}
-        {# Design preview: variant C shows another photo (CSS switches), lazy so A and B never load it #}
-        {{ media.image('hero-sax', '', {class: 'sc-hero__image sc-hero__image--variant-c', position: '60% 30%'}) }}
+    {#
+     # Slider with Bootstrap's carousel, started by assets/slider.js (autoplay, buttons, swipe, keyboard).
+     # Without JavaScript only the first photo shows and the controls stay hidden. Photos are decorative: the heading
+     # names what they show. Slides come from App\Theme\SiteSettings::homeSlides().
+     #}
+    {% set slides = site.homeSlides %}
+    {# "slide" is required: without it Bootstrap hides the old photo at once instead of after the fade (_isAnimated()) #}
+    <section class="sc-hero sc-hero--home carousel slide carousel-fade" id="home-slider" data-slider
+             aria-roledescription="{{ 'slider.label'|trans }}" aria-label="{{ 'slider.photos'|trans }}">
+        <div class="carousel-inner sc-hero__slides">
+            {% for slide in slides %}
+                <div class="carousel-item{{ loop.first ? ' active' }}" role="group" aria-roledescription="{{ 'slider.slide'|trans }}"
+                     aria-label="{{ 'slider.position'|trans({'%index%': loop.index, '%count%': slides|length}) }}">
+                    {{ media.image(slide.image, '', {class: 'sc-hero__image', position: slide.position, priority: loop.first, lazy: false}) }}
+                </div>
+            {% endfor %}
+        </div>
+        {% if slides|length > 1 %}
+            {# Local hot reload replaces the DOM with fresh server HTML (hidden again, slider.js does not run again):
+             # keep the controls as they are. The attribute only exists while hot reload is on (compose.override.yaml). #}
+            <div class="sc-slider-controls" data-slider-controls hidden
+                 {%- if app.request.server.get('FRANKENPHP_HOT_RELOAD') %} data-frankenphp-hot-reload-preserve{% endif %}>
+                <button type="button" class="sc-slider-button" data-slider-prev aria-controls="home-slider">
+                    <span aria-hidden="true">‹</span><span class="visually-hidden">{{ 'slider.previous'|trans }}</span>
+                </button>
+                <button type="button" class="sc-slider-button" data-slider-pause aria-controls="home-slider"
+                        data-label-pause="{{ 'slider.pause'|trans }}" data-label-play="{{ 'slider.play'|trans }}">
+                    <span aria-hidden="true" data-slider-pause-icon>❚❚</span><span class="visually-hidden" data-slider-pause-label>{{ 'slider.pause'|trans }}</span>
+                </button>
+                <button type="button" class="sc-slider-button" data-slider-next aria-controls="home-slider">
+                    <span aria-hidden="true">›</span><span class="visually-hidden">{{ 'slider.next'|trans }}</span>
+                </button>
+            </div>
+        {% endif %}
         <div class="container pb-5">
             <h1>{{ 'site.name'|trans }}</h1>
             <p class="lead mb-0">{{ 'site.tagline'|trans }}</p>

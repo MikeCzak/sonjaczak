@@ -1,0 +1,27 @@
+// Theme "modern" (design variant B, 2026-11-11): modern and clear
+[data-theme='modern'] {
+    --sc-font-body: 'Inter', system-ui, sans-serif;
+    --sc-font-heading: 'Montserrat', system-ui, sans-serif;
+    --sc-font-hero: 'Montserrat', system-ui, sans-serif;
+    --sc-heading-weight: 700;
+    --sc-heading-transform: uppercase;
+    --sc-heading-spacing: 0.04em;
+    --sc-hero-size: clamp(2.5rem, 7vw, 5rem);
+
+    --sc-bg: #ffffff;
+    --sc-surface: #f2f2f4;
+    --sc-text: #17151a;
+    --sc-text-rgb: 23, 21, 26;
+    --sc-muted: #5c5a63;
+    --sc-border: #dedde2;
+    --sc-accent: #1a6670;
+    --sc-accent-text: #1a6670;
+    --sc-accent-text-rgb: 26, 102, 112;
+    --sc-on-accent: #ffffff;
+}
+
+// The script font of the default theme needs no uppercase; this theme's sans-serif headline does
+[data-theme='modern'] .sc-hero h1 {
+    font-weight: 800;
+    text-transform: uppercase;
+}

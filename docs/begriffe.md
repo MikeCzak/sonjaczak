@@ -248,6 +248,14 @@ abhängt (`animation-timeline: view()` bzw. ein benannter `view-timeline`). Läu
 „Baseline 2026“. Bei uns `assets/styles/partials/_motion.scss`, abgeschaltet bei „Bewegung reduzieren“
 (`prefers-reduced-motion`).
 
+**Theme** – Satz von Farben und Schriften als CSS-Variablen (`--sc-*`), umschaltbar zur Laufzeit über `data-theme` auf
+`<html>`. Bei uns `classic` (Standard), `modern`, `stage` (`App\Theme\Theme`). Bootstraps Sass-Variablen stehen beim
+Kompilieren fest, deshalb zeigen Bootstraps Laufzeit-Variablen (`--bs-*`) auf unsere Tokens.
+
+**Carousel / Slider** – Bootstrap-Komponente, die mehrere Elemente nacheinander zeigt (`.carousel`, `.carousel-item`).
+Bei uns die Fotos auf der Startseite (`assets/slider.js`). Läuft etwas länger als 5 Sekunden automatisch, verlangt
+WCAG 2.2.2 eine Möglichkeit zum Anhalten, daher der Pause-Knopf.
+
 ## Formulare und Mail
 
 **Symfony Mailer / `MAILER_DSN`** – Verschickt Mails; die DSN sagt, wohin (`smtps://user:pass@smtp.ionos.de:465`

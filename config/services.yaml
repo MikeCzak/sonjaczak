@@ -9,6 +9,12 @@
 parameters:
     # Public address and recipient of all inquiry forms (sender: config/packages/mailer.yaml)
     app.contact_email: 'music@sonjaczak.com'
+    # Site settings (App\Theme\SiteSettings), later changed by Sonja in the admin area.
+    # Theme: a value of App\Theme\Theme. Slides: image name and object-position, shown in this order.
+    app.theme: 'classic'
+    app.home_slides:
+        - { image: 'hero-sonja2', position: '60% 35%' }
+        - { image: 'hero-sax', position: '60% 30%' }
 
 services:
     # default configuration for services in *this* file

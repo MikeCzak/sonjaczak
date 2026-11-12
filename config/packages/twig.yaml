@@ -8,6 +8,8 @@ twig:
         band_url: 'https://www.redmulletmusic.at'
         # AI-generated images get a visible label (templates/_macros/image.html.twig); remove when replaced by photos
         ai_generated_images: ['hero-wedding', 'hero-lessons']
+        # Active theme and home page slides (App\Theme\SiteSettings)
+        site: '@App\Theme\SiteSettings'
 
 when@test:
     twig:

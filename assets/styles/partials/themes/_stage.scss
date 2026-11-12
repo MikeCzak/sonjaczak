@@ -1,0 +1,22 @@
+// Theme "stage" (design variant C, 2026-11-11): dark, stage-like. Also sets data-bs-theme="dark" (App\Theme\Theme::isDark()).
+[data-theme='stage'] {
+    --sc-font-body: 'Inter', system-ui, sans-serif;
+    --sc-font-heading: 'Playfair Display', Georgia, serif;
+    --sc-font-hero: 'Playfair Display', Georgia, serif;
+    --sc-heading-weight: 700;
+    --sc-heading-transform: none;
+    --sc-heading-spacing: normal;
+    --sc-hero-size: clamp(3rem, 9vw, 6.5rem);
+
+    --sc-bg: #121014;
+    --sc-surface: #1e1b21;
+    --sc-text: #f3eee8;
+    --sc-text-rgb: 243, 238, 232;
+    --sc-muted: #b5ada6;
+    --sc-border: #34303a;
+    --sc-accent: #d4af5a;
+    --sc-accent-text: #d4af5a;
+    --sc-accent-text-rgb: 212, 175, 90;
+    --sc-on-accent: #121014;
+    --sc-hero-overlay: linear-gradient(0deg, rgba(18, 16, 20, 0.95) 0%, rgba(18, 16, 20, 0.2) 60%);
+}

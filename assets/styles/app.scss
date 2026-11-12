@@ -1,9 +1,14 @@
 // Bootstrap variable overrides (compile time) go above the import.
 // Colors and fonts that differ per design variant or area are CSS custom properties, see partials/_design.scss.
 
+$carousel-transition-duration: 2s;
+
 @import 'bootstrap';
 
 @import 'partials/fonts';
 @import 'partials/design';
+// Themes override the tokens of the default theme (one partial per App\Theme\Theme case)
+@import 'partials/themes/modern';
+@import 'partials/themes/stage';
 @import 'partials/forms';
 @import 'partials/motion';

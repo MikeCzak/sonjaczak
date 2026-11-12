@@ -32,23 +32,12 @@
         <h1>{{ 'styleguide.title'|trans }}</h1>
         <p class="lead">{{ 'styleguide.intro'|trans }}</p>
         <p>
-            {% for variant, label in {a: 'styleguide.variant_a'|trans, b: 'styleguide.variant_b'|trans, c: 'styleguide.variant_c'|trans} %}
-                <a class="btn btn-outline-secondary me-2 mb-2" href="?design={{ variant }}">{{ label }}</a>
+            {# The preview applies to this page only (App\Theme\SiteSettings::theme()); on other pages add ?theme=… #}
+            {% for item in themes %}
+                <a class="btn btn-outline-secondary me-2 mb-2" href="?theme={{ item.value }}"
+                   {%- if item == theme %} aria-current="true"{% endif %}>{{ item.labelKey|trans }}</a>
             {% endfor %}
         </p>
-
-        <h2 class="mt-5">{{ 'styleguide.logo'|trans }}</h2>
-        <p>{{ 'styleguide.logo_hint'|trans }}</p>
-        <div class="row g-3">
-            {% for font in logo_fonts %}
-                <div class="col-md-6">
-                    <div class="border rounded p-4 text-center" data-logo-candidate>
-                        <div style="font-family: '{{ font }}', cursive; font-size: 3.5rem; line-height: 1.2;">{{ 'site.name'|trans }}</div>
-                        <div class="small text-body-secondary mt-2">{{ font }}</div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
 
         <h2 class="mt-5">{{ 'styleguide.typography'|trans }}</h2>
         <h1>{{ 'home.offers.solo.heading'|trans({}, 'content') }}</h1>

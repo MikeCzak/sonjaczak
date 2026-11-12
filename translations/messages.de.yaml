@@ -109,6 +109,17 @@ placeholder:
 image:
     ai_generated: KI-generiert
 
+# Photo slider on the home page (screen readers; the buttons only show symbols)
+slider:
+    label: Diashow
+    photos: Fotos von Sonja Czak
+    slide: Foto
+    position: '%index% von %count%'
+    previous: Vorheriges Foto
+    next: Nächstes Foto
+    pause: Diashow anhalten
+    play: Diashow fortsetzen
+
 error:
     not_found:
         title: Seite nicht gefunden
@@ -123,18 +134,15 @@ footer:
     privacy: Datenschutz
 
 # Design preview and style guide (step 3, temporary until the design decision)
-design_preview:
-    label: Designvorschau
-    end: Beenden
+# Names of App\Theme\Theme, for the style guide and later the admin area
+theme:
+    classic: Klassisch-elegant
+    modern: Modern-klar
+    stage: Bühne (dunkel)
 
 styleguide:
     title: Styleguide
-    intro: Vergleich der Designvarianten. Die gewählte Variante gilt für alle Seiten, solange dieser Browser-Tab offen ist.
-    variant_a: A – Klassisch-elegant
-    variant_b: B – Modern-klar
-    variant_c: C – Bühne (dunkel)
-    logo: Logo
-    logo_hint: Handschriftliche Schriften für den Schriftzug. Unabhängig von der Variante wählbar.
+    intro: Vergleich der Themes. Die Vorschau gilt nur für diese Seite; auf anderen Seiten ?theme=modern oder ?theme=stage an die Adresse anhängen.
     typography: Schrift
     colors: Farben und Kontrast
     colors_hint: Kontrast nach WCAG 2.1. Fließtext braucht mindestens 4,5:1 (AA), große Schrift 3:1.
