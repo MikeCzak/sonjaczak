@@ -109,7 +109,7 @@ jobs:
           docker compose -f compose.yaml -f compose.prod.yaml exec -T php bin/console about
           docker compose -f compose.yaml -f compose.prod.yaml exec -T php bin/console dbal:run-sql "SELECT 1"
           # The home page renders through the whole prod stack (Caddy, FrankenPHP, Twig, compiled assets)
-          curl --silent --show-error --insecure --fail-with-body https://localhost/ | grep --quiet '<html lang="de">'
+          curl --silent --show-error --insecure --fail-with-body https://localhost/ | grep --quiet '<html lang="de" data-theme="'
           # PHP must verify TLS certificates without SSL_CERT_FILE, which does not reach PHP in the FrankenPHP worker
           # (openssl.cafile in frankenphp/conf.d/20-app.prod.ini); target is the SMTP server of the inquiry forms
           docker compose -f compose.yaml -f compose.prod.yaml exec -T php env -u SSL_CERT_FILE \
