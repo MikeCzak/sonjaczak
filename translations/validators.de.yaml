@@ -3,3 +3,5 @@
 inquiry:
     phone:
         invalid: Erlaubt sind Ziffern, Leerzeichen und + / ( ) -.
+    date:
+        past: Das Datum darf nicht in der Vergangenheit liegen.

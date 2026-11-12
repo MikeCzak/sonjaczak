@@ -154,7 +154,11 @@ Erst danach werden Features gebaut.
            Erster Live-Test scheiterte (2026-11-12): PHP im FrankenPHP-Worker fand keine CA-Zertifikate
            (`SSL_CERT_FILE` kommt dort nicht an, das schlanke Prod-Image hat kein OpenSSL-Standardverzeichnis), die
            Konsole schon. Lösung: `openssl.cafile` in `20-app.prod.ini`, CI-Smoke-Test prüft TLS ohne `SSL_CERT_FILE`.
-     - [ ] 6c Booking · 6d Unterricht · 6e Datenschutzerklärung um Booking-/Unterrichtsformular ergänzen
+     - [x] 6c (2026-11-12): Booking-Formular auf `/booking/solo` (Anlass als Enum `App\Inquiry\Occasion` mit festen
+           Schlüsseln statt der Liste aus `content`, Datum nicht in der Vergangenheit, Ort). Gemeinsamer Ablauf im
+           Controller-Trait `InquiryFormTrait`. Datenschutzerklärung um die Booking-Felder ergänzt.
+     - [ ] 6d Unterricht · 6e Datenschutzerklärung um das Unterrichtsformular ergänzen (Minderjährige),
+           `mail_inquiry`-Partial entfernen
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
      - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
        Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`

@@ -1,0 +1,16 @@
+{# Plain text mail to Sonja; .txt.twig is not HTML-escaped. Reply-To is the sender (App\Inquiry\InquiryProcessor). #}
+{{ 'mail.booking_solo.intro'|trans }}
+
+{{ 'form.label.occasion'|trans }}: {{ inquiry.occasion ? inquiry.occasion.labelKey|trans }}
+{{ 'form.label.date'|trans }}: {{ inquiry.date ? inquiry.date|date('d.m.Y') }}
+{{ 'form.label.place'|trans }}: {{ inquiry.place }}
+
+{{ 'form.label.name'|trans }}: {{ inquiry.name }}
+{{ 'form.label.email'|trans }}: {{ inquiry.email }}
+{{ 'form.label.phone'|trans }}: {{ inquiry.phone ?? 'mail.empty'|trans }}
+
+{{ 'form.label.message'|trans }}:
+{{ inquiry.message }}
+
+--
+{{ 'mail.reply_hint'|trans }}

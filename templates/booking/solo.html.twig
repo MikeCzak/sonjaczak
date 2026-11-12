@@ -70,9 +70,20 @@
         </div>
     </section>
 
-    {{ include('_partials/mail_inquiry.html.twig', {
-        heading: 'booking_solo.inquiry.heading'|trans({}, 'content'),
-        body: 'booking_solo.inquiry.body'|trans({}, 'content'),
-        subject: 'booking_solo.inquiry.mail_subject'|trans({}, 'content'),
-    }) }}
+    <section class="sc-section sc-section--surface">
+        <div class="container">
+            <h2>{{ 'booking_solo.inquiry.heading'|trans({}, 'content') }}</h2>
+            <hr class="sc-accent-line">
+            <div class="col-lg-8">
+                <p>{{ 'booking_solo.inquiry.body'|trans({}, 'content') }}</p>
+                {{ include('_partials/inquiry_form.html.twig', {
+                    form: form,
+                    status: inquiry_status,
+                    sent: inquiry_sent,
+                    page_url: path('app_booking_solo'),
+                    address: 'formal',
+                }) }}
+            </div>
+        </div>
+    </section>
 {% endblock %}
