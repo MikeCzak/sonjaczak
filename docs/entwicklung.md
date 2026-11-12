@@ -118,6 +118,21 @@ Zum Prüfen ohne Effekte: in macOS unter Bedienungshilfen → Anzeige → „Bew
 Originale gehören nicht ins Repo (`claude_references/` ist ignoriert). Bildnachweis im Impressum ergänzen
 (`imprint.credits` in `content.de.yaml`).
 
+## Logo
+
+Das Logo „Sonja Czak“ ist ein SVG aus den Umrissen der Schrift Allura (`templates/_partials/logo.svg`), erzeugt von
+`bin/build-logo` auf dem Mac. Das Script setzt den Text mit HarfBuzz (inkl. Kerning wie im Browser) und schreibt die
+Glyphen mit fontTools als Pfade. Im Header steht das SVG inline mit `fill="currentColor"`, damit es die Textfarbe des
+Themes übernimmt. Einmalig einrichten und ausführen:
+
+```bash
+python3 -m venv ~/.venvs/sonjaczak-logo
+~/.venvs/sonjaczak-logo/bin/pip install fonttools brotli uharfbuzz
+~/.venvs/sonjaczak-logo/bin/python bin/build-logo
+```
+
+Erstellt am 2026-11-12 mit fonttools 4.68.0, brotli 1.2.1, uharfbuzz 0.57.0.
+
 ## Themes und Slider
 
 - **Aktives Theme:** Parameter `app.theme` in `config/services.yaml` (Werte aus `App\Theme\Theme`: `classic`,

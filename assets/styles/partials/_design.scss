@@ -14,7 +14,6 @@
     --sc-font-body: 'Jost', system-ui, sans-serif;
     --sc-font-heading: 'Cormorant Garamond', Georgia, serif;
     --sc-font-hero: 'Allura', cursive;
-    --sc-font-logo: 'Allura', cursive;
     --sc-heading-weight: 600;
     --sc-heading-transform: none;
     --sc-heading-spacing: normal;
@@ -115,9 +114,14 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .navbar-brand {
-    font-family: var(--sc-font-logo);
-    font-size: 2rem;
-    line-height: 1;
+    color: var(--sc-text);
+}
+
+// SVG logo (templates/_partials/logo.svg): about as high as the former 2rem text, width from the viewBox
+.sc-logo {
+    display: block;
+    height: 2.25rem;
+    width: auto;
 }
 
 .navbar .nav-link.active {

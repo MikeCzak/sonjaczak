@@ -65,7 +65,7 @@ RAM auf dem Server nach dem ersten Deploy (Leerlauf): php 159 MiB, database 35 M
 - [ ] Backups der Datenbank (DSGVO) einrichten – spätestens bevor echte Daten erfasst werden
 - [x] `www.sonjaczak.com` → Weiterleitung auf `sonjaczak.com` (2026-11-12: A-Record `www`, Caddy-Block über
       `CADDY_EXTRA_CONFIG` in `compose.prod.yaml`, 301; Erklärung in `docs/erklaerungen/03-compose-und-frankenphp.md`)
-- [ ] Erinnerung an ablaufende Tokens: Cronjob am Server mit Mail (`docs/deployment.md` B6) – **noch eintragen**
+- [x] Erinnerung an ablaufende Tokens: Cronjob am Server mit Mail (`docs/deployment.md` B6), eingetragen 2026-11-12
       (gh CLI läuft 2027-11-02 ab, Server-Token 2027-11-03)
 - Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
 - Alte Images in ghcr.io aufräumen (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit 1 Monat Vorlauf)
@@ -122,7 +122,7 @@ Erst danach werden Features gebaut.
          Theme, auch saisonale Themes; Verwaltung der Slider-Bilder). Vorschau per `?theme=…` nur für die eine Seite,
          ohne sessionStorage und ohne Inline-Script (Umschalter entfernt, Datenschutzerklärung angepasst).
          Logo und Hero-Überschrift in Allura; Great Vibes, Parisienne und Dancing Script entfernt. Logo als SVG mit
-         Pfaden steht noch aus (laut OFL-FAQ 1.1 erlaubt; braucht ein Werkzeug wie fontTools).
+         Pfaden (`bin/build-logo`, fontTools und HarfBuzz am Mac, inline mit `currentColor`, 2026-11-12).
          Startseite: Slider mit Bootstrap-Carousel (`assets/slider.js`) über `hero-sonja2` und `hero-sax`, Wechsel alle
          6 s mit Überblendung, Pfeile, Wischen, Tastatur, Pause-Knopf (WCAG 2.2.2), kein Autoplay bei „Bewegung
          reduzieren“; ohne JavaScript nur das erste Bild.
@@ -183,19 +183,17 @@ Erst danach werden Features gebaut.
        zwingend) → Kontaktformular auf `/kontakt` (Schritt 6, live getestet 2026-11-12)
      - [x] IONOS (2026-11-12): AVV gilt laut ionos.de/terms-gtc/avv (Ziff. 1.1, 12.3) als Teil der AGB, kein eigener
        Abschluss; Rechenzentrum des VPS in Berlin (EU)
-     - [x] Postfach `music@` liegt bei IONOS, wird an Sonjas Gmail weitergeleitet → Google Ireland in der
-       Datenschutzerklärung genannt (2026-11-12)
-     - [ ] **Gmail und AVV klären:** Für kostenloses Gmail habe ich keinen Auftragsverarbeitungsvertrag gefunden (den
-       „Cloud Data Processing Addendum“ gibt es für Google Workspace). Kundendaten in einem privaten Gmail-Konto sind
-       daher ein Risiko. Optionen: Google Workspace (mit AVV), oder `music@` direkt per IMAP in einem Mail-Programm
-       bzw. im IONOS-Webmail lesen (ohne Weiterleitung)
+     - [x] Postfach `music@` liegt bei IONOS (2026-11-12). Keine Weiterleitung an Gmail (für kostenloses Gmail kein
+       Auftragsverarbeitungsvertrag gefunden), Sonja liest es per IMAP in Apple Mail. Datenschutzerklärung nennt nur IONOS.
      - [x] Texte in der Ich-Form statt „Sonja“ (2026-11-12; Meta-Beschreibungen und Rechtstexte bleiben neutral)
      - [x] KI-Bilder gekennzeichnet (2026-11-12): Hinweis „KI-generiert“ in der Ecke (Liste `ai_generated_images` in
        `config/packages/twig.yaml`) und im Bildnachweis; Austausch gegen Fotos, sobald vorhanden
      - [x] Minderjährige (2026-11-12): Altersgrenze 14 (§ 4 Abs. 4 DSG) gilt nur für Einwilligungen, die Formulare
        stützen sich auf Art. 6 Abs. 1 lit. b/f → freiwilliger Hinweis „unter 14 gemeinsam mit einem Elternteil“ beim
        Unterrichtsformular
-     - Entwürfe durchsehen (`# Draft`), Regeln und FAQ von Sonja
+     - Entwürfe durchsehen: Texte mit `# Draft` in `translations/content.de.yaml`
+     - Später (nach dem Release): Regeln für den Unterricht (inhalte.md E42: Absagen, Nachholstunden) und FAQ (E44),
+       Texte von Sonja; die Abschnitte bleiben bis dahin ausgeblendet
      - Nach dem Deploy: gekürzte IPs in den Server-Logs prüfen (`docker compose logs php`)
    - [x] **CI startet nicht** (2026-11-09 `startup_failure`): seit 2026-11-11 behoben, CI läuft wieder.
 

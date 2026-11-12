@@ -39,6 +39,9 @@ final class PublicPagesTest extends WebTestCase
         self::assertSelectorExists('html[lang="de"]');
         self::assertSelectorExists('header #main-nav .navbar-nav');
         self::assertSelectorExists('footer a[href="/kontakt#impressum"]');
+        // SVG logo; the hidden text gives the link its name
+        self::assertSelectorExists('header .navbar-brand svg.sc-logo path');
+        self::assertSelectorTextSame('header .navbar-brand .visually-hidden', 'Sonja Czak');
 
         // A missing translation is rendered as its key, e.g. "nav.home"; this also covers the menu labels,
         // which debug:translation cannot see because they are set in PHP (App\Menu\MenuBuilder)

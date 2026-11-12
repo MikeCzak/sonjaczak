@@ -1,8 +1,11 @@
 <header>
     <nav class="navbar navbar-expand-lg sc-header" aria-label="{{ 'nav.label'|trans }}">
         <div class="container">
-            {# Logo: name in the script font of the theme (--sc-font-logo, Allura in "classic"); SVG paths later #}
-            <a class="navbar-brand" href="{{ path('app_home') }}">{{ 'site.name'|trans }}</a>
+            {# Logo as SVG paths (bin/build-logo), inline so it takes the theme's text color; the hidden text names the link #}
+            <a class="navbar-brand" href="{{ path('app_home') }}">
+                {{- source('_partials/logo.svg') -}}
+                <span class="visually-hidden">{{ 'site.name'|trans }}</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav"
                     aria-controls="main-nav" aria-expanded="false" aria-label="{{ 'nav.toggle'|trans }}">
                 <span class="navbar-toggler-icon"></span>

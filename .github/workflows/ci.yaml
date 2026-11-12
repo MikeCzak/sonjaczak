@@ -109,11 +109,18 @@ jobs:
           docker compose -f compose.yaml -f compose.prod.yaml exec -T php bin/console about
           docker compose -f compose.yaml -f compose.prod.yaml exec -T php bin/console dbal:run-sql "SELECT 1"
           # The home page renders through the whole prod stack (Caddy, FrankenPHP, Twig, compiled assets)
-          curl --silent --show-error --insecure --fail-with-body https://localhost/ | grep --quiet '<html lang="de" data-theme="'
+          # grep --quiet prints nothing, so name the failed check (::error:: shows as an annotation on the run page)
+          if ! curl --silent --show-error --insecure --fail-with-body https://localhost/ | grep --quiet '<html lang="de" data-theme="'; then
+            echo '::error::Home page: no <html lang="de" data-theme="…"> in the response (or the request failed)'
+            exit 1
+          fi
           # PHP must verify TLS certificates without SSL_CERT_FILE, which does not reach PHP in the FrankenPHP worker
           # (openssl.cafile in frankenphp/conf.d/20-app.prod.ini); target is the SMTP server of the inquiry forms
-          docker compose -f compose.yaml -f compose.prod.yaml exec -T php env -u SSL_CERT_FILE \
-            php -r 'exit(stream_socket_client("ssl://smtp.ionos.de:465", $code, $message, 10) ? 0 : 1);'
+          if ! docker compose -f compose.yaml -f compose.prod.yaml exec -T php env -u SSL_CERT_FILE \
+            php -r 'exit(stream_socket_client("ssl://smtp.ionos.de:465", $code, $message, 10) ? 0 : 1);'; then
+            echo '::error::PHP could not open a TLS connection to smtp.ionos.de:465 (CA certificates, see openssl.cafile)'
+            exit 1
+          fi
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4
         with:
