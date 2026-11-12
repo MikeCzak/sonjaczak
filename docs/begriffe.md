@@ -285,3 +285,18 @@ wäre gesendet worden, und verschicken nichts.
 **Post/Redirect/Get (PRG)** – Nach erfolgreichem POST leitet der Server per 303 auf eine GET-Seite um. So schickt
 ein Neuladen das Formular nicht noch einmal ab. Bei uns `?gesendet=1#anfrage` statt einer Flash-Message (die
 bräuchte eine Session).
+
+## Datenmodell
+
+**Owning Side** – Bei einer Doctrine-Beziehung die Seite, die die Fremdschlüssel-Spalte hält. Nur Änderungen an
+dieser Seite werden gespeichert; die inverse Seite (`mappedBy`) ist nur zum Lesen da. Details: `docs/planung/datenmodell.md`.
+
+**Embeddable** – PHP-Klasse ohne eigene Tabelle und ohne ID (`#[ORM\Embeddable]`), deren Felder als Spalten in der
+Tabelle der umgebenden Entity landen (`#[ORM\Embedded]`, z. B. `address_street`). Bei uns `Address` und `Recipient`.
+Wird beim Laden immer als Objekt angelegt, nie `null`.
+
+**Snapshot** – Kopie von Daten zum Zeitpunkt eines Belegs (Empfänger und Betrag der Honorarnote), damit spätere
+Änderungen am Original den Beleg nicht verändern.
+
+**Fixtures / Foundry** – Erfundene Testdaten. Zenstruck Foundry erzeugt sie über Factories mit Faker, für die lokale
+Datenbank (`doctrine:fixtures:load`) und in Tests. Nur `require-dev`, nie echte Personendaten.

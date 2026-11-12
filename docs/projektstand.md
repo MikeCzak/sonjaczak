@@ -101,6 +101,11 @@ Erst danach werden Features gebaut.
    (2026-11-07): zuerst die öffentlichen Seiten. Inhalte in `docs/planung/inhalte.md` weitgehend beantwortet
    (2026-11-11). Seitenstruktur in `docs/planung/seitenstruktur.md` festgelegt (Routen, Menü, Übersetzungsschema,
    CSS-Framework). Datenmodell (ER-Diagramm) und Rollenkonzept für den Admin-Bereich folgen nach dem ersten Release.
+   **Aktuell (2026-11-12):** Datenmodell `docs/planung/datenmodell.md`, zweiter Entwurf: erste Fragenrunde
+   eingearbeitet (Schnupperstunde als eigene Entity, Ferien je Kurs, Einheiten werden erzeugt, Kursraster als
+   Arbeitsansicht, eine Honorarnote mit Ratenoption, Gutschrift, PDF in der Datenbank), zweite Fragenrunde offen.
+   Todos für den Admin-Bereich (Dashboard, Export der Einnahmen, PDF, Art.-13-Information) in Abschnitt 9.
+   Ziel: Datenbank und Admin-Bereich fertig, bevor Mike Sonja den Stand zeigt.
 3. **Umsetzung erstes Release** (Plan: `docs/planung/seitenstruktur.md`, Abschnitt 10)
    - [x] Schritt 1 (2026-11-11): Twig, Translation (`de`), AssetMapper, Sass-Bundle und Bootstrap 5.3.8 (Sass aus
          `twbs/bootstrap`, JavaScript über die Importmap). Prod-Builder führt `sass:build` vor `asset-map:compile` aus
@@ -242,6 +247,8 @@ und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
 | Referenzmaterial | `claude_references/` nur lokal, in `.gitignore` (2026-11-11) | Enthält eine echte Honorarnote (DSGVO) und große Originalbilder; ins Repo kommen nur Web-Versionen |
 | CSS-Framework | Bootstrap 5.3 mit `symfonycasts/sass-bundle`, Assets über AssetMapper (2026-11-11) | Fertige Komponenten (Navbar, Formulare, Accordion), Erfahrung vorhanden; kein Node nötig. Details: `docs/planung/seitenstruktur.md` |
 | Übersetzungen | YAML, Domains `messages` (Zweck-Schlüssel), `content` (Seite.Abschnitt), `validators` (2026-11-11) | Lange Texte lesbarer als XLIFF; `content` wandert später teilweise ins CMS |
+| Admin-Oberfläche | Eigene Controller, Forms und Voter, kein EasyAdmin (2026-11-12) | Volle Kontrolle; Mike kennt Symfony-Forms und Voter |
+| Daten für Entwicklung | Erfundene Daten aus Fixtures (Zenstruck Foundry, nur `require-dev`); echte Daten nur über die Admin-Masken in Produktion (2026-11-12) | Keine echten Personendaten lokal oder im Repo; Factories auch für Tests |
 | Seitenstruktur | Deutsche URLs ohne Sprachpräfix; Impressum als Abschnitt auf `/kontakt`; Ansprache „Sie“, nur Unterricht „Du“; Logo „Sonja Czak“; Google Maps nur als Link (2026-11-11) | Siehe `docs/planung/seitenstruktur.md` |
 | Mail-Versand | IONOS-SMTP (`smtp.ionos.de:465`), synchron, Absender `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com` (2026-11-11) | Postfach ist bereits bei IONOS, kein weiterer Dienst; kein Messenger-Worker nötig (RAM). Details: `docs/planung/formulare.md` |
 
@@ -249,7 +256,7 @@ und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
 
 | Thema | Optionen | Wann |
 |---|---|---|
-| Symfony UX | Turbo, Live Components oder Kombination für die dynamischen Formulare | Bei Booking- und Lessons-Formular |
+| Symfony UX | Turbo, Live Components, Stimulus + `fetch` oder Kombination für die dynamischen Formulare und das Kursraster im Admin (`datenmodell.md` Abschnitt 4) | Bei der Planung des Admin-Bereichs |
 | Postfächer | Mail-Hosting für Sonjas Adressen unter sonjaczak.com | Unabhängig, sobald Domain-Setup steht |
 | Admin-Bereich | Login und Rollen: entschieden, ja. Sonja legt Unterrichtssemester und deren Termine an, verwaltet Schüler:innen mit persönlichen und Rechnungsdaten und erstellt daraus Honorarnoten. Details offen; personenbezogene Daten erfordern DSGVO-Maßnahmen (Zugriffsschutz, Backups) | Bei der App-Planung |
 
