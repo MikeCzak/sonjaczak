@@ -5,3 +5,5 @@ inquiry:
         invalid: Erlaubt sind Ziffern, Leerzeichen und + / ( ) -.
     date:
         past: Das Datum darf nicht in der Vergangenheit liegen.
+    guardian:
+        required: Bei Schüler:innen unter 18 Jahren bitte den Namen einer erziehungsberechtigten Person angeben.

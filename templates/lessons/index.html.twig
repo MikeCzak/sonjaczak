@@ -81,9 +81,20 @@
         {% endif %}
     {% endfor %}
 
-    {{ include('_partials/mail_inquiry.html.twig', {
-        heading: 'lessons.inquiry.heading'|trans({}, 'content'),
-        body: 'lessons.inquiry.body'|trans({}, 'content'),
-        subject: 'lessons.inquiry.mail_subject'|trans({}, 'content'),
-    }) }}
+    <section class="sc-section sc-section--surface">
+        <div class="container">
+            <h2>{{ 'lessons.inquiry.heading'|trans({}, 'content') }}</h2>
+            <hr class="sc-accent-line">
+            <div class="col-lg-8">
+                <p>{{ 'lessons.inquiry.body'|trans({}, 'content') }}</p>
+                {{ include('_partials/inquiry_form.html.twig', {
+                    form: form,
+                    status: inquiry_status,
+                    sent: inquiry_sent,
+                    page_url: path('app_lessons'),
+                    address: 'informal',
+                }) }}
+            </div>
+        </div>
+    </section>
 {% endblock %}

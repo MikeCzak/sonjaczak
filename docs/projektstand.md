@@ -157,8 +157,12 @@ Erst danach werden Features gebaut.
      - [x] 6c (2026-11-12): Booking-Formular auf `/booking/solo` (Anlass als Enum `App\Inquiry\Occasion` mit festen
            Schlüsseln statt der Liste aus `content`, Datum nicht in der Vergangenheit, Ort). Gemeinsamer Ablauf im
            Controller-Trait `InquiryFormTrait`. Datenschutzerklärung um die Booking-Felder ergänzt.
-     - [ ] 6d Unterricht · 6e Datenschutzerklärung um das Unterrichtsformular ergänzen (Minderjährige),
-           `mail_inquiry`-Partial entfernen
+     - [x] 6d/6e (2026-11-12): Unterrichtsformular auf `/unterricht` (Du-Form): Alter, erziehungsberechtigte Person
+           (Pflicht unter 18 per `#[Assert\Callback]`, ohne `expression-language`; `assets/inquiry.js` blendet das Feld
+           ab 18 aus, ohne JS sichtbar mit Hinweis), gewünschte Uhrzeit (Freitext), Vorerfahrung, Nachricht.
+           Datenschutzerklärung nennt alle Formularfelder. `mail_inquiry`-Partial und `mailto:`-Anfragen entfernt.
+           **Schritt 6 abgeschlossen.** Zum Durchsehen (Entwurf): Bei Minderjährigen kommt der Vertrag mit den
+           Erziehungsberechtigten zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
      - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
        Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`

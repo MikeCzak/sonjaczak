@@ -158,7 +158,6 @@ lessons:
         heading: Anmeldung und Fragen
         # Draft
         body: Schreib Sonja, welche Uhrzeit dir passt und ob du schon Erfahrung hast – sie meldet sich bei dir.
-        mail_subject: Gesangsunterricht
 
 contact:
     # Draft
@@ -211,11 +210,11 @@ privacy:
     fonts:
         heading: Schriften
         body: Alle Schriften werden von diesem Server geladen. Es besteht keine Verbindung zu Google Fonts oder anderen externen Anbietern.
-    # Covers the contact form (step 6b) and the booking form (6c); the lessons form follows in step 6e
+    # Covers all inquiry forms: contact (step 6b), booking (6c), lessons (6d)
     email:
         heading: Kontaktformular und E-Mail
         body: |-
-            Wenn Sie eines der Formulare nutzen oder eine E-Mail schreiben, werden Ihre Angaben verarbeitet, um Ihre Anfrage zu beantworten: bei den Formularen Name, E-Mail-Adresse, Nachricht und, falls angegeben, Telefonnummer, bei einer Buchungsanfrage außerdem Anlass, Datum und Ort; bei einer E-Mail Ihre Adresse, der Inhalt und was Sie sonst mitteilen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf einen Vertrag zielt (zum Beispiel eine Buchung oder Unterricht), sonst Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in der Beantwortung Ihrer Anfrage.
+            Wenn Sie eines der Formulare nutzen oder eine E-Mail schreiben, werden Ihre Angaben verarbeitet, um Ihre Anfrage zu beantworten: bei den Formularen Name, E-Mail-Adresse, Nachricht und, falls angegeben, Telefonnummer, bei einer Buchungsanfrage außerdem Anlass, Datum und Ort, bei einer Anfrage für Gesangsunterricht außerdem Alter, gewünschte Uhrzeit, Vorerfahrung und bei Schüler:innen unter 18 Jahren der Name einer erziehungsberechtigten Person; bei einer E-Mail Ihre Adresse, der Inhalt und was Sie sonst mitteilen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf einen Vertrag zielt (zum Beispiel eine Buchung oder Unterricht), sonst Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in der Beantwortung Ihrer Anfrage.
 
             Die Angaben aus den Formularen werden nicht auf dem Webserver oder in einer Datenbank gespeichert, sondern verschlüsselt als E-Mail an das Postfach %email% gesendet. Mailversand und Postfach betreibt IONOS (siehe „Hosting“) als Auftragsverarbeiterin.
 

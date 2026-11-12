@@ -38,7 +38,6 @@ title:
 
 action:
     more: Mehr erfahren
-    inquiry_mail: Anfrage per E-Mail
     send: Senden
 
 form:
@@ -49,13 +48,20 @@ form:
         occasion: Anlass
         date: Datum
         place: Ort
+        age: Alter
+        guardian: Erziehungsberechtigte Person
+        preferred_time: Gewünschte Uhrzeit
+        experience: Vorerfahrung
         message: Nachricht
         honeypot: Bitte leer lassen
     help:
         place: Ort oder Adresse der Feier
         booking_message: Zum Beispiel Ablauf, Uhrzeit, ungefähre Dauer oder Musikwünsche
+        guardian: Nur bei Schüler:innen unter 18 Jahren
+        experience: Zum Beispiel Chor, Band oder früherer Unterricht – „keine“ ist auch eine gute Antwort.
     placeholder:
         choose: Bitte auswählen
+        preferred_time: z. B. ab 14 Uhr / ab 16 Uhr / egal
     choice:
         occasion:
             wedding: Trauung
@@ -74,6 +80,11 @@ inquiry:
         rate_limited: Sie haben in kurzer Zeit mehrere Nachrichten gesendet. Bitte versuchen Sie es später noch einmal oder schreiben Sie direkt an %email%.
         failed: Ihre Nachricht konnte gerade nicht gesendet werden. Bitte versuchen Sie es später noch einmal oder schreiben Sie direkt an %email%.
         privacy_hint: Ihre Angaben werden nur verwendet, um Ihre Anfrage zu beantworten. Mehr dazu in der
+    informal:
+        sent: Danke für deine Nachricht! Sonja meldet sich so bald wie möglich bei dir.
+        rate_limited: Du hast in kurzer Zeit mehrere Nachrichten gesendet. Bitte versuch es später noch einmal oder schreib direkt an %email%.
+        failed: Deine Nachricht konnte gerade nicht gesendet werden. Bitte versuch es später noch einmal oder schreib direkt an %email%.
+        privacy_hint: Deine Angaben werden nur verwendet, um deine Anfrage zu beantworten. Mehr dazu in der
     send_another: Weitere Nachricht senden
     privacy_link: Datenschutzerklärung
 
@@ -82,10 +93,13 @@ mail:
     subject:
         contact: 'Kontaktanfrage von %name%'
         booking_solo: 'Booking-Anfrage (solo) von %name%'
+        lessons: 'Unterrichtsanfrage von %name%'
     contact:
         intro: Neue Nachricht über das Kontaktformular auf sonjaczak.com.
     booking_solo:
         intro: Neue Booking-Anfrage (Sonja solo) über sonjaczak.com.
+    lessons:
+        intro: Neue Anfrage für Gesangsunterricht über sonjaczak.com.
     empty: –
     reply_hint: '„Antworten“ schreibt direkt an die Person, die das Formular ausgefüllt hat.'
 
