@@ -1,7 +1,7 @@
 # Phase 2: Datenmodell (Entwurf)
 
-Stand: 2026-11-12, zweiter Entwurf. Die Antworten der ersten Fragenrunde sind eingearbeitet (Abschnitt 7). Neue Fragen
-stehen in Abschnitt 8, Antworten bitte wieder direkt dahinter. Erst nach der Freigabe folgen Entities und Migrationen.
+Stand: 2026-11-13, **freigegeben**. Beide Fragenrunden sind eingearbeitet (Abschnitte 7 und 8). Als Nächstes folgen
+Rollenkonzept (`rollen.md`), Entities und Migrationen.
 
 Grundlage: `anforderungen.md` (Abschnitte A–C), Honorarnoten-Muster `claude_references/HN16_GU_WiSe_2026_Springer.pdf`,
 Sonjas bisherige Anwesenheitsliste `claude_references/Anwesenheit_Inhalt_2026_ProRe.numbers`.
@@ -70,6 +70,7 @@ erDiagram
         string label "z. B. Herbstferien"
         date firstDay
         date lastDay
+        string source "Enum: manual|imported"
     }
     Enrollment {
         int id
@@ -86,6 +87,7 @@ erDiagram
         int durationMinutes
         string status "Enum"
         text note "Inhalt oder Absagegrund"
+        bool fromTrial "war Schnupperstunde"
     }
     TrialLesson {
         int id
@@ -103,6 +105,7 @@ erDiagram
         int amountCents "negativ bei Gutschrift"
         string paymentMethod "Enum"
         Recipient recipient "Kopie, Embeddable"
+        date remindedFor "nullable, Frist der letzten Erinnerung"
         blob pdf
     }
     Payment {
@@ -234,6 +237,22 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
 - **CourseBreak (Ferien, Feiertage):** Zeitraum mit Bezeichnung, gilt für den ganzen Kurs. In Sonjas Liste sind Ferien
   eine ganze Zeile („HERBSTFERIEN“), also für alle gleich. Ein einzelner Feiertag ist ein Zeitraum mit gleichem
   Anfang und Ende. In diesen Zeiträumen erzeugt die App keine Einheiten.
+- **Ferien vorschlagen mit der OpenHolidays API** (Mikes Vorschlag, Runde 2): Beim Anlegen eines Kurses holt die App
+  Schulferien und gesetzliche Feiertage für die Steiermark im Kurszeitraum und legt sie als CourseBreaks mit
+  `source = imported` an. Sonja kann sie danach ändern, löschen und eigene ergänzen (schulautonome Tage,
+  `source = manual`). Geprüft am 2026-11-13:
+  - Endpunkte `https://openholidaysapi.org/SchoolHolidays` und `/PublicHolidays` mit `countryIsoCode=AT`,
+    `languageIsoCode=DE`, `validFrom`, `validTo`, bei Schulferien zusätzlich `subdivisionCode`.
+  - **Fallstrick:** Der Code für die Steiermark ist `AT-SM`, nicht der ISO-Code `AT-ST` (Abfrage `/Subdivisions`).
+    Mit `AT-ST` fehlen ohne Fehlermeldung alle regionalen Einträge, im Schuljahr 2026/27 die Semesterferien
+    (15.–20.02.2027) und St. Josef (19.03.2027).
+  - Gesetzliche Feiertage (Nationalfeiertag, 8. Dezember, Christi Himmelfahrt …) kommen nur über `/PublicHolidays`,
+    die App fragt also beide Endpunkte ab.
+  - Es werden keine personenbezogenen Daten übertragen, nur Land, Region und Zeitraum. Aufruf mit
+    `symfony/http-client` (laut `composer.lock` bereits installiert, v8.1.11, als Abhängigkeit). Fällt die API aus,
+    legt Sonja die Ferien eben selbst an; der Kurs wird trotzdem gespeichert.
+  - Die Daten nur einmal beim Anlegen holen, nicht bei jedem Seitenaufruf: keine laufende Abhängigkeit von einem
+    fremden Dienst.
 
 ### 3.4 Enrollment (Kursteilnahme)
 
@@ -257,9 +276,11 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
 - **Gehört immer zu einer Teilnahme** (`enrollment` nicht nullable). Die Schülerin ergibt sich über
   `lesson.enrollment.student`. Damit ist die Redundanz aus dem ersten Entwurf weg, weil Schnupperstunden eine eigene
   Entity bekommen (Abschnitt 3.6).
-- **Einheiten werden erzeugt** (Antwort 5): Beim Anlegen einer Teilnahme erzeugt die App für jede Woche von
-  `course.startsOn` bis `course.endsOn` eine Einheit mit Status `planned` im Zeitfenster der Teilnahme, außer in den
-  Ferien. Trägt Sonja später Ferien ein, entfernt die App die geplanten Einheiten in diesem Zeitraum. Bereits
+- **Einheiten werden erzeugt** (Antwort 5): Beim Anlegen einer Teilnahme erzeugt die App ab `course.startsOn`
+  wöchentlich Einheiten mit Status `planned` im Zeitfenster der Teilnahme, außer in den Ferien, **bis
+  `plannedLessons` erreicht ist** (eine übernommene Schnupperstunde zählt mit, Abschnitt 3.6), höchstens bis
+  `course.endsOn`. Reicht der Zeitraum nicht für alle Einheiten, zeigt das Raster „14 von 15“. Ein späterer Einstieg
+  ins Semester kommt nicht vor (Runde 2, Frage 5), Enrollment braucht also kein eigenes Startdatum. Trägt Sonja später Ferien ein, entfernt die App die geplanten Einheiten in diesem Zeitraum. Bereits
   gehaltene oder abgesagte bleiben und werden als Konflikt angezeigt.
 - **`startsAt` + `durationMinutes`:** Verschiebungen und Doppelstunden ändern nur diese eine Einheit, nicht das
   Zeitfenster der Teilnahme.
@@ -284,8 +305,24 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
   eine zweite Abfrage, keine Komplikation im Modell.
 
 Felder: Schüler:in, `startsAt`, `durationMinutes`, `note`. Wer zur Schnupperstunde kommt, wird als Student angelegt
-(mit so wenigen Daten wie nötig). Bleibt die Person nicht, löscht Sonja sie wieder (Abschnitt 5). Ob und wie eine
-Schnupperstunde abgerechnet wird, ist Frage 8.2.
+(mit so wenigen Daten wie nötig). Bleibt die Person nicht, löscht Sonja sie wieder (Abschnitt 5).
+
+**Kostenlos, keine Honorarnote** (Runde 2, Frage 2). Invoice braucht daher keinen Bezug zur Schnupperstunde.
+
+**Übernahme in den Kurs:** Wird aus der Schnupperstunde eine Teilnahme, zählt sie als gehaltene Einheit. Beim Anlegen
+der Teilnahme bietet die App die Schnupperstunden dieser Schülerin zur Übernahme an. Übernehmen heißt:
+
+1. Eine Lesson mit `startsAt`, `durationMinutes` und `note` der Schnupperstunde, Status `held`, `fromTrial = true`
+   anlegen.
+2. Die TrialLesson löschen. Eine Spur „war Schnupperstunde“ bleibt über `fromTrial`, das Raster kann sie so
+   kennzeichnen.
+3. Erst danach die übrigen Einheiten erzeugen. Die übernommene zählt mit, es entstehen also 14 statt 15.
+
+Beides in **einer Transaktion** (`EntityManager::wrapInTransaction()`): Scheitert ein Schritt, gibt es weder eine
+halbe Übernahme noch eine doppelte Einheit. Die Alternative, die TrialLesson zu behalten und nur zu verknüpfen,
+ließe dieselbe Stunde an zwei Stellen stehen, mit dem Risiko, dass sie doppelt gezählt wird.
+
+Liegt die Schnupperstunde vor `course.startsOn`, steht sie im Raster in einer eigenen Zeile vor der ersten Woche.
 
 ### 3.7 Invoice (Honorarnote)
 
@@ -320,8 +357,19 @@ Schnupperstunde abgerechnet wird, ist Frage 8.2.
 - **Download:** einzeln und je Kurs als ZIP. Die Zahlung wirkt sich nicht auf die Verfügbarkeit aus: Die Honorarnote
   ist die Zahlungsaufforderung und entsteht vorher. Der Hinweis beim ZIP lautet stattdessen: „3 Teilnahmen haben noch
   keine Honorarnote“, mit Link zum Erstellen.
-- **Absenderdaten** (Name, Titel, Adresse, Bankverbindung, Hinweis zur Umsatzsteuerbefreiung, Ort, Unterschrift)
-  kommen aus den Einstellungen. Ein Snapshot dafür ist nicht nötig, weil das abgelegte PDF sie enthält.
+- **Absenderdaten** (Name, Titel „Bakk.phil.“, Adresse, Bankverbindung, Hinweis zur Umsatzsteuerbefreiung, Ort,
+  Unterschrift als Bild) kommen aus den Einstellungen. Ein Snapshot dafür ist nicht nötig, weil das abgelegte PDF sie
+  enthält.
+- **Erinnerung bei überschrittener Frist** (Runde 2): Sonja bekommt eine Mail, wenn eine Honorarnote nach Ablauf
+  einer Frist nicht ausreichend bezahlt ist. Fällig sind bei Ratenoption zwei Stufen: bis `dueOn` mindestens die
+  erste Rate, bis `secondInstallmentDueOn` der ganze Betrag; ohne Ratenoption der ganze Betrag bis `dueOn`.
+  `remindedFor` speichert die Frist, für die zuletzt erinnert wurde. So kommt je Frist genau eine Mail, nicht jeden
+  Tag eine. Gutschriften bekommen keine Erinnerung.
+  Ablauf: ein Konsolenbefehl (`app:invoices:remind-overdue`) prüft alle offenen Honorarnoten und schickt **eine** Mail
+  mit allen neu überfälligen, ohne Personendaten im Log. Aufgerufen täglich per Cronjob am Server
+  (`docker exec … bin/console …`, wie die Token-Erinnerung in `deployment.md` B6). Die Alternative Symfony Scheduler
+  braucht einen dauernd laufenden Messenger-Worker, also mehr RAM; für eine Prüfung am Tag lohnt sich das nicht.
+  Der Cronjob ist eine Änderung am Server und wird vorher abgesprochen.
 
 ### 3.8 Payment
 
@@ -349,15 +397,18 @@ Antwort 5 ist vor allem eine Anforderung an die Oberfläche. Das Modell oben ist
 plane ich mit dem Admin-Bereich im Detail. Die Idee, angelehnt an Sonjas Liste:
 
 ```
-Wintersemester 2026/27        13:40 Schülerin A   14:40 Schülerin B   15:30 Schülerin C   …
-                              11 von 15           12 von 15           12 von 15
-KW 41  Fr 09.10.             ✓ Runaway           ✓ Flowers           ✓ Animal
-KW 42  Fr 16.10.             ✓ Auf uns           ✗ krank             ○ geplant
-KW 44  HERBSTFERIEN ───────────────────────────────────────────────────────────
-KW 45  Fr 06.11.             ○                   ○                   ○
+Wintersemester 2026/27          Fr 13:40 Schülerin A  Fr 14:40 Schülerin B  Fr 15:30 Schülerin C  …
+                                11 von 15             12 von 15             12 von 15
+Schnupperstunde                                                             ✓ (Mi 30.09.)
+KW 41 (05.10.–11.10.)           ✓ Runaway             ✓ Flowers             ✓ Animal
+KW 42 (12.10.–18.10.)           ✓ Auf uns             ✗ krank               ○ geplant
+KW 44 (26.10.–01.11.)           HERBSTFERIEN ──────────────────────────────────────────────
+KW 45 (02.11.–08.11.)           ○                     ○                     ○
 ```
 
-- Zeilen sind Kalenderwochen, Spalten die Teilnahmen sortiert nach Wochentag und Uhrzeit, Zellen die Einheiten.
+- Zeilen sind Kalenderwochen mit klein in Klammern der Datumsspanne der Woche (Runde 2, Frage 3). Vorerst
+  unterrichtet Sonja je Kurs an einem Wochentag; Kalenderwochen funktionieren auch, wenn es ab nächstem Jahr mehrere
+  werden. Spalten sind die Teilnahmen sortiert nach Wochentag und Uhrzeit, Zellen die Einheiten.
 - Klick in eine Zelle öffnet ein kleines Eingabefeld direkt dort: Notiz tippen, Status mit einem Klick (gehalten,
   abgesagt von Schülerin, abgesagt von mir), Enter speichert, Tab springt zur nächsten Zelle. Kein Seitenwechsel.
 - Klick auf eine Zeile: „Ferien/Feiertag“ setzt einen CourseBreak für diese Woche, die geplanten Einheiten
@@ -430,31 +481,48 @@ Zusätzliche Fragen von Mike:
   einverstanden
 - Dashboard und Export der Einnahmen → als Todos in Abschnitt 9
 
-## 8. Offene Fragen, Runde 2
-
-Antworten bitte direkt dahinter.
+## 8. Fragen, Runde 2 (beantwortet 2026-11-13)
 
 1. **Jahr der Honorarnote:** Die Muster-Honorarnote ist am 07.11.2026 ausgestellt und erst danach zahlbar. Mein
    Vorschlag: Nummer „/2026“ und Datum = Ausstellungsdatum; für die Einnahmen eines Jahres zählt das Zahlungsdatum
    (3.7). Passt das, oder meinst du, dass Sonja die Honorarnote erst nach Eingang der Zahlung ausstellt (dann wäre
-   „zahlbar bis“ auf dem Muster überflüssig)?
+   „zahlbar bis“ auf dem Muster überflüssig)? - das passt, du hast recht. Das heißt die Zahlung muss mit Datum erfasst werden, damit daraus sinnvoll Daten für die E/A-Rechnung der Steuererklärung extrahiert werden können.
+   → Ja, `Payment.paidOn` ist Pflicht. „Mit einem Klick bezahlt“ setzt heute als Datum, änderbar, falls Sonja die
+   Zahlung erst später einträgt (sonst landet eine Zahlung vom 30.12. im falschen Jahr).
 2. **Schnupperstunden:** Kosten sie etwas, und wenn ja: mit Honorarnote (dann braucht Invoice einen Bezug zur
-   Schnupperstunde statt nur zur Teilnahme) oder bar ohne Beleg?
+   Schnupperstunde statt nur zur Teilnahme) oder bar ohne Beleg? - Nein, Schnupperstunden sind kostenlos. Wenn aus dem Schnuppern eine Kursteilnahme wird, muss die Schnupperstunde allerdings schon als gehaltene Unterrichtseinheit gelten. Können wir diese in diesem Fall dann in eine Lesson konvertieren?
+   → Ja, siehe 3.6 „Übernahme in den Kurs“.
 3. **Unterrichtstage:** Unterrichtet Sonja in einem Kurs nur an einem Wochentag (in der Liste alle am Freitag)? Dann
-   können die Zeilen im Raster Daten statt Kalenderwochen sein. Das Modell ist davon nicht betroffen.
+   können die Zeilen im Raster Daten statt Kalenderwochen sein. Das Modell ist davon nicht betroffen. - Ja, in einem Kurs vorerst nur ein Wochentag, das kann sich aber ab nächstem Jahr ändern. Kalenderwoche und klein in Klammer die von-bis-Angabe mit den Daten der Woche wären gut.
+   → Übernommen in Abschnitt 4.
 4. **Absenderdaten:** Titel „Bakk.phil.“ wie im Muster, auch mit den neuen Abschlüssen (IGP, Konzertfach)? Kommt
-   die Unterschrift als Bild auf das PDF wie bisher?
+   die Unterschrift als Bild auf das PDF wie bisher? - Titel bleibt gleich, Unterschrift sollte aufs Bild. Brauchst du dafür die Unterschrift als png, oder kannst du sie aus dem Muster extrahieren?
+   → Bitte als PNG: Sonja unterschreibt auf weißem Papier, Scan mit 300–600 dpi, am besten mit transparentem
+   Hintergrund. Aus dem Muster-PDF wäre sie nur in dessen Auflösung zu holen. Die Unterschrift kommt nicht ins Repo,
+   sondern wird in den Einstellungen hochgeladen und in der Datenbank gespeichert (wie das PDF; Abschnitt 3.9).
 5. **Späterer Einstieg:** Kommt es vor, dass jemand mitten im Semester einsteigt? Dann braucht Enrollment ein
-   eigenes Startdatum, ab dem Einheiten erzeugt werden; sonst löscht Sonja die früheren im Raster.
+   eigenes Startdatum, ab dem Einheiten erzeugt werden; sonst löscht Sonja die früheren im Raster. - nein
+   → Kein Startdatum an der Teilnahme (3.5).
+
+Weitere Angaben:
+- Sonja sollte eine Hinweis-Mail erhalten, wenn die Zahlungsfrist einer Honorarnote überschritten und noch nicht bezahlt wurde.
+  → 3.7 „Erinnerung bei überschrittener Frist“ (Feld `remindedFor`, täglicher Cronjob).
+- Für die Vorkonfiguration der Ferientage/-wochen könnten wir https://www.openholidaysapi.org/de/ nutzen. Wegen schulautonomen Tagen und Abweichungen braucht Sonja aber trotzdem nach wie vor die Möglichkeit, eine Einheit/Woche als Ferien zu markieren.
+  → 3.3 „Ferien vorschlagen mit der OpenHolidays API“, mit Fallstrick beim Regionscode.
 
 ## 9. Todos für den Admin-Bereich (nach dem Datenmodell)
 
 - **Kursraster** (Abschnitt 4) als Hauptansicht für Sonja.
-- **Dashboard:** Übersicht aller Schüler:innen, nächste Einheiten (inkl. Schnupperstunden), bisher entfallene und
+- **Dashboard:** Übersicht aller Schüler:innen, nächste Einheiten (inkl. Schnupperstunden) und zuletzt gehaltene Einheit je Schüler:in (wegen dem Inhalt, was die Vorbereitung erleichtert), bisher entfallene und
   gehaltene Einheiten, offene Honorarnoten, Einnahmen je Kurs und Jahr.
 - **Export der Einnahmen je Jahr** für die Einnahmen-Ausgaben-Rechnung (Basis: `Payment.paidOn`, CSV oder PDF; Format
-  mit Sonja bzw. Steuerberatung klären).
+  mit Sonja bzw. Steuerberatung klären). - sicher csv, weil Sonja die EA-Rechnung in Excel macht
+  → CSV mit Semikolon als Trennzeichen, Komma als Dezimalzeichen und UTF-8 mit BOM, damit Excel mit deutscher
+  Einstellung Umlaute und Beträge richtig öffnet (beim Bau mit Sonjas Excel prüfen).
 - **PDF der Honorarnote** (Bibliothek wählen: läuft im PHP-Container, kein zusätzlicher Container wegen RAM) und
   ZIP-Download je Kurs.
 - **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO).
+- **Erinnerungs-Mail** bei überschrittener Zahlungsfrist (Konsolenbefehl + Cronjob am Server, 3.7).
+- **Ferien-Import** aus der OpenHolidays API beim Anlegen eines Kurses (3.3).
+- **Upload der Unterschrift** in den Einstellungen (PNG von Sonja).
 - **Backups** der Datenbank vor den ersten echten Daten.
