@@ -138,7 +138,7 @@ Erst danach werden Features gebaut.
          Bild. Scroll-Effekte nur mit CSS (`_motion.scss`): Hero zoomt beim Hinausscrollen, Booking-Sections mit
          Parallax, Abschnitte blenden ein; aus bei „Bewegung reduzieren“. Effekte im Browser beurteilen (Headless-
          Screenshots zeigen keine Bewegung).
-   - [ ] Schritt 6: Formulare mit Mailversand – Plan in `docs/planung/formulare.md`, freigegeben (2026-11-11):
+   - [x] Schritt 6: Formulare mit Mailversand – Plan in `docs/planung/formulare.md`, freigegeben (2026-11-11):
          IONOS-SMTP (`smtp.ionos.de`), synchron, ohne Session/Cookies, nichts in der DB. Absender
          `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com`, `Reply-To` = Besucher:in.
      - [x] 6a: `symfony/mailer` 8.1.10 (Absender global in `config/packages/mailer.yaml`, Tests immer `null://null`),
@@ -166,15 +166,14 @@ Erst danach werden Features gebaut.
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
      - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
        Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`
-     - Zweiter schneller Kontaktweg neben der E-Mail (EuGH C-298/07: Kontaktformular genügt, Telefon nicht
-       zwingend) → kommt mit den Formularen (Schritt 6) oder vorher Telefonnummer im Impressum
+     - [x] Zweiter schneller Kontaktweg neben der E-Mail (EuGH C-298/07: Kontaktformular genügt, Telefon nicht
+       zwingend) → Kontaktformular auf `/kontakt` (Schritt 6, live getestet 2026-11-12)
      - IONOS: Auftragsverarbeitungsvertrag im Kundenkonto abschließen bzw. prüfen; Rechenzentrum des VPS prüfen
        (falls außerhalb der EU: Datenschutzerklärung ergänzen)
      - Anbieter des Postfachs `music@sonjaczak.com` in der Datenschutzerklärung nennen (Empfänger)
      - Entwürfe durchsehen (`# Draft`), KI-Bilder (Kennzeichnung oder Austausch), Regeln und FAQ von Sonja
      - Nach dem Deploy: gekürzte IPs in den Server-Logs prüfen (`docker compose logs php`)
-   - [ ] **CI startet nicht** (seit 2026-11-09 `startup_failure`, auch Dependabot; Workflow unverändert, Action-Tags
-         existieren). Ursache im Browser auf der Run-Seite bzw. in den Abrechnungs-/Kontoeinstellungen prüfen.
+   - [x] **CI startet nicht** (2026-11-09 `startup_failure`): seit 2026-11-11 behoben, CI läuft wieder.
 
 **Zu beachten (Frontend)**
 
@@ -224,13 +223,13 @@ und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
 | CSS-Framework | Bootstrap 5.3 mit `symfonycasts/sass-bundle`, Assets über AssetMapper (2026-11-11) | Fertige Komponenten (Navbar, Formulare, Accordion), Erfahrung vorhanden; kein Node nötig. Details: `docs/planung/seitenstruktur.md` |
 | Übersetzungen | YAML, Domains `messages` (Zweck-Schlüssel), `content` (Seite.Abschnitt), `validators` (2026-11-11) | Lange Texte lesbarer als XLIFF; `content` wandert später teilweise ins CMS |
 | Seitenstruktur | Deutsche URLs ohne Sprachpräfix; Impressum als Abschnitt auf `/kontakt`; Ansprache „Sie“, nur Unterricht „Du“; Logo „Sonja Czak“; Google Maps nur als Link (2026-11-11) | Siehe `docs/planung/seitenstruktur.md` |
+| Mail-Versand | IONOS-SMTP (`smtp.ionos.de:465`), synchron, Absender `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com` (2026-11-11) | Postfach ist bereits bei IONOS, kein weiterer Dienst; kein Messenger-Worker nötig (RAM). Details: `docs/planung/formulare.md` |
 
 ## Offene Entscheidungen
 
 | Thema | Optionen | Wann |
 |---|---|---|
 | Symfony UX | Turbo, Live Components oder Kombination für die dynamischen Formulare | Bei Booking- und Lessons-Formular |
-| Mail-Versand | Externer SMTP-Dienst für Formular-Mails | Vor dem ersten Formular |
 | Postfächer | Mail-Hosting für Sonjas Adressen unter sonjaczak.com | Unabhängig, sobald Domain-Setup steht |
 | Admin-Bereich | Login und Rollen: entschieden, ja. Sonja legt Unterrichtssemester und deren Termine an, verwaltet Schüler:innen mit persönlichen und Rechnungsdaten und erstellt daraus Honorarnoten. Details offen; personenbezogene Daten erfordern DSGVO-Maßnahmen (Zugriffsschutz, Backups) | Bei der App-Planung |
 
