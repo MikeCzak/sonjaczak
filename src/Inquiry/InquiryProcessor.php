@@ -66,8 +66,12 @@ final readonly class InquiryProcessor
         try {
             $this->mailer->send($email);
         } catch (TransportExceptionInterface $e) {
-            // Only the class: the exception message may quote addresses from the SMTP dialogue
-            $this->logger->error('Inquiry could not be sent', ['type' => $type, 'exception' => $e::class]);
+            // The SMTP dialogue only involves our own addresses (envelope); the sender's address is just a header.
+            // Placeholders, because the default logger (no Monolog) prints the message but not the context.
+            $this->logger->error('Inquiry ({type}) could not be sent: {reason}', [
+                'type' => $type,
+                'reason' => $e::class.': '.$e->getMessage(),
+            ]);
 
             return InquiryStatus::Failed;
         }

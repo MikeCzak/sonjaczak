@@ -23,12 +23,13 @@ use Symfony\Component\Translation\IdentityTranslator;
  */
 final class InquiryProcessorTest extends TestCase
 {
-    public function testTransportFailureIsReportedWithoutPersonalDataInTheLog(): void
+    public function testTransportFailureIsLoggedWithReasonButWithoutFormData(): void
     {
         $mailer = new class implements MailerInterface {
             public function send(RawMessage $message, ?Envelope $envelope = null): void
             {
-                throw new TransportException('550 Mailbox rejected: <erika@example.com>');
+                // The SMTP dialogue only contains our own addresses
+                throw new TransportException('550 Mailbox rejected: <music@sonjaczak.com>');
             }
         };
         $logger = new class extends AbstractLogger {
@@ -46,11 +47,14 @@ final class InquiryProcessorTest extends TestCase
         $inquiry = new ContactInquiry();
         $inquiry->name = 'Erika Muster';
         $inquiry->email = 'erika@example.com';
-        $inquiry->message = 'Hallo';
+        $inquiry->phone = '0660 1234567';
+        $inquiry->message = 'Hallo Sonja';
 
         self::assertSame(InquiryStatus::Failed, $processor->process($inquiry, 'contact', new Request()));
         self::assertCount(1, $logger->records);
-        self::assertStringNotContainsString('erika', $logger->records[0]);
-        self::assertStringNotContainsString('Erika', $logger->records[0]);
+        self::assertStringContainsString('550 Mailbox rejected', $logger->records[0]);
+        foreach (['Erika', 'erika@example.com', '0660', 'Hallo Sonja'] as $formData) {
+            self::assertStringNotContainsString($formData, $logger->records[0]);
+        }
     }
 }
