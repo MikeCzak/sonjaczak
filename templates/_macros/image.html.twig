@@ -6,6 +6,9 @@
  #   class     CSS classes of the <img>
  #   position  object-position, the point that stays visible when the image is cropped (default: center)
  #   priority  true for the first image of a page: loaded at once and with high priority, otherwise lazily
+ #
+ # Images listed in the Twig global "ai_generated_images" get a label in the bottom right corner of the nearest
+ # positioned parent (outside <picture>, which may only contain <source> and <img>).
  #}
 {% macro image(name, alt, options = {}) %}
     {%- set image = images[name] -%}
@@ -21,4 +24,7 @@
             {%- if options.position is defined %} style="object-position: {{ options.position }}"{% endif %}
             {%- if priority %} fetchpriority="high"{% else %} loading="lazy"{% endif %} decoding="async">
     </picture>
+    {%- if name in ai_generated_images %}
+        <span class="sc-ai-label">{{ 'image.ai_generated'|trans }}</span>
+    {%- endif %}
 {%- endmacro %}

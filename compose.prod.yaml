@@ -13,6 +13,12 @@ services:
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:?CADDY_MERCURE_JWT_SECRET must be set}
       # smtps://<mailbox, URL-encoded>:<password, URL-encoded>@smtp.ionos.de:465
       MAILER_DSN: ${MAILER_DSN:?MAILER_DSN must be set}
+      # Extra Caddy site (inserted by frankenphp/Caddyfile): www gets its own certificate and redirects permanently
+      # to the main domain, so every page has one address. Needs a DNS record for www (docs/deployment.md, D).
+      CADDY_EXTRA_CONFIG: |
+        www.${SERVER_NAME:-localhost} {
+            redir https://${SERVER_NAME:-localhost}{uri} permanent
+        }
 
   database:
     restart: unless-stopped

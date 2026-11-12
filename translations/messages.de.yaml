@@ -76,12 +76,12 @@ form:
 # The last key part is the value of App\Inquiry\InquiryStatus.
 inquiry:
     formal:
-        sent: Danke für Ihre Nachricht! Sonja meldet sich so bald wie möglich bei Ihnen.
+        sent: Danke für Ihre Nachricht! Ich melde mich so bald wie möglich bei Ihnen.
         rate_limited: Sie haben in kurzer Zeit mehrere Nachrichten gesendet. Bitte versuchen Sie es später noch einmal oder schreiben Sie direkt an %email%.
         failed: Ihre Nachricht konnte gerade nicht gesendet werden. Bitte versuchen Sie es später noch einmal oder schreiben Sie direkt an %email%.
         privacy_hint: Ihre Angaben werden nur verwendet, um Ihre Anfrage zu beantworten. Mehr dazu in der
     informal:
-        sent: Danke für deine Nachricht! Sonja meldet sich so bald wie möglich bei dir.
+        sent: Danke für deine Nachricht! Ich melde mich so bald wie möglich bei dir.
         rate_limited: Du hast in kurzer Zeit mehrere Nachrichten gesendet. Bitte versuch es später noch einmal oder schreib direkt an %email%.
         failed: Deine Nachricht konnte gerade nicht gesendet werden. Bitte versuch es später noch einmal oder schreib direkt an %email%.
         privacy_hint: Deine Angaben werden nur verwendet, um deine Anfrage zu beantworten. Mehr dazu in der
@@ -105,6 +105,9 @@ mail:
 
 placeholder:
     content_follows: Inhalte folgen in Kürze.
+
+image:
+    ai_generated: KI-generiert
 
 error:
     not_found:

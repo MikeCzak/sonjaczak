@@ -6,6 +6,8 @@ twig:
         contact_email: '%app.contact_email%'
         youtube_url: 'https://www.youtube.com/@redmulletmusic'
         band_url: 'https://www.redmulletmusic.at'
+        # AI-generated images get a visible label (templates/_macros/image.html.twig); remove when replaced by photos
+        ai_generated_images: ['hero-wedding', 'hero-lessons']
 
 when@test:
     twig:

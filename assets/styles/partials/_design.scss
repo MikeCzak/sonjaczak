@@ -212,6 +212,22 @@ h1, h2, h3, h4, h5, h6,
     object-fit: cover;
 }
 
+// Label of AI-generated images (image() macro): small, but readable on any photo
+.sc-ai-label {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    z-index: 1;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-family: var(--sc-font-body);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+}
+
 // Design preview: variant C shows its own photo on the home page
 .sc-hero__image--variant-c,
 [data-design='c'] .sc-hero--home .sc-hero__image:not(.sc-hero__image--variant-c) {

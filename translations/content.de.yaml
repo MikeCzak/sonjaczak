@@ -11,8 +11,8 @@ home:
         heading: Willkommen
         # Draft
         body: >-
-            Sonja Czak ist Sängerin und Gesangslehrerin aus Frohnleiten. Sie singt bei Trauungen, Taufen und Feiern in
-            der Steiermark – solo mit Stagepiano oder gemeinsam mit der Band Red Mullet – und unterrichtet Gesang am
+            Ich bin Sängerin und Gesangslehrerin aus Frohnleiten. Ich singe bei Trauungen, Taufen und Feiern in der
+            Steiermark – solo mit Stagepiano oder gemeinsam mit meiner Band Red Mullet – und unterrichte Gesang am
             Bundesgymnasium Rein bei Graz.
     offers:
         solo:
@@ -28,9 +28,9 @@ home:
 about:
     # Paragraph 1 by Mike (inhalte.md E39), paragraph 2 draft
     body: |-
-        Sonja studierte in Wien Jazz- und Populargesang sowie Instrumental- und Gesangspädagogik und ist seit 2012 hauptberuflich als Sängerin und Gesangslehrerin tätig. Live-Erfahrung in unterschiedlichsten Formationen – von Ska-Punk über Funk bis Jazz – prägt ihren Unterricht ebenso wie Workshops und die Arbeit mit renommierten Musiker:innen.
+        Ich habe in Wien Jazz- und Populargesang sowie Instrumental- und Gesangspädagogik studiert und bin seit 2012 hauptberuflich als Sängerin und Gesangslehrerin tätig. Live-Erfahrung in unterschiedlichsten Formationen – von Ska-Punk über Funk bis Jazz – prägt meinen Unterricht ebenso wie Workshops und die Arbeit mit renommierten Musiker:innen.
 
-        Heute verbindet sie beides: Als Sängerin gestaltet sie Trauungen, Taufen und Feiern in der Steiermark, solo mit Gesang und Stagepiano oder mit ihrer Band Red Mullet. Als Gesangslehrerin unterrichtet sie am Bundesgymnasium Rein Jugendliche und Erwachsene und begleitet sie dabei, ihre eigene Stimme zu finden.
+        Heute verbinde ich beides: Als Sängerin gestalte ich Trauungen, Taufen und Feiern in der Steiermark, solo mit Gesang und Stagepiano oder mit meiner Band Red Mullet. Als Gesangslehrerin unterrichte ich am Bundesgymnasium Rein Jugendliche und Erwachsene und begleite sie dabei, ihre eigene Stimme zu finden.
     image_alt: Porträt von Sonja Czak
 
 booking:
@@ -43,8 +43,8 @@ booking:
 booking_solo:
     # Draft
     intro: >-
-        Gesang und Stagepiano für die besonderen Momente: Sonja gestaltet Ihre Trauung, Taufe oder Feier musikalisch
-        und stimmt die Musik auf Ihre Wünsche und den Ablauf des Tages ab.
+        Gesang und Stagepiano für die besonderen Momente: Ich gestalte Ihre Trauung, Taufe oder Feier musikalisch
+        und stimme die Musik auf Ihre Wünsche und den Ablauf des Tages ab.
     occasions:
         heading: Anlässe
         items: |-
@@ -63,13 +63,13 @@ booking_solo:
     region:
         heading: Region und Preise
         body: >-
-            Sonja tritt in der ganzen Steiermark auf. Ab 15 km Entfernung von Frohnleiten fallen Fahrtkosten an.
+            Ich trete in der ganzen Steiermark auf. Ab 15 km Entfernung von Frohnleiten fallen Fahrtkosten an.
             Preise erhalten Sie auf Anfrage.
     process:
         heading: So läuft eine Buchung ab
         items: |-
-            Anfrage: Sie schreiben Sonja über das Formular unten mit Datum, Ort und Anlass.
-            Gespräch: Persönlich, telefonisch oder per E-Mail klären Sie gemeinsam Ablauf und Musikwünsche.
+            Anfrage: Sie schreiben mir über das Formular unten mit Datum, Ort und Anlass.
+            Gespräch: Persönlich, telefonisch oder per E-Mail klären wir gemeinsam Ablauf und Musikwünsche.
             Angebot: Sie erhalten ein Angebot.
             Bestätigung: Mit Ihrer Bestätigung ist der Termin fix.
     cancellation:
@@ -84,16 +84,16 @@ booking_solo:
             Berechnungsbasis: Alle Stornogebühren beziehen sich auf die reine Gage (ohne eventuelle Fahrtkosten).
             Verschiebung: Bei einer Terminverschiebung kann aus Kulanz auf Stornogebühren verzichtet werden, sofern der neue Termin frei ist und fest gebucht wird.
             Höhere Gewalt: Bei behördlichen Verboten oder unvorhersehbaren Katastrophen entfällt die Stornopflicht.
-            Krankheit der Sängerin: Fällt Sonja selbst aus, entfällt das Honorar; nach Verfügbarkeit sucht sie aktiv nach gleichwertigem Ersatz.
+            Krankheit der Sängerin: Falle ich selbst aus, entfällt das Honorar; nach Verfügbarkeit suche ich aktiv nach gleichwertigem Ersatz.
     inquiry:
         heading: Anfrage
         # Draft
-        body: Erzählen Sie Sonja von Ihrem Anlass – sie meldet sich bei Ihnen.
+        body: Erzählen Sie mir von Ihrem Anlass – ich melde mich bei Ihnen.
 
 booking_band:
     hero:
         # Draft (inhalte.md D33: one sentence by Mike)
-        claim: Mit Red Mullet steht Sonja als Frontfrau einer Live-Band auf der Bühne – für Feste, die in Erinnerung bleiben.
+        claim: Mit Red Mullet stehe ich als Frontfrau einer Live-Band auf der Bühne – für Feste, die in Erinnerung bleiben.
     occasions:
         heading: Anlässe
         items: |-
@@ -110,7 +110,7 @@ booking_band:
 lessons:
     # Draft
     intro: >-
-        Du möchtest singen lernen oder deine Stimme weiterentwickeln? Im Gesangsunterricht bei Sonja arbeitest du an
+        Du möchtest singen lernen oder deine Stimme weiterentwickeln? Im Gesangsunterricht bei mir arbeitest du an
         Songs, die du selbst auswählst, und findest Schritt für Schritt deine eigene Stimme.
     content:
         heading: Was du lernst
@@ -127,11 +127,11 @@ lessons:
         heading: Deine Lehrerin
         # By Mike (inhalte.md E39)
         body: >-
-            Sonja studierte in Wien Jazz- und Populargesang sowie Instrumental- und Gesangspädagogik und ist seit 2012
+            Ich habe in Wien Jazz- und Populargesang sowie Instrumental- und Gesangspädagogik studiert und bin seit 2012
             hauptberuflich als Sängerin und Gesangslehrerin tätig. Live-Erfahrung in unterschiedlichsten Formationen –
-            von Ska-Punk über Funk bis Jazz – prägt ihren Unterricht ebenso wie Workshops und die Arbeit mit
+            von Ska-Punk über Funk bis Jazz – prägt meinen Unterricht ebenso wie Workshops und die Arbeit mit
             renommierten Musiker:innen.
-        link: Mehr über Sonja
+        link: Mehr über mich
     location:
         heading: Ort
         address: |-
@@ -143,7 +143,7 @@ lessons:
         heading: Termine
         body: >-
             Der Unterricht richtet sich nach dem Schuljahr und den Schulferien. Ein Semester hat 15 Einheiten und
-            beginnt meist im Oktober. Unterrichtet wird an einem fixen Tag pro Woche, die Uhrzeit vereinbarst du mit Sonja.
+            beginnt meist im Oktober. Unterrichtet wird an einem fixen Tag pro Woche, die Uhrzeit vereinbarst du mit mir.
     prices:
         heading: Preise
         body: € 495,– pro Semester (15 Einheiten, entspricht € 33,– pro Einheit). Unterricht zu zweit ist auf Anfrage möglich.
@@ -157,11 +157,13 @@ lessons:
     inquiry:
         heading: Anmeldung und Fragen
         # Draft
-        body: Schreib Sonja, welche Uhrzeit dir passt und ob du schon Erfahrung hast – sie meldet sich bei dir.
+        body: Schreib mir, welche Uhrzeit dir passt und ob du schon Erfahrung hast – ich melde mich bei dir.
+        # Draft. Consent age 14 (§ 4 Abs. 4 DSG) does not apply to the form (Art. 6 Abs. 1 lit. b/f), this is a courtesy
+        minor_hint: Bist du jünger als 14? Dann schick mir die Anfrage bitte gemeinsam mit einem Elternteil.
 
 contact:
     # Draft
-    intro: Sie haben eine Frage oder möchten Sonja kennenlernen? Schreiben Sie ihr eine Nachricht.
+    intro: Sie haben eine Frage oder möchten mich kennenlernen? Schreiben Sie mir eine Nachricht.
     email_alternative: 'Oder direkt per E-Mail:'
     hint: 'Für einen Auftritt oder den Gesangsunterricht finden Sie alle Infos auf den jeweiligen Seiten:'
 
@@ -176,12 +178,9 @@ imprint:
             8130 Frohnleiten
             Österreich
         purpose: 'Unternehmensgegenstand: Auftritte als Sängerin und Gesangsunterricht'
-    # Depends on the legal form (inhalte.md F46, open): supervisory authority, chamber, professional title and
-    # applicable regulations (§ 5 Abs. 1 Z 5 and 6 ECG). Hidden while empty.
-    profession: ''
     credits:
         heading: Bildnachweis
-        body: 'Fotos: Doris Sporer, Simon Reithofer, Michael Czak'
+        body: 'Fotos: Doris Sporer, Simon Reithofer, Michael Czak. KI-generiert: Bilder zu Hochzeit und Gesangsunterricht.'
 
 privacy:
     intro: >-
@@ -216,7 +215,7 @@ privacy:
         body: |-
             Wenn Sie eines der Formulare nutzen oder eine E-Mail schreiben, werden Ihre Angaben verarbeitet, um Ihre Anfrage zu beantworten: bei den Formularen Name, E-Mail-Adresse, Nachricht und, falls angegeben, Telefonnummer, bei einer Buchungsanfrage außerdem Anlass, Datum und Ort, bei einer Anfrage für Gesangsunterricht außerdem Alter, gewünschte Uhrzeit, Vorerfahrung und bei Schüler:innen unter 18 Jahren der Name einer erziehungsberechtigten Person; bei einer E-Mail Ihre Adresse, der Inhalt und was Sie sonst mitteilen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn Ihre Anfrage auf einen Vertrag zielt (zum Beispiel eine Buchung oder Unterricht), sonst Art. 6 Abs. 1 lit. f DSGVO, das berechtigte Interesse liegt in der Beantwortung Ihrer Anfrage.
 
-            Die Angaben aus den Formularen werden nicht auf dem Webserver oder in einer Datenbank gespeichert, sondern verschlüsselt als E-Mail an das Postfach %email% gesendet. Mailversand und Postfach betreibt IONOS (siehe „Hosting“) als Auftragsverarbeiterin.
+            Die Angaben aus den Formularen werden nicht auf dem Webserver oder in einer Datenbank gespeichert, sondern verschlüsselt als E-Mail an das Postfach %email% gesendet. Mailversand und Postfach betreibt IONOS (siehe „Hosting“) als Auftragsverarbeiterin. Vom Postfach werden die Nachrichten an mein E-Mail-Konto bei Google (Gmail) weitergeleitet. Anbieter ist für Nutzer:innen in Europa die Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Google kann Daten auch außerhalb der EU verarbeiten, insbesondere in den USA; Näheres dazu in der Datenschutzerklärung von Google.
 
             Sie sind nicht verpflichtet, Daten anzugeben, ohne Ihre Angaben kann Ihre Anfrage aber nicht beantwortet werden. Die Daten werden gelöscht, sobald die Anfrage erledigt ist. Kommt ein Vertrag zustande, gelten die gesetzlichen Aufbewahrungspflichten.
 

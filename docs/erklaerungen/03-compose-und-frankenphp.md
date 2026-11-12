@@ -345,6 +345,40 @@ eigenem Matcher, um genau zu steuern, was PHP erreicht.
 Liefert statische Dateien aus `public/` aus. `hide *.php` – PHP-Dateien werden **nie** als Text ausgeliefert (sonst
 könnte man Quellcode lesen, falls eine PHP-Datei nicht über den PHP-Handler läuft).
 
+### Weiterleitung `www` → ohne `www` (seit 2026-11-12)
+
+Ein Caddyfile besteht aus **Site-Blöcken**: Vor der geschweiften Klammer steht die Adresse, für die der Block gilt.
+Der Haupt-Block heißt `{$SERVER_NAME:localhost}`, gilt also nur für `sonjaczak.com`. Eine Anfrage an
+`www.sonjaczak.com` passt auf keinen Block, deshalb hätte Caddy dafür weder ein Zertifikat noch eine Antwort.
+
+Der Block für `www` steht nicht im Caddyfile selbst, sondern in der Variable `CADDY_EXTRA_CONFIG` in
+`compose.prod.yaml`. Das Caddyfile fügt sie in Zeile 11 ein (`{$CADDY_EXTRA_CONFIG}`), außerhalb des Haupt-Blocks.
+Compose setzt dabei `SERVER_NAME` aus `/srv/sonjaczak/.env` ein. Am Server ergibt das:
+
+```caddy
+www.sonjaczak.com {
+	redir https://sonjaczak.com{uri} permanent
+}
+```
+
+- **Eigener Site-Block → eigenes Zertifikat:** Caddy holt für jede Adresse eines Site-Blocks automatisch ein
+  Zertifikat (Caddy-Doku *Automatic HTTPS*). Voraussetzung ist der DNS-Eintrag für `www`. Ohne Zertifikat zeigt der
+  Browser bei `https://www…` eine Warnung, bevor die Weiterleitung überhaupt greift.
+- **`redir … permanent`:** antwortet mit Status 301 und `Location: https://sonjaczak.com/<pfad>?<query>` (`{uri}` ist
+  Pfad plus Query). Geprüft mit `frankenphp adapt`, das das Caddyfile in Caddys JSON übersetzt: `static_response`
+  mit `status_code: 301`. Browser und Suchmaschinen merken sich 301 als dauerhaft. Suchmaschinen führen beide
+  Adressen dann als eine, statt doppelte Inhalte zu sehen.
+- **Warum nicht im Caddyfile?** Lokal und im CI-Smoke-Test heißt der Server `localhost`. Im Caddyfile fest
+  eingetragen, würde Caddy auch dort ein Zertifikat für `www.sonjaczak.com` anfordern, was ohne passenden DNS-Eintrag
+  fehlschlägt und die Logs füllt. Über `compose.prod.yaml` gilt der Block nur in Produktion. Im CI-Smoke-Test entsteht
+  `www.localhost`, für das Caddy wie für `localhost` seine eigene lokale Zertifizierungsstelle nutzt.
+- **Alternative:** `SERVER_NAME=sonjaczak.com, www.sonjaczak.com` würde beide Adressen mit derselben Seite bedienen,
+  ohne Weiterleitung. Dann gäbe es jede Seite unter zwei Adressen (schlecht für Suchmaschinen), und absolute Links,
+  die Symfony aus der aufgerufenen Adresse erzeugt, hätten mal `www`, mal nicht.
+- **Alternative:** Weiterleitung im IONOS-Kundenkonto. Dann zeigt `www` auf einen IONOS-Server statt auf unseren,
+  und ob dort HTTPS für `www` funktioniert, hängt vom IONOS-Produkt ab. Bei Caddy liegt alles an einer Stelle und ist
+  im Repo versioniert.
+
 ---
 
 ## `frankenphp/docker-entrypoint.sh`

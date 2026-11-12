@@ -42,7 +42,7 @@ final class PublicPagesTest extends WebTestCase
         // A missing translation is rendered as its key, e.g. "nav.home"; this also covers the menu labels,
         // which debug:translation cannot see because they are set in PHP (App\Menu\MenuBuilder)
         $text = $crawler->filter('title')->text().' '.$crawler->filter('body')->text();
-        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|error|form|inquiry|mail|design_preview|styleguide)\.[a-z_]+/', $text);
+        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|error|form|inquiry|mail|image|design_preview|styleguide)\.[a-z_]+/', $text);
     }
 
     public function testCurrentPageIsMarkedInMenu(): void
@@ -71,6 +71,17 @@ final class PublicPagesTest extends WebTestCase
         // WebP in several widths, JPEG fallback; the first image loads with high priority, not lazily
         self::assertSelectorExists('.sc-hero picture source[type="image/webp"][srcset*="640w"][srcset*="1920w"]');
         self::assertSelectorExists('.sc-hero img[src$=".jpg"][width][height][fetchpriority="high"]');
+    }
+
+    public function testOnlyAiGeneratedImagesAreLabelled(): void
+    {
+        $client = self::createClient();
+
+        $client->request('GET', '/booking/solo');
+        self::assertSelectorTextSame('.sc-hero .sc-ai-label', 'KI-generiert');
+
+        $client->request('GET', '/booking/band');
+        self::assertSelectorNotExists('.sc-ai-label');
     }
 
     public function testNotFoundPageUsesLayout(): void

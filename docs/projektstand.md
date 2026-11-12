@@ -63,8 +63,10 @@ RAM auf dem Server nach dem ersten Deploy (Leerlauf): php 159 MiB, database 35 M
 - [x] Nach dem ersten Deploy: RAM auf dem Server gemessen (siehe „Aktueller Stand“)
 - [ ] `opcache.memory_consumption = 256` ggf. senken: tatsächliche OPcache-Belegung messen, sobald die App gewachsen ist
 - [ ] Backups der Datenbank (DSGVO) einrichten – spätestens bevor echte Daten erfasst werden
-- [ ] `www.sonjaczak.com` → Weiterleitung auf `sonjaczak.com` (DNS + Caddy)
-- [ ] Ablaufdatum des ghcr-Tokens im Kalender eintragen
+- [x] `www.sonjaczak.com` → Weiterleitung auf `sonjaczak.com` (2026-11-12: A-Record `www`, Caddy-Block über
+      `CADDY_EXTRA_CONFIG` in `compose.prod.yaml`, 301; Erklärung in `docs/erklaerungen/03-compose-und-frankenphp.md`)
+- [ ] Erinnerung an ablaufende Tokens: Cronjob am Server mit Mail (`docs/deployment.md` B6) – **noch eintragen**
+      (gh CLI läuft 2027-11-02 ab, Server-Token 2027-11-03)
 - Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
 - Alte Images in ghcr.io aufräumen (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit 1 Monat Vorlauf)
 - CI braucht PHP ≥ 8.5.12 (`composer.json` → `"php": ">=8.5.12"`)
@@ -113,7 +115,11 @@ Erst danach werden Features gebaut.
          unübersetzte Schlüssel, aktive Menüpunkte, Impressum-Anker, fehlende Übersetzungen
          (`debug:translation --only-missing`). CI: `lint:twig`, `lint:yaml`, HTTPS-Check aktiv, Smoke-Test ruft `/`
          am Prod-Stack ab (lokal nachgestellt: grün; php 114 MiB, database 27 MiB im Leerlauf, Mac).
-   - [ ] Schritt 3: Design-Entwurf – **umgesetzt, wartet auf Entscheidung** (2026-11-11). Drei Varianten:
+   - [ ] Schritt 3: Design-Entwurf – **entschieden (2026-11-12), Umsetzung folgt:** Variante A, Logo in Allura (als SVG),
+         Startseite mit Slider statt Einzelbild (vorerst `hero-sonja2`, `hero-sax`; automatisch, Klick/Wischen,
+         Pause-Knopf). B und C bleiben als „Themes“ erhalten, aktives Theme vorerst aus der Konfiguration. Später im
+         Admin-Bereich: Dropdown für das Theme (auch saisonale Themes) und Verwaltung der Slider-Bilder.
+         Bisheriger Stand (2026-11-11), drei Varianten:
          A klassisch-elegant (Cormorant Garamond + Jost), B modern-klar (Montserrat + Inter), C Bühne/dunkel
          (Playfair Display + Inter); Akzentfarbe Petrol in A und B, Gold in C (Rot verworfen: zu nah an Red Mullet);
          Unterricht im selben Stil wie die übrigen Seiten (Flyer-Pink verworfen, 2026-11-11). Logo-Kandidaten:
@@ -164,14 +170,25 @@ Erst danach werden Features gebaut.
            **Schritt 6 abgeschlossen.** Zum Durchsehen (Entwurf): Bei Minderjährigen kommt der Vertrag mit den
            Erziehungsberechtigten zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
    - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
-     - Rechtsform/Status (inhalte.md F46) → Impressum um Aufsichtsbehörde, Kammer, Berufsbezeichnung und
-       Vorschriften ergänzen (§ 5 Abs. 1 Z 5, 6 ECG), Schlüssel `imprint.profession`
+     - [x] Rechtsform (2026-11-12): Einzelunternehmen, Neue Selbständige, kein Gewerbe, keine UID → keine Angaben
+       nach § 5 Abs. 1 Z 5–7 ECG; Schlüssel `imprint.profession` entfernt
      - [x] Zweiter schneller Kontaktweg neben der E-Mail (EuGH C-298/07: Kontaktformular genügt, Telefon nicht
        zwingend) → Kontaktformular auf `/kontakt` (Schritt 6, live getestet 2026-11-12)
-     - IONOS: Auftragsverarbeitungsvertrag im Kundenkonto abschließen bzw. prüfen; Rechenzentrum des VPS prüfen
-       (falls außerhalb der EU: Datenschutzerklärung ergänzen)
-     - Anbieter des Postfachs `music@sonjaczak.com` in der Datenschutzerklärung nennen (Empfänger)
-     - Entwürfe durchsehen (`# Draft`), KI-Bilder (Kennzeichnung oder Austausch), Regeln und FAQ von Sonja
+     - [x] IONOS (2026-11-12): AVV gilt laut ionos.de/terms-gtc/avv (Ziff. 1.1, 12.3) als Teil der AGB, kein eigener
+       Abschluss; Rechenzentrum des VPS in Berlin (EU)
+     - [x] Postfach `music@` liegt bei IONOS, wird an Sonjas Gmail weitergeleitet → Google Ireland in der
+       Datenschutzerklärung genannt (2026-11-12)
+     - [ ] **Gmail und AVV klären:** Für kostenloses Gmail habe ich keinen Auftragsverarbeitungsvertrag gefunden (den
+       „Cloud Data Processing Addendum“ gibt es für Google Workspace). Kundendaten in einem privaten Gmail-Konto sind
+       daher ein Risiko. Optionen: Google Workspace (mit AVV), oder `music@` direkt per IMAP in einem Mail-Programm
+       bzw. im IONOS-Webmail lesen (ohne Weiterleitung)
+     - [x] Texte in der Ich-Form statt „Sonja“ (2026-11-12; Meta-Beschreibungen und Rechtstexte bleiben neutral)
+     - [x] KI-Bilder gekennzeichnet (2026-11-12): Hinweis „KI-generiert“ in der Ecke (Liste `ai_generated_images` in
+       `config/packages/twig.yaml`) und im Bildnachweis; Austausch gegen Fotos, sobald vorhanden
+     - [x] Minderjährige (2026-11-12): Altersgrenze 14 (§ 4 Abs. 4 DSG) gilt nur für Einwilligungen, die Formulare
+       stützen sich auf Art. 6 Abs. 1 lit. b/f → freiwilliger Hinweis „unter 14 gemeinsam mit einem Elternteil“ beim
+       Unterrichtsformular
+     - Entwürfe durchsehen (`# Draft`), Regeln und FAQ von Sonja
      - Nach dem Deploy: gekürzte IPs in den Server-Logs prüfen (`docker compose logs php`)
    - [x] **CI startet nicht** (2026-11-09 `startup_failure`): seit 2026-11-11 behoben, CI läuft wieder.
 

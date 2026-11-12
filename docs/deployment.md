@@ -113,7 +113,44 @@ sudo -u deploy -H docker login ghcr.io -u MikeCzak --password-stdin
 nicht in mikes Home.
 
 Docker speichert den Token in `/home/deploy/.docker/config.json` (unverschlüsselt, nur für deploy lesbar).
-Läuft der Token ab, schlägt der Deploy beim `docker pull` fehl → neuen Token anlegen, Schritt wiederholen.
+Läuft der Token ab, schlägt der Deploy beim `docker pull` fehl → neuen Token anlegen, Schritt wiederholen und die
+Erinnerung (B6) auf das neue Ablaufdatum setzen.
+
+### B6. Erinnerung an ablaufende Tokens (auf dem Server)
+
+GitHub schickt selbst eine Mail, bevor ein Token abläuft (GitHub-Changelog „Expiration options for personal access
+tokens“, 2021-07-26; wie viele Tage vorher, steht dort nicht). Zusätzlich schickt der Server eine Woche vorher eine
+Mail über den Symfony-Mailer, wie beim Testversand in B3.
+
+Tokens (Stand 2026-11-12):
+
+| Token | Scopes | Wo | Läuft ab | Erinnerung |
+|---|---|---|---|---|
+| gh CLI | `admin:public_key`, `read:org`, `repo` | Mac | 2027-11-02 | 2027-10-26 |
+| `sonjaczak-server-pull` | `read:packages` | Server (B4) | 2027-11-03 | 2027-10-27 |
+
+```bash
+sudo crontab -e      # crontab von root: docker läuft dort ohne sudo
+```
+
+Eintrag (`<adresse>` = wohin die Erinnerung gehen soll):
+
+```
+# Token reminders: cron has no year, so the job runs daily at 08:00 and compares the date itself. % must be escaped.
+0 8 * * * [ "$(date +\%F)" = "2027-10-26" ] && docker exec sonjaczak-php-1 bin/console mailer:test <adresse> --from anfrage@sonjaczak.com --subject "gh-CLI-Token läuft am 2.11. ab" --body "Neuen Token anlegen: GitHub → Settings → Developer settings → Personal access tokens. Danach gh auth login und B6 anpassen."
+0 8 * * * [ "$(date +\%F)" = "2027-10-27" ] && docker exec sonjaczak-php-1 bin/console mailer:test <adresse> --from anfrage@sonjaczak.com --subject "Server-Token (ghcr) läuft am 3.11. ab" --body "Neuen Token anlegen und docs/deployment.md B4 wiederholen, danach B6 anpassen."
+```
+
+Erklärung:
+
+- `mailer:test` nimmt Empfänger, `--from`, `--subject` und `--body` (Optionen laut
+  `vendor/symfony/mailer/Command/MailerTestCommand.php`). Der Absender muss `anfrage@sonjaczak.com` sein, weil IONOS
+  nur Absender des eigenen Postfachs annimmt.
+- In einer crontab beendet ein nicht escaptes `%` die Befehlszeile (`man 5 crontab`), daher `\%F`.
+- cron würde die Ausgabe eines Jobs per Mail schicken; ohne lokales Mailprogramm verwirft es sie (Hinweis im Journal,
+  `journalctl -u cron`). Deshalb den Eintrag einmal testen, indem man das Datum vorübergehend auf heute und die
+  Uhrzeit auf die nächste Minute setzt.
+- `crontab -l` zeigt die Einträge, nach dem Erneuern eines Tokens das Datum anpassen.
 
 ### B5. SSH-Key für GitHub Actions
 
@@ -170,7 +207,8 @@ Bei der Domain `sonjaczak.com` im IONOS-DNS:
 - **AAAA-Record** für `@` → IPv6 des VPS (ersetzt `2001:8d8:100f:f000::200`). Hat der VPS kein IPv6 (unser Fall),
   den alten AAAA-Record **löschen** – sonst landen IPv6-Besucher und ggf. Let's Encrypt beim alten IONOS-Webspace.
 - **MX-Records (`mx00/mx01.ionos.de`) und SPF-TXT nicht anfassen** – die sind für Mail.
-- `www` hat derzeit keinen Eintrag; Weiterleitung `www` → ohne `www` richten wir später ein.
+- **A-Record** für `www` → IPv4 des VPS (seit 2026-11-12). Caddy holt dafür ein eigenes Zertifikat und leitet
+  dauerhaft (301) auf die Adresse ohne `www` um, mit Pfad und Query (`CADDY_EXTRA_CONFIG` in `compose.prod.yaml`).
 
 Prüfen (Mac), bis die neuen Adressen erscheinen:
 

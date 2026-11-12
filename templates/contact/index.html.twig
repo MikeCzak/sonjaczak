@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.contact'|trans }}{% endblock %}
 {% block meta_description %}{{ 'meta.contact'|trans }}{% endblock %}
@@ -42,10 +41,8 @@
                     <h3 class="h5">{{ 'imprint.provider.heading'|trans({}, 'content') }}</h3>
                     {{ include('_partials/controller_address.html.twig') }}
                     <p>{{ 'imprint.provider.purpose'|trans({}, 'content') }}</p>
-                    {% set profession = 'imprint.profession'|trans({}, 'content') %}
-                    {% if profession is not empty %}
-                        {{ text.paragraphs(profession) }}
-                    {% endif %}
+                    {# No supervisory authority, chamber or professional regulations (§ 5 Abs. 1 Z 5, 6 ECG): no trade
+                     # licence (Neue Selbständige). No VAT ID (Z 7). #}
                 </div>
                 <div class="col-md-6">
                     <h3 class="h5">{{ 'imprint.credits.heading'|trans({}, 'content') }}</h3>

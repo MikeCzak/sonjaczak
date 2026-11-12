@@ -87,6 +87,7 @@
             <hr class="sc-accent-line">
             <div class="col-lg-8">
                 <p>{{ 'lessons.inquiry.body'|trans({}, 'content') }}</p>
+                <p class="small">{{ 'lessons.inquiry.minor_hint'|trans({}, 'content') }}</p>
                 {{ include('_partials/inquiry_form.html.twig', {
                     form: form,
                     status: inquiry_status,
