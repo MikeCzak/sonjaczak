@@ -105,7 +105,10 @@ Erst danach werden Features gebaut.
    eingearbeitet (Schnupperstunde als eigene Entity, Ferien je Kurs, Einheiten werden erzeugt, Kursraster als
    Arbeitsansicht, eine Honorarnote mit Ratenoption, Gutschrift, PDF in der Datenbank). 2026-11-13: zweite Fragenrunde
    eingearbeitet (Schnupperstunde kostenlos und übernehmbar, Ferien-Vorschlag aus der OpenHolidays API, Erinnerungs-Mail
-   bei überschrittener Zahlungsfrist per Cronjob). **Freigegeben 2026-11-13**; als Nächstes `rollen.md`.
+   bei überschrittener Zahlungsfrist per Cronjob). **Freigegeben 2026-11-13.** `docs/planung/rollen.md`, zweiter Entwurf (Rollen, Firewall nur für `/admin`,
+   Voter, Passkeys mit Passwort als Rückfall, „Passwort vergessen“ per Mail-Link, Sessions in PostgreSQL mit 8 h
+   Inaktivität / 12 h Cookie), **freigegeben 2026-11-13**. Admin-Cookie nur unter `/admin`; Datenschutzerklärung
+   wird mit dem Login-Schritt angepasst. Umsetzungsplan: `docs/planung/umsetzung-admin.md`.
    Todos für den Admin-Bereich (Dashboard, Export der Einnahmen, PDF, Art.-13-Information) in Abschnitt 9.
    Ziel: Datenbank und Admin-Bereich fertig, bevor Mike Sonja den Stand zeigt.
 3. **Umsetzung erstes Release** (Plan: `docs/planung/seitenstruktur.md`, Abschnitt 10)

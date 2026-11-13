@@ -300,3 +300,19 @@ Wird beim Laden immer als Objekt angelegt, nie `null`.
 
 **Fixtures / Foundry** – Erfundene Testdaten. Zenstruck Foundry erzeugt sie über Factories mit Faker, für die lokale
 Datenbank (`doctrine:fixtures:load`) und in Tests. Nur `require-dev`, nie echte Personendaten.
+
+## Login und Rollen
+
+**Session** – Server-seitiger Datensatz zu einer Browser-Sitzung (z. B. „angemeldet als Sonja“). Im Browser liegt nur
+ein Cookie mit einer zufälligen ID; wo der Datensatz liegt (Datei, Datenbank, Redis), ist austauschbar. Bei uns nur
+unter `/admin`. Details: `docs/planung/rollen.md`.
+
+**Firewall** – Teil der Symfony-Security-Konfiguration, der festlegt, wie sich Nutzer:innen für einen URL-Bereich
+anmelden. Bei uns nur für `/admin`; öffentliche Seiten liegen in keiner Firewall und bekommen keine Session.
+
+**Voter** – Klasse, die entscheidet, ob ein User eine Aktion mit einem bestimmten Objekt ausführen darf
+(z. B. `STUDENT_DELETE`). Ergänzt Rollen um Regeln, die vom Objekt abhängen.
+
+**Passkey / WebAuthn** – Anmeldung mit einem Schlüsselpaar statt Passwort: Das Gerät hält den privaten Schlüssel und
+entsperrt ihn per Fingerabdruck, der Server kennt nur den öffentlichen. Gilt nur für die eigene Domain, daher
+phishingsicher.
