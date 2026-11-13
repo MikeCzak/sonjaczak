@@ -9,6 +9,7 @@ nav:
     dashboard: Übersicht
     users: Benutzer
     courses: Kurse
+    trials: Schnupperstunden
     students: Schüler:innen
     guardians: Elternteile
 action:
@@ -122,9 +123,11 @@ student:
         title: Neue:r Schüler:in
     edit:
         title: Schüler:in
+        lessons: Kurse und Schnupperstunden
     delete:
         label: Schüler:in löschen
-        confirm: Alle Daten dieser Person werden endgültig gelöscht.
+        confirm: Alle Daten dieser Person werden endgültig gelöscht, auch ihre Schnupperstunden.
+        has_enrollments: Löschen ist erst möglich, wenn die Person an keinem Kurs mehr teilnimmt.
     flash:
         saved: Gespeichert.
         deleted: Gelöscht.
@@ -240,6 +243,8 @@ enrollment:
         billing: Abrechnung
         bill_to_guardian: Honorarnote an den Elternteil
         bill_to_guardian_help: Vorbelegt, wenn ein Elternteil eingetragen und die Person bei Kursbeginn minderjährig ist.
+        trials: Schnupperstunden übernehmen
+        trials_help: Übernommene Schnupperstunden zählen als gehaltene Einheit des Kurses und verschwinden aus der Liste der Schnupperstunden.
     new:
         title: Teilnahme hinzufügen
         next: Weiter
@@ -278,3 +283,24 @@ lesson:
     flash:
         saved: Gespeichert.
         make_up_created: Nachholstunde eingetragen.
+trial:
+    label: Schnupperstunde %date%
+    field:
+        student: Schüler:in
+        student_help: Wer schnuppert, wird zuerst als Schüler:in angelegt (nur Name ist Pflicht). Bleibt die Person nicht, einfach wieder löschen.
+    index:
+        title: Schnupperstunden
+        new: Schnupperstunde eintragen
+        intro: Kostenlos, ohne Honorarnote. Beim Anlegen einer Teilnahme lassen sie sich als gehaltene Einheit übernehmen.
+        empty: Keine Schnupperstunden eingetragen.
+    new:
+        title: Schnupperstunde eintragen
+        intro: Die Person muss schon als Schüler:in angelegt sein.
+    edit:
+        title: Schnupperstunde
+    delete:
+        label: Schnupperstunde löschen
+        confirm: Die Schnupperstunde wird endgültig gelöscht.
+    flash:
+        saved: Gespeichert.
+        deleted: Gelöscht.

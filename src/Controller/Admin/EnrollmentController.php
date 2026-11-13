@@ -9,11 +9,12 @@ use App\Entity\Enrollment;
 use App\Entity\Enum\LessonStatus;
 use App\Entity\Lesson;
 use App\Entity\Student;
+use App\Entity\TrialLesson;
 use App\Entity\User;
 use App\Form\Admin\EnrollmentType;
 use App\Form\Admin\MakeUpLessonType;
-use App\Lesson\LessonPlanner;
 use App\Lesson\MakeUpRule;
+use App\Lesson\TrialTakeover;
 use App\Repository\StudentRepository;
 use App\Security\Voter\EnrollmentVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,7 +44,7 @@ final class EnrollmentController extends AbstractController
         Request $request,
         Course $course,
         StudentRepository $students,
-        LessonPlanner $planner,
+        TrialTakeover $takeover,
         #[MapQueryParameter] ?int $student = null,
     ): Response {
         $chosen = null === $student ? null : $students->find($student);
@@ -55,13 +56,16 @@ final class EnrollmentController extends AbstractController
         }
 
         $enrollment = new Enrollment($course, $chosen);
-        $form = $this->createForm(EnrollmentType::class, $enrollment, ['with_slot' => true]);
+        $form = $this->createForm(EnrollmentType::class, $enrollment, [
+            'with_slot' => true,
+            'trial_lessons' => $chosen->getTrialLessons()->getValues(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($enrollment);
-            $planner->fillUp($enrollment);
-            $this->entityManager->flush();
+            /** @var iterable<TrialLesson> $trials */
+            $trials = $form->has('trials') ? $form->get('trials')->getData() : [];
+            $takeover->enroll($enrollment, $trials);
             $this->addFlash('success', 'enrollment.flash.created');
 
             return $this->redirectToRoute('admin_enrollment_show', ['id' => $enrollment->getId()]);

@@ -9,6 +9,7 @@ use App\Tests\Factory\CourseFactory;
 use App\Tests\Factory\EnrollmentFactory;
 use App\Tests\Factory\GuardianFactory;
 use App\Tests\Factory\StudentFactory;
+use App\Tests\Factory\TrialLessonFactory;
 use App\Tests\Factory\UserFactory;
 use Zenstruck\Foundry\Attribute\AsFixture;
 use Zenstruck\Foundry\Story;
@@ -44,6 +45,10 @@ final class AppStory extends Story
             ->withBreak('Weihnachtsferien', '2026-12-24', '2027-01-06')
             ->withBreak('Semesterferien', '2027-02-15', '2027-02-20')
             ->create();
+
+        // Two people who came for a trial lesson and are not enrolled yet
+        TrialLessonFactory::createOne(['student' => $adults[6]]);
+        TrialLessonFactory::createOne(['student' => $adults[7], 'startsAt' => new \DateTimeImmutable('2026-11-18 17:00'), 'note' => null]);
 
         // Friday afternoon as in Sonja's list; lessons before today are held, with a song as note
         // flush_after(): changes made after create() are saved in one flush at the end

@@ -31,7 +31,7 @@ class Enrollment
     #[ORM\JoinColumn(nullable: false)]
     private Course $course;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     private ?Student $student = null;

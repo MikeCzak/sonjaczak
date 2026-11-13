@@ -1,0 +1,36 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'trial.index.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">{{ 'trial.index.title'|trans({}, 'admin') }}</h1>
+        <a class="btn btn-primary" href="{{ path('admin_trial_new') }}">{{ 'trial.index.new'|trans({}, 'admin') }}</a>
+    </div>
+    <p class="small text-body-secondary">{{ 'trial.index.intro'|trans({}, 'admin') }}</p>
+
+    {% if trials is empty %}
+        <p>{{ 'trial.index.empty'|trans({}, 'admin') }}</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'lesson.field.starts_at'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'trial.field.student'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'lesson.field.note'|trans({}, 'admin') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trial in trials %}
+                        <tr>
+                            <td class="text-nowrap"><a href="{{ path('admin_trial_edit', {id: trial.id}) }}">{{ ('weekday_short.' ~ trial.startsAt|date('N'))|trans({}, 'admin') }} {{ trial.startsAt|date('d.m.Y H:i') }}</a></td>
+                            <td><a href="{{ path('admin_student_edit', {id: trial.student.id}) }}">{{ trial.student.fullName }}</a></td>
+                            <td>{{ trial.note }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

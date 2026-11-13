@@ -1,4 +1,4 @@
-# Teilnahmen und Einheiten (C3)
+# Teilnahmen, Einheiten und Schnupperstunden (C3, C5)
 
 Plan: `docs/planung/datenmodell.md` 3.4 und 3.5. Hier: Umsetzung, Regeln im Code, Fallstricke und was du prüfen
 solltest.
@@ -82,6 +82,26 @@ Einheit eingetragen (`makeUpFor`); jede abgesagte Einheit kann nur einmal nachge
   Und `assertCheckboxNotChecked()` besteht auch, wenn es die Checkbox gar nicht gibt; deshalb prüft der Test vorher, dass
   sie existiert.
 
+## Schnupperstunden (C5)
+
+Dateien: `src/Entity/TrialLesson.php`, `src/Lesson/TrialTakeover.php`, `src/Controller/Admin/TrialLessonController.php`,
+`templates/admin/trial/`, Migration `Version20261113094318`, `tests/Admin/TrialLessonTest.php`.
+
+- **Eigene Entity** (`datenmodell.md` 3.6): Schüler:in, Beginn, Dauer, Notiz. Kein Kurs, kein Preis.
+- **Übernahme:** Beim Anlegen einer Teilnahme bietet das Formular die Schnupperstunden dieser Person an (alle
+  vorausgewählt, Feld `trials`, nicht gemappt). `TrialTakeover::enroll()` legt je Schnupperstunde eine Einheit mit
+  Status `held` und `fromTrial = true` an, löscht die Schnupperstunde und erzeugt dann die übrigen Einheiten. Die
+  übernommene zählt mit: 1 + 14.
+- **Transaktion:** `wrapInTransaction()` beginnt eine Transaktion, ruft die Funktion auf, macht ein `flush()` und
+  `commit()`; bei einer Exception `rollBack()` und der EntityManager wird geschlossen
+  (`vendor/doctrine/orm/src/EntityManager.php`, `wrapInTransaction()`). Ehrlich gesagt wäre ein einzelnes `flush()`
+  schon atomar (Doctrine schreibt einen Flush immer in einer Transaktion). Die ausdrückliche Klammer macht die Absicht
+  sichtbar und bleibt richtig, falls später ein Schritt mit eigenem Flush dazukommt.
+- **Löschen einer Person:** Schnupperstunden gehen mit (`cascade: ['remove']` an `Student::$trialLessons`): Wer nach
+  dem Schnuppern nicht bleibt, wird ganz gelöscht (`datenmodell.md` 5). Personen **mit Teilnahmen** lassen sich nicht
+  löschen (`StudentVoter`); ohne diese Regel hätte der Fremdschlüssel `enrollment.student_id` das Löschen mit einem
+  Datenbankfehler (Fehlerseite 500) abgebrochen. Das war eine Lücke seit C1, jetzt geschlossen.
+
 ## Zum Durchsehen (meine Auslegungen, bitte bestätigen oder korrigieren)
 
 1. **Schwellwert:** Vorerst `app.make_up_threshold: 0` in `config/services.yaml` (Platzhalter, ab C6 Einstellung).
@@ -95,3 +115,5 @@ Einheit eingetragen (`makeUpFor`); jede abgesagte Einheit kann nur einmal nachge
 3. **Wochentermin nicht änderbar:** Nach dem Anlegen lassen sich Wochentag und Uhrzeit der Teilnahme nicht mehr ändern,
    nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten auf einen neuen Termin wäre machbar, war
    aber nicht geplant.
+4. **Schüler:in mit Teilnahmen nicht löschbar** (C5): erst die Teilnahmen löschen. Mit Honorarnoten (ab D1) geht auch
+   das nicht mehr; dann bleibt nur die Anonymisierung nach Ablauf der Aufbewahrungsfrist (Abschnitt F).

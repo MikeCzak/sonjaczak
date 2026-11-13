@@ -6,6 +6,8 @@ namespace App\Form\Admin;
 
 use App\Entity\Enrollment;
 use App\Entity\Enum\Billing;
+use App\Entity\TrialLesson;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -40,6 +42,22 @@ final class EnrollmentType extends AbstractType
                 ]);
         }
 
+        if ([] !== $options['trial_lessons']) {
+            // Not mapped: taken over by App\Lesson\TrialTakeover, all checked by default
+            $builder->add('trials', EntityType::class, [
+                'label' => 'enrollment.field.trials',
+                'help' => 'enrollment.field.trials_help',
+                'class' => TrialLesson::class,
+                'choices' => $options['trial_lessons'],
+                'choice_label' => static fn (TrialLesson $trial): string => (string) $trial->getStartsAt()?->format('d.m.Y H:i'),
+                'choice_translation_domain' => false,
+                'multiple' => true,
+                'expanded' => true,
+                'mapped' => false,
+                'data' => $options['trial_lessons'],
+            ]);
+        }
+
         $builder
             ->add('lessonMinutes', IntegerType::class, ['label' => 'enrollment.field.lesson_minutes'])
             ->add('priceCents', MoneyType::class, [
@@ -66,7 +84,9 @@ final class EnrollmentType extends AbstractType
             'data_class' => Enrollment::class,
             'translation_domain' => 'admin',
             'with_slot' => false,
+            'trial_lessons' => [],
         ]);
         $resolver->setAllowedTypes('with_slot', 'bool');
+        $resolver->setAllowedTypes('trial_lessons', TrialLesson::class.'[]');
     }
 }

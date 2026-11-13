@@ -22,6 +22,22 @@
                 <a class="btn btn-link" href="{{ path('admin_student_index') }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
             {{ form_end(form) }}
 
+            {% if student %}
+                <h2 class="h5 mt-5">{{ 'student.edit.lessons'|trans({}, 'admin') }}</h2>
+                <ul>
+                    {% for enrollment in student.enrollments %}
+                        <li><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{% include 'admin/course/_title.html.twig' with {course: enrollment.course} %}</a></li>
+                    {% endfor %}
+                    {% for trial in student.trialLessons %}
+                        <li><a href="{{ path('admin_trial_edit', {id: trial.id}) }}">{{ 'trial.label'|trans({'%date%': trial.startsAt|date('d.m.Y')}, 'admin') }}</a></li>
+                    {% endfor %}
+                </ul>
+                <a class="btn btn-outline-primary btn-sm" href="{{ path('admin_trial_new', {student: student.id}) }}">{{ 'trial.index.new'|trans({}, 'admin') }}</a>
+                {% if not student.enrollments is empty %}
+                    <p class="small text-body-secondary mt-4">{{ 'student.delete.has_enrollments'|trans({}, 'admin') }}</p>
+                {% endif %}
+            {% endif %}
+
             {% if student and is_granted('STUDENT_DELETE', student) %}
                 {{ include('admin/_delete.html.twig', {
                     action: path('admin_student_delete', {id: student.id}),

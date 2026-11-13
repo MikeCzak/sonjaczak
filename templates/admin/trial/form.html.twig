@@ -1,0 +1,29 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set title = (trial ? 'trial.edit.title' : 'trial.new.title')|trans({}, 'admin') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ title }}</h1>
+    {% if not trial %}
+        <p class="small text-body-secondary">{{ 'trial.new.intro'|trans({}, 'admin') }}</p>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-8 col-lg-5">
+            {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+                <a class="btn btn-link" href="{{ path('admin_trial_index') }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+            {{ form_end(form) }}
+
+            {% if trial %}
+                {{ include('admin/_delete.html.twig', {
+                    action: path('admin_trial_delete', {id: trial.id}),
+                    token_id: 'delete-trial-' ~ trial.id,
+                    label: 'trial.delete.label',
+                    confirm: 'trial.delete.confirm',
+                }) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

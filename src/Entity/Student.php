@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use App\Entity\Embeddable\Address;
 use App\Repository\StudentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -70,9 +72,28 @@ class Student
     #[ORM\JoinColumn(unique: true)]
     private ?User $user = null;
 
+    /**
+     * Inverse side. Deleted with the student: a person who only came for a trial lesson is deleted completely.
+     *
+     * @var Collection<int, TrialLesson>
+     */
+    #[ORM\OneToMany(targetEntity: TrialLesson::class, mappedBy: 'student', cascade: ['remove'])]
+    #[ORM\OrderBy(['startsAt' => 'ASC'])]
+    private Collection $trialLessons;
+
+    /**
+     * Inverse side, only for reading (StudentVoter: no delete while enrolled).
+     *
+     * @var Collection<int, Enrollment>
+     */
+    #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'student')]
+    private Collection $enrollments;
+
     public function __construct()
     {
         $this->address = new Address();
+        $this->trialLessons = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -192,6 +213,22 @@ class Student
         $this->guardian = $guardian;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, TrialLesson>
+     */
+    public function getTrialLessons(): Collection
+    {
+        return $this->trialLessons;
+    }
+
+    /**
+     * @return Collection<int, Enrollment>
+     */
+    public function getEnrollments(): Collection
+    {
+        return $this->enrollments;
     }
 
     public function getUser(): ?User

@@ -136,6 +136,10 @@ Erst danach werden Features gebaut.
      `plannedLessons`), neue Ferien entfernen geplante Einheiten und füllen am Ende auf, Nachholregel mit Anzeige
      „14 von 15“ und Nachholstunde je abgesagter Einheit, Kurs mit Teilnahmen nicht löschbar. Erklärung:
      `docs/erklaerungen/11-teilnahmen-und-einheiten.md`.
+   - [x] C5 (2026-11-13): Schnupperstunden (`/admin/schnupperstunden`), Übernahme in eine Teilnahme in einer
+     Transaktion (`fromTrial`). Schüler:innen mit Teilnahmen sind nicht mehr löschbar (vorher Datenbankfehler).
+   - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
+     Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
    - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas
      Formulierung in `anforderungen.md`), und welcher Wert (vorerst 0). Auffüllen nach neuen Ferien, Wochentermin nach
      dem Anlegen fest; Details in `11-teilnahmen-und-einheiten.md`, Abschnitt „Zum Durchsehen“.

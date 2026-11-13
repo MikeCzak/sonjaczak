@@ -14,9 +14,9 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 /**
  * Whether a student may be deleted (docs/planung/datenmodell.md 5).
  *
- * Invoices are receipts and must be kept, so a student with invoices must not be deleted. Invoices come with
- * step D1; until then, every ROLE_ADMIN may delete. The check belongs here already, so templates and controllers
- * ask the voter and need no change later.
+ * Not while enrolled: enrollments hold lessons and (from step D1) invoices, which are receipts and must be kept.
+ * The foreign key enrollment.student_id would refuse it anyway; the voter hides the button instead of a database
+ * error. Trial lessons are deleted with the student (a person who did not stay, datenmodell.md 5).
  *
  * @extends Voter<string, Student>
  */
@@ -35,7 +35,16 @@ final class StudentVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        // TODO D1: deny if the student has invoices ($vote?->addReason('student.delete.has_invoices'))
-        return $this->security->isGranted(User::ROLE_ADMIN);
+        if (!$this->security->isGranted(User::ROLE_ADMIN)) {
+            return false;
+        }
+
+        if (!$subject->getEnrollments()->isEmpty()) {
+            $vote?->addReason('student.delete.has_enrollments');
+
+            return false;
+        }
+
+        return true;
     }
 }

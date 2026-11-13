@@ -7,4 +7,7 @@
     <div class="col-md-6">{{ form_row(form.priceCents) }}</div>
     <div class="col-md-6">{{ form_row(form.billing) }}</div>
     <div class="col-12">{{ form_row(form.billToGuardian) }}</div>
+    {% if form.trials is defined %}
+        <div class="col-12">{{ form_row(form.trials) }}</div>
+    {% endif %}
 </div>

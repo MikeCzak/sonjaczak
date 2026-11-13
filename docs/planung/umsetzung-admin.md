@@ -93,7 +93,7 @@ Fortschritt wird im Projektstand abgehakt.
 - Raster nach Kalenderwochen, Bearbeiten direkt in der Zelle, Tastatur, Ferien per Zeile, Zählung je Spalte.
 - Design gemeinsam mit Sonjas Rückmeldung beim Demo-Termin nachschärfen.
 
-**C5 Schnupperstunden**
+**C5 Schnupperstunden** – erledigt 2026-11-13
 
 - Entity `TrialLesson`, Anlegen und Liste, Übernahme in eine Teilnahme (Transaktion, `fromTrial`).
 
