@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\TrialLesson;
 use App\Entity\User;
 use App\Form\Admin\TrialLessonType;
+use App\Repository\SettingsRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TrialLessonRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,9 +39,11 @@ final class TrialLessonController extends AbstractController
      * "?student=…" preselects the student, e.g. coming from the page of a newly created student.
      */
     #[Route('/neu', name: 'admin_trial_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, StudentRepository $students, #[MapQueryParameter] ?int $student = null): Response
+    public function new(Request $request, StudentRepository $students, SettingsRepository $settings, #[MapQueryParameter] ?int $student = null): Response
     {
-        $trial = new TrialLesson()->setStudent(null === $student ? null : $students->find($student));
+        $trial = new TrialLesson()
+            ->setStudent(null === $student ? null : $students->find($student))
+            ->setDurationMinutes($settings->current()->getLessonMinutes());
         $form = $this->createForm(TrialLessonType::class, $trial);
         $form->handleRequest($request);
 

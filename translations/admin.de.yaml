@@ -12,6 +12,7 @@ nav:
     trials: Schnupperstunden
     students: Schüler:innen
     guardians: Elternteile
+    settings: Einstellungen
 action:
     save: Speichern
     cancel: Abbrechen
@@ -304,3 +305,31 @@ trial:
     flash:
         saved: Gespeichert.
         deleted: Gelöscht.
+settings:
+    title: Einstellungen
+    section:
+        site: Website
+        lessons: Unterricht
+        invoice: Honorarnote (Absender)
+    field:
+        theme: Design der Website
+        theme_help: Gilt sofort für alle Besucher:innen. Vorher ansehen mit ?theme=… an einer beliebigen Seitenadresse.
+        lesson_minutes: Standarddauer einer Einheit (Minuten)
+        make_up_threshold: Schwellwert für Nachholstunden
+        make_up_threshold_help: Eine Nachholstunde ist fällig, wenn eine Teilnahme mehr als so viele Einheiten unter der geplanten Anzahl liegt (Absagen durch dich nicht mitgezählt).
+        sender_name: Name
+        sender_title: Titel
+        iban: IBAN
+        bic: BIC
+        bank_name: Bank
+        invoice_place: Ort
+        invoice_place_help: Steht vor dem Datum, z. B. „Graz, am 07.11.2026“.
+        vat_note: Hinweis zur Umsatzsteuer
+        signature: Unterschrift hochladen
+        signature_help: PNG, höchstens 1 MB. Am besten auf weißem Papier, gescannt mit 300–600 dpi, mit transparentem Hintergrund.
+        remove_signature: Unterschrift entfernen
+    signature:
+        current: Gespeicherte Unterschrift
+        alt: Unterschrift für die Honorarnote
+    flash:
+        saved: Einstellungen gespeichert.

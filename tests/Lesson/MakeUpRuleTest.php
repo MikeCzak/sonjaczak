@@ -40,7 +40,7 @@ final class MakeUpRuleTest extends TestCase
             });
         }
 
-        self::assertSame($expected, new MakeUpRule($threshold)->due($enrollment));
+        self::assertSame($expected, new MakeUpRule()->due($enrollment, $threshold));
     }
 
     public function testMakeUpLessonCounts(): void
@@ -48,9 +48,9 @@ final class MakeUpRuleTest extends TestCase
         $enrollment = new Enrollment(new Course()->setPlannedLessons(2));
         $cancelled = new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30'))->setStatus(LessonStatus::CancelledByTeacher);
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-16 15:30'));
-        self::assertSame(1, new MakeUpRule(0)->due($enrollment));
+        self::assertSame(1, new MakeUpRule()->due($enrollment, 0));
 
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-20 15:30'))->setMakeUpFor($cancelled);
-        self::assertSame(0, new MakeUpRule(0)->due($enrollment));
+        self::assertSame(0, new MakeUpRule()->due($enrollment, 0));
     }
 }

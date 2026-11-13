@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Story;
 
+use App\Entity\Embeddable\Address;
 use App\Entity\Enum\LessonStatus;
+use App\Entity\Settings;
 use App\Tests\Factory\CourseFactory;
 use App\Tests\Factory\EnrollmentFactory;
 use App\Tests\Factory\GuardianFactory;
@@ -15,6 +17,7 @@ use Zenstruck\Foundry\Attribute\AsFixture;
 use Zenstruck\Foundry\Story;
 
 use function Zenstruck\Foundry\Persistence\flush_after;
+use function Zenstruck\Foundry\Persistence\persist;
 
 /**
  * Invented data for the local database: `bin/console foundry:load-fixtures main`.
@@ -29,6 +32,20 @@ final class AppStory extends Story
         // Logins with UserFactory::PASSWORD (docs/entwicklung.md)
         UserFactory::new()->superAdmin()->create(['email' => 'mike@example.com']);
         UserFactory::new()->admin()->create(['email' => 'sonja@example.com']);
+
+        // Invented sender data (Sonja's real data are entered in production only). The IBAN is the example from
+        // the Austrian banks' documentation, it belongs to nobody.
+        persist(Settings::class, [
+            'senderName' => 'Erika Musterfrau',
+            'senderTitle' => 'Bakk.phil.',
+            'senderAddress' => new Address('Musterstraße 1', '8010', 'Graz'),
+            'iban' => 'AT611904300234573201',
+            'bic' => 'BKAUATWW',
+            'bankName' => 'Musterbank',
+            'invoicePlace' => 'Graz',
+            // Placeholder: the real wording is Sonja's and must be checked, not invented here
+            'vatNote' => 'Beispieltext für den Hinweis zur Umsatzsteuer.',
+        ]);
 
         // Adults, children with one guardian each, and two siblings sharing one
         $adults = StudentFactory::createMany(12);

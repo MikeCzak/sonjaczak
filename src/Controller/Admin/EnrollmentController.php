@@ -15,6 +15,7 @@ use App\Form\Admin\EnrollmentType;
 use App\Form\Admin\MakeUpLessonType;
 use App\Lesson\MakeUpRule;
 use App\Lesson\TrialTakeover;
+use App\Repository\SettingsRepository;
 use App\Repository\StudentRepository;
 use App\Security\Voter\EnrollmentVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -75,7 +76,7 @@ final class EnrollmentController extends AbstractController
     }
 
     #[Route('/admin/teilnahmen/{id}', name: 'admin_enrollment_show', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function show(Request $request, Enrollment $enrollment, MakeUpRule $makeUpRule): Response
+    public function show(Request $request, Enrollment $enrollment, MakeUpRule $makeUpRule, SettingsRepository $settings): Response
     {
         $form = $this->createForm(EnrollmentType::class, $enrollment);
         $form->handleRequest($request);
@@ -90,7 +91,7 @@ final class EnrollmentController extends AbstractController
         return $this->render('admin/enrollment/show.html.twig', [
             'enrollment' => $enrollment,
             'form' => $form,
-            'make_up_due' => $makeUpRule->due($enrollment),
+            'make_up_due' => $makeUpRule->due($enrollment, $settings->current()->getMakeUpThreshold()),
             'can_make_up' => [] !== $this->cancelledWithoutMakeUp($enrollment),
         ]);
     }

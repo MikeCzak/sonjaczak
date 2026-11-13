@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Theme;
 
+use App\Repository\SettingsRepository;
+use Doctrine\DBAL\Exception as DatabaseException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * Settings of the public site that Sonja will change in the admin area: active theme and home page slides.
+ * Settings of the public site (Twig global "site"): active theme and home page slides.
  *
- * For now they come from parameters in config/services.yaml. With the admin area this class reads them from the
- * database instead; templates (Twig global "site") stay the same.
+ * The theme comes from the settings in the database (App\Entity\Settings, changed by Sonja in the admin area).
+ * The slides still come from config/services.yaml until the slide management (HomeSlide) is built.
  */
 final readonly class SiteSettings
 {
@@ -18,8 +21,8 @@ final readonly class SiteSettings
      * @param list<array{image: string, position: string}> $homeSlides
      */
     public function __construct(
-        #[Autowire(param: 'app.theme')]
-        private string $theme,
+        private SettingsRepository $settings,
+        private LoggerInterface $logger,
         #[Autowire(param: 'app.home_slides')]
         private array $homeSlides,
     ) {
@@ -28,10 +31,23 @@ final readonly class SiteSettings
     /**
      * The active theme, or a valid preview (?theme=<value>) for comparing themes. The preview only affects the
      * current page and stores nothing in the browser.
+     *
+     * If the database cannot be reached, the public pages still work, in the default theme.
      */
     public function theme(?string $preview = null): Theme
     {
-        return Theme::tryFrom($preview ?? '') ?? Theme::from($this->theme);
+        $previewed = Theme::tryFrom($preview ?? '');
+        if (null !== $previewed) {
+            return $previewed;
+        }
+
+        try {
+            return $this->settings->current()->getTheme();
+        } catch (DatabaseException $exception) {
+            $this->logger->error('Settings not readable, default theme used: {message}', ['message' => $exception->getMessage()]);
+
+            return Theme::Classic;
+        }
     }
 
     /**

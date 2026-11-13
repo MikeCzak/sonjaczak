@@ -7,14 +7,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    # Make-up rule (App\Lesson\MakeUpRule): a make-up lesson is due below plannedLessons minus this number.
-    # Placeholder until Sonja sets the value in the settings (step C6); open question in docs/projektstand.md.
-    app.make_up_threshold: 0
     # Public address and recipient of all inquiry forms (sender: config/packages/mailer.yaml)
     app.contact_email: 'music@sonjaczak.com'
-    # Site settings (App\Theme\SiteSettings), later changed by Sonja in the admin area.
-    # Theme: a value of App\Theme\Theme. Slides: image name and object-position, shown in this order.
-    app.theme: 'classic'
+    # Home page slides (App\Theme\SiteSettings): image name and object-position, shown in this order.
+    # Later managed by Sonja in the admin area (HomeSlide); the theme already comes from App\Entity\Settings.
     app.home_slides:
         - { image: 'hero-sonja2', position: '60% 35%' }
         - { image: 'hero-sax', position: '60% 30%' }

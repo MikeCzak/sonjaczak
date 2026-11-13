@@ -1,0 +1,52 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'settings.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-4">{{ 'settings.title'|trans({}, 'admin') }}</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            {{ form_start(form) }}
+                <fieldset class="mb-4">
+                    <legend class="h5">{{ 'settings.section.site'|trans({}, 'admin') }}</legend>
+                    {{ form_row(form.theme) }}
+                </fieldset>
+
+                <fieldset class="mb-4">
+                    <legend class="h5">{{ 'settings.section.lessons'|trans({}, 'admin') }}</legend>
+                    <div class="row">
+                        <div class="col-md-6">{{ form_row(form.lessonMinutes) }}</div>
+                        <div class="col-md-6">{{ form_row(form.makeUpThreshold) }}</div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="mb-4">
+                    <legend class="h5">{{ 'settings.section.invoice'|trans({}, 'admin') }}</legend>
+                    <div class="row">
+                        <div class="col-md-8">{{ form_row(form.senderName) }}</div>
+                        <div class="col-md-4">{{ form_row(form.senderTitle) }}</div>
+                    </div>
+                    {{ include('admin/_address.html.twig', {address: form.senderAddress}) }}
+                    <div class="row">
+                        <div class="col-md-8">{{ form_row(form.iban) }}</div>
+                        <div class="col-md-4">{{ form_row(form.bic) }}</div>
+                        <div class="col-md-6">{{ form_row(form.bankName) }}</div>
+                        <div class="col-md-6">{{ form_row(form.invoicePlace) }}</div>
+                    </div>
+                    {{ form_row(form.vatNote) }}
+                    {% if settings.signature %}
+                        <p class="mb-1">{{ 'settings.signature.current'|trans({}, 'admin') }}</p>
+                        <img src="{{ path('admin_settings_signature') }}" alt="{{ 'settings.signature.alt'|trans({}, 'admin') }}"
+                             class="border rounded p-2 mb-2 bg-white" style="max-height: 6rem; max-width: 100%">
+                        {{ form_row(form.removeSignature) }}
+                    {% else %}
+                        {% do form.removeSignature.setRendered %}
+                    {% endif %}
+                    {{ form_row(form.signatureFile) }}
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -138,10 +138,15 @@ Erst danach werden Features gebaut.
      `docs/erklaerungen/11-teilnahmen-und-einheiten.md`.
    - [x] C5 (2026-11-13): Schnupperstunden (`/admin/schnupperstunden`), Übernahme in eine Teilnahme in einer
      Transaktion (`fromTrial`). Schüler:innen mit Teilnahmen sind nicht mehr löschbar (vorher Datenbankfehler).
+   - [x] C6 (2026-11-13): Einstellungen (`/admin/einstellungen`): Theme der Website (öffentliche Seiten lesen es jetzt
+     aus der Datenbank, mit Rückfall auf „classic“, falls die Datenbank nicht erreichbar ist), Standarddauer,
+     Schwellwert der Nachholregel, Absenderdaten, Unterschrift als PNG in der Datenbank. BIC nur per Regex geprüft
+     (`Assert\Bic` bräuchte `symfony/intl`). Slider-Bilder bleiben vorerst in `config/services.yaml`.
+     Nach dem Deploy: Sonja trägt Absenderdaten und Unterschrift ein (vorher keine Honorarnoten möglich).
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
    - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas
-     Formulierung in `anforderungen.md`), und welcher Wert (vorerst 0). Auffüllen nach neuen Ferien, Wochentermin nach
+     Formulierung in `anforderungen.md`); der Wert ist seit C6 eine Einstellung (Standard 0). Auffüllen nach neuen Ferien, Wochentermin nach
      dem Anlegen fest; Details in `11-teilnahmen-und-einheiten.md`, Abschnitt „Zum Durchsehen“.
    - **Offen zum Durchsehen:** Der Admin-Bereich spricht mit „du“ an (Sonja und Mike sind die Nutzer:innen); bei
      Schüler:innen-Konten später ggf. anpassen.

@@ -97,7 +97,7 @@ Fortschritt wird im Projektstand abgehakt.
 
 - Entity `TrialLesson`, Anlegen und Liste, Übernahme in eine Teilnahme (Transaktion, `fromTrial`).
 
-**C6 Einstellungen**
+**C6 Einstellungen** – erledigt 2026-11-13 (ohne `HomeSlide`, das ist ein eigener Schritt)
 
 - Entity `Settings` (eine Zeile): Theme, Standarddauer, Schwellwert, Absenderdaten, Unterschrift (Upload, PNG, in der
   Datenbank). `App\Theme\SiteSettings` liest das Theme dann von hier.

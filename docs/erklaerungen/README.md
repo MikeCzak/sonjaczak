@@ -20,6 +20,7 @@ Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demse
 | [09-datenbank-schueler.md](09-datenbank-schueler.md) | Schüler:innen und Elternteile: Embeddable, Owning/Inverse Side, Migration, Formulare, Suche |
 | [10-datenbank-kurse.md](10-datenbank-kurse.md) | Kurse und Ferien: Enums, Geld in Cent, Cascade/orphanRemoval, OpenHolidays mit Scoped Client und Mock |
 | [11-teilnahmen-und-einheiten.md](11-teilnahmen-und-einheiten.md) | Teilnahmen, Einheiten, Schnupperstunden: Unique über zwei Spalten, Zeiten ohne Zeitzone, Selbstreferenz, Einheiten erzeugen, Nachholregel |
+| [12-einstellungen.md](12-einstellungen.md) | Einstellungen: eine Zeile per Primärschlüssel, Worker-Modus, Unterschrift als BLOB, IBAN/BIC |
 
 Ergänzend: [../begriffe.md](../begriffe.md) (Glossar), [../entwicklung.md](../entwicklung.md) (lokaler Workflow),
 [../deployment.md](../deployment.md) (Server-Einrichtung, Rollback).

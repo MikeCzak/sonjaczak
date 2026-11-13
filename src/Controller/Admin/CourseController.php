@@ -13,6 +13,7 @@ use App\Form\Admin\CourseType;
 use App\Lesson\LessonPlanner;
 use App\Lesson\MakeUpRule;
 use App\Repository\CourseRepository;
+use App\Repository\SettingsRepository;
 use App\Security\Voter\CourseVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -34,6 +35,7 @@ final class CourseController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly LessonPlanner $planner,
+        private readonly SettingsRepository $settings,
     ) {
     }
 
@@ -48,7 +50,7 @@ final class CourseController extends AbstractController
     #[Route('/neu', name: 'admin_course_new', methods: ['GET', 'POST'])]
     public function new(Request $request, HolidayImporter $holidays): Response
     {
-        $course = new Course();
+        $course = new Course()->setLessonMinutes($this->settings->current()->getLessonMinutes());
         $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
 
@@ -161,9 +163,10 @@ final class CourseController extends AbstractController
      */
     private function renderEdit(Course $course, FormInterface $form, FormInterface $breakForm, MakeUpRule $makeUpRule): Response
     {
+        $threshold = $this->settings->current()->getMakeUpThreshold();
         $makeUpsDue = [];
         foreach ($course->getEnrollments() as $enrollment) {
-            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment);
+            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment, $threshold);
         }
 
         return $this->render('admin/course/edit.html.twig', [
