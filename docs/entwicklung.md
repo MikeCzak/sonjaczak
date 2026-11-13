@@ -187,6 +187,21 @@ Elternteil (zwei Geschwister mit gemeinsamem Elternteil). Erklärung zu Login un
 PHP läuft im Container mit `Europe/Vienna` (`frankenphp/conf.d/10-app.ini`). Die Datei wird beim Build ins Image
 kopiert: Nach einer Änderung `docker compose build php` und `docker compose up --wait`.
 
+## PHPStan übersieht neue Verzeichnisse
+
+Beobachtet am 2026-11-13: Lokal analysierte PHPStan neu angelegte Verzeichnisse (`src/Course`, `src/Lesson`,
+`tests/Http`) nicht und meldete „No errors“, die CI fand dort einen Fehler. Ursache ist ein Zwischenspeicher der
+Verzeichnislisten im Container (`/tmp/phpstan/cache/directory-listings.bin`); `phpstan clear-result-cache` löscht ihn
+nicht. Warum er nicht erneuert wurde, ist nicht geklärt (vermutlich Zeitstempel über den Bind-Mount, nicht geprüft).
+Nach neuen Verzeichnissen deshalb:
+
+```bash
+docker compose exec php rm -rf /tmp/phpstan
+docker compose exec php vendor/bin/phpstan analyse --memory-limit=512M
+```
+
+Der Ordner liegt nur im Container und verschwindet ohnehin bei jedem Neustart des Containers.
+
 ## Häufige Befehle
 
 ```bash

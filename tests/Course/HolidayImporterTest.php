@@ -20,7 +20,6 @@ final class HolidayImporterTest extends TestCase
     {
         $requests = [];
         $responses = new OpenHolidaysResponses();
-        /** @param array<string, mixed> $options */
         $client = new MockHttpClient(static function (string $method, string $url, array $options) use (&$requests, $responses): MockResponse {
             $requests[] = $url;
 

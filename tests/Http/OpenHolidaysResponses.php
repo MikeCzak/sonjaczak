@@ -15,7 +15,7 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 final class OpenHolidaysResponses
 {
     /**
-     * @param array<string, mixed> $options
+     * @param array<mixed> $options as MockHttpClient passes them (unused)
      */
     public function __invoke(string $method, string $url, array $options = []): MockResponse
     {
