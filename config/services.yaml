@@ -27,10 +27,18 @@ services:
     App\:
         resource: '../src/'
 
-    # Sessions of the admin area in PostgreSQL (config/packages/framework.yaml, framework.session.handler_id)
+    # Sessions of the admin area in PostgreSQL (config/packages/framework.yaml, framework.session.handler_id).
+    # Uses Doctrine's connection instead of its own: one database connection less (max_connections is 20), and
+    # always the same database as Doctrine, also app_test in tests (otherwise the schema listener ignores the table).
+    # Advisory locks instead of the default LOCK_TRANSACTIONAL: that one keeps a transaction open on the shared
+    # connection from reading to saving the session, and Doctrine's own transactions would collide with it.
+    app.session_pdo:
+        class: PDO
+        factory: ['@doctrine.dbal.default_connection', 'getNativeConnection']
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - '%env(DATABASE_URL)%'
+            - '@app.session_pdo'
+            - { lock_mode: !php/const Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler::LOCK_ADVISORY }
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
