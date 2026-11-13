@@ -7,6 +7,10 @@ layout:
     account: Mein Konto
 nav:
     dashboard: Übersicht
+    users: Benutzer
+action:
+    save: Speichern
+    cancel: Abbrechen
 login:
     title: Anmelden
     email: E-Mail-Adresse
@@ -51,3 +55,34 @@ password_mail:
         intro: 'Für dich wurde ein Konto im Verwaltungsbereich von sonjaczak.com angelegt. Mit diesem Link setzt du dein Passwort:'
     expires: Der Link läuft in %time% ab und funktioniert nur einmal.
     ignore: Falls du das nicht warst, kannst du diese E-Mail ignorieren. Dein Passwort bleibt unverändert.
+user:
+    field:
+        email: E-Mail-Adresse
+        role: Rolle
+        status: Status
+    role:
+        ROLE_ADMIN: Verwaltung
+        ROLE_SUPER_ADMIN: Verwaltung und Benutzer
+    status:
+        active: aktiv
+        invited: eingeladen, Passwort noch nicht gesetzt
+        inactive: deaktiviert
+    action:
+        invite: Einladung senden
+        deactivate: Deaktivieren
+    index:
+        title: Benutzer
+        new: Neues Konto
+        actions: Aktionen
+    new:
+        title: Neues Konto
+        intro: Die Person bekommt eine E-Mail mit einem Link, über den sie ihr Passwort selbst setzt. Der Link läuft nach 3 Tagen ab.
+        submit: Anlegen und einladen
+    edit:
+        title: Konto bearbeiten
+    flash:
+        saved: Das Konto ist gespeichert.
+        invited: Die Einladung ist verschickt.
+        invitation_throttled: Vor weniger als einer Stunde wurde schon ein Link verschickt. Der ist noch gültig; einen neuen gibt es frühestens eine Stunde danach.
+        deactivated: Das Konto ist deaktiviert. Offene Anmeldungen enden beim nächsten Seitenaufruf.
+        own_account: Rolle und Zugang des eigenen Kontos kann nur ein anderes Konto mit Benutzerverwaltung ändern.

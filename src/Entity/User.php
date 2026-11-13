@@ -46,10 +46,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * The password hash, never the password itself.
+     * The password hash, never the password itself. Empty until the account holder sets one (invitation link).
      */
     #[ORM\Column]
     private string $password = '';
+
+    /**
+     * Deactivated accounts cannot log in (App\Security\UserChecker). Kept instead of deleted, so it stays visible
+     * who had access.
+     */
+    #[ORM\Column(options: ['default' => true])]
+    private bool $active = true;
 
     public function __construct(string $email)
     {
@@ -131,6 +138,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $hashedPassword;
 
         return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function activate(): static
+    {
+        $this->active = true;
+
+        return $this;
+    }
+
+    /**
+     * Also clears the password hash: open sessions of the account end at their next request, because the checksum
+     * stored in them no longer matches (see __serialize()). Activating again needs a new invitation.
+     */
+    public function deactivate(): static
+    {
+        $this->active = false;
+        $this->password = '';
+
+        return $this;
+    }
+
+    /**
+     * The one role an admin account has in the database (ROLE_ADMIN or ROLE_SUPER_ADMIN); null for other accounts.
+     */
+    public function getAdminRole(): ?string
+    {
+        foreach ([self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN] as $role) {
+            if (\in_array($role, $this->roles, true)) {
+                return $role;
+            }
+        }
+
+        return null;
     }
 
     /**

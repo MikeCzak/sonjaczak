@@ -52,7 +52,7 @@ Fortschritt wird im Projektstand abgehakt.
 - `symfonycasts/reset-password-bundle`, Routen unter `/admin`, Mail-Template (Text), immer gleiche Antwort.
 - „Mein Konto“: Passwort ändern.
 
-**B4 Benutzerverwaltung** (nur `ROLE_SUPER_ADMIN`)
+**B4 Benutzerverwaltung** (nur `ROLE_SUPER_ADMIN`) – erledigt 2026-11-13
 
 - Liste, anlegen (mit Einladungslink über den Mechanismus aus B3 statt Passwort im Formular), Rolle ändern,
   deaktivieren. Ein Konto darf sich nicht selbst die letzte Super-Admin-Rolle nehmen (Voter).

@@ -1,11 +1,14 @@
-{# Main navigation of the admin area; the current route decides which entry is active #}
+{# Main navigation of the admin area. An entry is active for all routes starting with its prefix;
+   entries with a role are only shown to accounts that have it. #}
 {% set current = app.request.attributes.get('_route') %}
 {% set entries = [
-    {route: 'admin_dashboard', label: 'nav.dashboard'},
+    {route: 'admin_dashboard', prefix: 'admin_dashboard', label: 'nav.dashboard'},
+    {route: 'admin_user_index', prefix: 'admin_user_', label: 'nav.users', role: 'ROLE_SUPER_ADMIN'},
 ] %}
-{% for entry in entries %}
+{% for entry in entries|filter(entry => entry.role is not defined or is_granted(entry.role)) %}
+    {% set active = current starts with entry.prefix %}
     <li class="nav-item">
-        <a class="nav-link{{ current == entry.route ? ' active' }}" href="{{ path(entry.route) }}"
-           {%- if current == entry.route %} aria-current="page"{% endif %}>{{ entry.label|trans({}, 'admin') }}</a>
+        <a class="nav-link{{ active ? ' active' }}" href="{{ path(entry.route) }}"
+           {%- if active %} aria-current="page"{% endif %}>{{ entry.label|trans({}, 'admin') }}</a>
     </li>
 {% endfor %}

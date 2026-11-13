@@ -167,6 +167,56 @@ der Handler Doctrines PDO-Verbindung (`config/services.yaml`, `app.session_pdo`)
 würde das auf der geteilten Verbindung mit Doctrines Transaktionen kollidieren. Deshalb `LOCK_ADVISORY`: PostgreSQL-
 Advisory-Locks (`pg_advisory_lock`) sperren die Session, ohne eine Transaktion offen zu halten.
 
+### Benutzerverwaltung und der erste Voter (B4)
+
+Dateien: `src/Controller/Admin/UserController.php`, `src/Security/Voter/UserVoter.php`, `src/Security/UserChecker.php`,
+`src/Form/Admin/UserType.php`, `templates/admin/user/`, Migration `Version20261113091408` (`app_user.active`).
+
+- **Nur für `ROLE_SUPER_ADMIN`**, doppelt abgesichert: `access_control` (`^/admin/benutzer`) und
+  `#[IsGranted(User::ROLE_SUPER_ADMIN)]` am Controller. Der Menüpunkt erscheint nur mit dieser Rolle
+  (`is_granted()` in `templates/admin/_nav.html.twig`).
+- **Neues Konto ohne Passwort:** Das Formular hat kein Passwortfeld. Das Konto wird mit leerem Hash gespeichert und
+  bekommt eine Einladung (`PasswordLinkMailer::sendInvitation()`, Link 3 Tage gültig, derselbe Mechanismus wie
+  „Passwort vergessen“). So kennt nur die Person selbst ihr Passwort, und es geht nie per Mail oder Chat herum.
+- **Deaktivieren statt löschen:** `User::deactivate()` setzt `active = false` und leert den Hash. Der `UserChecker`
+  (Firewall-Option `user_checker`) lässt deaktivierte Konten und Konten ohne Passwort nicht anmelden, mit derselben
+  Meldung wie bei falschem Passwort. Offene Sitzungen enden beim nächsten Aufruf, weil die Prüfsumme des Hashes in der
+  Session nicht mehr passt. Wieder einladen aktiviert das Konto und schickt einen neuen Link.
+
+**Der Voter `UserVoter`** beantwortet „darf dieses Konto den Zugang **dieses** Kontos ändern?“. Das hängt vom Objekt
+ab, deshalb reicht keine Rolle:
+
+```php
+protected function supports(string $attribute, mixed $subject): bool
+{
+    return self::CHANGE_ACCESS === $attribute && $subject instanceof User;
+}
+
+protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
+{
+    // nur Super-Admins, und nie das eigene Konto
+}
+```
+
+- `supports()` entscheidet, ob der Voter überhaupt mitredet. Ist es nicht sein Attribut, enthält er sich. Ein zu
+  großzügiges `supports()` (etwa nur `return true`) würde über fremde Attribute abstimmen.
+- `voteOnAttribute()` antwortet ja oder nein. Mit `$vote?->addReason()` kann er eine Begründung mitgeben (neu in
+  Symfony 7.3/8; hier der Übersetzungsschlüssel `user.flash.own_account`).
+- **Warum nie das eigene Konto?** Sonst könnte Mike sich selbst die Super-Admin-Rolle nehmen oder sich aussperren, und
+  niemand könnte mehr Konten verwalten. Die einfachste Regel ohne Sonderfälle („letzter Super-Admin“) ist: Den eigenen
+  Zugang ändert immer ein anderes Konto.
+- **Verwendet** in Twig (`is_granted('USER_CHANGE_ACCESS', user)` blendet Knöpfe aus), im Controller
+  (`isGranted()` sperrt das Rollenfeld) und als `#[IsGranted(UserVoter::CHANGE_ACCESS, 'user')]` an den POST-Aktionen.
+  Das Attribut am Controller ist die eigentliche Sperre; ausgeblendete Knöpfe allein schützen nicht, ein selbst
+  gebauter Request käme sonst durch (`UserManagementTest::testOwnAccessCannotBeChanged`).
+- **CSRF bei den Knöpfen:** Einladen und Deaktivieren sind POST-Formulare mit Token je Konto
+  (`csrf_token('user-access-<id>')`). Diese Token-IDs sind nicht in der zustandslosen Liste, liegen also in der
+  Session; im Admin-Bereich gibt es die ohnehin.
+
+**Fallstrick beim Formular:** `User` hat einen Konstruktor mit Pflicht-Argument (`new User($email)`). Ein Formular
+mit `data_class` ruft ohne Daten `new User()` auf und scheitert. `empty_data` in `UserType` erzeugt das Objekt
+deshalb selbst.
+
 ## Alternativen
 
 | Statt | Hätte man | Warum nicht |

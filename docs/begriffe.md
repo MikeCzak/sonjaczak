@@ -313,6 +313,9 @@ anmelden. Bei uns nur für `/admin`; öffentliche Seiten liegen in keiner Firewa
 **Voter** – Klasse, die entscheidet, ob ein User eine Aktion mit einem bestimmten Objekt ausführen darf
 (z. B. `STUDENT_DELETE`). Ergänzt Rollen um Regeln, die vom Objekt abhängen.
 
+**User-Checker** – Klasse, die beim Login nach dem Finden des Kontos und vor der Passwortprüfung zusätzliche
+Bedingungen prüft (`App\Security\UserChecker`: Konto aktiv, Passwort gesetzt).
+
 **Passkey / WebAuthn** – Anmeldung mit einem Schlüsselpaar statt Passwort: Das Gerät hält den privaten Schlüssel und
 entsperrt ihn per Fingerabdruck, der Server kennt nur den öffentlichen. Gilt nur für die eigene Domain, daher
 phishingsicher.

@@ -120,6 +120,9 @@ Erst danach werden Features gebaut.
    - [x] B3 (2026-11-13): „Passwort vergessen“ mit `symfonycasts/reset-password-bundle` 1.26.1 (Link 1 h, einmal
      gültig, immer gleiche Antwort), „Mein Konto“ mit Passwortänderung. Sessions nutzen jetzt Doctrines Verbindung mit
      Advisory Locks (CI-Fehler bei der Schema-Prüfung in Tests behoben, Commit `2de9d4d`).
+   - [x] B4 (2026-11-13): Benutzerverwaltung unter `/admin/benutzer` (nur Super-Admin): Konto anlegen mit
+     Einladungslink (3 Tage), Rolle ändern, deaktivieren statt löschen (`UserChecker`), erster Voter `UserVoter`
+     (eigenes Konto nie änderbar).
    - **Offen zum Durchsehen:** Der Admin-Bereich spricht mit „du“ an (Sonja und Mike sind die Nutzer:innen); bei
      Schüler:innen-Konten später ggf. anpassen.
    - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)

@@ -1,0 +1,17 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'user.new.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ 'user.new.title'|trans({}, 'admin') }}</h1>
+    <p>{{ 'user.new.intro'|trans({}, 'admin') }}</p>
+    <div class="row">
+        <div class="col-md-8 col-lg-5">
+            {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-primary">{{ 'user.new.submit'|trans({}, 'admin') }}</button>
+                <a class="btn btn-link" href="{{ path('admin_user_index') }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'user.index.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">{{ 'user.index.title'|trans({}, 'admin') }}</h1>
+        <a class="btn btn-primary" href="{{ path('admin_user_new') }}">{{ 'user.index.new'|trans({}, 'admin') }}</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'user.field.email'|trans({}, 'admin') }}</th>
+                    <th scope="col">{{ 'user.field.role'|trans({}, 'admin') }}</th>
+                    <th scope="col">{{ 'user.field.status'|trans({}, 'admin') }}</th>
+                    <th scope="col"><span class="visually-hidden">{{ 'user.index.actions'|trans({}, 'admin') }}</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td><a href="{{ path('admin_user_edit', {id: user.id}) }}">{{ user.email }}</a></td>
+                        <td>{{ user.adminRole ? ('user.role.' ~ user.adminRole)|trans({}, 'admin') }}</td>
+                        <td>
+                            {% if not user.active %}
+                                {{ 'user.status.inactive'|trans({}, 'admin') }}
+                            {% elseif user.password is empty %}
+                                {{ 'user.status.invited'|trans({}, 'admin') }}
+                            {% else %}
+                                {{ 'user.status.active'|trans({}, 'admin') }}
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if is_granted('USER_CHANGE_ACCESS', user) %}
+                                {% set token = csrf_token('user-access-' ~ user.id) %}
+                                {% if not user.active or user.password is empty %}
+                                    <form method="post" action="{{ path('admin_user_invite', {id: user.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ token }}">
+                                        <button class="btn btn-outline-primary btn-sm">{{ 'user.action.invite'|trans({}, 'admin') }}</button>
+                                    </form>
+                                {% endif %}
+                                {% if user.active %}
+                                    <form method="post" action="{{ path('admin_user_deactivate', {id: user.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ token }}">
+                                        <button class="btn btn-outline-danger btn-sm">{{ 'user.action.deactivate'|trans({}, 'admin') }}</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

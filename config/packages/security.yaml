@@ -28,6 +28,8 @@ security:
             # The session starts only when access is actually checked (not when the login page is shown)
             lazy: true
             provider: app_user_provider
+            # Deactivated accounts cannot log in
+            user_checker: App\Security\UserChecker
             form_login:
                 login_path: admin_login
                 check_path: admin_login
