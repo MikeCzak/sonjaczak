@@ -141,6 +141,13 @@ Fortschritt wird im Projektstand abgehakt.
   Rücksicherung einmal testen. Plan dazu als eigener Schritt, Server-Teil nach Rückfrage.
 - **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO), Entwurf zum Prüfen.
 - **Aufbewahrungsfrist** der Honorarnoten in der BAO nachlesen, Lösch-/Anonymisierungsregel festhalten.
+  Nachgelesen 2026-11-13 (RIS, § 132 BAO): Abs. 1 „Bücher und Aufzeichnungen sowie die zu den Büchern und
+  Aufzeichnungen gehörigen Belege sind sieben Jahre aufzubewahren“, darüber hinaus so lange, wie sie für anhängige
+  Abgabenverfahren von Bedeutung sind; die Frist läuft für Bücher und Aufzeichnungen „vom Schluß des Kalenderjahres“.
+  Abs. 2: Aufbewahrung auf Datenträgern zulässig, wenn die Wiedergabe vollständig, geordnet, inhaltsgleich und bis zum
+  Ende der Frist jederzeit gewährleistet ist (spricht für Backups der Datenbank samt PDFs, Abschnitt F).
+  **Offen (Entscheidung):** die Regel daraus, z. B. Honorarnoten ab dem 8. Jahr nach Ablauf des Kalenderjahres
+  anonymisieren und Schüler:innen ohne Teilnahmen in Frist löschen; mit Sonjas Steuerberatung abstimmen.
 
 ## Meilensteine
 
