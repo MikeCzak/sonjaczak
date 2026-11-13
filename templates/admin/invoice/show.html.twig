@@ -1,0 +1,38 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set enrollment = invoice.enrollment %}
+{% block title %}{{ 'invoice.show.title'|trans({'%number%': invoice.displayNumber}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_invoice_index', {jahr: invoice.year}) }}">{{ 'invoice.index.title'|trans({}, 'admin') }} {{ invoice.year }}</a></p>
+    <h1 class="h3 mb-4">{{ 'invoice.show.title'|trans({'%number%': invoice.displayNumber}, 'admin') }}</h1>
+
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <dl class="row">
+                <dt class="col-sm-5">{{ 'invoice.field.recipient'|trans({}, 'admin') }}</dt>
+                <dd class="col-sm-7">{{ include('admin/invoice/_recipient.html.twig', {recipient: invoice.recipient}) }}</dd>
+                <dt class="col-sm-5">{{ 'invoice.field.description'|trans({}, 'admin') }}</dt>
+                <dd class="col-sm-7">{{ invoice.description }}</dd>
+                <dt class="col-sm-5">{{ 'invoice.field.amount'|trans({}, 'admin') }}</dt>
+                <dd class="col-sm-7">{{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €</dd>
+                <dt class="col-sm-5">{{ 'invoice.field.issued_on'|trans({}, 'admin') }}</dt>
+                <dd class="col-sm-7">{{ invoice.issuedOn|date('d.m.Y') }}</dd>
+                <dt class="col-sm-5">{{ 'invoice.field.due_on'|trans({}, 'admin') }}</dt>
+                <dd class="col-sm-7">{{ invoice.dueOn|date('d.m.Y') }}</dd>
+                {% if invoice.hasInstallments %}
+                    <dt class="col-sm-5">{{ 'invoice.show.installments'|trans({}, 'admin') }}</dt>
+                    <dd class="col-sm-7">
+                        {{ 'invoice.show.installment'|trans({'%n%': 1, '%amount%': (invoice.firstInstallmentCents / 100)|number_format(2, ',', '.'), '%date%': invoice.dueOn|date('d.m.Y')}, 'admin') }}<br>
+                        {{ 'invoice.show.installment'|trans({'%n%': 2, '%amount%': (invoice.secondInstallmentCents / 100)|number_format(2, ',', '.'), '%date%': invoice.secondInstallmentDueOn|date('d.m.Y')}, 'admin') }}
+                    </dd>
+                {% endif %}
+                <dt class="col-sm-5">{{ 'invoice.field.enrollment'|trans({}, 'admin') }}</dt>
+                <dd class="col-sm-7">
+                    <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}, {% with {course: enrollment.course} %}{% include 'admin/course/_title.html.twig' %}{% endwith %}</a>
+                </dd>
+            </dl>
+            <p class="small text-body-secondary">{{ 'invoice.show.later'|trans({}, 'admin') }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{# Name and address as printed on the invoice. Parameter: recipient (App\Entity\Embeddable\Recipient) #}
+{% set address = recipient.address %}
+<address class="mb-0">
+    {{ recipient.name }}<br>
+    {{ address.street }}<br>
+    {{ address.postalCode }} {{ address.city }}
+    {%- if address.country %}<br>{{ address.country }}{% endif %}
+</address>

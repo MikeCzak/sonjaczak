@@ -126,7 +126,7 @@ Erst danach werden Features gebaut.
    - [ ] B5 Passkeys: zurückgestellt bis nach C/D/E (eigener Prüfaufwand am Bundle-Code; Login mit Passwort reicht
      für die Entwicklung). Kommt vor dem Zeigen an Sonja.
    - [x] C1 (2026-11-13): Schüler:innen und Elternteile (`/admin/schueler`, `/admin/elternteile`), Embeddable
-     `Address`, Suche, `StudentVoter::DELETE` (Regel „nicht mit Honorarnoten“ folgt in D1), Factories und Story mit
+     `Address`, Suche, `StudentVoter::DELETE` (seit C5: nicht mit Teilnahmen, damit auch nicht mit Honorarnoten), Factories und Story mit
      erfundenen Daten (Testkonten `mike@`/`sonja@example.com`). Erklärung: `docs/erklaerungen/09-datenbank-schueler.md`.
    - [x] C2 (2026-11-13): Kurse mit Ferien (`/admin/kurse`), Enums `Term`/`BreakSource`, Preis in Cent, Ferien-Vorschlag
      aus der OpenHolidays API beim Anlegen (live geprüft mit Sommersemester 2027), Tests mit aufgezeichneten Antworten.
@@ -143,6 +143,12 @@ Erst danach werden Features gebaut.
      Schwellwert der Nachholregel, Absenderdaten, Unterschrift als PNG in der Datenbank. BIC nur per Regex geprüft
      (`Assert\Bic` bräuchte `symfony/intl`). Slider-Bilder bleiben vorerst in `config/services.yaml`.
      Nach dem Deploy: Sonja trägt Absenderdaten und Unterschrift ein (vorher keine Honorarnoten möglich).
+   - [x] D1 (2026-11-13): Honorarnoten erstellen (`/admin/honorarnoten`, Erstellen auf der Seite einer Teilnahme):
+     Empfänger und Betrag als Kopie, keine Setter, Nummer je Ausstellungsjahr in einer Transaktion mit PostgreSQL
+     Advisory Lock (Abweichung vom Datenmodell, das eine Wiederholung bei Kollision vorsah). Entity `Payment` ohne
+     Oberfläche (folgt in D3). Teilnahmen mit Honorarnote sind nicht löschbar. Erklärung:
+     `docs/erklaerungen/13-honorarnoten.md` (mit Punkten zum Durchsehen).
+   - [ ] D2 PDF: wartet auf die Entscheidung zur PDF-Bibliothek.
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
    - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas

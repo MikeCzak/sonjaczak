@@ -332,3 +332,10 @@ Bedingungen prüft (`App\Security\UserChecker`: Konto aktiv, Passwort gesetzt).
 **Passkey / WebAuthn** – Anmeldung mit einem Schlüsselpaar statt Passwort: Das Gerät hält den privaten Schlüssel und
 entsperrt ihn per Fingerabdruck, der Server kennt nur den öffentlichen. Gilt nur für die eigene Domain, daher
 phishingsicher.
+
+**Advisory Lock** – Sperre in PostgreSQL, die nur eine frei gewählte Zahl sperrt, keine Zeile oder Tabelle. Wer
+dieselbe Zahl sperren will, wartet. `pg_advisory_xact_lock` gibt sie am Ende der Transaktion von selbst frei. Bei uns
+für die Nummernvergabe der Honorarnoten und (durch Symfony) für Sessions.
+
+**Constructor Property Promotion** – PHP-Schreibweise, bei der Konstruktor-Parameter mit `private` zugleich
+Eigenschaften sind. Doctrine-Attribute können direkt daran stehen (`Invoice`, `Payment`).

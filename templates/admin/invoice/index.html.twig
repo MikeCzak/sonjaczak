@@ -1,0 +1,50 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'invoice.index.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ 'invoice.index.title'|trans({}, 'admin') }} {{ year }}</h1>
+
+    {% if years|length > 1 %}
+        <nav class="mb-3" aria-label="{{ 'invoice.index.years'|trans({}, 'admin') }}">
+            <ul class="nav nav-pills">
+                {% for y in years %}
+                    <li class="nav-item">
+                        <a class="nav-link{{ y == year ? ' active' }}" href="{{ path('admin_invoice_index', {jahr: y}) }}"
+                           {%- if y == year %} aria-current="page"{% endif %}>{{ y }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    {% endif %}
+
+    {% if invoices is empty %}
+        <p>{{ 'invoice.index.empty'|trans({}, 'admin') }}</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'invoice.field.number'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'invoice.field.issued_on'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'invoice.field.recipient'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'invoice.field.description'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="text-end">{{ 'invoice.field.amount'|trans({}, 'admin') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                        <tr>
+                            <td><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ invoice.displayNumber }}</a></td>
+                            <td>{{ invoice.issuedOn|date('d.m.Y') }}</td>
+                            <td>{{ invoice.recipient.name }}</td>
+                            <td>{{ invoice.description }}</td>
+                            <td class="text-end text-nowrap">{{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    <p class="small text-body-secondary">{{ 'invoice.index.hint'|trans({}, 'admin') }}</p>
+{% endblock %}

@@ -104,7 +104,7 @@ Fortschritt wird im Projektstand abgehakt.
 
 ## D. Honorarnoten
 
-**D1 Honorarnoten erstellen**
+**D1 Honorarnoten erstellen** – erledigt 2026-11-13 (Nummernvergabe mit Advisory Lock statt Wiederholung, siehe `erklaerungen/13`)
 
 - Entities `Invoice` (Embeddable `Recipient`, Nummer je Jahr mit Unique-Constraint und Wiederholung bei Kollision)
   und `Payment`. Erstellen aus einer Teilnahme mit Snapshot, Unveränderlichkeit über fehlende Setter.

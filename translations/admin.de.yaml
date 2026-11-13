@@ -12,6 +12,7 @@ nav:
     trials: Schnupperstunden
     students: Schüler:innen
     guardians: Elternteile
+    invoices: Honorarnoten
     settings: Einstellungen
 action:
     save: Speichern
@@ -258,6 +259,7 @@ enrollment:
     delete:
         label: Teilnahme löschen
         confirm: Die Teilnahme und alle ihre Einheiten werden endgültig gelöscht.
+        has_invoices: Eine Teilnahme mit Honorarnote kann nicht gelöscht werden.
     flash:
         created: Teilnahme angelegt, Einheiten sind geplant.
         saved: Gespeichert.
@@ -333,3 +335,44 @@ settings:
         alt: Unterschrift für die Honorarnote
     flash:
         saved: Einstellungen gespeichert.
+invoice:
+    heading: Honorarnote
+    default_description: Gesangsunterricht im %term%
+    field:
+        number: Nummer
+        description: Leistung
+        issued_on: Ausstellungsdatum
+        issued_on_help: Bestimmt Nummer und Jahr („16/2026“).
+        due_on: Zahlbar bis
+        second_installment_due_on: 2. Rate bis
+        second_installment_due_on_help: Leer lassen, wenn keine Ratenzahlung angeboten wird. Sonst wird der Betrag halbiert.
+        recipient: Empfänger:in
+        amount: Betrag
+        enrollment: Teilnahme
+    new:
+        title: Honorarnote erstellen
+        problems: 'Die Honorarnote kann noch nicht erstellt werden:'
+        fix_enrollment: Teilnahme bearbeiten
+        fix_student: Schüler:in bearbeiten
+        fix_guardian: Elternteil bearbeiten
+        fix_settings: Einstellungen
+        immutable: Nach dem Erstellen lässt sich die Honorarnote nicht mehr ändern. Name, Adresse und Betrag werden jetzt übernommen.
+        submit: Honorarnote erstellen
+    problem:
+        already_issued: Für diese Teilnahme gibt es schon eine Honorarnote.
+        sender: In den Einstellungen fehlen Name, Adresse oder IBAN für die Honorarnote.
+        price: Die Teilnahme hat keinen Preis.
+        no_guardian: Die Honorarnote soll an den Elternteil gehen, es ist aber keiner eingetragen.
+        address: Die Adresse der Empfänger:in ist unvollständig (Straße, PLZ und Ort).
+    show:
+        title: Honorarnote %number%
+        installments: Raten
+        installment: '%n%. Rate: %amount% € bis %date%'
+        later: PDF und Zahlungen folgen in den nächsten Schritten.
+    index:
+        title: Honorarnoten
+        years: Jahre
+        empty: In diesem Jahr gibt es noch keine Honorarnoten.
+        hint: Honorarnoten werden auf der Seite einer Teilnahme erstellt.
+    flash:
+        created: Honorarnote erstellt.

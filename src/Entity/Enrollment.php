@@ -74,6 +74,16 @@ class Enrollment
     private Collection $lessons;
 
     /**
+     * Inverse side, no cascade: invoices are receipts and are never deleted with the enrollment
+     * (App\Security\Voter\EnrollmentVoter prevents deleting an enrollment that has invoices).
+     *
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'enrollment')]
+    #[ORM\OrderBy(['issuedOn' => 'ASC', 'id' => 'ASC'])]
+    private Collection $invoices;
+
+    /**
      * Takes price and lesson length from the course; the invoice goes to the guardian if the student is a minor
      * at the start of the course (datenmodell.md 3.4), Sonja can change both.
      */
@@ -83,6 +93,7 @@ class Enrollment
         $this->lessonMinutes = $course->getLessonMinutes();
         $this->priceCents = $course->getPriceCents();
         $this->lessons = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
         $this->setStudent($student);
     }
 
@@ -216,5 +227,13 @@ class Enrollment
     public function countedLessons(): int
     {
         return $this->lessons->filter(static fn (Lesson $lesson): bool => $lesson->getStatus()->counts())->count();
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
     }
 }

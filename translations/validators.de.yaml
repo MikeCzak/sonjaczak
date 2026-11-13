@@ -25,3 +25,6 @@ settings:
         png_only: Bitte eine PNG-Datei hochladen.
     bic:
         invalid: Der BIC hat 8 oder 11 Zeichen, z. B. BKAUATWW.
+invoice:
+    due_before_issue: Das Zahlungsziel liegt vor dem Ausstellungsdatum.
+    second_before_first: Die 2. Rate muss nach der ersten fällig sein.

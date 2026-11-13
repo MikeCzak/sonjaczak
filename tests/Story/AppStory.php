@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Story;
 
 use App\Entity\Embeddable\Address;
+use App\Entity\Embeddable\Recipient;
 use App\Entity\Enum\LessonStatus;
 use App\Entity\Settings;
 use App\Tests\Factory\CourseFactory;
 use App\Tests\Factory\EnrollmentFactory;
 use App\Tests\Factory\GuardianFactory;
+use App\Tests\Factory\InvoiceFactory;
 use App\Tests\Factory\StudentFactory;
 use App\Tests\Factory\TrialLessonFactory;
 use App\Tests\Factory\UserFactory;
@@ -90,6 +92,18 @@ final class AppStory extends Story
             $lessons = $enrollments[0]->getLessons()->getValues();
             $lessons[1]->setStatus(LessonStatus::CancelledByStudent)->setNote('krank');
             $lessons[2]->setStatus(LessonStatus::CancelledByTeacher)->setNote('Konzert');
+
+            // Invoices for the first two enrollments, one with instalments; the others still need one
+            foreach (array_slice($enrollments, 0, 2) as $n => $enrollment) {
+                $student = $enrollment->getStudent() ?? throw new \LogicException('Enrollment without student');
+                InvoiceFactory::createOne([
+                    'enrollment' => $enrollment,
+                    'number' => $n + 1,
+                    'amountCents' => $enrollment->getPriceCents(),
+                    'secondInstallmentDueOn' => 0 === $n ? new \DateTimeImmutable('2026-12-31') : null,
+                    'recipient' => new Recipient($student->getFullName(), $student->getAddress()),
+                ]);
+            }
         });
     }
 }

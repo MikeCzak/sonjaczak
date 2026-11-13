@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 /**
  * Whether a student may be deleted (docs/planung/datenmodell.md 5).
  *
- * Not while enrolled: enrollments hold lessons and (from step D1) invoices, which are receipts and must be kept.
+ * Not while enrolled: enrollments hold lessons and invoices, which are receipts and must be kept.
  * The foreign key enrollment.student_id would refuse it anyway; the voter hides the button instead of a database
  * error. Trial lessons are deleted with the student (a person who did not stay, datenmodell.md 5).
  *

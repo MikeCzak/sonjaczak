@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set course = enrollment.course %}
+{% block title %}{{ 'invoice.new.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}, {% include 'admin/course/_title.html.twig' %}</a></p>
+    <h1 class="h3 mb-4">{{ 'invoice.new.title'|trans({}, 'admin') }}</h1>
+
+    {% if problems is not empty %}
+        <div class="alert alert-warning">
+            <p class="mb-2">{{ 'invoice.new.problems'|trans({}, 'admin') }}</p>
+            <ul class="mb-0">
+                {% for problem in problems %}
+                    <li>{{ problem|trans({}, 'admin') }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ 'invoice.new.fix_enrollment'|trans({}, 'admin') }}</a></li>
+            <li class="list-inline-item"><a href="{{ path('admin_student_edit', {id: enrollment.student.id}) }}">{{ 'invoice.new.fix_student'|trans({}, 'admin') }}</a></li>
+            {% if enrollment.student.guardian %}
+                <li class="list-inline-item"><a href="{{ path('admin_guardian_edit', {id: enrollment.student.guardian.id}) }}">{{ 'invoice.new.fix_guardian'|trans({}, 'admin') }}</a></li>
+            {% endif %}
+            <li class="list-inline-item"><a href="{{ path('admin_settings') }}">{{ 'invoice.new.fix_settings'|trans({}, 'admin') }}</a></li>
+        </ul>
+    {% else %}
+        <div class="row g-5">
+            <div class="col-lg-7">
+                {{ form_start(form) }}
+                    {{ form_row(form.description) }}
+                    <div class="row">
+                        <div class="col-md-4">{{ form_row(form.issuedOn) }}</div>
+                        <div class="col-md-4">{{ form_row(form.dueOn) }}</div>
+                        <div class="col-md-4">{{ form_row(form.secondInstallmentDueOn) }}</div>
+                    </div>
+                    <p class="small text-body-secondary">{{ 'invoice.new.immutable'|trans({}, 'admin') }}</p>
+                    <button type="submit" class="btn btn-primary">{{ 'invoice.new.submit'|trans({}, 'admin') }}</button>
+                {{ form_end(form) }}
+            </div>
+            <div class="col-lg-5">
+                <h2 class="h6">{{ 'invoice.field.recipient'|trans({}, 'admin') }}</h2>
+                {{ include('admin/invoice/_recipient.html.twig') }}
+                <h2 class="h6 mt-3">{{ 'invoice.field.amount'|trans({}, 'admin') }}</h2>
+                <p>{{ (enrollment.priceCents / 100)|number_format(2, ',', '.') }} €</p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
