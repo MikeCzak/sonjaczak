@@ -3,6 +3,8 @@
 {% set current = app.request.attributes.get('_route') %}
 {% set entries = [
     {route: 'admin_dashboard', prefix: 'admin_dashboard', label: 'nav.dashboard'},
+    {route: 'admin_student_index', prefix: 'admin_student_', label: 'nav.students'},
+    {route: 'admin_guardian_index', prefix: 'admin_guardian_', label: 'nav.guardians'},
     {route: 'admin_user_index', prefix: 'admin_user_', label: 'nav.users', role: 'ROLE_SUPER_ADMIN'},
 ] %}
 {% for entry in entries|filter(entry => entry.role is not defined or is_granted(entry.role)) %}

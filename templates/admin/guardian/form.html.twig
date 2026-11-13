@@ -1,0 +1,41 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set title = (guardian ? 'guardian.edit.title' : 'guardian.new.title')|trans({}, 'admin') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ title }}{% if guardian %}: {{ guardian.name }}{% endif %}</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.email) }}</div>
+                    <div class="col-md-6">{{ form_row(form.phone) }}</div>
+                </div>
+                {{ include('admin/_address.html.twig', {address: form.address}) }}
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+                <a class="btn btn-link" href="{{ path('admin_guardian_index') }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+            {{ form_end(form) }}
+
+            {% if guardian %}
+                <h2 class="h5 mt-5">{{ 'guardian.field.students'|trans({}, 'admin') }}</h2>
+                {% if guardian.students is empty %}
+                    <p>{{ 'guardian.edit.no_students'|trans({}, 'admin') }}</p>
+                    {{ include('admin/_delete.html.twig', {
+                        action: path('admin_guardian_delete', {id: guardian.id}),
+                        token_id: 'delete-guardian-' ~ guardian.id,
+                        label: 'guardian.delete.label',
+                        confirm: 'guardian.delete.confirm',
+                    }) }}
+                {% else %}
+                    <ul>
+                        {% for student in guardian.students %}
+                            <li><a href="{{ path('admin_student_edit', {id: student.id}) }}">{{ student.fullName }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

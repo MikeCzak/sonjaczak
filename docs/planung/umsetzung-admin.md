@@ -66,7 +66,7 @@ Fortschritt wird im Projektstand abgehakt.
 
 ## C. Unterricht
 
-**C1 Schüler:innen und Elternteile**
+**C1 Schüler:innen und Elternteile** – erledigt 2026-11-13
 
 - Embeddable `Address`, Entities `Guardian` und `Student` (mit Beziehung zu `User`, vorerst ungenutzt).
 - CRUD mit eigenen Controllern und Form-Types (`AddressType` wiederverwendbar), Liste mit Suche.

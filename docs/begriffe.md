@@ -291,6 +291,9 @@ bräuchte eine Session).
 **Owning Side** – Bei einer Doctrine-Beziehung die Seite, die die Fremdschlüssel-Spalte hält. Nur Änderungen an
 dieser Seite werden gespeichert; die inverse Seite (`mappedBy`) ist nur zum Lesen da. Details: `docs/planung/datenmodell.md`.
 
+**Inverse Side** – Die Gegenseite einer Doctrine-Beziehung (`mappedBy`), z. B. `Guardian::$students`. Nur zum
+Lesen; was man dort hinzufügt, speichert Doctrine nicht.
+
 **Embeddable** – PHP-Klasse ohne eigene Tabelle und ohne ID (`#[ORM\Embeddable]`), deren Felder als Spalten in der
 Tabelle der umgebenden Entity landen (`#[ORM\Embedded]`, z. B. `address_street`). Bei uns `Address` und `Recipient`.
 Wird beim Laden immer als Objekt angelegt, nie `null`.

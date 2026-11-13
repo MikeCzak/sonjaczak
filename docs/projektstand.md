@@ -123,6 +123,11 @@ Erst danach werden Features gebaut.
    - [x] B4 (2026-11-13): Benutzerverwaltung unter `/admin/benutzer` (nur Super-Admin): Konto anlegen mit
      Einladungslink (3 Tage), Rolle ändern, deaktivieren statt löschen (`UserChecker`), erster Voter `UserVoter`
      (eigenes Konto nie änderbar).
+   - [ ] B5 Passkeys: zurückgestellt bis nach C/D/E (eigener Prüfaufwand am Bundle-Code; Login mit Passwort reicht
+     für die Entwicklung). Kommt vor dem Zeigen an Sonja.
+   - [x] C1 (2026-11-13): Schüler:innen und Elternteile (`/admin/schueler`, `/admin/elternteile`), Embeddable
+     `Address`, Suche, `StudentVoter::DELETE` (Regel „nicht mit Honorarnoten“ folgt in D1), Factories und Story mit
+     erfundenen Daten (Testkonten `mike@`/`sonja@example.com`). Erklärung: `docs/erklaerungen/09-datenbank-schueler.md`.
    - **Offen zum Durchsehen:** Der Admin-Bereich spricht mit „du“ an (Sonja und Mike sind die Nutzer:innen); bei
      Schüler:innen-Konten später ggf. anpassen.
    - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)

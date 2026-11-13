@@ -1,0 +1,35 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set title = (student ? 'student.edit.title' : 'student.new.title')|trans({}, 'admin') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ title }}{% if student %}: {{ student.fullName }}{% endif %}</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+                    <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+                    <div class="col-md-6">{{ form_row(form.birthDate) }}</div>
+                    <div class="col-md-6">{{ form_row(form.guardian) }}</div>
+                    <div class="col-md-6">{{ form_row(form.email) }}</div>
+                    <div class="col-md-6">{{ form_row(form.phone) }}</div>
+                </div>
+                {{ include('admin/_address.html.twig', {address: form.address}) }}
+                {{ form_row(form.notes) }}
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+                <a class="btn btn-link" href="{{ path('admin_student_index') }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+            {{ form_end(form) }}
+
+            {% if student and is_granted('STUDENT_DELETE', student) %}
+                {{ include('admin/_delete.html.twig', {
+                    action: path('admin_student_delete', {id: student.id}),
+                    token_id: 'delete-student-' ~ student.id,
+                    label: 'student.delete.label',
+                    confirm: 'student.delete.confirm',
+                }) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

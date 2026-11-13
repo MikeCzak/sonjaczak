@@ -176,8 +176,10 @@ Konto anlegen (einmalig, Passwort wird verdeckt abgefragt), dann https://localho
 docker compose exec php bin/console app:user:create mike@example.com --super-admin
 ```
 
-`foundry:load-fixtures` löscht die lokale Datenbank, also auch dieses Konto. Die Story legt deshalb ab Schritt C1
-eigene Testkonten an (Passwort `UserFactory::PASSWORD`). Erklärung zu Login und Sessions:
+`foundry:load-fixtures` löscht die lokale Datenbank, also auch dieses Konto. Die Story legt deshalb eigene Testkonten
+an: `mike@example.com` (Super-Admin) und `sonja@example.com` (Admin), beide mit dem Passwort aus
+`UserFactory::PASSWORD` (`tests/Factory/UserFactory.php`). Dazu 20 erfundene Schüler:innen, davon 8 minderjährig mit
+Elternteil (zwei Geschwister mit gemeinsamem Elternteil). Erklärung zu Login und Sessions:
 `docs/erklaerungen/08-login-und-sessions.md`.
 
 ## Zeitzone

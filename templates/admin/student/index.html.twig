@@ -1,0 +1,50 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'student.index.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">{{ 'student.index.title'|trans({}, 'admin') }}</h1>
+        <a class="btn btn-primary" href="{{ path('admin_student_new') }}">{{ 'student.index.new'|trans({}, 'admin') }}</a>
+    </div>
+
+    <form method="get" role="search" class="mb-3" style="max-width: 24rem">
+        <label class="visually-hidden" for="student-search">{{ 'student.index.search'|trans({}, 'admin') }}</label>
+        <div class="input-group">
+            <input class="form-control" type="search" id="student-search" name="q" value="{{ q }}"
+                   placeholder="{{ 'student.index.search'|trans({}, 'admin') }}">
+            <button class="btn btn-outline-secondary">{{ 'student.index.search_submit'|trans({}, 'admin') }}</button>
+        </div>
+    </form>
+
+    {% if students is empty %}
+        <p>{{ (q ? 'student.index.no_match' : 'student.index.empty')|trans({}, 'admin') }}</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'student.field.name'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'person.email'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'person.phone'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'student.field.guardian'|trans({}, 'admin') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td><a href="{{ path('admin_student_edit', {id: student.id}) }}">{{ student.lastName }}, {{ student.firstName }}</a></td>
+                            <td>{{ student.email }}</td>
+                            <td>{{ student.phone }}</td>
+                            <td>
+                                {% if student.guardian %}
+                                    <a href="{{ path('admin_guardian_edit', {id: student.guardian.id}) }}">{{ student.guardian.name }}</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

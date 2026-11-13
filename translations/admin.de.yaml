@@ -8,6 +8,8 @@ layout:
 nav:
     dashboard: Übersicht
     users: Benutzer
+    students: Schüler:innen
+    guardians: Elternteile
 action:
     save: Speichern
     cancel: Abbrechen
@@ -86,3 +88,62 @@ user:
         invitation_throttled: Vor weniger als einer Stunde wurde schon ein Link verschickt. Der ist noch gültig; einen neuen gibt es frühestens eine Stunde danach.
         deactivated: Das Konto ist deaktiviert. Offene Anmeldungen enden beim nächsten Seitenaufruf.
         own_account: Rolle und Zugang des eigenen Kontos kann nur ein anderes Konto mit Benutzerverwaltung ändern.
+person:
+    email: E-Mail
+    phone: Telefon
+address:
+    legend: Adresse
+    street: Straße und Hausnummer
+    postal_code: PLZ
+    city: Ort
+    country: Land
+    country_help: Nur bei Adressen außerhalb Österreichs.
+student:
+    field:
+        name: Name
+        first_name: Vorname
+        last_name: Nachname
+        birth_date: Geburtsdatum
+        birth_date_help: Daraus ergibt sich, ob die Honorarnote an einen Elternteil geht.
+        guardian: Elternteil
+        guardian_help: Empfänger:in der Honorarnote bei Minderjährigen. Neue Elternteile unter „Elternteile“ anlegen.
+        guardian_none: – keiner –
+        notes: Notizen
+    index:
+        title: Schüler:innen
+        new: Neue:r Schüler:in
+        search: Name oder Elternteil
+        search_submit: Suchen
+        empty: Noch keine Schüler:innen eingetragen.
+        no_match: Niemand gefunden.
+    new:
+        title: Neue:r Schüler:in
+    edit:
+        title: Schüler:in
+    delete:
+        label: Schüler:in löschen
+        confirm: Alle Daten dieser Person werden endgültig gelöscht.
+    flash:
+        saved: Gespeichert.
+        deleted: Gelöscht.
+guardian:
+    field:
+        name: Name
+        name_help: Genau so, wie er auf der Honorarnote stehen soll, z. B. „Anna und Peter Muster“.
+        students: Schüler:innen
+    index:
+        title: Elternteile
+        new: Neuer Elternteil
+        empty: Noch keine Elternteile eingetragen.
+    new:
+        title: Neuer Elternteil
+    edit:
+        title: Elternteil
+        no_students: Keine Schüler:innen zugeordnet.
+    delete:
+        label: Elternteil löschen
+        confirm: Alle Daten dieses Elternteils werden endgültig gelöscht.
+    flash:
+        saved: Gespeichert.
+        deleted: Gelöscht.
+        has_students: Dieser Elternteil ist noch Schüler:innen zugeordnet und kann nicht gelöscht werden.

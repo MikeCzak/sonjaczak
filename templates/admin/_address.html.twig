@@ -1,0 +1,12 @@
+{# The AddressType sub-form as a fieldset with a two-column layout #}
+<fieldset class="mb-3">
+    <legend class="h6">{{ 'address.legend'|trans({}, 'admin') }}</legend>
+    <div class="row">
+        <div class="col-12">{{ form_row(address.street) }}</div>
+        <div class="col-md-4">{{ form_row(address.postalCode) }}</div>
+        <div class="col-md-8">{{ form_row(address.city) }}</div>
+        <div class="col-md-8">{{ form_row(address.country) }}</div>
+    </div>
+    {# The sub-form's own label is replaced by the legend #}
+    {% do address.setRendered %}
+</fieldset>

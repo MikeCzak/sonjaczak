@@ -1,0 +1,10 @@
+{# Delete button behind a <details> element: one extra click as confirmation, without JavaScript.
+   Parameters: action (URL), token_id (CSRF), label, confirm (translation keys, domain admin) #}
+<details class="mt-5 border-top pt-3">
+    <summary class="text-danger">{{ label|trans({}, 'admin') }}</summary>
+    <form method="post" action="{{ action }}" class="mt-2">
+        <input type="hidden" name="_token" value="{{ csrf_token(token_id) }}">
+        <p>{{ confirm|trans({}, 'admin') }}</p>
+        <button class="btn btn-danger">{{ label|trans({}, 'admin') }}</button>
+    </form>
+</details>
