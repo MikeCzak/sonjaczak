@@ -47,7 +47,7 @@ Fortschritt wird im Projektstand abgehakt.
 - `cookie_path: /admin`, `gc_maxlifetime: 28800`, `cookie_lifetime: 43200`.
 - Prüfen nach dem Deploy: angemeldet bleiben über einen Deploy hinweg.
 
-**B3 Passwort vergessen** (`rollen.md` 4.2)
+**B3 Passwort vergessen** (`rollen.md` 4.2) – erledigt 2026-11-13
 
 - `symfonycasts/reset-password-bundle`, Routen unter `/admin`, Mail-Template (Text), immer gleiche Antwort.
 - „Mein Konto“: Passwort ändern.

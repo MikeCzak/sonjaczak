@@ -94,8 +94,9 @@ Zur Frage, was Session und Datenbank miteinander zu tun haben: `docs/planung/rol
 Datenbank ist nur der Ablageort der Session-Daten. Dateien im Container wären nach jedem Deploy weg, die Datenbank
 läuft weiter. Lokal geprüft: angemeldet, `docker compose up -d --force-recreate php`, weiterhin angemeldet.
 
-- `PdoSessionHandler` bekommt `DATABASE_URL` als Verbindung (Beispiel aus der Symfony-Doku). Er öffnet dafür eine
-  eigene PDO-Verbindung neben der von Doctrine.
+- `PdoSessionHandler` nutzt Doctrines PDO-Verbindung mit Advisory Locks (Begründung unten im Abschnitt „Sessions und
+  Doctrine teilen sich eine Verbindung“). Die Symfony-Doku zeigt `DATABASE_URL` als Argument; das war unser erster
+  Stand und scheiterte in Tests.
 - Die Tabelle `sessions` kam über `make:migration`: `PdoSessionHandlerSchemaListener` (symfony/doctrine-bridge)
   meldet sie dem Doctrine-Schema, wenn der Handler dieselbe Datenbank nutzt. Deshalb meldet auch
   `doctrine:schema:validate` keine „fremde“ Tabelle.
@@ -127,6 +128,44 @@ abmelden. Die Route im `SecurityController` wird nie erreicht: Der Logout-Listen
 Ohne Konto kann sich niemand anmelden, um eines anzulegen. Dafür gibt es `app:user:create` (`rollen.md` 4.1). Das
 Passwort wird verdeckt und zweimal abgefragt, nie als Argument übergeben: Argumente landen in der Shell-History und
 sind für andere Prozesse sichtbar (`ps`). In Produktion: `docs/deployment.md` B7.
+
+### Passwort vergessen (B3)
+
+Dateien: `src/Controller/Admin/PasswordController.php`, `src/Security/PasswordLinkMailer.php`,
+`src/Entity/ResetPasswordRequest.php`, `config/packages/reset_password.yaml`,
+`templates/email/account/password_link.txt.twig`, Migration `Version20261113005058`. Paket
+`symfonycasts/reset-password-bundle` 1.26.1; das Gerüst kam von `make:reset-password` und ist umgebaut (Routen unter
+`/admin`, deutsche Texte, Mail als reiner Text, keine Leak-Prüfung, Adresse ohne Rücksicht auf Groß-/Kleinschreibung).
+
+1. `/admin/passwort-vergessen`: Adresse eingeben. Die Antwort ist **immer** dieselbe Seite („Falls es zu dieser
+   Adresse ein Konto gibt …“), auch wenn es kein Konto gibt oder der letzte Link zu jung ist. Für unbekannte Adressen
+   erzeugt das Bundle ein Schein-Token, damit sogar die angezeigte Ablaufzeit gleich aussieht.
+2. Die Mail enthält `/admin/passwort-setzen/<token>`. Das Token besteht aus einem „Selector“ (zum Finden der Zeile)
+   und einem geheimen Teil, von dem in der Tabelle `reset_password_request` nur ein Hash steht. Wer die Datenbank
+   liest, kann damit kein Passwort setzen.
+3. Beim Aufruf schiebt der Controller das Token aus der URL in die Session und leitet auf `/admin/passwort-setzen`
+   ohne Token um. So bleibt es nicht in der Adressleiste stehen und geht nicht über den `Referer`-Header an andere
+   Seiten. (Das legt die erste Session an, noch vor einem Login; das Cookie gilt wie immer nur für `/admin`.)
+4. Neues Passwort zweimal eingeben (gleiche Regeln wie überall, `PasswordRules`), der Link wird gelöscht und gilt
+   damit nur einmal.
+
+**Fristen** (`reset_password.yaml`, Standardwerte des Bundles ausgeschrieben): ein Link gilt 1 Stunde, ein neuer
+kann frühestens 1 Stunde nach dem letzten angefordert werden (`throttle_limit`). Einladungen (B4) gelten 3 Tage
+(`PasswordLinkMailer::INVITATION_LIFETIME`, eigene Annahme, leicht änderbar).
+
+**Löschen:** Die Zeile in `reset_password_request` hängt mit `ON DELETE CASCADE` am Konto. Das ist die eine Ausnahme
+von „keine Kaskaden“ (`datenmodell.md` 2): Ein Link ohne Konto ist wertlos, und Fachdaten hängen nicht daran.
+
+**Mein Konto** (`/admin/konto`): Passwort ändern mit Abfrage des aktuellen Passworts (`UserPassword`-Constraint). Ein
+neuer Hash meldet alle anderen Sitzungen dieses Kontos ab, weil ihre gespeicherte Prüfsumme nicht mehr passt.
+
+**Sessions und Doctrine teilen sich eine Verbindung:** Der erste Stand (Commit `0636184`) gab `PdoSessionHandler` die
+`DATABASE_URL`. In Tests nutzt Doctrine aber `app_test` (Suffix in `doctrine.yaml`), der Handler `app`; der
+Schema-Listener erkannte „nicht dieselbe Datenbank“ und `doctrine:schema:validate` schlug in der CI fehl. Jetzt bekommt
+der Handler Doctrines PDO-Verbindung (`config/services.yaml`, `app.session_pdo`). Weil der Handler im Standardmodus
+`LOCK_TRANSACTIONAL` von `read()` bis zum Speichern eine Transaktion offen hält (`PdoSessionHandler::getSelectSql()`),
+würde das auf der geteilten Verbindung mit Doctrines Transaktionen kollidieren. Deshalb `LOCK_ADVISORY`: PostgreSQL-
+Advisory-Locks (`pg_advisory_lock`) sperren die Session, ohne eine Transaktion offen zu halten.
 
 ## Alternativen
 

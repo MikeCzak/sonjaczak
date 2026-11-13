@@ -27,7 +27,7 @@
                                     {{ include('admin/_nav.html.twig') }}
                                 {% endblock %}
                             </ul>
-                            <span class="navbar-text small me-3">{{ app.user.userIdentifier }}</span>
+                            <a class="nav-link small me-3" href="{{ path('admin_account') }}">{{ 'layout.account'|trans({}, 'admin') }} ({{ app.user.userIdentifier }})</a>
                             {# POST with CSRF token, so no other site can log Sonja out with a link or an image #}
                             <form method="post" action="{{ path('admin_logout') }}" class="d-inline">
                                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">

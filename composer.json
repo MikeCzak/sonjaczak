@@ -29,6 +29,7 @@
         "symfony/twig-bundle": "8.1.*",
         "symfony/validator": "8.1.*",
         "symfony/yaml": "8.1.*",
+        "symfonycasts/reset-password-bundle": "^1.26",
         "symfonycasts/sass-bundle": "^0.10.0",
         "twbs/bootstrap": "^5.3"
     },

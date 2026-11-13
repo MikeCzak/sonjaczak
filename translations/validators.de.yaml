@@ -13,3 +13,4 @@ user:
 password:
     too_short: Das Passwort muss mindestens {{ limit }} Zeichen lang sein.
     too_weak: Das Passwort ist zu leicht zu erraten. Länger oder abwechslungsreicher wählen.
+    current_wrong: Das aktuelle Passwort stimmt nicht.

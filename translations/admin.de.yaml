@@ -4,6 +4,7 @@ layout:
     nav_label: Verwaltung
     nav_toggle: Navigation ein- oder ausblenden
     logout: Abmelden
+    account: Mein Konto
 nav:
     dashboard: Übersicht
 login:
@@ -11,6 +12,42 @@ login:
     email: E-Mail-Adresse
     password: Passwort
     submit: Anmelden
+    forgot: Passwort vergessen?
 dashboard:
     title: Übersicht
     welcome: Willkommen in der Verwaltung. Hier entstehen nach und nach Kurse, Schüler:innen und Honorarnoten.
+account:
+    title: Mein Konto
+    email: Angemeldet als
+    password_heading: Passwort ändern
+    password_submit: Passwort ändern
+password:
+    current: Aktuelles Passwort
+    new: Neues Passwort
+    repeat: Neues Passwort wiederholen
+    rules: Mindestens %min% Zeichen. Am besten mehrere Wörter, die nicht zusammengehören.
+    mismatch: Die beiden Passwörter stimmen nicht überein.
+    back_to_login: Zurück zur Anmeldung
+    request:
+        title: Passwort vergessen
+        intro: Gib die E-Mail-Adresse deines Kontos ein. Du bekommst einen Link, mit dem du ein neues Passwort setzen kannst.
+        submit: Link anfordern
+    check_email:
+        title: E-Mail unterwegs
+        body: Falls es zu dieser Adresse ein Konto gibt, ist eine E-Mail mit einem Link unterwegs. Der Link läuft in %time% ab und funktioniert nur einmal. Bitte auch im Spam-Ordner nachsehen.
+    reset:
+        title: Neues Passwort setzen
+        submit: Passwort speichern
+    flash:
+        set: Das Passwort ist gesetzt. Du kannst dich jetzt anmelden.
+        changed: Das Passwort ist geändert.
+        link_invalid: Der Link ist abgelaufen, wurde schon benutzt oder ist ungültig. Bitte einen neuen anfordern.
+password_mail:
+    reset:
+        subject: Neues Passwort für sonjaczak.com
+        intro: 'Für dein Konto im Verwaltungsbereich von sonjaczak.com wurde ein neues Passwort angefordert. Mit diesem Link kannst du es setzen:'
+    invitation:
+        subject: Dein Zugang zu sonjaczak.com
+        intro: 'Für dich wurde ein Konto im Verwaltungsbereich von sonjaczak.com angelegt. Mit diesem Link setzt du dein Passwort:'
+    expires: Der Link läuft in %time% ab und funktioniert nur einmal.
+    ignore: Falls du das nicht warst, kannst du diese E-Mail ignorieren. Dein Passwort bleibt unverändert.

@@ -1,0 +1,15 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'password.reset.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-sm-10 col-md-6 col-lg-4">
+            <h1 class="h3 mb-3">{{ 'password.reset.title'|trans({}, 'admin') }}</h1>
+            {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-primary">{{ 'password.reset.submit'|trans({}, 'admin') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

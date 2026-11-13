@@ -14,7 +14,13 @@ use Symfony\Component\Routing\RouterInterface;
 final class AdminRoutesRequireLoginTest extends WebTestCase
 {
     /** Routes that must be reachable without login (handled by the firewall itself or public by design) */
-    private const array PUBLIC_ROUTES = ['admin_login', 'admin_logout'];
+    private const array PUBLIC_ROUTES = [
+        'admin_login',
+        'admin_logout',
+        'admin_password_request',
+        'admin_password_check_email',
+        'admin_password_reset',
+    ];
 
     public function testEveryAdminRouteRequiresLogin(): void
     {
