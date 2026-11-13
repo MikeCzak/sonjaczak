@@ -18,6 +18,7 @@ Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demse
 | [07-dependabot.md](07-dependabot.md) | Dependabot: alerts, security updates, version updates; `dependabot.yaml` Zeile für Zeile |
 | [08-login-und-sessions.md](08-login-und-sessions.md) | Admin-Login: Firewall, Rollen, Passwörter, Sessions in PostgreSQL, Logout, erstes Konto, Passwort vergessen, Benutzerverwaltung und Voter |
 | [09-datenbank-schueler.md](09-datenbank-schueler.md) | Schüler:innen und Elternteile: Embeddable, Owning/Inverse Side, Migration, Formulare, Suche |
+| [10-datenbank-kurse.md](10-datenbank-kurse.md) | Kurse und Ferien: Enums, Geld in Cent, Cascade/orphanRemoval, OpenHolidays mit Scoped Client und Mock |
 
 Ergänzend: [../begriffe.md](../begriffe.md) (Glossar), [../entwicklung.md](../entwicklung.md) (lokaler Workflow),
 [../deployment.md](../deployment.md) (Server-Einrichtung, Rollback).

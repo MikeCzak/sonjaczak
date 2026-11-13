@@ -14,6 +14,16 @@ framework:
         # ... and the browser drops the cookie after 12 hours at the latest, also after quitting the browser
         cookie_lifetime: 43200
 
+    http_client:
+        scoped_clients:
+            # Holiday suggestions for new courses (App\Course\HolidayImporter). Injected as $openholidaysClient.
+            openholidays.client:
+                base_uri: 'https://openholidaysapi.org'
+                headers:
+                    Accept: application/json
+                # Seconds without data before giving up; the course form must not hang on a slow API
+                timeout: 5
+
     #esi: true
     #fragments: true
 
@@ -22,3 +32,9 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+        http_client:
+            scoped_clients:
+                # Recorded answers instead of the real API, so tests and CI never depend on it
+                openholidays.client:
+                    base_uri: 'https://openholidaysapi.org'
+                    mock_response_factory: App\Tests\Http\OpenHolidaysResponses

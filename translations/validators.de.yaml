@@ -14,3 +14,7 @@ password:
     too_short: Das Passwort muss mindestens {{ limit }} Zeichen lang sein.
     too_weak: Das Passwort ist zu leicht zu erraten. Länger oder abwechslungsreicher wählen.
     current_wrong: Das aktuelle Passwort stimmt nicht.
+course:
+    ends_before_start: Das Ende muss nach dem Beginn liegen.
+course_break:
+    ends_before_start: „Bis“ darf nicht vor „Von“ liegen.

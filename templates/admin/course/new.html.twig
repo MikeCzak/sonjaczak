@@ -1,0 +1,13 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'course.new.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ 'course.new.title'|trans({}, 'admin') }}</h1>
+    <p>{{ 'course.new.intro'|trans({}, 'admin') }}</p>
+    <div class="row">
+        <div class="col-lg-8">
+            {{ include('admin/course/_form.html.twig', {submit_label: 'course.new.submit'}) }}
+        </div>
+    </div>
+{% endblock %}

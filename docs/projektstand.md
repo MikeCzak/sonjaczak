@@ -128,6 +128,10 @@ Erst danach werden Features gebaut.
    - [x] C1 (2026-11-13): Schüler:innen und Elternteile (`/admin/schueler`, `/admin/elternteile`), Embeddable
      `Address`, Suche, `StudentVoter::DELETE` (Regel „nicht mit Honorarnoten“ folgt in D1), Factories und Story mit
      erfundenen Daten (Testkonten `mike@`/`sonja@example.com`). Erklärung: `docs/erklaerungen/09-datenbank-schueler.md`.
+   - [x] C2 (2026-11-13): Kurse mit Ferien (`/admin/kurse`), Enums `Term`/`BreakSource`, Preis in Cent, Ferien-Vorschlag
+     aus der OpenHolidays API beim Anlegen (live geprüft mit Sommersemester 2027), Tests mit aufgezeichneten Antworten.
+     `symfony/http-client` jetzt direkt in `composer.json` (war nur indirekt installiert, 8.1.11). PHPStan:
+     `allowNullablePropertyForRequiredField` (Begründung in `docs/erklaerungen/10-datenbank-kurse.md`).
    - **Offen zum Durchsehen:** Der Admin-Bereich spricht mit „du“ an (Sonja und Mike sind die Nutzer:innen); bei
      Schüler:innen-Konten später ggf. anpassen.
    - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)

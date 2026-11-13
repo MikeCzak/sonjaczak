@@ -23,3 +23,7 @@ parameters:
     doctrine:
         # Boots the dev kernel so PHPStan knows the entity mapping: checks DQL and QueryBuilder, infers result types
         objectManagerLoader: tests/object-manager.php
+        # Entities are bound to forms directly: a new Course has no date yet, so the property is nullable while the
+        # column is NOT NULL; #[Assert\NotNull] keeps null out of the database. Other type mismatches are still reported.
+        # Alternative would be a separate form object (DTO) per entity (docs/erklaerungen/10-datenbank-kurse.md).
+        allowNullablePropertyForRequiredField: true

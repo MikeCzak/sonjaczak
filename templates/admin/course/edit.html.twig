@@ -1,0 +1,70 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set title %}{% include 'admin/course/_title.html.twig' %}{% endset %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ title }}</h1>
+    <div class="row g-5">
+        <div class="col-lg-6">
+            {{ include('admin/course/_form.html.twig', {submit_label: 'action.save'}) }}
+        </div>
+
+        <div class="col-lg-6">
+            <h2 class="h5">{{ 'course_break.heading'|trans({}, 'admin') }}</h2>
+            <p class="small text-body-secondary">{{ 'course_break.intro'|trans({}, 'admin') }}</p>
+            {% if course.breaks is empty %}
+                <p>{{ 'course_break.empty'|trans({}, 'admin') }}</p>
+            {% else %}
+                <table class="table table-sm align-middle">
+                    <tbody>
+                        {% for break in course.breaks %}
+                            <tr>
+                                <td>
+                                    {{ break.firstDay|date('d.m.Y') }}
+                                    {%- if break.lastDay != break.firstDay %} – {{ break.lastDay|date('d.m.Y') }}{% endif %}
+                                </td>
+                                <td>
+                                    {{ break.label }}
+                                    {% if break.source.value == 'imported' %}
+                                        <span class="badge text-bg-light">{{ 'course_break.imported'|trans({}, 'admin') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <form method="post" action="{{ path('admin_course_break_delete', {id: course.id, breakId: break.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-break-' ~ break.id) }}">
+                                        <button class="btn btn-link btn-sm text-danger p-0">{{ 'action.delete'|trans({}, 'admin') }}</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <form method="post" action="{{ path('admin_course_break_import', {id: course.id}) }}" class="mb-4">
+                <input type="hidden" name="_token" value="{{ csrf_token('import-breaks-' ~ course.id) }}">
+                <button class="btn btn-outline-secondary btn-sm">{{ 'course_break.import'|trans({}, 'admin') }}</button>
+            </form>
+
+            <h3 class="h6">{{ 'course_break.new'|trans({}, 'admin') }}</h3>
+            {{ form_start(break_form) }}
+                {{ form_row(break_form.label) }}
+                <div class="row">
+                    <div class="col-sm-6">{{ form_row(break_form.firstDay) }}</div>
+                    <div class="col-sm-6">{{ form_row(break_form.lastDay) }}</div>
+                </div>
+                <button type="submit" class="btn btn-outline-primary">{{ 'course_break.add'|trans({}, 'admin') }}</button>
+            {{ form_end(break_form) }}
+        </div>
+    </div>
+
+    {% if is_granted('COURSE_DELETE', course) %}
+        {{ include('admin/_delete.html.twig', {
+            action: path('admin_course_delete', {id: course.id}),
+            token_id: 'delete-course-' ~ course.id,
+            label: 'course.delete.label',
+            confirm: 'course.delete.confirm',
+        }) }}
+    {% endif %}
+{% endblock %}

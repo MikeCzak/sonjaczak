@@ -8,11 +8,13 @@ layout:
 nav:
     dashboard: Übersicht
     users: Benutzer
+    courses: Kurse
     students: Schüler:innen
     guardians: Elternteile
 action:
     save: Speichern
     cancel: Abbrechen
+    delete: Löschen
 login:
     title: Anmelden
     email: E-Mail-Adresse
@@ -147,3 +149,57 @@ guardian:
         saved: Gespeichert.
         deleted: Gelöscht.
         has_students: Dieser Elternteil ist noch Schüler:innen zugeordnet und kann nicht gelöscht werden.
+course:
+    term:
+        winter: Wintersemester %year%
+        summer: Sommersemester %year%
+    term_choice:
+        winter: Wintersemester
+        summer: Sommersemester
+    field:
+        title: Kurs
+        term: Semester
+        year: Jahr
+        year_help: Jahr, in dem das Semester beginnt (2026 für Wintersemester 2026/27).
+        starts_on: Erste Woche ab
+        ends_on: Spätestens bis
+        ends_on_help: Einheiten werden nur bis zu diesem Tag geplant.
+        period: Zeitraum
+        room: Raum
+        price: Preis pro Semester
+        planned_lessons: Einheiten pro Semester
+        lesson_minutes: Minuten pro Einheit
+        defaults_help: Vorgabe für neue Teilnahmen, je Teilnahme änderbar.
+    index:
+        title: Kurse
+        new: Neuer Kurs
+        empty: Noch keine Kurse angelegt.
+    new:
+        title: Neuer Kurs
+        intro: Nach dem Speichern werden Schulferien und Feiertage der Steiermark im Kurszeitraum vorgeschlagen. Die Liste kannst du danach ändern und ergänzen.
+        submit: Kurs anlegen
+    delete:
+        label: Kurs löschen
+        confirm: Der Kurs und seine Ferien werden endgültig gelöscht.
+    flash:
+        saved: Gespeichert.
+        deleted: Gelöscht.
+course_break:
+    heading: Ferien und freie Tage
+    intro: An diesen Tagen werden keine Einheiten geplant.
+    empty: Keine eingetragen.
+    imported: vorgeschlagen
+    import: Ferien und Feiertage vorschlagen lassen
+    new: Freien Tag oder Ferien eintragen
+    add: Eintragen
+    field:
+        label: Bezeichnung
+        first_day: Von
+        last_day: Bis
+        last_day_help: Leer lassen bei einem einzelnen Tag.
+    flash:
+        saved: Eingetragen.
+        deleted: Gelöscht.
+        imported: Schulferien und Feiertage sind eingetragen. Bitte prüfen und schulautonome Tage ergänzen.
+        import_none: Keine neuen Ferien oder Feiertage gefunden.
+        import_failed: Die Ferien konnten nicht abgerufen werden (Dienst nicht erreichbar). Bitte selbst eintragen oder später noch einmal vorschlagen lassen.

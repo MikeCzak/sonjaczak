@@ -1,0 +1,14 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-6">{{ form_row(form.term) }}</div>
+        <div class="col-md-6">{{ form_row(form.year) }}</div>
+        <div class="col-md-6">{{ form_row(form.startsOn) }}</div>
+        <div class="col-md-6">{{ form_row(form.endsOn) }}</div>
+        <div class="col-md-6">{{ form_row(form.room) }}</div>
+        <div class="col-md-6">{{ form_row(form.priceCents) }}</div>
+        <div class="col-md-6">{{ form_row(form.plannedLessons) }}</div>
+        <div class="col-md-6">{{ form_row(form.lessonMinutes) }}</div>
+    </div>
+    <button type="submit" class="btn btn-primary">{{ submit_label|trans({}, 'admin') }}</button>
+    <a class="btn btn-link" href="{{ path('admin_course_index') }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+{{ form_end(form) }}

@@ -73,7 +73,7 @@ Fortschritt wird im Projektstand abgehakt.
 - `StudentVoter::DELETE` (keine Honorarnoten; greift ab D1, bis dahin immer erlaubt).
 - Foundry-Factories und `AppFixtures` mit erfundenen Daten.
 
-**C2 Kurse und Ferien**
+**C2 Kurse und Ferien** – erledigt 2026-11-13
 
 - Entities `Course` (Enum `Term`) und `CourseBreak` (Enum `BreakSource`), CRUD.
 - C2b: Ferien-Vorschlag aus der OpenHolidays API (Steiermark `AT-SM`, Schulferien und Feiertage), mit Test gegen
