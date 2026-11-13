@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Embeddable\Recipient;
+use App\Entity\Enum\InvoiceStatus;
 use App\Repository\InvoiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,6 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Immutable: everything is set in the constructor and there are no setters. Corrections are made with a new
  * receipt (credit note, step D3). Name, address, amount and description are copies, not references.
+ *
+ * Credit note ("Gutschrift", datenmodell.md 3.7): an invoice with a negative amount and its own number that points
+ * to the original ($credits). An original and its credit notes are settled together: owed is the original amount
+ * minus the credits, paid is the sum of all payments of the group (refunds are negative payments on a credit note).
+ * So a credit works both before payment (less to pay) and after (refund due).
  */
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
 #[ORM\UniqueConstraint(name: 'invoice_number', columns: ['year', 'number'])]
@@ -32,6 +38,15 @@ class Invoice
     #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'invoice')]
     #[ORM\OrderBy(['paidOn' => 'ASC', 'id' => 'ASC'])]
     private Collection $payments;
+
+    /**
+     * Credit notes of this invoice (inverse side of $credits).
+     *
+     * @var Collection<int, Invoice>
+     */
+    #[ORM\OneToMany(targetEntity: Invoice::class, mappedBy: 'credits')]
+    #[ORM\OrderBy(['issuedOn' => 'ASC', 'id' => 'ASC'])]
+    private Collection $creditNotes;
 
     /**
      * @param int $year   year of issuedOn; with $number the invoice number "16/2026"
@@ -59,8 +74,13 @@ class Invoice
         private string $description,
         #[ORM\Embedded(class: Recipient::class)]
         private Recipient $recipient,
+        // Set on a credit note only: the invoice it corrects
+        #[ORM\ManyToOne(inversedBy: 'creditNotes')]
+        private ?Invoice $credits = null,
     ) {
         $this->payments = new ArrayCollection();
+        $this->creditNotes = new ArrayCollection();
+        $credits?->creditNotes->add($this);
     }
 
     public function getId(): ?int
@@ -146,5 +166,88 @@ class Invoice
     public function getPayments(): Collection
     {
         return $this->payments;
+    }
+
+    public function getCredits(): ?self
+    {
+        return $this->credits;
+    }
+
+    public function isCreditNote(): bool
+    {
+        return null !== $this->credits;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getCreditNotes(): Collection
+    {
+        return $this->creditNotes;
+    }
+
+    /**
+     * The original invoice of the group (itself, or the invoice a credit note corrects).
+     */
+    public function getOriginal(): self
+    {
+        return $this->credits ?? $this;
+    }
+
+    /**
+     * How much may still be credited: the original amount minus all credits (credit amounts are negative).
+     */
+    public function getCreditableCents(): int
+    {
+        $original = $this->getOriginal();
+
+        return $original->amountCents + array_sum($original->creditNotes->map(static fn (self $note): int => $note->amountCents)->getValues());
+    }
+
+    /**
+     * What the recipient owes for the whole group: original amount minus credits.
+     */
+    public function getOwedCents(): int
+    {
+        return $this->getCreditableCents();
+    }
+
+    /**
+     * Sum of all payments of the group; refunds are negative.
+     */
+    public function getPaidCents(): int
+    {
+        $paid = 0;
+        $original = $this->getOriginal();
+        foreach ([$original, ...$original->creditNotes] as $invoice) {
+            foreach ($invoice->payments as $payment) {
+                $paid += $payment->getAmountCents();
+            }
+        }
+
+        return $paid;
+    }
+
+    /**
+     * Positive: still to be paid. Negative: to be refunded.
+     */
+    public function getOpenCents(): int
+    {
+        return $this->getOwedCents() - $this->getPaidCents();
+    }
+
+    /**
+     * Calculated, never stored, so it cannot get out of date (datenmodell.md 3.8).
+     */
+    public function getStatus(): InvoiceStatus
+    {
+        $open = $this->getOpenCents();
+
+        return match (true) {
+            $open < 0 => InvoiceStatus::RefundDue,
+            0 === $open => InvoiceStatus::Paid,
+            $this->getPaidCents() > 0 => InvoiceStatus::PartlyPaid,
+            default => InvoiceStatus::Open,
+        };
     }
 }

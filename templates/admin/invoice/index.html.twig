@@ -30,6 +30,7 @@
                         <th scope="col">{{ 'invoice.field.recipient'|trans({}, 'admin') }}</th>
                         <th scope="col">{{ 'invoice.field.description'|trans({}, 'admin') }}</th>
                         <th scope="col" class="text-end">{{ 'invoice.field.amount'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'invoice.field.status'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,8 +39,9 @@
                             <td><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ invoice.displayNumber }}</a></td>
                             <td>{{ invoice.issuedOn|date('d.m.Y') }}</td>
                             <td>{{ invoice.recipient.name }}</td>
-                            <td>{{ invoice.description }}</td>
+                            <td>{% if invoice.creditNote %}<span class="badge text-bg-light">{{ 'credit.badge'|trans({}, 'admin') }}</span> {% endif %}{{ invoice.description }}</td>
                             <td class="text-end text-nowrap">{{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €</td>
+                            <td>{% if not invoice.creditNote %}{{ include('admin/invoice/_status.html.twig') }}{% endif %}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

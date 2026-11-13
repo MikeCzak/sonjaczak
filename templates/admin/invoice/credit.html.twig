@@ -1,0 +1,20 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'credit.new.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ 'invoice.show.title'|trans({'%number%': invoice.displayNumber}, 'admin') }}</a></p>
+    <h1 class="h3 mb-4">{{ 'credit.new.title'|trans({}, 'admin') }}</h1>
+    <div class="row">
+        <div class="col-lg-7">
+            <p>{{ 'credit.new.intro'|trans({'%max%': (invoice.creditableCents / 100)|number_format(2, ',', '.')}, 'admin') }}</p>
+            {{ form_start(form) }}
+                {{ form_row(form.amountCents) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.issuedOn) }}
+                <p class="small text-body-secondary">{{ 'credit.new.immutable'|trans({}, 'admin') }}</p>
+                <button type="submit" class="btn btn-primary">{{ 'credit.new.submit'|trans({}, 'admin') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

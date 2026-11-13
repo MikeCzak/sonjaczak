@@ -1,25 +1,34 @@
 {% extends 'admin/base.html.twig' %}
 
 {% set enrollment = invoice.enrollment %}
-{% block title %}{{ 'invoice.show.title'|trans({'%number%': invoice.displayNumber}, 'admin') }}{% endblock %}
+{% set original = invoice.original %}
+{% set title_key = invoice.creditNote ? 'credit.show.title' : 'invoice.show.title' %}
+{% macro euro(cents) %}{{ (cents / 100)|number_format(2, ',', '.') }} €{% endmacro %}
+{% block title %}{{ title_key|trans({'%number%': invoice.displayNumber}, 'admin') }}{% endblock %}
 
 {% block body %}
     <p class="mb-1"><a href="{{ path('admin_invoice_index', {jahr: invoice.year}) }}">{{ 'invoice.index.title'|trans({}, 'admin') }} {{ invoice.year }}</a></p>
-    <h1 class="h3 mb-4">{{ 'invoice.show.title'|trans({'%number%': invoice.displayNumber}, 'admin') }}</h1>
+    <h1 class="h3 mb-4">{{ title_key|trans({'%number%': invoice.displayNumber}, 'admin') }} {{ include('admin/invoice/_status.html.twig') }}</h1>
 
     <div class="row g-5">
         <div class="col-lg-6">
             <dl class="row">
+                {% if invoice.creditNote %}
+                    <dt class="col-sm-5">{{ 'credit.show.credits'|trans({}, 'admin') }}</dt>
+                    <dd class="col-sm-7"><a href="{{ path('admin_invoice_show', {id: original.id}) }}">{{ 'invoice.show.title'|trans({'%number%': original.displayNumber}, 'admin') }}</a></dd>
+                {% endif %}
                 <dt class="col-sm-5">{{ 'invoice.field.recipient'|trans({}, 'admin') }}</dt>
                 <dd class="col-sm-7">{{ include('admin/invoice/_recipient.html.twig', {recipient: invoice.recipient}) }}</dd>
                 <dt class="col-sm-5">{{ 'invoice.field.description'|trans({}, 'admin') }}</dt>
                 <dd class="col-sm-7">{{ invoice.description }}</dd>
                 <dt class="col-sm-5">{{ 'invoice.field.amount'|trans({}, 'admin') }}</dt>
-                <dd class="col-sm-7">{{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €</dd>
+                <dd class="col-sm-7">{{ _self.euro(invoice.amountCents) }}</dd>
                 <dt class="col-sm-5">{{ 'invoice.field.issued_on'|trans({}, 'admin') }}</dt>
                 <dd class="col-sm-7">{{ invoice.issuedOn|date('d.m.Y') }}</dd>
-                <dt class="col-sm-5">{{ 'invoice.field.due_on'|trans({}, 'admin') }}</dt>
-                <dd class="col-sm-7">{{ invoice.dueOn|date('d.m.Y') }}</dd>
+                {% if not invoice.creditNote %}
+                    <dt class="col-sm-5">{{ 'invoice.field.due_on'|trans({}, 'admin') }}</dt>
+                    <dd class="col-sm-7">{{ invoice.dueOn|date('d.m.Y') }}</dd>
+                {% endif %}
                 {% if invoice.hasInstallments %}
                     <dt class="col-sm-5">{{ 'invoice.show.installments'|trans({}, 'admin') }}</dt>
                     <dd class="col-sm-7">
@@ -32,7 +41,64 @@
                     <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}, {% with {course: enrollment.course} %}{% include 'admin/course/_title.html.twig' %}{% endwith %}</a>
                 </dd>
             </dl>
-            <p class="small text-body-secondary">{{ 'invoice.show.later'|trans({}, 'admin') }}</p>
+
+            {% if original.creditNotes is not empty %}
+                <h2 class="h6">{{ 'credit.show.list'|trans({}, 'admin') }}</h2>
+                <ul>
+                    {% for note in original.creditNotes %}
+                        <li><a href="{{ path('admin_invoice_show', {id: note.id}) }}">{{ note.displayNumber }}</a>, {{ note.issuedOn|date('d.m.Y') }}, {{ _self.euro(note.amountCents) }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if is_granted('INVOICE_CREDIT', invoice) %}
+                <a class="btn btn-outline-secondary btn-sm" href="{{ path('admin_invoice_credit', {id: invoice.id}) }}">{{ 'credit.new.title'|trans({}, 'admin') }}</a>
+            {% endif %}
+            <p class="small text-body-secondary mt-3">{{ 'invoice.show.later'|trans({}, 'admin') }}</p>
+        </div>
+
+        <div class="col-lg-6">
+            <h2 class="h5">{{ 'payment.heading'|trans({}, 'admin') }}</h2>
+            <dl class="row">
+                <dt class="col-7">{{ 'payment.owed'|trans({}, 'admin') }}</dt>
+                <dd class="col-5 text-end">{{ _self.euro(invoice.owedCents) }}</dd>
+                <dt class="col-7">{{ 'payment.paid'|trans({}, 'admin') }}</dt>
+                <dd class="col-5 text-end">{{ _self.euro(invoice.paidCents) }}</dd>
+                <dt class="col-7">{{ (invoice.openCents < 0 ? 'payment.refund_due' : 'payment.open')|trans({}, 'admin') }}</dt>
+                <dd class="col-5 text-end fw-bold">{{ _self.euro(invoice.openCents|abs) }}</dd>
+            </dl>
+
+            {% set payments = [original]|merge(original.creditNotes.values)|map(i => i.payments.values)|reduce((all, p) => all|merge(p), []) %}
+            {% if payments is not empty %}
+                <table class="table table-sm align-middle">
+                    <tbody>
+                        {% for payment in payments|sort((a, b) => a.paidOn <=> b.paidOn) %}
+                            <tr>
+                                <td>{{ payment.paidOn|date('d.m.Y') }}</td>
+                                <td>{{ payment.method.labelKey|trans({}, 'admin') }}{% if payment.invoice.creditNote %} ({{ payment.invoice.displayNumber }}){% endif %}</td>
+                                <td class="text-end text-nowrap">{{ _self.euro(payment.amountCents) }}</td>
+                                <td class="text-end">
+                                    <form method="post" action="{{ path('admin_payment_delete', {id: payment.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-payment-' ~ payment.id) }}">
+                                        <button class="btn btn-link btn-sm text-danger p-0" aria-label="{{ 'payment.delete'|trans({}, 'admin') }}">{{ 'payment.delete'|trans({}, 'admin') }}</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            {% if payment_form %}
+                <h3 class="h6 mt-4">{{ (invoice.openCents < 0 ? 'payment.new_refund' : 'payment.new')|trans({}, 'admin') }}</h3>
+                {{ form_start(payment_form) }}
+                    <div class="row">
+                        <div class="col-sm-6">{{ form_row(payment_form.amountCents) }}</div>
+                        <div class="col-sm-6">{{ form_row(payment_form.paidOn) }}</div>
+                    </div>
+                    {{ form_row(payment_form.method) }}
+                    <button type="submit" class="btn btn-primary">{{ (invoice.openCents < 0 ? 'payment.submit_refund' : 'payment.submit')|trans({}, 'admin') }}</button>
+                {{ form_end(payment_form) }}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

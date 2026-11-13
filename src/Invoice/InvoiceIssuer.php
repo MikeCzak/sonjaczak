@@ -43,7 +43,7 @@ final readonly class InvoiceIssuer
     {
         $problems = [];
 
-        if (!$enrollment->getInvoices()->isEmpty()) {
+        if ($enrollment->getInvoices()->exists(static fn (int $key, Invoice $invoice): bool => !$invoice->isCreditNote())) {
             $problems[] = 'invoice.problem.already_issued';
         }
         if (!$this->settings->current()->isSenderComplete()) {
@@ -94,16 +94,11 @@ final readonly class InvoiceIssuer
             throw new \LogicException('The invoice cannot be created, check problems() first.');
         }
 
-        $year = (int) $issuedOn->format('Y');
-
-        return $this->entityManager->wrapInTransaction(function () use ($enrollment, $draft, $recipient, $issuedOn, $dueOn, $year): Invoice {
-            // Released automatically at the end of the transaction (commit or rollback)
-            $this->entityManager->getConnection()->executeStatement('SELECT pg_advisory_xact_lock(?)', [self::NUMBER_LOCK]);
-
+        return $this->withNextNumber((int) $issuedOn->format('Y'), static function (int $year, int $number) use ($enrollment, $draft, $recipient, $issuedOn, $dueOn): Invoice {
             $invoice = new Invoice(
                 $enrollment,
                 $year,
-                $this->invoices->nextNumber($year),
+                $number,
                 $issuedOn,
                 $dueOn,
                 $draft->secondInstallmentDueOn,
@@ -111,8 +106,60 @@ final readonly class InvoiceIssuer
                 $draft->description,
                 $recipient,
             );
-            $this->entityManager->persist($invoice);
             $enrollment->getInvoices()->add($invoice);
+
+            return $invoice;
+        });
+    }
+
+    /**
+     * Creates and saves a credit note for an invoice: negative amount, own number, same recipient (datenmodell.md
+     * 3.7). It is due on the day it is issued; the refund is recorded as a negative payment on it.
+     *
+     * @throws \LogicException if the amount is not between 1 cent and what can still be credited
+     */
+    public function credit(Invoice $invoice, CreditDraft $draft): Invoice
+    {
+        $original = $invoice->getOriginal();
+        $issuedOn = $draft->issuedOn;
+        $cents = $draft->amountCents;
+        if (null === $issuedOn || null === $cents || $cents <= 0 || $cents > $original->getCreditableCents()) {
+            throw new \LogicException('Invalid credit amount.');
+        }
+
+        return $this->withNextNumber((int) $issuedOn->format('Y'), static function (int $year, int $number) use ($original, $draft, $issuedOn, $cents): Invoice {
+            $note = new Invoice(
+                $original->getEnrollment(),
+                $year,
+                $number,
+                $issuedOn,
+                $issuedOn,
+                null,
+                -$cents,
+                $draft->description,
+                $original->getRecipient(),
+                $original,
+            );
+            $original->getEnrollment()->getInvoices()->add($note);
+
+            return $note;
+        });
+    }
+
+    /**
+     * Runs $create with the next free number of the year inside a transaction that holds the lock for invoice
+     * numbers, persists the result and commits.
+     *
+     * @param callable(int, int): Invoice $create receives year and number
+     */
+    private function withNextNumber(int $year, callable $create): Invoice
+    {
+        return $this->entityManager->wrapInTransaction(function () use ($year, $create): Invoice {
+            // Released automatically at the end of the transaction (commit or rollback)
+            $this->entityManager->getConnection()->executeStatement('SELECT pg_advisory_xact_lock(?)', [self::NUMBER_LOCK]);
+
+            $invoice = $create($year, $this->invoices->nextNumber($year));
+            $this->entityManager->persist($invoice);
 
             return $invoice;
         });

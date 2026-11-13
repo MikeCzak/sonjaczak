@@ -7,6 +7,8 @@ namespace App\Tests\Story;
 use App\Entity\Embeddable\Address;
 use App\Entity\Embeddable\Recipient;
 use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\PaymentMethod;
+use App\Entity\Payment;
 use App\Entity\Settings;
 use App\Tests\Factory\CourseFactory;
 use App\Tests\Factory\EnrollmentFactory;
@@ -74,7 +76,7 @@ final class AppStory extends Story
         flush_after(static function () use ($adults, $course): void {
             $songs = ['Runaway', 'Flowers', 'Auf uns', 'Animal', 'Hallelujah', 'Skyfall', 'Valerie', 'Jolene'];
             $today = new \DateTimeImmutable('today');
-            $enrollments = [];
+            $enrollments = $invoices = [];
             foreach (array_slice($adults, 0, 6) as $i => $student) {
                 $enrollments[] = $enrollment = EnrollmentFactory::createOne([
                     'course' => $course,
@@ -93,10 +95,11 @@ final class AppStory extends Story
             $lessons[1]->setStatus(LessonStatus::CancelledByStudent)->setNote('krank');
             $lessons[2]->setStatus(LessonStatus::CancelledByTeacher)->setNote('Konzert');
 
-            // Invoices for the first two enrollments, one with instalments; the others still need one
+            // Invoices for the first two enrollments, one with instalments and the first one paid; the others still
+            // need one
             foreach (array_slice($enrollments, 0, 2) as $n => $enrollment) {
                 $student = $enrollment->getStudent() ?? throw new \LogicException('Enrollment without student');
-                InvoiceFactory::createOne([
+                $invoices[] = InvoiceFactory::createOne([
                     'enrollment' => $enrollment,
                     'number' => $n + 1,
                     'amountCents' => $enrollment->getPriceCents(),
@@ -104,6 +107,12 @@ final class AppStory extends Story
                     'recipient' => new Recipient($student->getFullName(), $student->getAddress()),
                 ]);
             }
+            persist(Payment::class, [
+                'invoice' => $invoices[0],
+                'amountCents' => $invoices[0]->getFirstInstallmentCents(),
+                'paidOn' => new \DateTimeImmutable('2026-10-12'),
+                'method' => PaymentMethod::Transfer,
+            ]);
         });
     }
 }

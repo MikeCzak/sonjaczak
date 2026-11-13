@@ -33,6 +33,7 @@ class Payment
         #[ORM\Column(length: 20, enumType: PaymentMethod::class)]
         private PaymentMethod $method,
     ) {
+        $invoice->getPayments()->add($this);
     }
 
     public function getId(): ?int

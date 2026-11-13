@@ -1,4 +1,4 @@
-# Honorarnoten erstellen (D1)
+# Honorarnoten, Zahlungen und Gutschriften (D1, D3)
 
 Plan: `docs/planung/datenmodell.md` 3.7 und 3.8. Seiten: `/admin/honorarnoten` (Liste je Jahr),
 `/admin/honorarnoten/{id}`, erstellen auf der Seite einer Teilnahme (`/admin/teilnahmen/{id}/honorarnote`).
@@ -82,10 +82,33 @@ gespeichert: erste Rate `intdiv(Betrag + 1, 2)`, zweite der Rest. Bei 495,01 €
 - `Enrollment::$invoices` ist die inverse Seite **ohne** `cascade`: anders als die Einheiten gehören Honorarnoten
   nicht so zur Teilnahme, dass sie mit ihr verschwinden dürften.
 
-## Zahlungen (Payment)
+## Zahlungen und Gutschriften (D3)
 
-Die Entity und ihre Tabelle gibt es schon. Erfasst werden Zahlungen erst in D3, zusammen mit dem Status
-(bezahlt/offen) und den Gutschriften.
+Dateien: `src/Invoice/PaymentDraft.php`, `src/Invoice/CreditDraft.php`, `src/Form/Admin/PaymentType.php`,
+`src/Form/Admin/CreditType.php`, `src/Security/Voter/InvoiceVoter.php`, `src/Entity/Enum/InvoiceStatus.php`,
+Migration `Version20261113100141` (Spalte `invoice.credits_id`), `tests/Admin/PaymentTest.php`.
+
+- **Zahlung erfassen:** Auf der Seite der Honorarnote steht ein Formular, vorbelegt mit dem offenen Betrag, heute und
+  „Überweisung“. „Ganz bezahlt, heute“ ist damit ein Klick; Betrag, Datum und Zahlungsart lassen sich ändern (z. B. die
+  erste Rate oder eine Zahlung vom 30.12., die erst im Jänner eingetragen wird). Nicht mehr als offen, kein Datum in
+  der Zukunft (das Datum entscheidet über das Jahr der Einnahme).
+- **Status berechnet** (`Invoice::getStatus()`): offen, teilweise bezahlt, bezahlt, Rückzahlung offen. Nicht
+  gespeichert, damit er nie veraltet (`datenmodell.md` 3.8). Die Liste lädt dafür die Zahlungen je Honorarnote nach;
+  bei einigen Dutzend Honorarnoten im Jahr ist das unerheblich.
+- **Gutschrift** (`InvoiceIssuer::credit()`): eigene Nummer aus derselben Nummernvergabe (gleicher Lock), negativer
+  Betrag, Empfänger von der ursprünglichen Honorarnote, Verweis `credits`. Höchstens der noch nicht gutgeschriebene
+  Betrag; zu einer Gutschrift gibt es keine weitere (`InvoiceVoter::CREDIT`, Gründe `credit.denied.*`). Fällig am
+  Ausstellungstag, ohne Raten (die Spalte `due_on` ist Pflicht und hat bei einer Gutschrift keine eigene Bedeutung).
+- **Ein Konto je Honorarnote mit ihren Gutschriften:** zu zahlen = Betrag + Gutschriften (negativ), bezahlt = Summe
+  aller Zahlungen der Gruppe. Damit gehen beide Fälle auf:
+  - Gutschrift **vor** der Zahlung (z. B. Krankheit vor Semesterbeginn): Es ist einfach weniger zu zahlen.
+  - Gutschrift **nach** der Zahlung: „Rückzahlung offen“. Die Rückzahlung wird als negative Zahlung an der Gutschrift
+    erfasst (`datenmodell.md` 3.7), so stimmt die Summe der Einnahmen eines Jahres nach `paidOn`.
+- **Zahlungen löschen** geht (Knopf in der Liste, ohne Rückfrage): Eine Zahlung ist Sonjas eigene Aufzeichnung, kein
+  Beleg; ein Tippfehler soll sich beheben lassen.
+- `Payment` und `Invoice` halten die inverse Seite selbst aktuell (`new Payment(...)` fügt sich in
+  `$invoice->getPayments()` ein, eine Gutschrift in `$original->getCreditNotes()`). So stimmt der Status auch im selben
+  Request, ohne Neuladen.
 
 ## Zum Durchsehen
 
@@ -98,3 +121,6 @@ Die Entity und ihre Tabelle gibt es schon. Erfasst werden Zahlungen erst in D3, 
    der Betrag der Honorarnote nicht versehentlich vom Preis der Teilnahme abweichen.
 4. **Leistungstext** „Gesangsunterricht im Wintersemester 2026/27“ ist vorbelegt und änderbar; das PDF (D2) setzt
    „Für den“ davor wie im Muster.
+5. **Gutschrift und Zahlung als ein Konto** (D3, siehe oben): eine Auslegung von `datenmodell.md` 3.7, bitte
+   bestätigen. Offen ist auch, ob Sonjas Steuerberatung Gutschriften so haben möchte (Antwort 8 im Datenmodell).
+6. **Zahlungen ohne Rückfrage löschbar** (D3).

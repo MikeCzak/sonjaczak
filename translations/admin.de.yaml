@@ -349,6 +349,12 @@ invoice:
         recipient: Empfänger:in
         amount: Betrag
         enrollment: Teilnahme
+        status: Status
+    status:
+        open: offen
+        partly_paid: teilweise bezahlt
+        paid: bezahlt
+        refund_due: Rückzahlung offen
     new:
         title: Honorarnote erstellen
         problems: 'Die Honorarnote kann noch nicht erstellt werden:'
@@ -368,7 +374,7 @@ invoice:
         title: Honorarnote %number%
         installments: Raten
         installment: '%n%. Rate: %amount% € bis %date%'
-        later: PDF und Zahlungen folgen in den nächsten Schritten.
+        later: Das PDF folgt in einem nächsten Schritt.
     index:
         title: Honorarnoten
         years: Jahre
@@ -376,3 +382,46 @@ invoice:
         hint: Honorarnoten werden auf der Seite einer Teilnahme erstellt.
     flash:
         created: Honorarnote erstellt.
+credit:
+    badge: Gutschrift
+    default_description: Gutschrift zu Honorarnote %number%
+    field:
+        amount: Betrag der Gutschrift
+        amount_help: Als positive Zahl eingeben; die Gutschrift wird mit negativem Betrag gespeichert.
+        description: Text
+    new:
+        title: Gutschrift erstellen
+        intro: Höchstens %max% € (Betrag der Honorarnote abzüglich bisheriger Gutschriften).
+        immutable: Die Gutschrift bekommt eine eigene Nummer und lässt sich danach nicht mehr ändern.
+        submit: Gutschrift erstellen
+    show:
+        title: Gutschrift %number%
+        credits: Zu
+        list: Gutschriften
+    denied:
+        is_credit_note: Zu einer Gutschrift gibt es keine weitere Gutschrift.
+        fully_credited: Der ganze Betrag ist bereits gutgeschrieben.
+    flash:
+        created: Gutschrift erstellt.
+payment:
+    heading: Zahlungen
+    owed: Zu zahlen (nach Gutschriften)
+    paid: Bezahlt
+    open: Offen
+    refund_due: Zurückzuzahlen
+    new: Zahlung erfassen
+    new_refund: Rückzahlung erfassen
+    submit: Zahlung speichern
+    submit_refund: Rückzahlung speichern
+    delete: löschen
+    field:
+        amount: Betrag
+        paid_on: Datum
+        method: Zahlungsart
+    method:
+        transfer: Überweisung
+        cash: bar
+    flash:
+        saved: Zahlung gespeichert.
+        refund_saved: Rückzahlung gespeichert.
+        deleted: Zahlung gelöscht.

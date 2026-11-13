@@ -50,8 +50,9 @@
         <div class="col-lg-5">
             <h2 class="h5">{{ 'invoice.heading'|trans({}, 'admin') }}</h2>
             {% for invoice in enrollment.invoices %}
-                <p><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ 'invoice.show.title'|trans({'%number%': invoice.displayNumber}, 'admin') }}</a>,
-                    {{ invoice.issuedOn|date('d.m.Y') }}, {{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €</p>
+                <p><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ (invoice.creditNote ? 'credit.show.title' : 'invoice.show.title')|trans({'%number%': invoice.displayNumber}, 'admin') }}</a>,
+                    {{ invoice.issuedOn|date('d.m.Y') }}, {{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €
+                    {% if not invoice.creditNote %}{{ include('admin/invoice/_status.html.twig') }}{% endif %}</p>
             {% else %}
                 <p><a class="btn btn-outline-primary btn-sm" href="{{ path('admin_invoice_new', {id: enrollment.id}) }}">{{ 'invoice.new.title'|trans({}, 'admin') }}</a></p>
             {% endfor %}

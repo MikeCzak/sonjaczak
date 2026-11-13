@@ -149,6 +149,9 @@ Erst danach werden Features gebaut.
      Oberfläche (folgt in D3). Teilnahmen mit Honorarnote sind nicht löschbar. Erklärung:
      `docs/erklaerungen/13-honorarnoten.md` (mit Punkten zum Durchsehen).
    - [ ] D2 PDF: wartet auf die Entscheidung zur PDF-Bibliothek.
+   - [x] D3 (2026-11-13): Zahlungen (Formular mit Restbetrag und heute vorbelegt, Datum änderbar, nicht in der Zukunft),
+     Status berechnet, Gutschriften mit eigener Nummer (`credits`, `InvoiceVoter::CREDIT`), Rückzahlung als negative
+     Zahlung. Honorarnote und Gutschriften als ein Konto: zum Durchsehen in `erklaerungen/13`.
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
    - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas

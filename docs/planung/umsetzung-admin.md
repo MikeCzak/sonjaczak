@@ -116,7 +116,7 @@ Fortschritt wird im Projektstand abgehakt.
 - PDF beim Erstellen erzeugen und in `invoice_pdf` ablegen, Dateiname nach Schema, Download einzeln und als ZIP je
   Kurs mit Hinweis auf fehlende Honorarnoten.
 
-**D3 Zahlungen und Gutschriften**
+**D3 Zahlungen und Gutschriften** – erledigt 2026-11-13
 
 - Zahlung erfassen (ein Klick für den Rest, Datum änderbar), Status berechnet, Gutschrift mit `credits` und
   `InvoiceVoter::CREDIT`.

@@ -28,3 +28,7 @@ settings:
 invoice:
     due_before_issue: Das Zahlungsziel liegt vor dem Ausstellungsdatum.
     second_before_first: Die 2. Rate muss nach der ersten fällig sein.
+    credit_too_high: Die Gutschrift ist höher als der noch nicht gutgeschriebene Betrag.
+payment:
+    too_high: Der Betrag ist höher als der offene Betrag.
+    in_future: Das Datum liegt in der Zukunft.
