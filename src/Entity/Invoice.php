@@ -49,6 +49,13 @@ class Invoice
     private Collection $creditNotes;
 
     /**
+     * The deadline Sonja was last reminded of (App\Command\RemindOverdueInvoicesCommand), so that each deadline
+     * leads to exactly one reminder mail. Technical bookkeeping, not part of the receipt: the only value that changes.
+     */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $remindedFor = null;
+
+    /**
      * @param int $year   year of issuedOn; with $number the invoice number "16/2026"
      * @param int $number consecutive within the year, starting at 1
      */
@@ -249,5 +256,51 @@ class Invoice
             $this->getPaidCents() > 0 => InvoiceStatus::PartlyPaid,
             default => InvoiceStatus::Open,
         };
+    }
+
+    /**
+     * The latest deadline before $today that is not met, or null (datenmodell.md 3.7): with instalments at least the
+     * first instalment by dueOn and everything by the second date, otherwise everything by dueOn. Credit notes have
+     * no deadline.
+     */
+    public function getMissedDeadline(\DateTimeImmutable $today): ?\DateTimeImmutable
+    {
+        if ($this->isCreditNote()) {
+            return null;
+        }
+
+        $owed = $this->getOwedCents();
+        $deadlines = null === $this->secondInstallmentDueOn
+            ? [[$this->dueOn, $owed]]
+            : [[$this->dueOn, min($this->getFirstInstallmentCents(), $owed)], [$this->secondInstallmentDueOn, $owed]];
+
+        $missed = null;
+        foreach ($deadlines as [$deadline, $required]) {
+            if ($deadline < $today && $this->getPaidCents() < $required) {
+                $missed = $deadline;
+            }
+        }
+
+        return $missed;
+    }
+
+    /**
+     * Whether Sonja has to be reminded today: a deadline is missed that she was not reminded of yet.
+     */
+    public function needsReminder(\DateTimeImmutable $today): bool
+    {
+        $missed = $this->getMissedDeadline($today);
+
+        return null !== $missed && (null === $this->remindedFor || $this->remindedFor < $missed);
+    }
+
+    public function getRemindedFor(): ?\DateTimeImmutable
+    {
+        return $this->remindedFor;
+    }
+
+    public function markReminded(\DateTimeImmutable $deadline): void
+    {
+        $this->remindedFor = $deadline;
     }
 }

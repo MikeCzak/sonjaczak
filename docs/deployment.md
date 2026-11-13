@@ -167,6 +167,26 @@ Das zweite Konto (Sonja, `ROLE_ADMIN`) kann stattdessen später in der Benutzerv
 setzt Sonja ihr Passwort selbst über den Einladungslink. Danach im Browser `https://sonjaczak.com/admin` öffnen und
 anmelden. Hintergrund: `docs/erklaerungen/08-login-und-sessions.md`.
 
+### B8. Erinnerung an überfällige Honorarnoten (auf dem Server) – **noch nicht eingerichtet, wartet auf Freigabe**
+
+Der Befehl `app:invoices:remind-overdue` (Schritt D4) schickt Sonja eine Mail an `music@sonjaczak.com`
+(`app.contact_email`) mit allen Honorarnoten, deren Frist seit dem letzten Lauf überschritten ist; je Frist nur
+einmal. Vorschlag für den Eintrag in der crontab von root (wie B6), täglich um 07:30:
+
+```
+# Overdue invoices: one mail to Sonja with all newly overdue invoices (docs/erklaerungen/13-honorarnoten.md)
+30 7 * * * docker exec sonjaczak-php-1 bin/console app:invoices:remind-overdue --no-interaction > /dev/null
+```
+
+- Vorher einmal von Hand ohne Wirkung prüfen: `docker exec sonjaczak-php-1 bin/console app:invoices:remind-overdue --dry-run`
+  (zeigt nur die Anzahl, verschickt und ändert nichts).
+- Die Ausgabe nennt nur die Anzahl, keine Namen. `> /dev/null` verwirft die Erfolgsmeldung; Fehler (stderr) bleiben
+  sichtbar im Journal (`journalctl -u cron`).
+- Die Links in der Mail entstehen aus `DEFAULT_URI` (`compose.yaml`: `https://${SERVER_NAME}:443`); lokal mit diesem
+  Wert geprüft, der Port fällt im Link weg (`https://sonjaczak.com/admin/honorarnoten/2`).
+- cron nimmt die Zeitzone des Servers; vor dem Eintragen mit `timedatectl` nachsehen (bei UTC ist 07:30 in Wien 08:30
+  bzw. 09:30). Ob etwas überfällig ist, rechnet PHP ohnehin in `Europe/Vienna`.
+
 ### B5. SSH-Key für GitHub Actions
 
 ```bash

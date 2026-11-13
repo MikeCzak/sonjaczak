@@ -135,8 +135,9 @@ Erstellt am 2026-11-12 mit fonttools 4.68.0, brotli 1.2.1, uharfbuzz 0.57.0.
 
 ## Themes und Slider
 
-- **Aktives Theme:** Parameter `app.theme` in `config/services.yaml` (Werte aus `App\Theme\Theme`: `classic`,
-  `modern`, `stage`). Der Server setzt es als `data-theme` auf `<html>`. Später stellt Sonja es im Admin-Bereich ein.
+- **Aktives Theme:** in den Einstellungen des Admin-Bereichs (`/admin/einstellungen`, Tabelle `settings`; Werte aus
+  `App\Theme\Theme`: `classic`, `modern`, `stage`). Ohne gespeicherte Einstellungen gilt `classic`. Der Server setzt
+  es als `data-theme` auf `<html>`.
 - **Vorschau:** `?theme=modern` oder `?theme=stage` an eine beliebige URL hängen. Gilt nur für diese eine Seite, der
   Browser speichert nichts. `https://localhost/_design` zeigt Schrift, Farben mit Kontrastwerten und Bedienelemente
   je Theme (nicht verlinkt, `noindex`, auch in Produktion erreichbar).
@@ -179,8 +180,17 @@ docker compose exec php bin/console app:user:create mike@example.com --super-adm
 `foundry:load-fixtures` löscht die lokale Datenbank, also auch dieses Konto. Die Story legt deshalb eigene Testkonten
 an: `mike@example.com` (Super-Admin) und `sonja@example.com` (Admin), beide mit dem Passwort aus
 `UserFactory::PASSWORD` (`tests/Factory/UserFactory.php`). Dazu 20 erfundene Schüler:innen, davon 8 minderjährig mit
-Elternteil (zwei Geschwister mit gemeinsamem Elternteil). Erklärung zu Login und Sessions:
-`docs/erklaerungen/08-login-und-sessions.md`.
+Elternteil (zwei Geschwister mit gemeinsamem Elternteil), ein Kurs mit sechs Teilnahmen, zwei Schnupperstunden,
+erfundene Absenderdaten in den Einstellungen und zwei Honorarnoten (eine mit bezahlter erster Rate). Erklärung zu
+Login und Sessions: `docs/erklaerungen/08-login-und-sessions.md`.
+
+**Erinnerung an überfällige Honorarnoten** lokal ansehen: Der Befehl schickt an Mailpit (http://127.0.0.1:8025),
+nicht an echte Adressen:
+
+```bash
+docker compose exec php bin/console app:invoices:remind-overdue --dry-run   # nur zählen
+docker compose exec php bin/console app:invoices:remind-overdue             # Mail an Mailpit, je Frist einmal
+```
 
 ## Zeitzone
 

@@ -121,7 +121,7 @@ Fortschritt wird im Projektstand abgehakt.
 - Zahlung erfassen (ein Klick für den Rest, Datum änderbar), Status berechnet, Gutschrift mit `credits` und
   `InvoiceVoter::CREDIT`.
 
-**D4 Erinnerung bei überschrittener Frist**
+**D4 Erinnerung bei überschrittener Frist** – Befehl erledigt 2026-11-13, Cronjob wartet (`deployment.md` B8)
 
 - Befehl `app:invoices:remind-overdue` mit `remindedFor`, Tests mit festgelegtem Datum (`ClockInterface`/`MockClock`,
   damit Tests nicht vom heutigen Tag abhängen). Danach Cronjob am Server (nach Rückfrage, `deployment.md`).

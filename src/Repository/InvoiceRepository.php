@@ -70,4 +70,25 @@ class InvoiceRepository extends ServiceEntityRepository
 
         return array_map(intval(...), $years);
     }
+
+    /**
+     * All invoices that are not credit notes, with payments and credit notes, for the reminder check. Filtering by
+     * "open" happens in PHP (Invoice::getMissedDeadline()), the status is not stored.
+     *
+     * @return list<Invoice>
+     */
+    public function findOriginalsWithPayments(): array
+    {
+        /** @var list<Invoice> */
+        return $this->createQueryBuilder('i')
+            ->addSelect('p', 'n', 'np')
+            ->leftJoin('i.payments', 'p')
+            ->leftJoin('i.creditNotes', 'n')
+            ->leftJoin('n.payments', 'np')
+            ->where('i.credits IS NULL')
+            ->orderBy('i.year')
+            ->addOrderBy('i.number')
+            ->getQuery()
+            ->getResult();
+    }
 }

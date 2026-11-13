@@ -1,4 +1,4 @@
-# Honorarnoten, Zahlungen und Gutschriften (D1, D3)
+# Honorarnoten, Zahlungen, Gutschriften und Erinnerungen (D1, D3, D4)
 
 Plan: `docs/planung/datenmodell.md` 3.7 und 3.8. Seiten: `/admin/honorarnoten` (Liste je Jahr),
 `/admin/honorarnoten/{id}`, erstellen auf der Seite einer Teilnahme (`/admin/teilnahmen/{id}/honorarnote`).
@@ -110,6 +110,31 @@ Migration `Version20261113100141` (Spalte `invoice.credits_id`), `tests/Admin/Pa
   `$invoice->getPayments()` ein, eine Gutschrift in `$original->getCreditNotes()`). So stimmt der Status auch im selben
   Request, ohne Neuladen.
 
+## Erinnerung bei überschrittener Frist (D4)
+
+Dateien: `src/Command/RemindOverdueInvoicesCommand.php`, `templates/email/invoice/overdue.txt.twig`, Migration
+`Version20261113100635` (Spalte `invoice.reminded_for`), `tests/Command/RemindOverdueInvoicesCommandTest.php`.
+
+- **Fristen** (`Invoice::getMissedDeadline()`): mit Raten bis `dueOn` mindestens die erste Rate (höchstens das nach
+  Gutschriften Geschuldete), bis zum zweiten Datum alles; ohne Raten alles bis `dueOn`. Überfällig erst **nach** dem
+  Tag der Frist. Gutschriften haben keine Frist.
+- **Eine Mail je Frist:** `remindedFor` speichert die Frist der letzten Erinnerung. Erinnert wird nur, wenn die
+  verpasste Frist später liegt. `remindedFor` ist die einzige Spalte der Honorarnote, die sich ändert
+  (`markReminded()`); sie gehört nicht zum Beleg, sondern zur Buchhaltung der App.
+- **Erst senden, dann merken:** Scheitert der Versand, bleibt `remindedFor` unverändert und der nächste Lauf versucht
+  es wieder.
+- **Uhr:** Der Befehl fragt `Psr\Clock\ClockInterface` nach „heute“ statt `new \DateTimeImmutable()`. In Tests setzt
+  `ClockSensitiveTrait::mockTime()` die Uhr fest (`symfony/clock`, jetzt direkt in `composer.json`, Version 8.1.9
+  unverändert). Der Dienst `clock` fragt die globale Uhr, die `mockTime()` ersetzt
+  (`vendor/symfony/clock/Clock.php`, `now()`).
+- **Fallstrick PHPStan:** Eine Hilfsmethode im Test, die bei jedem Aufruf etwas anderes liefert, braucht
+  `@phpstan-impure`; sonst nimmt PHPStan an, dass sie dasselbe liefert, und meldet `assertSame(1, …)` nach
+  `assertSame(0, …)` als „always false“.
+- **Datenschutz:** Die Mail an Sonja enthält Nummer, Name und Betrag (sie braucht sie). Die Ausgabe des Befehls (Cron,
+  Log) nennt nur die Anzahl.
+- **Am Server:** Cronjob in `docs/deployment.md` B8 vorbereitet, **nicht eingerichtet** (Änderung am Server, wartet
+  auf Freigabe).
+
 ## Zum Durchsehen
 
 1. **Advisory Lock statt Wiederholung** bei der Nummernvergabe (siehe oben): Abweichung vom Datenmodell, bitte
@@ -124,3 +149,5 @@ Migration `Version20261113100141` (Spalte `invoice.credits_id`), `tests/Admin/Pa
 5. **Gutschrift und Zahlung als ein Konto** (D3, siehe oben): eine Auslegung von `datenmodell.md` 3.7, bitte
    bestätigen. Offen ist auch, ob Sonjas Steuerberatung Gutschriften so haben möchte (Antwort 8 im Datenmodell).
 6. **Zahlungen ohne Rückfrage löschbar** (D3).
+7. **Empfänger der Erinnerung** ist `music@sonjaczak.com` (dieselbe Adresse wie die Anfragen). Eine eigene Einstellung
+   dafür wäre leicht ergänzt.

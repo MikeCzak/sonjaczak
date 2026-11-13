@@ -152,6 +152,10 @@ Erst danach werden Features gebaut.
    - [x] D3 (2026-11-13): Zahlungen (Formular mit Restbetrag und heute vorbelegt, Datum änderbar, nicht in der Zukunft),
      Status berechnet, Gutschriften mit eigener Nummer (`credits`, `InvoiceVoter::CREDIT`), Rückzahlung als negative
      Zahlung. Honorarnote und Gutschriften als ein Konto: zum Durchsehen in `erklaerungen/13`.
+   - [x] D4 (2026-11-13): Befehl `app:invoices:remind-overdue` (eine Mail an `music@` je neu verpasster Frist,
+     `remindedFor`, `--dry-run`), Tests mit `MockClock`; `symfony/clock` direkt in `composer.json`. Lokal über Mailpit
+     geprüft.
+   - [ ] D4 Cronjob am Server (`deployment.md` B8) – **wartet auf Mikes Freigabe** (Aktion am Server)
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
    - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas

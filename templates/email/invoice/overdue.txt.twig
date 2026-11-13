@@ -1,0 +1,14 @@
+{# Plain text mail to Sonja (App\Command\RemindOverdueInvoicesCommand); .txt.twig is not HTML-escaped #}
+{{ 'reminder.intro'|trans({'%count%': invoices|length}, 'admin') }}
+
+{% for invoice in invoices %}
+{{ 'reminder.line'|trans({
+    '%number%': invoice.displayNumber,
+    '%name%': invoice.recipient.name,
+    '%open%': (invoice.openCents / 100)|number_format(2, ',', '.'),
+    '%date%': invoice.missedDeadline(today)|date('d.m.Y'),
+}, 'admin') }}
+{{ url('admin_invoice_show', {id: invoice.id}) }}
+
+{% endfor %}
+{{ 'reminder.outro'|trans({}, 'admin') }}
