@@ -33,4 +33,23 @@ class TrialLessonRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Trial lessons between two points in time, with student, in time order.
+     *
+     * @return list<TrialLesson>
+     */
+    public function findBetween(\DateTimeImmutable $from, \DateTimeImmutable $until): array
+    {
+        /** @var list<TrialLesson> */
+        return $this->createQueryBuilder('t')
+            ->addSelect('s')
+            ->join('t.student', 's')
+            ->where('t.startsAt >= :from AND t.startsAt < :until')
+            ->setParameter('from', $from)
+            ->setParameter('until', $until)
+            ->orderBy('t.startsAt')
+            ->getQuery()
+            ->getResult();
+    }
 }

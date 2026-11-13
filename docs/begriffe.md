@@ -339,3 +339,9 @@ für die Nummernvergabe der Honorarnoten und (durch Symfony) für Sessions.
 
 **Constructor Property Promotion** – PHP-Schreibweise, bei der Konstruktor-Parameter mit `private` zugleich
 Eigenschaften sind. Doctrine-Attribute können direkt daran stehen (`Invoice`, `Payment`).
+
+**N+1-Problem** – Eine Abfrage lädt N Objekte, danach löst jeder Zugriff auf eine Beziehung eine weitere Abfrage aus:
+N+1 Abfragen statt einer. Abhilfe in Doctrine: Fetch Join (`join` + `addSelect`).
+
+**Fetch Join** – Join in DQL, dessen Tabelle mit `addSelect` auch geladen wird, sodass die Beziehung danach ohne
+weitere Abfrage gefüllt ist. Nicht auf der verbundenen Seite filtern, sonst bleibt die Sammlung unvollständig.

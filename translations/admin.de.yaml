@@ -27,7 +27,23 @@ login:
     forgot: Passwort vergessen?
 dashboard:
     title: Übersicht
-    welcome: Willkommen in der Verwaltung. Hier entstehen nach und nach Kurse, Schüler:innen und Honorarnoten.
+    upcoming:
+        heading: Nächste %days% Tage
+        empty: Keine Einheiten geplant.
+        trial: Schnupperstunde
+    invoices:
+        heading: Offene Honorarnoten
+        empty: Alle Honorarnoten sind bezahlt.
+        overdue: überfällig seit %date%
+        without: '{1}Eine Teilnahme in laufenden Kursen hat noch keine Honorarnote.|]1,Inf[%count% Teilnahmen in laufenden Kursen haben noch keine Honorarnote.'
+    income:
+        heading: Einnahmen %year% je Kurs
+    course:
+        student: Schüler:in
+        last: Zuletzt gehalten
+        held: gehalten
+        cancelled: ausgefallen
+        none: Gerade läuft kein Kurs.
 account:
     title: Mein Konto
     email: Angemeldet als

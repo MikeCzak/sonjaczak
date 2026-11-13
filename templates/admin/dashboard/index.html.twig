@@ -1,8 +1,128 @@
 {% extends 'admin/base.html.twig' %}
 
+{% macro euro(cents) %}{{ (cents / 100)|number_format(2, ',', '.') }} €{% endmacro %}
+{% macro when(date) %}{{ ('weekday_short.' ~ date|date('N'))|trans({}, 'admin') }} {{ date|date('d.m. H:i') }}{% endmacro %}
 {% block title %}{{ 'dashboard.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block body %}
-    <h1 class="h3">{{ 'dashboard.title'|trans({}, 'admin') }}</h1>
-    <p>{{ 'dashboard.welcome'|trans({}, 'admin') }}</p>
+    <h1 class="h3 mb-4">{{ 'dashboard.title'|trans({}, 'admin') }}</h1>
+
+    <div class="row g-4">
+        <section class="col-lg-5" aria-labelledby="dashboard-upcoming">
+            <h2 class="h5" id="dashboard-upcoming">{{ 'dashboard.upcoming.heading'|trans({'%days%': upcoming_days}, 'admin') }}</h2>
+            {% if upcoming is empty %}
+                <p class="text-body-secondary">{{ 'dashboard.upcoming.empty'|trans({}, 'admin') }}</p>
+            {% else %}
+                <ul class="list-group">
+                    {% for item in upcoming %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                            <span>
+                                <span class="text-nowrap">{{ _self.when(item.startsAt) }}</span>
+                                {% if item.lesson %}
+                                    <a href="{{ path('admin_lesson_edit', {id: item.lesson.id}) }}">{{ item.student.fullName }}</a>
+                                {% else %}
+                                    <a href="{{ path('admin_trial_edit', {id: item.trial.id}) }}">{{ item.student.fullName }}</a>
+                                {% endif %}
+                            </span>
+                            {% if item.trial %}<span class="badge text-bg-info">{{ 'dashboard.upcoming.trial'|trans({}, 'admin') }}</span>{% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+
+        <section class="col-lg-7" aria-labelledby="dashboard-invoices">
+            <h2 class="h5" id="dashboard-invoices">{{ 'dashboard.invoices.heading'|trans({}, 'admin') }}</h2>
+            {% if open_invoices is empty %}
+                <p class="text-body-secondary">{{ 'dashboard.invoices.empty'|trans({}, 'admin') }}</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <tbody>
+                            {% for item in open_invoices %}
+                                {% set invoice = item.invoice %}
+                                <tr>
+                                    <td><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ invoice.displayNumber }}</a></td>
+                                    <td>{{ invoice.recipient.name }}</td>
+                                    <td class="text-end text-nowrap">{{ _self.euro(invoice.openCents|abs) }}</td>
+                                    <td>
+                                        {% if item.missed %}
+                                            <span class="badge text-bg-danger">{{ 'dashboard.invoices.overdue'|trans({'%date%': item.missed|date('d.m.Y')}, 'admin') }}</span>
+                                        {% else %}
+                                            {{ include('admin/invoice/_status.html.twig') }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+            {% if without_invoice > 0 %}
+                <p class="small">{{ 'dashboard.invoices.without'|trans({'%count%': without_invoice}, 'admin') }}</p>
+            {% endif %}
+
+            <h2 class="h5 mt-4">{{ 'dashboard.income.heading'|trans({'%year%': year}, 'admin') }}</h2>
+            <table class="table table-sm">
+                <tbody>
+                    {% for item in income %}
+                        <tr>
+                            <td>{% with {course: item.course} %}{% include 'admin/course/_title.html.twig' %}{% endwith %}</td>
+                            <td class="text-end text-nowrap">{{ _self.euro(item.cents) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="row"><a href="{{ path('admin_income_index', {jahr: year}) }}">{{ 'income.total'|trans({}, 'admin') }}</a></th>
+                        <td class="text-end text-nowrap fw-bold">{{ _self.euro(income_total) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+    </div>
+
+    {% for item in running %}
+        {% set course = item.course %}
+        <section class="mt-4" aria-labelledby="dashboard-course-{{ course.id }}">
+            <h2 class="h5" id="dashboard-course-{{ course.id }}"><a href="{{ path('admin_course_edit', {id: course.id}) }}">{% include 'admin/course/_title.html.twig' %}</a></h2>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'dashboard.course.student'|trans({}, 'admin') }}</th>
+                            <th scope="col">{{ 'dashboard.course.last'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-end">{{ 'dashboard.course.held'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-end">{{ 'dashboard.course.cancelled'|trans({}, 'admin') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in item.rows %}
+                            <tr>
+                                <td><a href="{{ path('admin_enrollment_show', {id: row.enrollment.id}) }}">{{ row.enrollment.student.fullName }}</a></td>
+                                <td>
+                                    {% if row.last %}
+                                        <span class="text-nowrap">{{ row.last.startsAt|date('d.m.') }}</span> {{ row.last.note }}
+                                    {% else %}
+                                        <span class="text-body-secondary">–</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">{{ row.held }}</td>
+                                <td class="text-end">
+                                    {{ row.cancelled }}
+                                    {% if row.make_up_due > 0 %}
+                                        <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': row.make_up_due}, 'admin') }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="4" class="text-body-secondary">{{ 'enrollment.empty'|trans({}, 'admin') }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% else %}
+        <p class="mt-4 text-body-secondary">{{ 'dashboard.course.none'|trans({}, 'admin') }}</p>
+    {% endfor %}
 {% endblock %}

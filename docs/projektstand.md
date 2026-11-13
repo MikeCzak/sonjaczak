@@ -158,6 +158,9 @@ Erst danach werden Features gebaut.
    - [x] D5 (2026-11-13): Einnahmen je Jahr nach Zahlungsdatum (`/admin/einnahmen`) und als CSV für Excel (Semikolon,
      Dezimalkomma, UTF-8 mit BOM, Schutz vor Formeln). § 19 Abs. 1 EStG im RIS nachgelesen; die Ausnahme für
      regelmäßig wiederkehrende Einnahmen (Z 1) mit der Steuerberatung klären. Mit Sonjas Excel noch prüfen.
+   - [x] E (2026-11-13): Dashboard `/admin`: nächste 7 Tage (Einheiten und Schnupperstunden), offene Honorarnoten mit
+     Überfälligkeit, Teilnahmen ohne Honorarnote, Einnahmen des Jahres je Kurs, je laufendem Kurs die zuletzt gehaltene
+     Einheit mit Inhalt. Erklärung: `docs/erklaerungen/14-dashboard.md`.
    - [ ] D4 Cronjob am Server (`deployment.md` B8) – **wartet auf Mikes Freigabe** (Aktion am Server)
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.

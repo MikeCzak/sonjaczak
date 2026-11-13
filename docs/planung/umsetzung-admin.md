@@ -130,7 +130,7 @@ Fortschritt wird im Projektstand abgehakt.
 
 - CSV je Jahr nach `Payment.paidOn` (Semikolon, Dezimalkomma, UTF-8 mit BOM). Mit Sonjas Excel prüfen.
 
-## E. Dashboard
+## E. Dashboard – erledigt 2026-11-13
 
 - Nächste Einheiten (inkl. Schnupperstunden), zuletzt gehaltene Einheit je Schüler:in mit Inhalt, Ausfälle, offene
   Honorarnoten, Einnahmen je Kurs und Jahr.
