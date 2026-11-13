@@ -181,6 +181,7 @@ course:
     delete:
         label: Kurs löschen
         confirm: Der Kurs und seine Ferien werden endgültig gelöscht.
+        has_enrollments: Ein Kurs mit Teilnahmen kann nicht gelöscht werden.
     flash:
         saved: Gespeichert.
         deleted: Gelöscht.
@@ -202,4 +203,78 @@ course_break:
         deleted: Gelöscht.
         imported: Schulferien und Feiertage sind eingetragen. Bitte prüfen und schulautonome Tage ergänzen.
         import_none: Keine neuen Ferien oder Feiertage gefunden.
+        conflicts: In den neuen Ferien liegen bereits gehaltene oder abgesagte Einheiten. Sie bleiben stehen, bitte prüfen.
         import_failed: Die Ferien konnten nicht abgerufen werden (Dienst nicht erreichbar). Bitte selbst eintragen oder später noch einmal vorschlagen lassen.
+weekday:
+    1: Montag
+    2: Dienstag
+    3: Mittwoch
+    4: Donnerstag
+    5: Freitag
+    6: Samstag
+    7: Sonntag
+weekday_short:
+    1: Mo
+    2: Di
+    3: Mi
+    4: Do
+    5: Fr
+    6: Sa
+    7: So
+enrollment:
+    heading: Teilnahmen
+    empty: Noch niemand eingetragen.
+    count: '%counted% von %planned%'
+    make_up_due: '{1}1 Nachholstunde fällig|]1,Inf[%count% Nachholstunden fällig'
+    billing:
+        semester: Semesterpreis (gesamt oder in zwei Raten)
+    field:
+        student: Schüler:in
+        slot: Termin
+        lessons: Einheiten
+        weekday: Wochentag
+        start_time: Uhrzeit
+        lesson_minutes: Minuten pro Einheit
+        price: Preis
+        price_help: Vom Kurs übernommen, z. B. für Ermäßigungen änderbar.
+        billing: Abrechnung
+        bill_to_guardian: Honorarnote an den Elternteil
+        bill_to_guardian_help: Vorbelegt, wenn ein Elternteil eingetragen und die Person bei Kursbeginn minderjährig ist.
+    new:
+        title: Teilnahme hinzufügen
+        next: Weiter
+        no_students: Alle Schüler:innen sind schon eingetragen, oder es gibt noch keine.
+        intro: Nach dem Speichern werden bis zu %count% Einheiten im gewählten Wochentermin geplant, ohne Ferien.
+        submit: Teilnahme anlegen
+    edit:
+        heading: Teilnahme
+        slot_hint: Der Wochentermin ist fest. Einzelne Einheiten lassen sich in der Liste verschieben.
+    delete:
+        label: Teilnahme löschen
+        confirm: Die Teilnahme und alle ihre Einheiten werden endgültig gelöscht.
+    flash:
+        created: Teilnahme angelegt, Einheiten sind geplant.
+        saved: Gespeichert.
+        deleted: Gelöscht.
+lesson:
+    heading: Einheiten
+    status:
+        planned: geplant
+        held: gehalten
+        cancelled_by_student: abgesagt (Schüler:in)
+        cancelled_by_teacher: abgesagt (ich)
+    field:
+        status: Status
+        note: Notiz
+        note_help: Inhalt der Stunde oder Grund der Absage.
+        starts_at: Beginn
+        duration: Dauer in Minuten
+        make_up_for: Nachholstunde für die Einheit vom
+    make_up_for: 'Nachholstunde für %date%'
+    from_trial: Schnupperstunde
+    make_up_new: Nachholstunde eintragen
+    edit:
+        title: Einheit
+    flash:
+        saved: Gespeichert.
+        make_up_created: Nachholstunde eingetragen.

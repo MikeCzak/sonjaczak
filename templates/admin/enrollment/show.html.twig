@@ -1,0 +1,68 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set course = enrollment.course %}
+{% set course_title %}{% include 'admin/course/_title.html.twig' %}{% endset %}
+{% block title %}{{ enrollment.student.fullName }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_course_edit', {id: course.id}) }}">{{ course_title }}</a></p>
+    <h1 class="h3 mb-3">
+        <a href="{{ path('admin_student_edit', {id: enrollment.student.id}) }}">{{ enrollment.student.fullName }}</a>,
+        {{ ('weekday.' ~ enrollment.weekday)|trans({}, 'admin') }} {{ enrollment.startTime|date('H:i') }}
+    </h1>
+
+    <p>
+        {{ 'enrollment.count'|trans({'%counted%': enrollment.countedLessons, '%planned%': course.plannedLessons}, 'admin') }}
+        {% if make_up_due > 0 %}
+            <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_up_due}, 'admin') }}</span>
+        {% endif %}
+    </p>
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <h2 class="h5">{{ 'lesson.heading'|trans({}, 'admin') }}</h2>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <tbody>
+                        {% for lesson in enrollment.lessons %}
+                            <tr>
+                                <td class="text-nowrap"><a href="{{ path('admin_lesson_edit', {id: lesson.id}) }}">{{ ('weekday_short.' ~ lesson.startsAt|date('N'))|trans({}, 'admin') }} {{ lesson.startsAt|date('d.m.Y H:i') }}</a></td>
+                                <td>{{ lesson.status.labelKey|trans({}, 'admin') }}</td>
+                                <td>
+                                    {{ lesson.note }}
+                                    {% if lesson.makeUpFor %}
+                                        <span class="badge text-bg-light">{{ 'lesson.make_up_for'|trans({'%date%': lesson.makeUpFor.startsAt|date('d.m.Y')}, 'admin') }}</span>
+                                    {% endif %}
+                                    {% if lesson.fromTrial %}
+                                        <span class="badge text-bg-light">{{ 'lesson.from_trial'|trans({}, 'admin') }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if can_make_up %}
+                <a class="btn btn-outline-primary btn-sm" href="{{ path('admin_enrollment_make_up', {id: enrollment.id}) }}">{{ 'lesson.make_up_new'|trans({}, 'admin') }}</a>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-5">
+            <h2 class="h5">{{ 'enrollment.edit.heading'|trans({}, 'admin') }}</h2>
+            <p class="small text-body-secondary">{{ 'enrollment.edit.slot_hint'|trans({}, 'admin') }}</p>
+            {{ form_start(form) }}
+                {{ include('admin/enrollment/_fields.html.twig') }}
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% if is_granted('ENROLLMENT_DELETE', enrollment) %}
+        {{ include('admin/_delete.html.twig', {
+            action: path('admin_enrollment_delete', {id: enrollment.id}),
+            token_id: 'delete-enrollment-' ~ enrollment.id,
+            label: 'enrollment.delete.label',
+            confirm: 'enrollment.delete.confirm',
+        }) }}
+    {% endif %}
+{% endblock %}

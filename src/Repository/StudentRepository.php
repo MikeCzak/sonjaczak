@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Course;
+use App\Entity\Enrollment;
 use App\Entity\Student;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -42,5 +44,27 @@ class StudentRepository extends ServiceEntityRepository
 
         /** @var list<Student> */
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Students who are not enrolled in the course yet, for choosing a new enrollment.
+     *
+     * @return list<Student>
+     */
+    public function notEnrolledIn(Course $course): array
+    {
+        $enrolled = $this->getEntityManager()->createQueryBuilder()
+            ->select('IDENTITY(e.student)')
+            ->from(Enrollment::class, 'e')
+            ->where('e.course = :course');
+
+        /** @var list<Student> */
+        return $this->createQueryBuilder('s')
+            ->where('s.id NOT IN ('.$enrolled->getDQL().')')
+            ->setParameter('course', $course)
+            ->orderBy('s.lastName')
+            ->addOrderBy('s.firstName')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -301,6 +301,9 @@ der Datenbank (anders als `ON DELETE CASCADE`).
 **Scoped HTTP-Client** – In `framework.yaml` vorkonfigurierter HTTP-Client (Basis-URL, Header, Timeout) für einen
 bestimmten Dienst, per Name injiziert (`HttpClientInterface $openholidaysClient`).
 
+**Selbstreferenz** – Beziehung einer Entity auf dieselbe Klasse, z. B. `Lesson::$makeUpFor` (Nachholstunde → ausgefallene
+Einheit). In der Datenbank ein Fremdschlüssel auf dieselbe Tabelle.
+
 **Embeddable** – PHP-Klasse ohne eigene Tabelle und ohne ID (`#[ORM\Embeddable]`), deren Felder als Spalten in der
 Tabelle der umgebenden Entity landen (`#[ORM\Embedded]`, z. B. `address_street`). Bei uns `Address` und `Recipient`.
 Wird beim Laden immer als Objekt angelegt, nie `null`.

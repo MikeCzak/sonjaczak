@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 /**
- * Whether a course may be deleted: only while nobody is enrolled (rule added with enrollments in step C3).
+ * Whether a course may be deleted: only while nobody is enrolled. The foreign key enrollment.course_id would refuse
+ * it anyway; the voter hides the button and gives a readable answer instead of a database error.
  *
  * @extends Voter<string, Course>
  */
@@ -31,7 +32,16 @@ final class CourseVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        // TODO C3: deny while the course has enrollments
-        return $this->security->isGranted(User::ROLE_ADMIN);
+        if (!$this->security->isGranted(User::ROLE_ADMIN)) {
+            return false;
+        }
+
+        if (!$subject->getEnrollments()->isEmpty()) {
+            $vote?->addReason('course.delete.has_enrollments');
+
+            return false;
+        }
+
+        return true;
     }
 }

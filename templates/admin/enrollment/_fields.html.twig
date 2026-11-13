@@ -1,0 +1,10 @@
+<div class="row">
+    {% if form.weekday is defined %}
+        <div class="col-md-6">{{ form_row(form.weekday) }}</div>
+        <div class="col-md-6">{{ form_row(form.startTime) }}</div>
+    {% endif %}
+    <div class="col-md-6">{{ form_row(form.lessonMinutes) }}</div>
+    <div class="col-md-6">{{ form_row(form.priceCents) }}</div>
+    <div class="col-md-6">{{ form_row(form.billing) }}</div>
+    <div class="col-12">{{ form_row(form.billToGuardian) }}</div>
+</div>

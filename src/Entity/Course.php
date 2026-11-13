@@ -73,10 +73,21 @@ class Course
     #[ORM\OrderBy(['firstDay' => 'ASC'])]
     private Collection $breaks;
 
+    /**
+     * Inverse side, only for reading. No cascade: an enrollment is created and deleted on its own, and the database
+     * refuses to delete a course that still has enrollments.
+     *
+     * @var Collection<int, Enrollment>
+     */
+    #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'course')]
+    #[ORM\OrderBy(['weekday' => 'ASC', 'startTime' => 'ASC'])]
+    private Collection $enrollments;
+
     public function __construct()
     {
         $this->year = (int) date('Y');
         $this->breaks = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +225,14 @@ class Course
         $this->breaks->removeElement($break);
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollment>
+     */
+    public function getEnrollments(): Collection
+    {
+        return $this->enrollments;
     }
 
     /**

@@ -1,0 +1,24 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set course_title %}{% include 'admin/course/_title.html.twig' %}{% endset %}
+{% block title %}{{ 'enrollment.new.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ 'enrollment.new.title'|trans({}, 'admin') }}: {{ course_title }}</h1>
+    {% if students is empty %}
+        <p>{{ 'enrollment.new.no_students'|trans({}, 'admin') }}</p>
+        <a class="btn btn-outline-primary" href="{{ path('admin_student_new') }}">{{ 'student.index.new'|trans({}, 'admin') }}</a>
+    {% else %}
+        {# GET: the chosen student goes into the URL, the next page shows the form with matching defaults #}
+        <form method="get" style="max-width: 28rem">
+            <label class="form-label" for="enrollment-student">{{ 'enrollment.field.student'|trans({}, 'admin') }}</label>
+            <select class="form-select mb-3" id="enrollment-student" name="student" required>
+                {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.lastName }}, {{ student.firstName }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary">{{ 'enrollment.new.next'|trans({}, 'admin') }}</button>
+            <a class="btn btn-link" href="{{ path('admin_course_edit', {id: course.id}) }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+        </form>
+    {% endif %}
+{% endblock %}

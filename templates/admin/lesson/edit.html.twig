@@ -1,0 +1,18 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set enrollment = lesson.enrollment %}
+{% block title %}{{ 'lesson.edit.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}</a></p>
+    <h1 class="h3 mb-3">{{ 'lesson.edit.title'|trans({}, 'admin') }} {{ lesson.startsAt|date('d.m.Y') }}</h1>
+    <div class="row">
+        <div class="col-md-8 col-lg-5">
+            {{ form_start(form) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+                <a class="btn btn-link" href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

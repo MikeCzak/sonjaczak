@@ -59,6 +59,40 @@
         </div>
     </div>
 
+    <h2 class="h5 mt-5">{{ 'enrollment.heading'|trans({}, 'admin') }}</h2>
+    {% if course.enrollments is empty %}
+        <p>{{ 'enrollment.empty'|trans({}, 'admin') }}</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'enrollment.field.slot'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'enrollment.field.student'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'enrollment.field.lessons'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="text-end">{{ 'enrollment.field.price'|trans({}, 'admin') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in course.enrollments %}
+                        <tr>
+                            <td class="text-nowrap">{{ ('weekday_short.' ~ enrollment.weekday)|trans({}, 'admin') }} {{ enrollment.startTime|date('H:i') }}</td>
+                            <td><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}</a></td>
+                            <td>
+                                {{ 'enrollment.count'|trans({'%counted%': enrollment.countedLessons, '%planned%': course.plannedLessons}, 'admin') }}
+                                {% if make_ups_due[enrollment.id] > 0 %}
+                                    <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_ups_due[enrollment.id]}, 'admin') }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">{{ (enrollment.priceCents / 100)|number_format(2, ',', '.') }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    <a class="btn btn-outline-primary" href="{{ path('admin_enrollment_new', {id: course.id}) }}">{{ 'enrollment.new.title'|trans({}, 'admin') }}</a>
+
     {% if is_granted('COURSE_DELETE', course) %}
         {{ include('admin/_delete.html.twig', {
             action: path('admin_course_delete', {id: course.id}),

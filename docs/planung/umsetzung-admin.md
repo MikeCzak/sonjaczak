@@ -79,7 +79,7 @@ Fortschritt wird im Projektstand abgehakt.
 - C2b: Ferien-Vorschlag aus der OpenHolidays API (Steiermark `AT-SM`, Schulferien und Feiertage), mit Test gegen
   eine aufgezeichnete Antwort (`MockHttpClient`), damit die CI nicht vom fremden Dienst abhängt.
 
-**C3 Teilnahmen und Einheiten**
+**C3 Teilnahmen und Einheiten** – erledigt 2026-11-13
 
 - Entities `Enrollment` (Enum `Billing`) und `Lesson` (Enum `LessonStatus`, Selbstreferenz `makeUpFor`).
 - Service, der die Einheiten erzeugt (bis `plannedLessons`, ohne Ferien), Neuberechnung bei neuen Ferien.

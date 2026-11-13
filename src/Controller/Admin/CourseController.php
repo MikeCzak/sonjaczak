@@ -10,6 +10,8 @@ use App\Entity\CourseBreak;
 use App\Entity\User;
 use App\Form\Admin\CourseBreakType;
 use App\Form\Admin\CourseType;
+use App\Lesson\LessonPlanner;
+use App\Lesson\MakeUpRule;
 use App\Repository\CourseRepository;
 use App\Security\Voter\CourseVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,8 +31,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/admin/kurse')]
 final class CourseController extends AbstractController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LessonPlanner $planner,
+    ) {
     }
 
     #[Route('', name: 'admin_course_index', methods: ['GET'])]
@@ -60,7 +64,7 @@ final class CourseController extends AbstractController
     }
 
     #[Route('/{id}', name: 'admin_course_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Course $course): Response
+    public function edit(Request $request, Course $course, MakeUpRule $makeUpRule): Response
     {
         $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
@@ -72,11 +76,11 @@ final class CourseController extends AbstractController
             return $this->redirectToRoute('admin_course_edit', ['id' => $course->getId()]);
         }
 
-        return $this->renderEdit($course, $form, $this->createBreakForm($course));
+        return $this->renderEdit($course, $form, $this->createBreakForm($course), $makeUpRule);
     }
 
     #[Route('/{id}/ferien', name: 'admin_course_break_new', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function newBreak(Request $request, Course $course): Response
+    public function newBreak(Request $request, Course $course, MakeUpRule $makeUpRule): Response
     {
         $break = new CourseBreak();
         $breakForm = $this->createBreakForm($course, $break);
@@ -84,6 +88,7 @@ final class CourseController extends AbstractController
 
         if ($breakForm->isSubmitted() && $breakForm->isValid()) {
             $course->addBreak($break);
+            $this->applyBreaks($course);
             $this->entityManager->flush();
             $this->addFlash('success', 'course_break.flash.saved');
 
@@ -91,7 +96,7 @@ final class CourseController extends AbstractController
         }
 
         // Show the errors on the course page, with the course form unchanged
-        return $this->renderEdit($course, $this->createForm(CourseType::class, $course), $breakForm);
+        return $this->renderEdit($course, $this->createForm(CourseType::class, $course), $breakForm, $makeUpRule);
     }
 
     #[Route('/{id}/ferien/{breakId}/loeschen', name: 'admin_course_break_delete', requirements: ['id' => '\d+', 'breakId' => '\d+'], methods: ['POST'])]
@@ -120,6 +125,7 @@ final class CourseController extends AbstractController
     {
         if ($this->isCsrfTokenValid('import-breaks-'.$course->getId(), $request->getPayload()->getString('_token'))) {
             $this->flashImportResult($holidays->importInto($course));
+            $this->applyBreaks($course);
             $this->entityManager->flush();
         }
 
@@ -153,13 +159,30 @@ final class CourseController extends AbstractController
      * @param FormInterface<Course>      $form
      * @param FormInterface<CourseBreak> $breakForm
      */
-    private function renderEdit(Course $course, FormInterface $form, FormInterface $breakForm): Response
+    private function renderEdit(Course $course, FormInterface $form, FormInterface $breakForm, MakeUpRule $makeUpRule): Response
     {
+        $makeUpsDue = [];
+        foreach ($course->getEnrollments() as $enrollment) {
+            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment);
+        }
+
         return $this->render('admin/course/edit.html.twig', [
             'course' => $course,
             'form' => $form,
             'break_form' => $breakForm,
+            'make_ups_due' => $makeUpsDue,
         ]);
+    }
+
+    /**
+     * New breaks: planned lessons in them go, the enrollments are filled up at the end (LessonPlanner).
+     * Held or cancelled lessons in a break stay; Sonja gets a warning to look at them.
+     */
+    private function applyBreaks(Course $course): void
+    {
+        if ([] !== $this->planner->applyBreaks($course)->conflicts) {
+            $this->addFlash('warning', 'course_break.flash.conflicts');
+        }
     }
 
     private function flashImportResult(?int $added): void

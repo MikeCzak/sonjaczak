@@ -132,6 +132,13 @@ Erst danach werden Features gebaut.
      aus der OpenHolidays API beim Anlegen (live geprüft mit Sommersemester 2027), Tests mit aufgezeichneten Antworten.
      `symfony/http-client` jetzt direkt in `composer.json` (war nur indirekt installiert, 8.1.11). PHPStan:
      `allowNullablePropertyForRequiredField` (Begründung in `docs/erklaerungen/10-datenbank-kurse.md`).
+   - [x] C3 (2026-11-13): Teilnahmen und Einheiten. Einheiten werden beim Anlegen erzeugt (ohne Ferien, bis
+     `plannedLessons`), neue Ferien entfernen geplante Einheiten und füllen am Ende auf, Nachholregel mit Anzeige
+     „14 von 15“ und Nachholstunde je abgesagter Einheit, Kurs mit Teilnahmen nicht löschbar. Erklärung:
+     `docs/erklaerungen/11-teilnahmen-und-einheiten.md`.
+   - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas
+     Formulierung in `anforderungen.md`), und welcher Wert (vorerst 0). Auffüllen nach neuen Ferien, Wochentermin nach
+     dem Anlegen fest; Details in `11-teilnahmen-und-einheiten.md`, Abschnitt „Zum Durchsehen“.
    - **Offen zum Durchsehen:** Der Admin-Bereich spricht mit „du“ an (Sonja und Mike sind die Nutzer:innen); bei
      Schüler:innen-Konten später ggf. anpassen.
    - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)
