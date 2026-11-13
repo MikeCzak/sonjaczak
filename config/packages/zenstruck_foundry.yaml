@@ -1,0 +1,35 @@
+# Zenstruck Foundry: factories and stories with invented data, for the local database and for tests.
+# Only installed as a dev dependency; factories and stories live in tests/, which is not part of the prod image
+# (.dockerignore), so they are registered as services here and only in dev and test.
+# Full configuration: https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html
+when@dev: &dev
+    zenstruck_foundry:
+        faker:
+            # Austrian names, addresses and phone numbers (vendor/fakerphp/faker/src/Faker/Provider/de_AT)
+            locale: de_AT
+        persistence:
+            # Flush only once per call of `PersistentObjectFactory::create()`
+            flush_once: true
+        orm:
+            reset:
+                # Reset the database with migrations if the app has any, otherwise with the schema
+                mode: auto
+        make_factory:
+            # make:factory writes to tests/Factory (autoload-dev: App\Tests\ => tests/)
+            default_namespace: 'Tests\Factory'
+        make_story:
+            default_namespace: 'Tests\Story'
+
+    services:
+        _defaults:
+            autowire: true
+            autoconfigure: true
+
+        App\Tests\Factory\:
+            resource: '%kernel.project_dir%/tests/Factory/'
+
+        # Stories marked with #[AsFixture] are loaded by `bin/console foundry:load-fixtures`
+        App\Tests\Story\:
+            resource: '%kernel.project_dir%/tests/Story/'
+
+when@test: *dev

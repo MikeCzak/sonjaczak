@@ -437,7 +437,7 @@ die offene Entscheidung „Symfony UX“ im Projektstand und fällt bei der Plan
 Entschieden: **Fixtures mit Zenstruck Foundry** (Factories, Faker für erfundene Namen und Adressen), nur als
 `require-dev`, also nicht im Prod-Image.
 
-- Lokal: `doctrine:fixtures:load` füllt die Datenbank mit einem plausiblen Kurs, Teilnahmen, Einheiten, Honorarnoten.
+- Lokal: `bin/console foundry:load-fixtures main` füllt die Datenbank mit einem plausiblen Kurs, Teilnahmen, Einheiten, Honorarnoten.
 - Tests: Dieselben Factories erzeugen in jedem Test genau die Daten, die er braucht (z. B. „eine Teilnahme mit zwei
   abgesagten Einheiten“).
 

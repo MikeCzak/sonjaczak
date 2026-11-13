@@ -299,7 +299,7 @@ Wird beim Laden immer als Objekt angelegt, nie `null`.
 Änderungen am Original den Beleg nicht verändern.
 
 **Fixtures / Foundry** – Erfundene Testdaten. Zenstruck Foundry erzeugt sie über Factories mit Faker, für die lokale
-Datenbank (`doctrine:fixtures:load`) und in Tests. Nur `require-dev`, nie echte Personendaten.
+Datenbank (`foundry:load-fixtures main`) und in Tests. Nur `require-dev`, nie echte Personendaten.
 
 ## Login und Rollen
 

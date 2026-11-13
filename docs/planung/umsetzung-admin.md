@@ -1,4 +1,4 @@
-# Phase 2: Umsetzungsplan Admin-Bereich (Entwurf)
+    # Phase 2: Umsetzungsplan Admin-Bereich (Entwurf)
 
 Stand: 2026-11-13, **freigegeben**. Grundlage: `datenmodell.md` und `rollen.md` (beide freigegeben 2026-11-13).
 Fortschritt wird im Projektstand abgehakt.
@@ -18,12 +18,13 @@ Fortschritt wird im Projektstand abgehakt.
 
 ## A. Grundlagen
 
-**A1 Zeitzone und Werkzeuge**
+**A1 Zeitzone und Werkzeuge** – erledigt 2026-11-13
 
 - `date.timezone = Europe/Vienna` in `frankenphp/conf.d/10-app.ini`, Test dazu.
-- `doctrine/doctrine-fixtures-bundle` und `zenstruck/foundry` als `require-dev`, `symfony/maker-bundle` als
-  `require-dev` (für `make:user`, `make:entity`, `make:migration`; erzeugter Code wird gelesen und angepasst, nicht
-  blind übernommen).
+- `zenstruck/foundry` und `symfony/maker-bundle` als `require-dev` (Maker für `make:user`, `make:entity`,
+  `make:migration`; erzeugter Code wird gelesen und angepasst, nicht blind übernommen). `doctrine/doctrine-fixtures-bundle`
+  war geplant, ist aber überflüssig: Foundry lädt Fixtures selbst (`foundry:load-fixtures`, Stories mit `#[AsFixture]`)
+  und setzt die Datenbank dabei über die Migrationen neu auf.
 - PHPStan mit `objectManagerLoader`, damit es Entities und DQL prüft (Projektstand: „sobald es Entities gibt“).
 
 ## B. Login und Konten

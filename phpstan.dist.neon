@@ -20,3 +20,6 @@ parameters:
     symfony:
         # Compiled dev container, lets PHPStan resolve service types; exists after the first request or cache:warmup
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    doctrine:
+        # Boots the dev kernel so PHPStan knows the entity mapping: checks DQL and QueryBuilder, infers result types
+        objectManagerLoader: tests/object-manager.php

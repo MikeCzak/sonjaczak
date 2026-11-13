@@ -155,6 +155,24 @@ Erstellt am 2026-11-12 mit fonttools 4.68.0, brotli 1.2.1, uharfbuzz 0.57.0.
 - Nach dem Ändern prüfen: `docker compose exec php bin/console debug:translation de --only-missing`.
 - Die 404-Seite zeigt Symfony nur ohne Debug-Modus. Lokal ansehen: https://localhost/_error/404
 
+## Testdaten (Foundry)
+
+Lokal gibt es nur erfundene Daten (Faker, `de_AT`), nie echte Schüler:innen:
+
+```bash
+docker compose exec php bin/console foundry:load-fixtures main   # Datenbank neu aufsetzen und füllen
+```
+
+Der Befehl löscht die lokale Datenbank, baut sie über die Migrationen neu auf und lädt die Story `main`
+(`tests/Story/AppStory.php`). Factories und Stories liegen in `tests/`, damit sie nicht ins Prod-Image kommen
+(`.dockerignore`); als Services registriert sind sie nur in dev und test (`config/packages/zenstruck_foundry.yaml`).
+Neue Factory: `docker compose exec php bin/console make:factory` (landet in `tests/Factory/`).
+
+## Zeitzone
+
+PHP läuft im Container mit `Europe/Vienna` (`frankenphp/conf.d/10-app.ini`). Die Datei wird beim Build ins Image
+kopiert: Nach einer Änderung `docker compose build php` und `docker compose up --wait`.
+
 ## Häufige Befehle
 
 ```bash

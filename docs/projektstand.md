@@ -109,6 +109,9 @@ Erst danach werden Features gebaut.
    Voter, Passkeys mit Passwort als Rückfall, „Passwort vergessen“ per Mail-Link, Sessions in PostgreSQL mit 8 h
    Inaktivität / 12 h Cookie), **freigegeben 2026-11-13**. Admin-Cookie nur unter `/admin`; Datenschutzerklärung
    wird mit dem Login-Schritt angepasst. Umsetzungsplan: `docs/planung/umsetzung-admin.md`.
+   - [x] A1 (2026-11-13): Zeitzone `Europe/Vienna` (Test), `zenstruck/foundry` 2.16.0 (Faker `de_AT`, Factories und
+     Stories in `tests/`), `symfony/maker-bundle` 1.68.0, PHPStan mit `objectManagerLoader`. Fixtures-Bundle verworfen
+     (Foundry lädt selbst).
    Todos für den Admin-Bereich (Dashboard, Export der Einnahmen, PDF, Art.-13-Information) in Abschnitt 9.
    Ziel: Datenbank und Admin-Bereich fertig, bevor Mike Sonja den Stand zeigt.
 3. **Umsetzung erstes Release** (Plan: `docs/planung/seitenstruktur.md`, Abschnitt 10)
