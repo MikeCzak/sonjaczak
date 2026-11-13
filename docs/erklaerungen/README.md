@@ -16,6 +16,7 @@ Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demse
 | [05-ci-cd.md](05-ci-cd.md) | `.github/workflows/ci.yaml` Zeile für Zeile, `deploy/deploy.sh`, Secrets |
 | [06-stdin-und-eof.md](06-stdin-und-eof.md) | Warum `docker login --password-stdin` mit Strg+D endet |
 | [07-dependabot.md](07-dependabot.md) | Dependabot: alerts, security updates, version updates; `dependabot.yaml` Zeile für Zeile |
+| [08-login-und-sessions.md](08-login-und-sessions.md) | Admin-Login: Firewall, Rollen, Passwörter, Sessions in PostgreSQL, Logout, erstes Konto |
 
 Ergänzend: [../begriffe.md](../begriffe.md) (Glossar), [../entwicklung.md](../entwicklung.md) (lokaler Workflow),
 [../deployment.md](../deployment.md) (Server-Einrichtung, Rollback).

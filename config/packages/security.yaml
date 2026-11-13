@@ -1,0 +1,62 @@
+# Login and access for the admin area. Concept and reasons: docs/planung/rollen.md
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    # "auto" is bcrypt with cost 13 in our image (PasswordHasherFactory tries "native" first, NativePasswordHasher)
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # No "property": the provider asks UserRepository::loadUserByIdentifier(), which ignores upper/lower case
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+
+    # Checked with isGranted()/is_granted() only, never with $user->getRoles()
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        ROLE_STUDENT: ROLE_USER
+
+    firewalls:
+        dev:
+            # Ensure dev tools and static assets are always allowed
+            pattern: ^/(_profiler(/|$)|(_wdt|assets|build)/)
+            security: false
+        # The only firewall: public pages match none, so they never start a session or set a cookie
+        admin:
+            pattern: ^/admin
+            # The session starts only when access is actually checked (not when the login page is shown)
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                default_target_path: admin_dashboard
+                # Token id "authenticate" is stateless (config/packages/csrf.yaml), so it needs no session either
+                enable_csrf: true
+                username_parameter: email
+                password_parameter: password
+            # 5 failed attempts per minute for each IP + e-mail address, 25 for each IP (Symfony default)
+            login_throttling: ~
+            logout:
+                path: admin_logout
+                target: admin_login
+                # Logout only with the token from the form in the admin header (stateless token id "logout")
+                enable_csrf: true
+
+    # Note: Only the *first* matching rule is applied, so specific paths come first
+    access_control:
+        - { path: ^/admin/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/benutzer, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+when@test:
+    security:
+        password_hashers:
+            # Password hashers are resource-intensive by design to ensure security.
+            # In tests, it's safe to reduce their cost to improve performance.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

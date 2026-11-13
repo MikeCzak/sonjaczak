@@ -152,6 +152,21 @@ Erklärung:
   Uhrzeit auf die nächste Minute setzt.
 - `crontab -l` zeigt die Einträge, nach dem Erneuern eines Tokens das Datum anpassen.
 
+### B7. Admin-Konten anlegen (auf dem Server, einmalig nach dem Deploy von B1)
+
+Das erste Konto kann nicht über die App entstehen (`docs/planung/rollen.md` 4.1). Der Befehl fragt das Passwort
+verdeckt und zweimal ab (mindestens 12 Zeichen, nicht zu leicht zu erraten); `-it` ist nötig, damit die verdeckte
+Eingabe funktioniert:
+
+```bash
+docker exec -it sonjaczak-php-1 bin/console app:user:create <deine-adresse> --super-admin
+docker exec -it sonjaczak-php-1 bin/console app:user:create music@sonjaczak.com
+```
+
+Das zweite Konto (Sonja, `ROLE_ADMIN`) kann stattdessen später in der Benutzerverwaltung entstehen (Schritt B4), dann
+setzt Sonja ihr Passwort selbst über den Einladungslink. Danach im Browser `https://sonjaczak.com/admin` öffnen und
+anmelden. Hintergrund: `docs/erklaerungen/08-login-und-sessions.md`.
+
 ### B5. SSH-Key für GitHub Actions
 
 ```bash

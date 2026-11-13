@@ -112,6 +112,12 @@ Erst danach werden Features gebaut.
    - [x] A1 (2026-11-13): Zeitzone `Europe/Vienna` (Test), `zenstruck/foundry` 2.16.0 (Faker `de_AT`, Factories und
      Stories in `tests/`), `symfony/maker-bundle` 1.68.0, PHPStan mit `objectManagerLoader`. Fixtures-Bundle verworfen
      (Foundry lädt selbst).
+   - [x] B1/B2 (2026-11-13): `symfony/security-bundle` 8.1.11, Entity `User` (Tabelle `app_user`, E-Mail klein
+     gespeichert), Firewall nur `^/admin`, `form_login` mit CSRF, `login_throttling`, Logout per POST mit CSRF,
+     Rollenhierarchie, `app:user:create`, Admin-Layout und Domain `admin`. Sessions in PostgreSQL (`PdoSessionHandler`,
+     8 h Inaktivität, Cookie 12 h, nur `/admin`), lokal über Container-Neustart geprüft. Datenschutzerklärung: Absatz
+     zum Session-Cookie (§ 165 Abs. 3 TKG 2021, im RIS geprüft; Entwurf). Erklärung: `docs/erklaerungen/08-login-und-sessions.md`.
+   - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)
    Todos für den Admin-Bereich (Dashboard, Export der Einnahmen, PDF, Art.-13-Information) in Abschnitt 9.
    Ziel: Datenbank und Admin-Bereich fertig, bevor Mike Sonja den Stand zeigt.
 3. **Umsetzung erstes Release** (Plan: `docs/planung/seitenstruktur.md`, Abschnitt 10)

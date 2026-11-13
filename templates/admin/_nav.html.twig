@@ -1,0 +1,11 @@
+{# Main navigation of the admin area; the current route decides which entry is active #}
+{% set current = app.request.attributes.get('_route') %}
+{% set entries = [
+    {route: 'admin_dashboard', label: 'nav.dashboard'},
+] %}
+{% for entry in entries %}
+    <li class="nav-item">
+        <a class="nav-link{{ current == entry.route ? ' active' }}" href="{{ path(entry.route) }}"
+           {%- if current == entry.route %} aria-current="page"{% endif %}>{{ entry.label|trans({}, 'admin') }}</a>
+    </li>
+{% endfor %}

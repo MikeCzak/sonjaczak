@@ -3,7 +3,16 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    # Only the admin area uses a session (docs/planung/rollen.md 3); the browser sends the cookie only to /admin
+    session:
+        cookie_path: /admin
+        # Stored in PostgreSQL instead of files in the container, so a deploy (new container) logs nobody out.
+        # Table "sessions" comes with a normal migration (docs/planung/rollen.md 6).
+        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        # Logged out after 8 hours without activity (checked on the server, every request extends it) ...
+        gc_maxlifetime: 28800
+        # ... and the browser drops the cookie after 12 hours at the latest, also after quitting the browser
+        cookie_lifetime: 43200
 
     #esi: true
     #fragments: true

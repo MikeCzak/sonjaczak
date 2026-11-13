@@ -1,0 +1,16 @@
+# Admin area (only German is maintained). Keys: <page or component>.<purpose>
+layout:
+    title: Verwaltung
+    nav_label: Verwaltung
+    nav_toggle: Navigation ein- oder ausblenden
+    logout: Abmelden
+nav:
+    dashboard: Übersicht
+login:
+    title: Anmelden
+    email: E-Mail-Adresse
+    password: Passwort
+    submit: Anmelden
+dashboard:
+    title: Übersicht
+    welcome: Willkommen in der Verwaltung. Hier entstehen nach und nach Kurse, Schüler:innen und Honorarnoten.

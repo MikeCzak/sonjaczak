@@ -7,3 +7,9 @@ inquiry:
         past: Das Datum darf nicht in der Vergangenheit liegen.
     guardian:
         required: Bei Schüler:innen unter 18 Jahren bitte den Namen einer erziehungsberechtigten Person angeben.
+user:
+    email:
+        taken: Für diese E-Mail-Adresse gibt es bereits ein Konto.
+password:
+    too_short: Das Passwort muss mindestens {{ limit }} Zeichen lang sein.
+    too_weak: Das Passwort ist zu leicht zu erraten. Länger oder abwechslungsreicher wählen.

@@ -1,0 +1,31 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'login.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-sm-10 col-md-6 col-lg-4">
+            <h1 class="h3 mb-4">{{ 'login.title'|trans({}, 'admin') }}</h1>
+
+            {% if error %}
+                {# Same message for unknown address and wrong password, so nobody can find out which addresses exist #}
+                <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <form method="post" action="{{ path('admin_login') }}">
+                <div class="mb-3">
+                    <label for="login-email" class="form-label">{{ 'login.email'|trans({}, 'admin') }}</label>
+                    <input type="email" id="login-email" name="email" value="{{ last_email }}" class="form-control"
+                           autocomplete="username webauthn" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">{{ 'login.password'|trans({}, 'admin') }}</label>
+                    <input type="password" id="login-password" name="password" class="form-control"
+                           autocomplete="current-password" required>
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <button type="submit" class="btn btn-primary">{{ 'login.submit'|trans({}, 'admin') }}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{# Admin area: always the light default theme, independent of the theme chosen for the public site #}
+<html lang="de" data-theme="classic">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex, nofollow">
+        <title>{% block title %}{% endblock %}{{ block('title') is not empty ? ' – ' }}{{ 'layout.title'|trans({}, 'admin') }}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221em%22 font-size=%22110%22>♪</text></svg>">
+        {% block javascripts %}
+            {{ importmap('app') }}
+        {% endblock %}
+    </head>
+    <body class="d-flex flex-column min-vh-100 sc-admin">
+        <header>
+            <nav class="navbar navbar-expand-md border-bottom" aria-label="{{ 'layout.nav_label'|trans({}, 'admin') }}">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{{ path('admin_dashboard') }}">{{ 'layout.title'|trans({}, 'admin') }}</a>
+                    {% if app.user %}
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#admin-nav"
+                                aria-controls="admin-nav" aria-expanded="false" aria-label="{{ 'layout.nav_toggle'|trans({}, 'admin') }}">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="admin-nav">
+                            <ul class="navbar-nav me-auto">
+                                {% block admin_nav %}
+                                    {{ include('admin/_nav.html.twig') }}
+                                {% endblock %}
+                            </ul>
+                            <span class="navbar-text small me-3">{{ app.user.userIdentifier }}</span>
+                            {# POST with CSRF token, so no other site can log Sonja out with a link or an image #}
+                            <form method="post" action="{{ path('admin_logout') }}" class="d-inline">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm">{{ 'layout.logout'|trans({}, 'admin') }}</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </nav>
+        </header>
+
+        <main class="flex-grow-1 container-fluid py-4">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}" role="status">{{ message|trans({}, 'admin') }}</div>
+                {% endfor %}
+            {% endfor %}
+            {% block body %}{% endblock %}
+        </main>
+    </body>
+</html>

@@ -36,6 +36,8 @@ final class PublicPagesTest extends WebTestCase
         $crawler = $client->request('GET', $url);
 
         self::assertResponseIsSuccessful();
+        // Public pages lie outside the admin firewall: no session, no cookie (docs/planung/rollen.md 3)
+        self::assertResponseNotHasHeader('Set-Cookie');
         self::assertSelectorExists('html[lang="de"]');
         self::assertSelectorExists('header #main-nav .navbar-nav');
         self::assertSelectorExists('footer a[href="/kontakt#impressum"]');

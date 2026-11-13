@@ -29,7 +29,7 @@ Fortschritt wird im Projektstand abgehakt.
 
 ## B. Login und Konten
 
-**B1 User und Login mit Passwort** (`rollen.md` 1–4)
+**B1 User und Login mit Passwort** (`rollen.md` 1–4) – erledigt 2026-11-13, Konten am Server noch offen
 
 - `symfony/security-bundle`, Entity `User` (`make:user`), erste Migration.
 - Firewall nur für `^/admin`, `access_control`, Rollenhierarchie, `form_login` mit CSRF, `login_throttling`, Logout.
@@ -41,7 +41,7 @@ Fortschritt wird im Projektstand abgehakt.
   Routen-Test (siehe Spielregeln).
 - Danach am Server (nach Rückfrage): Konten für Mike und Sonja anlegen.
 
-**B2 Sessions in PostgreSQL** (`rollen.md` 6)
+**B2 Sessions in PostgreSQL** (`rollen.md` 6) – erledigt 2026-11-13 (zusammen mit B1 committet)
 
 - `PdoSessionHandler` mit der Doctrine-Verbindung, Migration für die Tabelle `sessions`.
 - `cookie_path: /admin`, `gc_maxlifetime: 28800`, `cookie_lifetime: 43200`.
