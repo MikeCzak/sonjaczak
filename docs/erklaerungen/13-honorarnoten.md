@@ -1,4 +1,4 @@
-# Honorarnoten, Zahlungen, Gutschriften und Erinnerungen (D1, D3, D4)
+# Honorarnoten, Zahlungen, Gutschriften, Erinnerungen und Einnahmen (D1, D3–D5)
 
 Plan: `docs/planung/datenmodell.md` 3.7 und 3.8. Seiten: `/admin/honorarnoten` (Liste je Jahr),
 `/admin/honorarnoten/{id}`, erstellen auf der Seite einer Teilnahme (`/admin/teilnahmen/{id}/honorarnote`).
@@ -135,6 +135,32 @@ Dateien: `src/Command/RemindOverdueInvoicesCommand.php`, `templates/email/invoic
 - **Am Server:** Cronjob in `docs/deployment.md` B8 vorbereitet, **nicht eingerichtet** (Änderung am Server, wartet
   auf Freigabe).
 
+## Export der Einnahmen (D5)
+
+Dateien: `src/Invoice/IncomeCsv.php`, `src/Controller/Admin/IncomeController.php`, `templates/admin/income/`,
+`PaymentRepository::findByYear()`, `tests/Admin/IncomeTest.php`. Seite: `/admin/einnahmen`, Download
+`/admin/einnahmen/2026.csv`.
+
+- **Jahr nach Zahlungsdatum:** § 19 Abs. 1 EStG: „Einnahmen sind in jenem Kalenderjahr bezogen, in dem sie dem
+  Steuerpflichtigen zugeflossen sind.“ (Quelle: RIS, EStG 1988 § 19). Eine Rate vom 30.12.2026 zählt also zu 2026,
+  die vom 04.01.2027 zu 2027, auch wenn beide zur Honorarnote 16/2026 gehören. **Achtung:** § 19 Abs. 1 Z 1 enthält
+  eine Ausnahme für „regelmäßig wiederkehrende Einnahmen“ kurz vor Beginn oder nach Ende des Kalenderjahres, zu dem
+  sie wirtschaftlich gehören. Ob Semesterbeiträge darunter fallen, kann ich nicht beurteilen; das bitte Sonjas
+  Steuerberatung fragen. Der Export liefert das Zahlungsdatum, die Zuordnung bleibt damit nachvollziehbar.
+- **Format für Excel:** Semikolon als Trennzeichen, Dezimalkomma ohne Tausenderpunkt und ohne €-Zeichen (Excel
+  erkennt die Zahl), Datum `TT.MM.JJJJ`, UTF-8 mit BOM (das unsichtbare Zeichen `U+FEFF` am Anfang, an dem Excel
+  UTF-8 erkennt; sonst stehen statt Umlauten Zeichensalat), Zeilenende `\r\n`. Rückzahlungen erscheinen negativ.
+  Mit Sonjas Excel noch nicht geprüft.
+- **`fputcsv(..., escape: '')`:** PHP würde sonst Backslashes als eigenes Escape-Zeichen behandeln, das Excel nicht
+  kennt; der bisherige Standardwert ist seit PHP 8.4 als veraltet markiert.
+- **CSV-Injection:** Ein Text, der mit `=`, `+`, `-` oder `@` beginnt, wäre in Excel eine Formel (z. B. ein
+  `HYPERLINK`). Textzellen bekommen dann ein `'` davor, das Excel ausblendet. Beträge sind davon ausgenommen (eine
+  Rückzahlung beginnt mit `-` und soll eine Zahl bleiben). Test `IncomeTest::testFormulasAreNeutralised`.
+- **Fallstrick Doctrine:** Bei einer skalaren Abfrage (`getSingleColumnResult()`) wandelt Doctrine Datumswerte nicht
+  in Objekte um; `PaymentRepository::years()` bekommt den String `2026-12-30` der Datenbank. Der erste Testlauf
+  scheiterte genau daran (TypeError, Fehlerseite 500).
+- Die Datei wird nicht gespeichert, sondern bei jedem Download erzeugt, mit `Cache-Control: private, no-store`.
+
 ## Zum Durchsehen
 
 1. **Advisory Lock statt Wiederholung** bei der Nummernvergabe (siehe oben): Abweichung vom Datenmodell, bitte
@@ -151,3 +177,6 @@ Dateien: `src/Command/RemindOverdueInvoicesCommand.php`, `templates/email/invoic
 6. **Zahlungen ohne Rückfrage löschbar** (D3).
 7. **Empfänger der Erinnerung** ist `music@sonjaczak.com` (dieselbe Adresse wie die Anfragen). Eine eigene Einstellung
    dafür wäre leicht ergänzt.
+8. **Ausnahme für regelmäßig wiederkehrende Einnahmen** (§ 19 Abs. 1 Z 1 EStG) bei Zahlungen um den Jahreswechsel:
+   mit der Steuerberatung klären; der Export ordnet streng nach Zahlungsdatum zu.
+9. **CSV mit Sonjas Excel prüfen** (Umlaute, Beträge als Zahl, Datum).

@@ -155,6 +155,9 @@ Erst danach werden Features gebaut.
    - [x] D4 (2026-11-13): Befehl `app:invoices:remind-overdue` (eine Mail an `music@` je neu verpasster Frist,
      `remindedFor`, `--dry-run`), Tests mit `MockClock`; `symfony/clock` direkt in `composer.json`. Lokal über Mailpit
      geprüft.
+   - [x] D5 (2026-11-13): Einnahmen je Jahr nach Zahlungsdatum (`/admin/einnahmen`) und als CSV für Excel (Semikolon,
+     Dezimalkomma, UTF-8 mit BOM, Schutz vor Formeln). § 19 Abs. 1 EStG im RIS nachgelesen; die Ausnahme für
+     regelmäßig wiederkehrende Einnahmen (Z 1) mit der Steuerberatung klären. Mit Sonjas Excel noch prüfen.
    - [ ] D4 Cronjob am Server (`deployment.md` B8) – **wartet auf Mikes Freigabe** (Aktion am Server)
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.

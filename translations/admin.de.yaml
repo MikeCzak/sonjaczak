@@ -13,6 +13,7 @@ nav:
     students: Schüler:innen
     guardians: Elternteile
     invoices: Honorarnoten
+    income: Einnahmen
     settings: Einstellungen
 action:
     save: Speichern
@@ -430,3 +431,17 @@ reminder:
     intro: '{1}Diese Honorarnote ist nicht rechtzeitig bezahlt worden:|]1,Inf[Diese Honorarnoten sind nicht rechtzeitig bezahlt worden:'
     line: 'Honorarnote %number% (%name%): %open% € offen, fällig am %date%'
     outro: Für jede Frist kommt nur eine Erinnerung. Ist eine Zahlung schon eingegangen, bitte im Verwaltungsbereich eintragen.
+income:
+    title: Einnahmen
+    download: Als CSV herunterladen
+    hint: Nach Zahlungsdatum, nicht nach Datum der Honorarnote. Rückzahlungen sind negativ. Die CSV-Datei öffnet Excel direkt (Semikolon, Dezimalkomma).
+    empty: In diesem Jahr sind noch keine Zahlungen eingetragen.
+    total: Summe
+    csv:
+        date: Datum
+        invoice: Honorarnote
+        recipient: Empfänger:in
+        student: Schüler:in
+        description: Leistung
+        method: Zahlungsart
+        amount: Betrag

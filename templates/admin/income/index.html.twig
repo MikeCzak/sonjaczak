@@ -1,0 +1,63 @@
+{% extends 'admin/base.html.twig' %}
+
+{% macro euro(cents) %}{{ (cents / 100)|number_format(2, ',', '.') }} €{% endmacro %}
+{% block title %}{{ 'income.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h3 mb-0">{{ 'income.title'|trans({}, 'admin') }} {{ year }}</h1>
+        {% if payments is not empty %}
+            <a class="btn btn-outline-primary" href="{{ path('admin_income_csv', {year: year}) }}">{{ 'income.download'|trans({}, 'admin') }}</a>
+        {% endif %}
+    </div>
+
+    {% if years|length > 1 %}
+        <nav class="mb-3" aria-label="{{ 'invoice.index.years'|trans({}, 'admin') }}">
+            <ul class="nav nav-pills">
+                {% for y in years %}
+                    <li class="nav-item">
+                        <a class="nav-link{{ y == year ? ' active' }}" href="{{ path('admin_income_index', {jahr: y}) }}"
+                           {%- if y == year %} aria-current="page"{% endif %}>{{ y }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    {% endif %}
+
+    <p class="small text-body-secondary">{{ 'income.hint'|trans({}, 'admin') }}</p>
+
+    {% if payments is empty %}
+        <p>{{ 'income.empty'|trans({}, 'admin') }}</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'income.csv.date'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'income.csv.invoice'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'income.csv.recipient'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'income.csv.method'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="text-end">{{ 'income.csv.amount'|trans({}, 'admin') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.paidOn|date('d.m.Y') }}</td>
+                            <td><a href="{{ path('admin_invoice_show', {id: payment.invoice.id}) }}">{{ payment.invoice.displayNumber }}</a></td>
+                            <td>{{ payment.invoice.recipient.name }}</td>
+                            <td>{{ payment.method.labelKey|trans({}, 'admin') }}</td>
+                            <td class="text-end text-nowrap">{{ _self.euro(payment.amountCents) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="row" colspan="4">{{ 'income.total'|trans({}, 'admin') }}</th>
+                        <td class="text-end text-nowrap fw-bold">{{ _self.euro(total) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

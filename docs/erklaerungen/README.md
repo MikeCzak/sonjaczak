@@ -21,7 +21,7 @@ Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demse
 | [10-datenbank-kurse.md](10-datenbank-kurse.md) | Kurse und Ferien: Enums, Geld in Cent, Cascade/orphanRemoval, OpenHolidays mit Scoped Client und Mock |
 | [11-teilnahmen-und-einheiten.md](11-teilnahmen-und-einheiten.md) | Teilnahmen, Einheiten, Schnupperstunden: Unique über zwei Spalten, Zeiten ohne Zeitzone, Selbstreferenz, Einheiten erzeugen, Nachholregel |
 | [12-einstellungen.md](12-einstellungen.md) | Einstellungen: eine Zeile per Primärschlüssel, Worker-Modus, Unterschrift als BLOB, IBAN/BIC |
-| [13-honorarnoten.md](13-honorarnoten.md) | Honorarnoten, Zahlungen, Gutschriften, Erinnerungen: unveränderliche Entity, Empfänger als Kopie (verschachteltes Embeddable), Nummer je Jahr mit Advisory Lock |
+| [13-honorarnoten.md](13-honorarnoten.md) | Honorarnoten, Zahlungen, Gutschriften, Erinnerungen, Einnahmen-Export: unveränderliche Entity, Empfänger als Kopie (verschachteltes Embeddable), Nummer je Jahr mit Advisory Lock |
 
 Ergänzend: [../begriffe.md](../begriffe.md) (Glossar), [../entwicklung.md](../entwicklung.md) (lokaler Workflow),
 [../deployment.md](../deployment.md) (Server-Einrichtung, Rollback).
