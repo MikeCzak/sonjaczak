@@ -171,6 +171,8 @@ Neue Factory: `docker compose exec php bin/console make:factory` (landet in `tes
 
 ## Admin-Bereich lokal
 
+Ein Rundgang durch alle Funktionen steht in `docs/rundgang-admin.md`.
+
 Konto anlegen (einmalig, Passwort wird verdeckt abgefragt), dann https://localhost/admin öffnen:
 
 ```bash

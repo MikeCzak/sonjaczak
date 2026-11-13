@@ -147,11 +147,11 @@ Erst danach werden Features gebaut.
      Empfänger und Betrag als Kopie, keine Setter, Nummer je Ausstellungsjahr in einer Transaktion mit PostgreSQL
      Advisory Lock (Abweichung vom Datenmodell, das eine Wiederholung bei Kollision vorsah). Entity `Payment` ohne
      Oberfläche (folgt in D3). Teilnahmen mit Honorarnote sind nicht löschbar. Erklärung:
-     `docs/erklaerungen/13-honorarnoten.md` (mit Punkten zum Durchsehen).
+     `docs/erklaerungen/13-honorarnoten.md`.
    - [ ] D2 PDF: wartet auf die Entscheidung zur PDF-Bibliothek.
    - [x] D3 (2026-11-13): Zahlungen (Formular mit Restbetrag und heute vorbelegt, Datum änderbar, nicht in der Zukunft),
      Status berechnet, Gutschriften mit eigener Nummer (`credits`, `InvoiceVoter::CREDIT`), Rückzahlung als negative
-     Zahlung. Honorarnote und Gutschriften als ein Konto: zum Durchsehen in `erklaerungen/13`.
+     Zahlung. Honorarnote und Gutschriften als ein Konto (zum Durchsehen).
    - [x] D4 (2026-11-13): Befehl `app:invoices:remind-overdue` (eine Mail an `music@` je neu verpasster Frist,
      `remindedFor`, `--dry-run`), Tests mit `MockClock`; `symfony/clock` direkt in `composer.json`. Lokal über Mailpit
      geprüft.
@@ -162,15 +162,20 @@ Erst danach werden Features gebaut.
      Überfälligkeit, Teilnahmen ohne Honorarnote, Einnahmen des Jahres je Kurs, je laufendem Kurs die zuletzt gehaltene
      Einheit mit Inhalt. Erklärung: `docs/erklaerungen/14-dashboard.md`.
    - F (Teil ohne Server): Aufbewahrungsfrist in § 132 BAO nachgelesen (7 Jahre ab Schluss des Kalenderjahres, Details
-     in `umsetzung-admin.md` F); die Lösch-/Anonymisierungsregel ist noch zu entscheiden.
+     in `umsetzung-admin.md` F); die Lösch-/Anonymisierungsregel ist **zurückgestellt** (Mike, 2026-11-13: „für
+     später aufheben“).
+   - [ ] **Von Sonja nachzureichen** (über Mike, 2026-11-13): Absenderdaten für die Honorarnote (Name, Titel, Adresse,
+     IBAN, BIC, Bank, Ort, Hinweis zur Umsatzsteuer) und die Unterschrift als PNG. Beides trägt Sonja (oder Mike) in
+     Produktion unter `/admin/einstellungen` ein, nicht ins Repo. Ohne sie lassen sich keine Honorarnoten erstellen.
+   - **Kein eigener Demo-Termin** (Entscheidung 2026-11-13): Mike sieht sich die Funktionen lokal an
+     (`docs/rundgang-admin.md`) und zeigt sie Sonja in Produktion.
+   - [ ] D2 PDF und C4 Kursraster: Optionen am 2026-11-13 vorgestellt (PDF-Bibliothek; Stimulus, Turbo Frames oder
+     Live Components), Entscheidung offen.
    - [ ] D4 Cronjob am Server (`deployment.md` B8) – **wartet auf Mikes Freigabe** (Aktion am Server)
    - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
      Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
-   - **Offen zum Durchsehen (C3):** Schwellwert der Nachholregel als Abstand (Datenmodell) oder als Gesamtzahl (Sonjas
-     Formulierung in `anforderungen.md`); der Wert ist seit C6 eine Einstellung (Standard 0). Auffüllen nach neuen Ferien, Wochentermin nach
-     dem Anlegen fest; Details in `11-teilnahmen-und-einheiten.md`, Abschnitt „Zum Durchsehen“.
-   - **Offen zum Durchsehen:** Der Admin-Bereich spricht mit „du“ an (Sonja und Mike sind die Nutzer:innen); bei
-     Schüler:innen-Konten später ggf. anpassen.
+   - **Zum Durchsehen:** alle offenen Auslegungen gesammelt in `docs/planung/zum-durchsehen.md` (mit Sonja, mit der
+     Steuerberatung, technisch).
    - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)
    Todos für den Admin-Bereich (Dashboard, Export der Einnahmen, PDF, Art.-13-Information) in Abschnitt 9.
    Ziel: Datenbank und Admin-Bereich fertig, bevor Mike Sonja den Stand zeigt.

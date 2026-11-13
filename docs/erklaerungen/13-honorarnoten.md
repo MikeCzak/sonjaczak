@@ -163,20 +163,4 @@ Dateien: `src/Invoice/IncomeCsv.php`, `src/Controller/Admin/IncomeController.php
 
 ## Zum Durchsehen
 
-1. **Advisory Lock statt Wiederholung** bei der Nummernvergabe (siehe oben): Abweichung vom Datenmodell, bitte
-   bestätigen.
-2. **Fälligkeiten ohne Vorschlag:** „Zahlbar bis“ ist leer und muss eingetragen werden. Im Muster liegen zwischen
-   Ausstellung und Zahlungsziel 6 Tage; eine feste Frist als Vorschlag (z. B. 14 Tage) wäre eine Einstellung, wenn
-   Sonja das möchte.
-3. **Betrag nicht änderbar** beim Erstellen: Er kommt aus der Teilnahme (dort für Ermäßigungen änderbar). So kann
-   der Betrag der Honorarnote nicht versehentlich vom Preis der Teilnahme abweichen.
-4. **Leistungstext** „Gesangsunterricht im Wintersemester 2026/27“ ist vorbelegt und änderbar; das PDF (D2) setzt
-   „Für den“ davor wie im Muster.
-5. **Gutschrift und Zahlung als ein Konto** (D3, siehe oben): eine Auslegung von `datenmodell.md` 3.7, bitte
-   bestätigen. Offen ist auch, ob Sonjas Steuerberatung Gutschriften so haben möchte (Antwort 8 im Datenmodell).
-6. **Zahlungen ohne Rückfrage löschbar** (D3).
-7. **Empfänger der Erinnerung** ist `music@sonjaczak.com` (dieselbe Adresse wie die Anfragen). Eine eigene Einstellung
-   dafür wäre leicht ergänzt.
-8. **Ausnahme für regelmäßig wiederkehrende Einnahmen** (§ 19 Abs. 1 Z 1 EStG) bei Zahlungen um den Jahreswechsel:
-   mit der Steuerberatung klären; der Export ordnet streng nach Zahlungsdatum zu.
-9. **CSV mit Sonjas Excel prüfen** (Umlaute, Beträge als Zahl, Datum).
+Gesammelt in `docs/planung/zum-durchsehen.md`.

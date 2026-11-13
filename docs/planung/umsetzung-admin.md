@@ -91,7 +91,7 @@ Fortschritt wird im Projektstand abgehakt.
 - **Entscheidung vorher:** Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live Components). Ich stelle die drei mit
   einem kleinen Beispiel aus dem Raster gegenüber.
 - Raster nach Kalenderwochen, Bearbeiten direkt in der Zelle, Tastatur, Ferien per Zeile, Zählung je Spalte.
-- Design gemeinsam mit Sonjas Rückmeldung beim Demo-Termin nachschärfen.
+- Design mit Sonjas Rückmeldung nachschärfen, wenn Mike es ihr in Produktion zeigt.
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 
@@ -153,16 +153,16 @@ Fortschritt wird im Projektstand abgehakt.
 
 | Meilenstein | Nach Schritt | Was Sonja sehen kann |
 |---|---|---|
-| **Demo für Sonja** | C5 + D1–D3 (mit Fixtures, lokal oder in Produktion mit erfundenen Daten) | Login, Schüler:innen, Kurs mit Ferien, Kursraster, Schnupperstunde übernehmen, Honorarnote als PDF, Zahlung |
+| **Sonja zeigen** | C5 + D1–D3 (Mike lokal mit Fixtures, Sonja in Produktion) | Login, Schüler:innen, Kurs mit Ferien, Kursraster, Schnupperstunde übernehmen, Honorarnote als PDF, Zahlung |
 | **Echtbetrieb** | F | Sonja trägt ihre sechs Schüler:innen ein |
 | **Komplett** | D4, D5, E, B5 | Erinnerungen, Export, Dashboard, Passkeys |
 
-B5 (Passkeys) kann vor oder nach der Demo kommen; spätestens vor dem Echtbetrieb, wenn Sonja auf Passkeys umsteigen
-will. Mein Vorschlag: nach der Demo, damit sie den Workflow früher sieht.
+B5 (Passkeys) kann vor oder nach dem Zeigen kommen; spätestens vor dem Echtbetrieb, wenn Sonja auf Passkeys umsteigen
+will.
 
-**Demo in Produktion mit erfundenen Daten?** Bequemer für Sonja (eigener Laptop, echte Adresse), aber die
-Fixture-Daten müssten vor dem Echtbetrieb vollständig wieder raus, und Rechnungsnummern 1, 2, 3 … wären verbraucht.
-Vorschlag: Demo lokal auf deinem Mac oder über einen getrennten Test-Datenbestand. Entscheiden wir vor der Demo.
+**Kein eigener Demo-Termin** (Entscheidung 2026-11-13): Mike sieht sich die Funktionen lokal mit den Fixtures an
+(`docs/rundgang-admin.md`) und zeigt sie Sonja in Produktion. Vorher beachten: Honorarnoten in Produktion lassen sich
+nicht löschen und verbrauchen Nummern; echte Daten erst nach Abschnitt F.
 
 ## Später (außerhalb dieses Plans)
 

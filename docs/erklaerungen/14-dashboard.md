@@ -28,6 +28,4 @@ Plan: `docs/planung/datenmodell.md` 9 und Umsetzungsplan, Abschnitt E. Seite: `/
 
 ## Zum Durchsehen
 
-1. Zeitraum „nächste 7 Tage“ (Konstante `DashboardController::UPCOMING_DAYS`).
-2. Die Seite ist im Browser noch nicht mit Sonja angesehen; Gestaltung beim Demo-Termin nachschärfen (wie das
-   Kursraster C4).
+Gesammelt in `docs/planung/zum-durchsehen.md`.

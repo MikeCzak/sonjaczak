@@ -102,18 +102,6 @@ Dateien: `src/Entity/TrialLesson.php`, `src/Lesson/TrialTakeover.php`, `src/Cont
   löschen (`StudentVoter`); ohne diese Regel hätte der Fremdschlüssel `enrollment.student_id` das Löschen mit einem
   Datenbankfehler (Fehlerseite 500) abgebrochen. Das war eine Lücke seit C1, jetzt geschlossen.
 
-## Zum Durchsehen (meine Auslegungen, bitte bestätigen oder korrigieren)
+## Zum Durchsehen
 
-1. **Schwellwert:** Vorerst `app.make_up_threshold: 0` in `config/services.yaml` (Platzhalter, ab C6 Einstellung).
-   Achtung, mögliche Abweichung: Sonja beschreibt in `anforderungen.md` (Frage 6) den Schwellwert als **Gesamtzahl**
-   („sofern die Gesamtanzahl der Stunden einen bestimmten Schwellwert unterschreiten würde“, also z. B. 13), das
-   Datenmodell als **Abstand** (`plannedLessons − Schwellwert`, also z. B. 2). Umgesetzt ist das Datenmodell. Welche
-   Variante und welcher Wert?
-2. **Auffüllen nach neuen Ferien:** Für entfallene Einheiten kommen am Ende neue dazu (bis zum Kursende). Im
-   Datenmodell steht nur „entfernt die App die geplanten Einheiten“; das Auffüllen folgt aus „bis `plannedLessons`
-   erreicht ist“.
-3. **Wochentermin nicht änderbar:** Nach dem Anlegen lassen sich Wochentag und Uhrzeit der Teilnahme nicht mehr ändern,
-   nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten auf einen neuen Termin wäre machbar, war
-   aber nicht geplant.
-4. **Schüler:in mit Teilnahmen nicht löschbar** (C5): erst die Teilnahmen löschen. Mit Honorarnoten (ab D1) geht auch
-   das nicht mehr; dann bleibt nur die Anonymisierung nach Ablauf der Aufbewahrungsfrist (Abschnitt F).
+Gesammelt in `docs/planung/zum-durchsehen.md`.
