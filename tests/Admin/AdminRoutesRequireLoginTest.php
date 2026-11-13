@@ -33,8 +33,18 @@ final class AdminRoutesRequireLoginTest extends WebTestCase
                 continue;
             }
 
-            // Placeholders like {id} get a dummy value; access is checked before the object is loaded
-            $path = (string) preg_replace('/\{[^}]+\}/', '1', $route->getPath());
+            // Placeholders like {id} get a dummy value that fits the route's requirement ({year} needs four digits);
+            // access is checked before the object is loaded
+            $path = (string) preg_replace_callback('/\{([^}]+)\}/', static function (array $match) use ($route, $name): string {
+                $requirement = $route->getRequirement($match[1]) ?? '[^/]+';
+                foreach (['1', '2026', 'x'] as $candidate) {
+                    if (1 === preg_match('#^(?:'.$requirement.')$#', $candidate)) {
+                        return $candidate;
+                    }
+                }
+
+                throw new \LogicException(\sprintf('No dummy value for {%s} in route "%s".', $match[1], $name));
+            }, $route->getPath());
             $methods = $route->getMethods();
             $client->request([] === $methods ? 'GET' : $methods[0], $path);
 
