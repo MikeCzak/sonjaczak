@@ -89,9 +89,9 @@ verlinkten Erklärung.
 
 ### Technisch (Mike)
 
-- [ ] **Passkeys** (`umsetzung-admin.md` B5, zurückgestellt 2026-11-13; Login mit Passwort reicht für die Entwicklung). **Zu
-  klären:** Bisher stand im Projektstand „kommt vor dem Zeigen an Sonja“, in `umsetzung-admin.md` (Meilensteine) „spätestens
-  vor dem Echtbetrieb“. - reicht auch erst im Betrieb, ein Passwort ist ja nicht per se unsicher. Aber ich möchte nicht darauf vergessen, weil es für Sonja hinsichtlich der 2FA viel einfacher ist, nur ihren Fingerabdruck verwenden zu müssen, als zb ein OTP einzugeben.
+- [ ] **Passkeys** (`umsetzung-admin.md` B5). Zeitpunkt entschieden 2026-11-14: darf auch erst im Echtbetrieb kommen
+  (ein gutes Passwort ist nicht per se unsicher), aber **nicht vergessen**: Für Sonja ist der Fingerabdruck viel
+  einfacher als z. B. ein Einmalcode (OTP).
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
@@ -186,6 +186,7 @@ muss).
 | Kursraster | Stimulus + `fetch` (2026-11-14) | Tastaturlastig, viele kleine Änderungen; durchschaubar. Live Components ggf. später fürs Booking-Formular. Optionen: `planung/umsetzung-admin.md` C4 |
 | Konten in Produktion | Super-Admin (Mike) per Befehl angelegt; Sonjas Konto über die Benutzerverwaltung mit Einladungslink (2026-11-14) | Sonja setzt ihr Passwort selbst |
 | Cronjob überfällige Honorarnoten | Freigegeben, täglich 07:30, ohne Prüfung der Zeitzone (2026-11-14) | Es geht um Tage, nicht Stunden; eine Stunde früher oder später ist egal |
+| Passkeys (B5) | Dürfen nach dem Start des Echtbetriebs kommen, bleiben aber eingeplant (2026-11-14) | Passwort reicht vorerst; Fingerabdruck ist für Sonja einfacher als ein Einmalcode |
 | Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
