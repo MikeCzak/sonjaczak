@@ -101,7 +101,3 @@ Dateien: `src/Entity/TrialLesson.php`, `src/Lesson/TrialTakeover.php`, `src/Cont
   dem Schnuppern nicht bleibt, wird ganz gelöscht (`datenmodell.md` 5). Personen **mit Teilnahmen** lassen sich nicht
   löschen (`StudentVoter`); ohne diese Regel hätte der Fremdschlüssel `enrollment.student_id` das Löschen mit einem
   Datenbankfehler (Fehlerseite 500) abgebrochen. Das war eine Lücke seit C1, jetzt geschlossen.
-
-## Zum Durchsehen
-
-Gesammelt in `docs/planung/zum-durchsehen.md`.

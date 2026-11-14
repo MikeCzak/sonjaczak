@@ -78,7 +78,7 @@ Das Löschen braucht einen zweiten Klick (`<details>` in `templates/admin/_delet
 - **Zwei Elternteile als zwei Guardians** (n:m): genauer, aber auf der Honorarnote steht ohnehin ein Text wie „Anna
   und Peter Muster“. Ein Namensfeld reicht (Entscheidung in `datenmodell.md` 3.2).
 - **Autocomplete statt Auswahlliste** für den Elternteil (Symfony UX Autocomplete): erst sinnvoll bei vielen
-  Einträgen; die UX-Entscheidung ist ohnehin offen (C4).
+  Einträgen.
 
 ## Sicherheit und DSGVO
 
@@ -86,4 +86,4 @@ Das Löschen braucht einen zweiten Klick (`<details>` in `templates/admin/_delet
 - Keine Personendaten in Logs: Die Controller loggen nichts, Flash-Meldungen enthalten keine Namen.
 - Lokal und in Tests nur erfundene Daten (Foundry, `de_AT`); E-Mails aus `safeEmail()` enden auf `example.*`.
 - Löschen ist endgültig (keine „Papierkorb“-Spalte). Aufbewahrungsfristen für Belege betreffen Honorarnoten, nicht
-  die Stammdaten allein (offen: BAO-Frist prüfen, Abschnitt F).
+  die Stammdaten allein (§ 132 BAO, Zitat in `planung/umsetzung-admin.md` F).

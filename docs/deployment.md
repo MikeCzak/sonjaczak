@@ -37,9 +37,14 @@ wer den Key hat, kann also nur Images starten, die unsere CI gebaut hat.
 
 ## Einmalige Einrichtung
 
-In den Befehlen `SERVER_IP` durch die IPv4-Adresse des VPS ersetzen.
+In den Befehlen `SERVER_IP` durch die IPv4-Adresse des VPS ersetzen. Ob ein Schritt erledigt ist oder noch auf
+Freigabe wartet, steht in `projektstand.md`.
 
-### B1. Benutzer und Verzeichnisse (auf dem Server, als mike)
+**Nummerierung:** Bis 2026-11-13 hießen die Schritte B1–B8, C und D. Weil der Admin-Plan dieselben Buchstaben nutzt,
+heißen sie jetzt S1–S10 (B1–B8 → S1–S8, C → S9, D → S10). In älteren Commits, im `verlauf.md` und im Text der
+Token-Erinnerungen in der crontab des Servers stehen noch die alten Namen.
+
+### S1. Benutzer und Verzeichnisse (auf dem Server, als mike)
 
 ```bash
 sudo useradd --create-home --shell /bin/sh deploy
@@ -51,7 +56,7 @@ sudo install -d -o deploy -g deploy -m 750 /srv/sonjaczak/release
 
 `--shell /bin/sh` ist nötig: Auch der erzwungene Befehl wird über die Login-Shell gestartet.
 
-### B2. Deploy-Skript (vom Mac aus kopieren, dann auf dem Server installieren)
+### S2. Deploy-Skript (vom Mac aus kopieren, dann auf dem Server installieren)
 
 ```bash
 # Mac, im Projektordner
@@ -64,7 +69,7 @@ sudo install -o root -g root -m 755 /tmp/deploy.sh /srv/sonjaczak/deploy.sh && r
 Das Skript gehört root und ist für `deploy` nicht schreibbar. Ändert sich `deploy/deploy.sh` im Repo, diesen Schritt
 wiederholen.
 
-### B3. Secrets (auf dem Server)
+### S3. Secrets (auf dem Server)
 
 ```bash
 sudo install -o root -g deploy -m 640 /dev/null /srv/sonjaczak/.env
@@ -97,7 +102,7 @@ Später den Wert in `.env` zu ändern, ändert das Passwort in der Datenbank nic
 
 Die Werte zusätzlich im Passwort-Manager ablegen.
 
-### B4. Zugriff auf ghcr.io
+### S4. Zugriff auf ghcr.io
 
 1. Auf GitHub: Settings → Developer settings → Personal access tokens → **Tokens (classic)** → Generate new token.
    Name z. B. `sonjaczak-server-pull`, Ablaufdatum setzen (Erinnerung eintragen!), **nur** Scope `read:packages`.
@@ -114,80 +119,9 @@ nicht in mikes Home.
 
 Docker speichert den Token in `/home/deploy/.docker/config.json` (unverschlüsselt, nur für deploy lesbar).
 Läuft der Token ab, schlägt der Deploy beim `docker pull` fehl → neuen Token anlegen, Schritt wiederholen und die
-Erinnerung (B6) auf das neue Ablaufdatum setzen.
+Erinnerung (S6) auf das neue Ablaufdatum setzen.
 
-### B6. Erinnerung an ablaufende Tokens (auf dem Server)
-
-GitHub schickt selbst eine Mail, bevor ein Token abläuft (GitHub-Changelog „Expiration options for personal access
-tokens“, 2021-07-26; wie viele Tage vorher, steht dort nicht). Zusätzlich schickt der Server eine Woche vorher eine
-Mail über den Symfony-Mailer, wie beim Testversand in B3.
-
-Tokens (Stand 2026-11-12):
-
-| Token | Scopes | Wo | Läuft ab | Erinnerung |
-|---|---|---|---|---|
-| gh CLI | `admin:public_key`, `read:org`, `repo` | Mac | 2027-11-02 | 2027-10-26 |
-| `sonjaczak-server-pull` | `read:packages` | Server (B4) | 2027-11-03 | 2027-10-27 |
-
-```bash
-sudo crontab -e      # crontab von root: docker läuft dort ohne sudo
-```
-
-Eintrag (`<adresse>` = wohin die Erinnerung gehen soll):
-
-```
-# Token reminders: cron has no year, so the job runs daily at 08:00 and compares the date itself. % must be escaped.
-0 8 * * * [ "$(date +\%F)" = "2027-10-26" ] && docker exec sonjaczak-php-1 bin/console mailer:test <adresse> --from anfrage@sonjaczak.com --subject "gh-CLI-Token läuft am 2.11. ab" --body "Neuen Token anlegen: GitHub → Settings → Developer settings → Personal access tokens. Danach gh auth login und B6 anpassen."
-0 8 * * * [ "$(date +\%F)" = "2027-10-27" ] && docker exec sonjaczak-php-1 bin/console mailer:test <adresse> --from anfrage@sonjaczak.com --subject "Server-Token (ghcr) läuft am 3.11. ab" --body "Neuen Token anlegen und docs/deployment.md B4 wiederholen, danach B6 anpassen."
-```
-
-Erklärung:
-
-- `mailer:test` nimmt Empfänger, `--from`, `--subject` und `--body` (Optionen laut
-  `vendor/symfony/mailer/Command/MailerTestCommand.php`). Der Absender muss `anfrage@sonjaczak.com` sein, weil IONOS
-  nur Absender des eigenen Postfachs annimmt.
-- In einer crontab beendet ein nicht escaptes `%` die Befehlszeile (`man 5 crontab`), daher `\%F`.
-- cron würde die Ausgabe eines Jobs per Mail schicken; ohne lokales Mailprogramm verwirft es sie (Hinweis im Journal,
-  `journalctl -u cron`). Deshalb den Eintrag einmal testen, indem man das Datum vorübergehend auf heute und die
-  Uhrzeit auf die nächste Minute setzt.
-- `crontab -l` zeigt die Einträge, nach dem Erneuern eines Tokens das Datum anpassen.
-
-### B7. Admin-Konten anlegen (auf dem Server, einmalig nach dem Deploy von B1)
-
-Das erste Konto kann nicht über die App entstehen (`docs/planung/rollen.md` 4.1). Der Befehl fragt das Passwort
-verdeckt und zweimal ab (mindestens 12 Zeichen, nicht zu leicht zu erraten); `-it` ist nötig, damit die verdeckte
-Eingabe funktioniert:
-
-```bash
-docker exec -it sonjaczak-php-1 bin/console app:user:create <deine-adresse> --super-admin
-docker exec -it sonjaczak-php-1 bin/console app:user:create music@sonjaczak.com
-```
-
-Das zweite Konto (Sonja, `ROLE_ADMIN`) kann stattdessen später in der Benutzerverwaltung entstehen (Schritt B4), dann
-setzt Sonja ihr Passwort selbst über den Einladungslink. Danach im Browser `https://sonjaczak.com/admin` öffnen und
-anmelden. Hintergrund: `docs/erklaerungen/08-login-und-sessions.md`.
-
-### B8. Erinnerung an überfällige Honorarnoten (auf dem Server) – **noch nicht eingerichtet, wartet auf Freigabe**
-
-Der Befehl `app:invoices:remind-overdue` (Schritt D4) schickt Sonja eine Mail an `music@sonjaczak.com`
-(`app.contact_email`) mit allen Honorarnoten, deren Frist seit dem letzten Lauf überschritten ist; je Frist nur
-einmal. Vorschlag für den Eintrag in der crontab von root (wie B6), täglich um 07:30:
-
-```
-# Overdue invoices: one mail to Sonja with all newly overdue invoices (docs/erklaerungen/13-honorarnoten.md)
-30 7 * * * docker exec sonjaczak-php-1 bin/console app:invoices:remind-overdue --no-interaction > /dev/null
-```
-
-- Vorher einmal von Hand ohne Wirkung prüfen: `docker exec sonjaczak-php-1 bin/console app:invoices:remind-overdue --dry-run`
-  (zeigt nur die Anzahl, verschickt und ändert nichts).
-- Die Ausgabe nennt nur die Anzahl, keine Namen. `> /dev/null` verwirft die Erfolgsmeldung; Fehler (stderr) bleiben
-  sichtbar im Journal (`journalctl -u cron`).
-- Die Links in der Mail entstehen aus `DEFAULT_URI` (`compose.yaml`: `https://${SERVER_NAME}:443`); lokal mit diesem
-  Wert geprüft, der Port fällt im Link weg (`https://sonjaczak.com/admin/honorarnoten/2`).
-- cron nimmt die Zeitzone des Servers; vor dem Eintragen mit `timedatectl` nachsehen (bei UTC ist 07:30 in Wien 08:30
-  bzw. 09:30). Ob etwas überfällig ist, rechnet PHP ohnehin in `Europe/Vienna`.
-
-### B5. SSH-Key für GitHub Actions
+### S5. SSH-Key für GitHub Actions
 
 ```bash
 # Mac: eigenes Schlüsselpaar nur für das Deployment, ohne Passphrase (die CI kann keine eingeben)
@@ -215,7 +149,78 @@ Falls stattdessen `Permission denied (publickey)` kommt, obwohl der Key stimmt: 
 gesperrtes Passwort (`!`), was sshd je nach Konfiguration als gesperrtes Konto wertet. Dann
 `sudo usermod -p '*' deploy` (kein Passwort-Login möglich, aber Konto nicht gesperrt) und erneut testen.
 
-### C. GitHub-Environment und Secrets (Mac, mit gh)
+### S6. Erinnerung an ablaufende Tokens (auf dem Server)
+
+GitHub schickt selbst eine Mail, bevor ein Token abläuft (GitHub-Changelog „Expiration options for personal access
+tokens“, 2021-07-26; wie viele Tage vorher, steht dort nicht). Zusätzlich schickt der Server eine Woche vorher eine
+Mail über den Symfony-Mailer, wie beim Testversand in S3.
+
+Tokens (Stand 2026-11-12):
+
+| Token | Scopes | Wo | Läuft ab | Erinnerung |
+|---|---|---|---|---|
+| gh CLI | `admin:public_key`, `read:org`, `repo` | Mac | 2027-11-02 | 2027-10-26 |
+| `sonjaczak-server-pull` | `read:packages` | Server (S4) | 2027-11-03 | 2027-10-27 |
+
+```bash
+sudo crontab -e      # crontab von root: docker läuft dort ohne sudo
+```
+
+Eintrag (`<adresse>` = wohin die Erinnerung gehen soll):
+
+```
+# Token reminders: cron has no year, so the job runs daily at 08:00 and compares the date itself. % must be escaped.
+0 8 * * * [ "$(date +\%F)" = "2027-10-26" ] && docker exec sonjaczak-php-1 bin/console mailer:test <adresse> --from anfrage@sonjaczak.com --subject "gh-CLI-Token läuft am 2.11. ab" --body "Neuen Token anlegen: GitHub → Settings → Developer settings → Personal access tokens. Danach gh auth login und S6 anpassen."
+0 8 * * * [ "$(date +\%F)" = "2027-10-27" ] && docker exec sonjaczak-php-1 bin/console mailer:test <adresse> --from anfrage@sonjaczak.com --subject "Server-Token (ghcr) läuft am 3.11. ab" --body "Neuen Token anlegen und docs/deployment.md S4 wiederholen, danach S6 anpassen."
+```
+
+Erklärung:
+
+- `mailer:test` nimmt Empfänger, `--from`, `--subject` und `--body` (Optionen laut
+  `vendor/symfony/mailer/Command/MailerTestCommand.php`). Der Absender muss `anfrage@sonjaczak.com` sein, weil IONOS
+  nur Absender des eigenen Postfachs annimmt.
+- In einer crontab beendet ein nicht escaptes `%` die Befehlszeile (`man 5 crontab`), daher `\%F`.
+- cron würde die Ausgabe eines Jobs per Mail schicken; ohne lokales Mailprogramm verwirft es sie (Hinweis im Journal,
+  `journalctl -u cron`). Deshalb den Eintrag einmal testen, indem man das Datum vorübergehend auf heute und die
+  Uhrzeit auf die nächste Minute setzt.
+- `crontab -l` zeigt die Einträge, nach dem Erneuern eines Tokens das Datum anpassen.
+
+### S7. Admin-Konten anlegen (auf dem Server, einmalig nach dem Deploy von Admin-Plan B1)
+
+Das erste Konto kann nicht über die App entstehen (`docs/planung/rollen.md` 4.1). Der Befehl fragt das Passwort
+verdeckt und zweimal ab (mindestens 12 Zeichen, nicht zu leicht zu erraten); `-it` ist nötig, damit die verdeckte
+Eingabe funktioniert:
+
+```bash
+docker exec -it sonjaczak-php-1 bin/console app:user:create <deine-adresse> --super-admin
+docker exec -it sonjaczak-php-1 bin/console app:user:create music@sonjaczak.com
+```
+
+Das zweite Konto (Sonja, `ROLE_ADMIN`) kann stattdessen später in der Benutzerverwaltung entstehen
+(Admin-Plan B4), dann setzt Sonja ihr Passwort selbst über den Einladungslink. Danach im Browser
+`https://sonjaczak.com/admin` öffnen und anmelden. Hintergrund: `docs/erklaerungen/08-login-und-sessions.md`.
+
+### S8. Erinnerung an überfällige Honorarnoten (auf dem Server)
+
+Der Befehl `app:invoices:remind-overdue` (Admin-Plan D4) schickt Sonja eine Mail an `music@sonjaczak.com`
+(`app.contact_email`) mit allen Honorarnoten, deren Frist seit dem letzten Lauf überschritten ist; je Frist nur
+einmal. Vorschlag für den Eintrag in der crontab von root (wie S6), täglich um 07:30:
+
+```
+# Overdue invoices: one mail to Sonja with all newly overdue invoices (docs/erklaerungen/13-honorarnoten.md)
+30 7 * * * docker exec sonjaczak-php-1 bin/console app:invoices:remind-overdue --no-interaction > /dev/null
+```
+
+- Vorher einmal von Hand ohne Wirkung prüfen: `docker exec sonjaczak-php-1 bin/console app:invoices:remind-overdue --dry-run`
+  (zeigt nur die Anzahl, verschickt und ändert nichts).
+- Die Ausgabe nennt nur die Anzahl, keine Namen. `> /dev/null` verwirft die Erfolgsmeldung; Fehler (stderr) bleiben
+  sichtbar im Journal (`journalctl -u cron`).
+- Die Links in der Mail entstehen aus `DEFAULT_URI` (`compose.yaml`: `https://${SERVER_NAME}:443`); lokal mit diesem
+  Wert geprüft, der Port fällt im Link weg (`https://sonjaczak.com/admin/honorarnoten/2`).
+- cron nimmt die Zeitzone des Servers; vor dem Eintragen mit `timedatectl` nachsehen (bei UTC ist 07:30 in Wien 08:30
+  bzw. 09:30). Ob etwas überfällig ist, rechnet PHP ohnehin in `Europe/Vienna`.
+
+### S9. GitHub-Environment und Secrets (Mac, mit gh)
 
 ```bash
 gh api -X PUT repos/MikeCzak/sonjaczak/environments/production >/dev/null
@@ -229,12 +234,12 @@ ssh-keyscan -t ed25519 SERVER_IP 2>/dev/null | gh secret set SSH_KNOWN_HOSTS --e
 ```
 
 Optional danach den privaten Key vom Mac löschen (`rm ~/.ssh/sonjaczak_deploy`) – er liegt dann nur noch bei
-GitHub. Bei Bedarf einfach ein neues Paar erzeugen und B5/C wiederholen.
+GitHub. Bei Bedarf einfach ein neues Paar erzeugen und S5 und S9 wiederholen.
 
 Im Browser lässt sich unter Repo → Settings → Environments → production zusätzlich „Deployment branches“ auf
 `main` beschränken.
 
-### D. DNS bei IONOS
+### S10. DNS bei IONOS
 
 Bei der Domain `sonjaczak.com` im IONOS-DNS:
 
@@ -257,7 +262,7 @@ Voraussetzung: DNS zeigt auf den Server, Ports 80/443 offen. Ein gekauftes Zerti
 
 ## Erster Deploy
 
-Erst wenn B–D erledigt sind und `dig` die VPS-Adressen zeigt: pushen und den Lauf beobachten
+Erst wenn S1–S5, S9 und S10 erledigt sind und `dig` die VPS-Adressen zeigt: pushen und den Lauf beobachten
 (`gh run watch`). Danach `https://sonjaczak.com` öffnen – erwartet ist vorerst die Fehlerseite „Not Found“ von
 Symfony mit gültigem Zertifikat, weil es noch keine Startseite gibt.
 

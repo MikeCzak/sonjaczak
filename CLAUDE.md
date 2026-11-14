@@ -27,6 +27,25 @@ Begriffe: `docs/begriffe.md` · Lokaler Entwicklungs-Workflow: `docs/entwicklung
 - **Projektstand pflegen:** Wenn ein Schritt abgeschlossen oder eine Entscheidung getroffen ist,
   `docs/projektstand.md` aktualisieren und kurz sagen, was sich geändert hat.
 
+## Wo was steht
+
+| Datei | Inhalt |
+|---|---|
+| `docs/projektstand.md` | **Die eine Stelle für Offenes:** zuerst „Jetzt“ (wartet auf Mike), dann „Später zu klären“, Termine, Fortschritt (eine Zeile je Schritt), getroffene Entscheidungen, Server-Konfiguration |
+| `docs/verlauf.md` | Was wann gemacht wurde, mit Messwerten und Fehlern. Wird nur ergänzt |
+| `docs/planung/` | Freigegebene Pläne (Anforderungen, Datenmodell, Rollen, Umsetzungsplan). Keine Statusliste |
+| `docs/erklaerungen/` | Nur Erklärungen zum technischen Verständnis: Konzepte, Begründungen, Alternativen, Fallstricke. Keine offenen Punkte, kein „wartet auf …“ |
+| `docs/deployment.md`, `entwicklung.md`, `rundgang-admin.md`, `begriffe.md` | Anleitungen und Nachschlagen |
+
+Regeln:
+
+- **Jede Annahme oder Auslegung**, die Claude beim Umsetzen trifft, kommt sofort mit Datum und Schritt nach
+  `projektstand.md` → „Später zu klären“, nirgendwo sonst. Was eine Freigabe oder Entscheidung von Mike braucht,
+  kommt nach „Jetzt“. Ist ein Punkt geklärt, wandert er zu „Getroffene Entscheidungen“.
+- **Verweise immer mit Ort:** „Admin-Plan D2“ (`docs/planung/umsetzung-admin.md`), „`deployment.md` S8“
+  (Server-Schritte S1–S10). Nie ein Kürzel allein.
+- Nach jedem abgeschlossenen Schritt: Zeile unter „Fortschritt“ abhaken, Details nach `verlauf.md`.
+
 ## Tech-Stack
 
 - PHP, Symfony 8.x (Start mit 8.1, Minor-Upgrades bis 8.4 LTS), Twig, Doctrine ORM, PostgreSQL 18 (Standard des Templates)

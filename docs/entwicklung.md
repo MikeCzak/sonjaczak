@@ -156,6 +156,22 @@ Erstellt am 2026-11-12 mit fonttools 4.68.0, brotli 1.2.1, uharfbuzz 0.57.0.
 - Nach dem Ändern prüfen: `docker compose exec php bin/console debug:translation de --only-missing`.
 - Die 404-Seite zeigt Symfony nur ohne Debug-Modus. Lokal ansehen: https://localhost/_error/404
 
+## Frontend-Abhängigkeiten
+
+(Bis 2026-11-13 als „Zu beachten (Frontend)“ im Projektstand.)
+
+- Bootstrap-JavaScript steht in `importmap.php` auf 5.3.8, das Sass-Paket in `composer.json` auf `^5.3`.
+  Dependabot aktualisiert nur das Composer-Paket → bei Updates die Importmap-Version mit `importmap:require
+  bootstrap@<version>` nachziehen (`importmap:outdated` zeigt Abweichungen).
+- Auf Packagist gibt es `twbs/bootstrap` v6.0.0-alpha.1; wir bleiben bei `^5.3`, Major-Upgrade erst nach Release von 6.
+- Das Sass-Bundle (v0.10.0) pinnt Dart Sass 1.69.7 (`vendor/symfonycasts/sass-bundle/src/SassBinary.php`). Eine
+  neuere Version ginge über die Option `binary`; aktuell nicht nötig.
+- Das kompilierte CSS enthält ganz Bootstrap (237 KB komprimiert, vor gzip).
+- Kontrast Petrol (WCAG AA ≥ 4,5:1): A `#1F5F66` auf Creme 6,70:1, weiße Schrift darauf 7,27:1; B `#1A6670` auf
+  Weiß 6,61:1. Variante C mit Gold `#D4AF5A` statt Petrol: auf Dunkel 9,08:1, Buttons mit dunkler Schrift.
+- Bildnachweis im Impressum: Doris Sporer (Porträts), Simon Reithofer (`hero-sax.jpg`), Michael Czak (Bandfoto,
+  bestätigt 2026-11-11). KI-Bilder (`hero-wedding.jpg`, `hero-lessons.jpg`) sind gekennzeichnet (2026-11-12).
+
 ## Testdaten (Foundry)
 
 Lokal gibt es nur erfundene Daten (Faker, `de_AT`), nie echte Schüler:innen:

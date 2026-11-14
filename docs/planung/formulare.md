@@ -29,7 +29,7 @@ Unterricht? Telefon im allgemeinen Formular? - Telefon bei Unterricht nicht Pfli
 
 ## 2. Mailversand (F50: „Ist Mail-Versand auch über IONOS möglich?“)
 
-Ja. Die Domain hat bereits IONOS-Mail (MX `mx00/mx01.ionos.de`, siehe `deployment.md` D). Laut IONOS-Hilfe
+Ja. Die Domain hat bereits IONOS-Mail (MX `mx00/mx01.ionos.de`, siehe `deployment.md` S10). Laut IONOS-Hilfe
 (ionos.de/hilfe → „Serverinformationen für IMAP, POP3 und SMTP“) gilt:
 
 - Server `smtp.ionos.de`, Port 465 mit SSL/TLS, alternativ Port 587 mit STARTTLS

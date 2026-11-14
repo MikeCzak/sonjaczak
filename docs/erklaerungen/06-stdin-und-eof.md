@@ -1,6 +1,6 @@
 # 06 – stdin, EOF und warum `docker login --password-stdin` Strg+D braucht
 
-Anlass: In [../deployment.md](../deployment.md) (B4) musste der Token eingefügt, Enter gedrückt **und dann Strg+D**
+Anlass: In [../deployment.md](../deployment.md) (S4) musste der Token eingefügt, Enter gedrückt **und dann Strg+D**
 gedrückt werden.
 
 ## Konzepte

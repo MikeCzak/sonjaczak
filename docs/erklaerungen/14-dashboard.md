@@ -25,7 +25,3 @@ Plan: `docs/planung/datenmodell.md` 9 und Umsetzungsplan, Abschnitt E. Seite: `/
   10:00 fest und prüft die Liste der nächsten Einheiten wörtlich.
 - **Nicht umgesetzt:** eine Übersicht *aller* Schüler:innen (gibt es unter „Schüler:innen“) und Einnahmen früherer
   Jahre (unter „Einnahmen“ je Jahr).
-
-## Zum Durchsehen
-
-Gesammelt in `docs/planung/zum-durchsehen.md`.

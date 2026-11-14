@@ -367,7 +367,7 @@ Liegt die Schnupperstunde vor `course.startsOn`, steht sie im Raster in einer ei
   Tag eine. Gutschriften bekommen keine Erinnerung.
   Ablauf: ein Konsolenbefehl (`app:invoices:remind-overdue`) prüft alle offenen Honorarnoten und schickt **eine** Mail
   mit allen neu überfälligen, ohne Personendaten im Log. Aufgerufen täglich per Cronjob am Server
-  (`docker exec … bin/console …`, wie die Token-Erinnerung in `deployment.md` B6). Die Alternative Symfony Scheduler
+  (`docker exec … bin/console …`, wie die Token-Erinnerung in `deployment.md` S6). Die Alternative Symfony Scheduler
   braucht einen dauernd laufenden Messenger-Worker, also mehr RAM; für eine Prüfung am Tag lohnt sich das nicht.
   Der Cronjob ist eine Änderung am Server und wird vorher abgesprochen.
 

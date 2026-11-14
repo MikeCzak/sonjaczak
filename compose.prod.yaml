@@ -14,7 +14,7 @@ services:
       # smtps://<mailbox, URL-encoded>:<password, URL-encoded>@smtp.ionos.de:465
       MAILER_DSN: ${MAILER_DSN:?MAILER_DSN must be set}
       # Extra Caddy site (inserted by frankenphp/Caddyfile): www gets its own certificate and redirects permanently
-      # to the main domain, so every page has one address. Needs a DNS record for www (docs/deployment.md, D).
+      # to the main domain, so every page has one address. Needs a DNS record for www (docs/deployment.md, S10).
       CADDY_EXTRA_CONFIG: |
         www.${SERVER_NAME:-localhost} {
             redir https://${SERVER_NAME:-localhost}{uri} permanent

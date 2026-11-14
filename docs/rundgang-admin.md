@@ -93,9 +93,9 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 
 ## In Produktion zeigen: was vorher passieren muss
 
-1. **Konten anlegen** (`deployment.md` B7, nach Freigabe).
+1. **Konten anlegen** (`deployment.md` S7).
 2. **Einstellungen:** Sonja trägt ihre Absenderdaten ein und lädt die Unterschrift hoch (oder Mike mit ihr).
 3. **Achtung, Produktion ist echt:** Honorarnoten lassen sich nicht löschen und verbrauchen Nummern (1/2026, 2/2026 …).
    Beim Zeigen also keine Honorarnote zum Ausprobieren erstellen. Schüler:innen, Kurse und Teilnahmen lassen sich
    wieder löschen.
-4. **Echte Daten** (Sonjas Schüler:innen) erst nach Abschnitt F (Backups, Datenschutz-Information).
+4. **Echte Daten** (Sonjas Schüler:innen) erst nach Admin-Plan F (Backups, Datenschutz-Information).

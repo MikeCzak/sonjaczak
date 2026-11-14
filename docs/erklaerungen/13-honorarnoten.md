@@ -132,8 +132,7 @@ Dateien: `src/Command/RemindOverdueInvoicesCommand.php`, `templates/email/invoic
   `assertSame(0, …)` als „always false“.
 - **Datenschutz:** Die Mail an Sonja enthält Nummer, Name und Betrag (sie braucht sie). Die Ausgabe des Befehls (Cron,
   Log) nennt nur die Anzahl.
-- **Am Server:** Cronjob in `docs/deployment.md` B8 vorbereitet, **nicht eingerichtet** (Änderung am Server, wartet
-  auf Freigabe).
+- **Am Server:** Der Befehl ist für einen täglichen Cronjob gedacht (Eintrag in `docs/deployment.md` S8).
 
 ## Export der Einnahmen (D5)
 
@@ -160,7 +159,3 @@ Dateien: `src/Invoice/IncomeCsv.php`, `src/Controller/Admin/IncomeController.php
   in Objekte um; `PaymentRepository::years()` bekommt den String `2026-12-30` der Datenbank. Der erste Testlauf
   scheiterte genau daran (TypeError, Fehlerseite 500).
 - Die Datei wird nicht gespeichert, sondern bei jedem Download erzeugt, mit `Cache-Control: private, no-store`.
-
-## Zum Durchsehen
-
-Gesammelt in `docs/planung/zum-durchsehen.md`.

@@ -1,7 +1,7 @@
     # Phase 2: Umsetzungsplan Admin-Bereich (Entwurf)
 
 Stand: 2026-11-13, **freigegeben**. Grundlage: `datenmodell.md` und `rollen.md` (beide freigegeben 2026-11-13).
-Fortschritt wird im Projektstand abgehakt.
+Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), nicht hier.
 
 ## Spielregeln
 
@@ -121,10 +121,10 @@ Fortschritt wird im Projektstand abgehakt.
 - Zahlung erfassen (ein Klick für den Rest, Datum änderbar), Status berechnet, Gutschrift mit `credits` und
   `InvoiceVoter::CREDIT`.
 
-**D4 Erinnerung bei überschrittener Frist** – Befehl erledigt 2026-11-13, Cronjob wartet (`deployment.md` B8)
+**D4 Erinnerung bei überschrittener Frist** – Befehl erledigt 2026-11-13, Cronjob: `deployment.md` S8
 
 - Befehl `app:invoices:remind-overdue` mit `remindedFor`, Tests mit festgelegtem Datum (`ClockInterface`/`MockClock`,
-  damit Tests nicht vom heutigen Tag abhängen). Danach Cronjob am Server (nach Rückfrage, `deployment.md`).
+  damit Tests nicht vom heutigen Tag abhängen). Danach Cronjob am Server (nach Rückfrage, `deployment.md` S8).
 
 **D5 Export der Einnahmen** – erledigt 2026-11-13 (mit Sonjas Excel noch zu prüfen)
 
@@ -146,8 +146,7 @@ Fortschritt wird im Projektstand abgehakt.
   Abgabenverfahren von Bedeutung sind; die Frist läuft für Bücher und Aufzeichnungen „vom Schluß des Kalenderjahres“.
   Abs. 2: Aufbewahrung auf Datenträgern zulässig, wenn die Wiedergabe vollständig, geordnet, inhaltsgleich und bis zum
   Ende der Frist jederzeit gewährleistet ist (spricht für Backups der Datenbank samt PDFs, Abschnitt F).
-  **Offen (Entscheidung):** die Regel daraus, z. B. Honorarnoten ab dem 8. Jahr nach Ablauf des Kalenderjahres
-  anonymisieren und Schüler:innen ohne Teilnahmen in Frist löschen; mit Sonjas Steuerberatung abstimmen.
+  Die Lösch- und Anonymisierungsregel daraus steht als offener Punkt im Projektstand.
 
 ## Meilensteine
 
@@ -160,9 +159,8 @@ Fortschritt wird im Projektstand abgehakt.
 B5 (Passkeys) kann vor oder nach dem Zeigen kommen; spätestens vor dem Echtbetrieb, wenn Sonja auf Passkeys umsteigen
 will.
 
-**Kein eigener Demo-Termin** (Entscheidung 2026-11-13): Mike sieht sich die Funktionen lokal mit den Fixtures an
-(`docs/rundgang-admin.md`) und zeigt sie Sonja in Produktion. Vorher beachten: Honorarnoten in Produktion lassen sich
-nicht löschen und verbrauchen Nummern; echte Daten erst nach Abschnitt F.
+Kein eigener Demo-Termin (Entscheidung 2026-11-13, Projektstand): Mike sieht sich die Funktionen lokal an
+(`docs/rundgang-admin.md`) und zeigt sie Sonja in Produktion.
 
 ## Später (außerhalb dieses Plans)
 

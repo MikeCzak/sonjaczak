@@ -127,7 +127,7 @@ abmelden. Die Route im `SecurityController` wird nie erreicht: Der Logout-Listen
 
 Ohne Konto kann sich niemand anmelden, um eines anzulegen. Dafür gibt es `app:user:create` (`rollen.md` 4.1). Das
 Passwort wird verdeckt und zweimal abgefragt, nie als Argument übergeben: Argumente landen in der Shell-History und
-sind für andere Prozesse sichtbar (`ps`). In Produktion: `docs/deployment.md` B7.
+sind für andere Prozesse sichtbar (`ps`). In Produktion: `docs/deployment.md` S7.
 
 ### Passwort vergessen (B3)
 

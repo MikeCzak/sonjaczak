@@ -1,307 +1,153 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-03 (übernommen aus dem Projektstand-Doc auf claude.ai; ab jetzt ist diese Datei maßgeblich)
+Stand: 2026-11-14. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
-## Aktueller Stand
+**Verweise:** Schritte des Admin-Plans heißen „Admin-Plan C4“ (`planung/umsetzung-admin.md`), Schritte der
+Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt, verschwindet er hier und landet unter „Getroffene
+Entscheidungen“ (oder im Plan, falls er nur einen Schritt betrifft).
 
-**Phase 1 erreicht (2026-11-03):** Jeder Push auf `main` läuft durch Tests → Build → Deploy und geht automatisch auf
-https://sonjaczak.com live (erster Deploy: Commit `9cd534a`, CI-Lauf 41657250962). Symfony 8.1.10 (Skeleton) im
-Template dunglas/symfony-docker, Doctrine ORM mit PostgreSQL 18.6. Zertifikat von Let's Encrypt (90 Tage, Caddy
-erneuert selbst), HTTP leitet auf HTTPS um (308). Noch keine Startseite (404), keine Entities, keine Migrationen.
+## Jetzt (wartet auf Mike)
 
-RAM auf dem Server nach dem ersten Deploy (Leerlauf): php 159 MiB, database 35 MiB; Server gesamt 462 MiB belegt,
-386 MiB verfügbar, 37 MiB Swap genutzt.
+1. **Entscheidung PDF-Bibliothek** (Admin-Plan D2, Optionen vorgestellt 2026-11-13). Empfehlung: dompdf (HTML aus
+   Twig, LGPL-2.1). Alternativen: mpdf (GPL-2.0-only), tc-lib-pdf (Layout in PHP). Alle brauchen die PHP-Erweiterung
+   GD für die Unterschrift (eine Zeile im `Dockerfile`).
+2. **Entscheidung Kursraster** (Admin-Plan C4, Optionen vorgestellt 2026-11-13). Empfehlung: Stimulus + `fetch`.
+   Alternativen: Turbo Frames, Live Components. Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}`
+   markiert.
+3. **Freigabe: Admin-Konten am Server** (`deployment.md` S7). Nötig: dein Ja und deine E-Mail-Adresse. Sonjas Konto
+   besser danach über die Benutzerverwaltung mit Einladungslink.
+4. **Freigabe: Cronjob für überfällige Honorarnoten** (`deployment.md` S8, Befehl aus Admin-Plan D4). Vorher die
+   Zeitzone des Servers prüfen (`timedatectl`).
+5. **Backup-Plan** (Admin-Plan F, DSGVO): Claude schreibt den Plan, Mike gibt ihn frei, dann die Schritte am Server
+   und ein Test der Rücksicherung. Zu entscheiden: Verschlüsselung (`age` oder GPG), Ablage und Aufbewahrung am Mac,
+   ob der Mac zur Sicherungszeit läuft, eingeschränkter SSH-Zugang. **Echte Daten erst danach.**
 
-**Projekt-Setup**
+**Ausständig von Sonja** (über Mike, 2026-11-13): Absenderdaten für die Honorarnote (Name, Titel, Adresse, IBAN, BIC,
+Bank, Ort, Hinweis zur Umsatzsteuer) und die Unterschrift als PNG. Werden in Produktion unter `/admin/einstellungen`
+eingetragen, nicht ins Repo. Ohne sie lassen sich keine Honorarnoten erstellen.
 
-- [x] Git-Repo (Branch `main`), `.gitignore` mit `/instructions_draft.md`; `.idea/` und `.DS_Store` über globale Ignore-Datei
-- [x] Template dunglas/symfony-docker übernommen (Commit `92d0d49`, ohne dessen `docs/`, `.devcontainer/`, `README.md`)
-- [x] Symfony 8.1 per `SYMFONY_VERSION=8.1.*` installiert; `LICENSE` und `AGENTS.md` des Skeletons entfernt,
-      `composer.json` auf `sonjaczak/website` / `proprietary` angepasst
-- [x] Dockerfile, Compose-Dateien und `frankenphp/` gemeinsam durchgegangen
-- [x] GitHub-Remote eingerichtet und gepusht
-- [x] Doctrine (`symfony/orm-pack`, Flex-Rezept doctrine-bundle 3.0) installiert; auf PostgreSQL 18 angeglichen
-      (Image-Tag, `serverVersion` in `compose.yaml` und `.env`, Volume auf `/var/lib/postgresql`, weil PGDATA ab 18
-      unter `/var/lib/postgresql/18/docker` liegt). Persistenz über `down`/`up` geprüft.
-- RAM lokal im Leerlauf (Dev-Image, Mac): php ~91 MiB, database ~22 MiB; `shared_buffers` = 128MB (Standard,
-      wird erst bei Nutzung belegt). Nur Anhaltspunkt, auf dem Server mit Prod-Image neu messen.
+## Später zu klären
 
-**CI** (`.github/workflows/ci.yaml`, Basis: Template-CI)
+Jeder Punkt mit dem Tag, an dem er entstand, und dem Schritt, aus dem er stammt. Die Begründung steht in der
+verlinkten Erklärung.
 
-- [x] PHPUnit 13 über `symfony/test-pack`; erster Test `tests/DatabaseConnectionTest.php` (Kernel bootet, Test-DB erreichbar)
-- [x] PHPStan 2 auf Level max mit Symfony-, Doctrine- und PHPUnit-Erweiterung (`phpstan.dist.neon`); Erweiterungen
-      manuell eingebunden statt über das Composer-Plugin `phpstan/extension-installer`
-- [x] Job „Tests“: Dev-Image bauen (mit GitHub-Actions-Cache), Container starten, HTTP/Mercure prüfen, Test-DB
-      anlegen, Migrationen, PHPUnit, Schema-Validierung, PHPStan – alles im Container, also mit PHP 8.5.12 wie lokal
-- [x] Job „Lint“ (super-linter) des Templates entfernt: schwer, prüft auch Markdown-Stil und PHP ohne `vendor/`;
-      später ggf. gezielt php-cs-fixer und zizmor (Workflow-Sicherheit) ergänzen
-- [x] Ersten Lauf auf GitHub geprüft: grün
-- [x] Job „Build“ (nur bei Push auf `main`, nach grünen Tests): Prod-Image über Bake aus `compose.yaml` +
-      `compose.prod.yaml` bauen, Prod-Stack starten, Smoke-Test (`bin/console about`, DB-Abfrage), dann Push nach
-      `ghcr.io/mikeczak/sonjaczak/app-php-prod:<commit-hash>`. Login mit `GITHUB_TOKEN` (`packages: write`).
-- `compose.prod.yaml`: `image: ${IMAGES_PREFIX}app-php-prod:${IMAGE_TAG}` – CI und Server nutzen denselben Namen
-- Prod-Image lokal getestet (2026-11-03): 301 MB, läuft als www-data, Symfony prod/ohne Debug, OPcache an;
-  RAM im Leerlauf php ~107 MiB, database ~27 MiB (Mac, arm64)
-- [x] Ersten Build-Lauf auf GitHub geprüft: grün, Image `…/app-php-prod:bc07492…` in ghcr.io (2026-11-03)
-- Server-Architektur `x86_64` bestätigt (passt zum amd64-Build)
-- Dependabot (`.github/dependabot.yaml`) ist aktiv: wöchentliche PRs für Docker-Images, Composer und Actions
-- PHPStan-Analyse von DQL/Entities (`objectManagerLoader`) ergänzen, sobald es Entities gibt
-- Startseite (`/`) fehlt noch bewusst: kommt mit dem ersten Twig-Template, wenn Übersetzungsschema und CSS-Framework festgelegt sind
+### Mit Sonja
 
-**Vor dem ersten Deploy prüfen** (aus der Durchsicht des Templates)
+- [ ] **Schwellwert der Nachholregel** (2026-11-13, Admin-Plan C3, `erklaerungen/11`): Sonja beschreibt in
+  `planung/anforderungen.md` (Frage 6) eine **Gesamtzahl** („sofern die Gesamtanzahl der Stunden einen bestimmten
+  Schwellwert unterschreiten würde“, z. B. 13), das Datenmodell einen **Abstand** (`plannedLessons − Schwellwert`,
+  z. B. 2). Umgesetzt ist der Abstand, der Wert ist seit C6 eine Einstellung (Standard 0). Welche Variante, welcher
+  Wert?
+- [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3): Für entfallene Einheiten kommen am Ende neue dazu (bis zum
+  Kursende).
+- [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
+  mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
+- [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
+  feste Frist als Vorschlag wäre eine Einstellung.
+- [ ] **Betrag beim Erstellen nicht änderbar** (2026-11-13, D1): kommt aus der Teilnahme (dort für Ermäßigungen
+  änderbar).
+- [ ] **Leistungstext** „Gesangsunterricht im Wintersemester 2026/27“ vorbelegt, änderbar (2026-11-13, D1).
+- [ ] **Zahlungen ohne Rückfrage löschbar** (2026-11-13, D3).
+- [ ] **Empfänger der Erinnerung** `music@sonjaczak.com` (2026-11-13, D4); eine eigene Einstellung wäre leicht ergänzt.
+- [ ] **Dashboard** (2026-11-13, E, `erklaerungen/14`): Zeitraum „nächste 7 Tage“, Gestaltung beim Zeigen nachschärfen.
+- [ ] **CSV mit Sonjas Excel prüfen** (2026-11-13, D5): Umlaute, Beträge als Zahl, Datum.
+- [ ] **Ansprache „du“** im Admin-Bereich (2026-11-13); bei Konten für Schüler:innen später ggf. anpassen.
+- [ ] **Entwürfe der Seitentexte** durchsehen (seit 2026-11-11, Release-Schritt 4): Texte mit `# Draft` in
+  `translations/content.de.yaml`, auch Impressum und Datenschutzerklärung (Entwürfe, keine Rechtsberatung).
+- [ ] **Regeln für den Unterricht und FAQ** (2026-11-11, `planung/inhalte.md` E42, E44): Texte von Sonja; die
+  Abschnitte bleiben bis dahin ausgeblendet.
+- [ ] **KI-Bilder durch Fotos ersetzen** (2026-11-12): `hero-wedding.jpg`, `hero-lessons.jpg`, sobald Fotos da sind.
 
-- `opcache.memory_consumption = 256` in `frankenphp/conf.d/10-app.ini`: tatsächlichen Verbrauch messen, ggf. senken (850 MiB RAM)
-- Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
-- [x] Migrationen: führt `deploy.sh` explizit aus. Der Entrypoint sucht in `./migrations`, das Rezept legt sie in
-      `src/Migrations` ab → sein automatischer Lauf greift nie; das ist so gewollt (nur eine Stelle führt Migrationen aus)
-- [x] `POSTGRES_PASSWORD`, `APP_SECRET`, `CADDY_MERCURE_JWT_SECRET` in `compose.prod.yaml` Pflicht (`${VAR:?…}`)
-- [x] PostgreSQL in Prod: `shared_buffers=32MB`, `max_connections=20`, `restart: unless-stopped` (lokal mit Prod-Image
-      getestet: database ~18 MiB im Leerlauf)
-- [x] Server lädt nur `compose.yaml` + `compose.prod.yaml` (in `deploy.sh` festgelegt) → kein DB-Port veröffentlicht
-- [x] Image privat → Personal Access Token (classic) mit nur `read:packages` auf dem Server (`docs/deployment.md`, B4)
-- [x] FrankenPHP-Worker: Standard 2 × CPU (Quelle: frankenphp.dev/docs/config) → 2 auf dem Server
-- [x] Nach dem ersten Deploy: RAM auf dem Server gemessen (siehe „Aktueller Stand“)
-- [ ] `opcache.memory_consumption = 256` ggf. senken: tatsächliche OPcache-Belegung messen, sobald die App gewachsen ist
-- [ ] Backups der Datenbank (DSGVO) einrichten – spätestens bevor echte Daten erfasst werden
-- [x] `www.sonjaczak.com` → Weiterleitung auf `sonjaczak.com` (2026-11-12: A-Record `www`, Caddy-Block über
-      `CADDY_EXTRA_CONFIG` in `compose.prod.yaml`, 301; Erklärung in `docs/erklaerungen/03-compose-und-frankenphp.md`)
-- [x] Erinnerung an ablaufende Tokens: Cronjob am Server mit Mail (`docs/deployment.md` B6), eingetragen 2026-11-12
-      (gh CLI läuft 2027-11-02 ab, Server-Token 2027-11-03)
-- Mercure und Vulcain sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
-- Alte Images in ghcr.io aufräumen (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit 1 Monat Vorlauf)
-- CI braucht PHP ≥ 8.5.12 (`composer.json` → `"php": ">=8.5.12"`)
+### Mit der Steuerberatung
 
-**Server vorbereiten**
+- [ ] **Gutschrift und Zahlung als ein Konto** (2026-11-13, D3, `erklaerungen/13`): zu zahlen = Betrag minus
+  Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (Antwort 8 im Datenmodell)?
+- [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
+  der Export ordnet streng nach Zahlungsdatum zu.
+- [ ] **Lösch- und Anonymisierungsregel** (2026-11-13, Admin-Plan F; **zurückgestellt**, Mike: „für später
+  aufheben“). Grundlage: § 132 BAO, 7 Jahre ab Schluss des Kalenderjahres (Zitat in `umsetzung-admin.md` F). Beispiel:
+  Honorarnoten ab dem 8. Jahr anonymisieren, Schüler:innen ohne Teilnahmen in Frist löschen. Hängt damit zusammen:
+  Schüler:innen mit Teilnahmen sind nicht löschbar (C5).
 
-- [x] Alte Test-App (smart-ui) entfernt, ungenutzte Images und Volumes gelöscht
-- [x] Systemjournal auf 200 MB begrenzt, Docker-Logs auf 3 × 10 MB pro Container
-- [x] System aktualisiert (apt full-upgrade) und neu gestartet
-- [x] 1 GB Swap eingerichtet und in /etc/fstab eingetragen
+### Rechtliches
 
-**Server absichern**
+- [ ] **Datenschutz-Information für Schüler:innen und Eltern** (Art. 13 DSGVO, Admin-Plan F): Entwurf zum Prüfen,
+  **vor den echten Daten**.
+- [ ] **Minderjährige im Unterricht** (2026-11-12, Release-Schritt 6): Der Vertrag kommt mit den Erziehungsberechtigten
+  zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
 
-- [x] Benutzer mike mit sudo-Rechten
-- [x] SSH nur mit Key, Root-Login deaktiviert (per `sshd -T` geprüft)
-- [x] ufw aktivieren (Regeln für 22, 80/tcp, 443/tcp, 443/udp angelegt)
-- [x] Firewall-Richtlinie im IONOS Cloud Panel prüfen (nur 22, 80, 443 offen)
-- [x] unattended-upgrades mit automatischem Neustart um 04:00
-- [x] Prüfen, ob Docker aus dem offiziellen Docker-Repository stammt (dann manuell aktualisieren)
+### Technisch (Mike)
 
-## Nächste Schritte
+- [ ] **Passkeys** (Admin-Plan B5, zurückgestellt 2026-11-13; Login mit Passwort reicht für die Entwicklung). **Zu
+  klären:** Bisher stand im Projektstand „kommt vor dem Zeigen an Sonja“, im Admin-Plan (Meilensteine) „spätestens
+  vor dem Echtbetrieb“.
+- [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
+  Datenmodell.
+- [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
+- [ ] **Mercure und Vulcain** sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
+  (2026-11-03, `erklaerungen/03`)
+- [ ] **OPcache** (`opcache.memory_consumption = 256`): tatsächliche Belegung messen, sobald die App gewachsen ist,
+  ggf. senken (2026-11-03).
+- [ ] **Gekürzte IPs in den Server-Logs prüfen** (`docker compose logs php`, 2026-11-11, Release-Schritt 4).
+- [ ] **Bootstrap-CSS verkleinern:** nur benutzte Teile importieren (derzeit 237 KB vor gzip, 2026-11-11).
+- [ ] **Alte Images in ghcr.io aufräumen** (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit
+  1 Monat Vorlauf).
+- [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
+  noch etwas offen ist).
+- [ ] Kandidaten aus der Durchsicht des Templates (2026-11-03):
+  - Symfony Language Server aus dem Dev-Image entfernen (lädt ungepinnt die neueste Version, wird nicht genutzt)
+  - `composer audit` als CI-Schritt
+  - GitHub Actions auf Commit-SHA statt Tag pinnen; zizmor für Workflow-Sicherheit
+  - Image-Scan auf bekannte Schwachstellen (`docker scout` oder Trivy) in der CI
+  - Ungenutzten `allow-plugins`-Eintrag `php-http/discovery` entfernen
 
-Ziel der ersten Phase: eine leere Seite, die bei jedem `git push` automatisch auf sonjaczak.com live geht.
-Erst danach werden Features gebaut.
+## Termine
 
-1. Deployment: Repo-Teil fertig (`deploy/deploy.sh`, Job „Deploy“, `compose.prod.yaml`). Server-Einrichtung,
-   GitHub-Environment und DNS erledigt (2026-11-03, `docs/deployment.md` B–D; A-Record → `85.215.162.84`, VPS hat
-   kein IPv6, daher kein AAAA-Record). Erster Deploy erfolgreich, RAM gemessen. Rollback getestet
-   (2026-11-03: Re-run des Deploy-Jobs von `9cd534a` nach Deploy von `86b0932`; nur php neu gestartet, die Datenbank
-   lief durch). **Phase 1 abgeschlossen.**
-2. **Aktuell:** Planung der App (Phase 2). Erste Fragenrunde in `docs/planung/anforderungen.md` beantwortet
-   (2026-11-07): zuerst die öffentlichen Seiten. Inhalte in `docs/planung/inhalte.md` weitgehend beantwortet
-   (2026-11-11). Seitenstruktur in `docs/planung/seitenstruktur.md` festgelegt (Routen, Menü, Übersetzungsschema,
-   CSS-Framework). Datenmodell (ER-Diagramm) und Rollenkonzept für den Admin-Bereich folgen nach dem ersten Release.
-   **Aktuell (2026-11-12):** Datenmodell `docs/planung/datenmodell.md`, zweiter Entwurf: erste Fragenrunde
-   eingearbeitet (Schnupperstunde als eigene Entity, Ferien je Kurs, Einheiten werden erzeugt, Kursraster als
-   Arbeitsansicht, eine Honorarnote mit Ratenoption, Gutschrift, PDF in der Datenbank). 2026-11-13: zweite Fragenrunde
-   eingearbeitet (Schnupperstunde kostenlos und übernehmbar, Ferien-Vorschlag aus der OpenHolidays API, Erinnerungs-Mail
-   bei überschrittener Zahlungsfrist per Cronjob). **Freigegeben 2026-11-13.** `docs/planung/rollen.md`, zweiter Entwurf (Rollen, Firewall nur für `/admin`,
-   Voter, Passkeys mit Passwort als Rückfall, „Passwort vergessen“ per Mail-Link, Sessions in PostgreSQL mit 8 h
-   Inaktivität / 12 h Cookie), **freigegeben 2026-11-13**. Admin-Cookie nur unter `/admin`; Datenschutzerklärung
-   wird mit dem Login-Schritt angepasst. Umsetzungsplan: `docs/planung/umsetzung-admin.md`.
-   - [x] A1 (2026-11-13): Zeitzone `Europe/Vienna` (Test), `zenstruck/foundry` 2.16.0 (Faker `de_AT`, Factories und
-     Stories in `tests/`), `symfony/maker-bundle` 1.68.0, PHPStan mit `objectManagerLoader`. Fixtures-Bundle verworfen
-     (Foundry lädt selbst).
-   - [x] B1/B2 (2026-11-13): `symfony/security-bundle` 8.1.11, Entity `User` (Tabelle `app_user`, E-Mail klein
-     gespeichert), Firewall nur `^/admin`, `form_login` mit CSRF, `login_throttling`, Logout per POST mit CSRF,
-     Rollenhierarchie, `app:user:create`, Admin-Layout und Domain `admin`. Sessions in PostgreSQL (`PdoSessionHandler`,
-     8 h Inaktivität, Cookie 12 h, nur `/admin`), lokal über Container-Neustart geprüft. Datenschutzerklärung: Absatz
-     zum Session-Cookie (§ 165 Abs. 3 TKG 2021, im RIS geprüft; Entwurf). Erklärung: `docs/erklaerungen/08-login-und-sessions.md`.
-   - [x] B3 (2026-11-13): „Passwort vergessen“ mit `symfonycasts/reset-password-bundle` 1.26.1 (Link 1 h, einmal
-     gültig, immer gleiche Antwort), „Mein Konto“ mit Passwortänderung. Sessions nutzen jetzt Doctrines Verbindung mit
-     Advisory Locks (CI-Fehler bei der Schema-Prüfung in Tests behoben, Commit `2de9d4d`).
-   - [x] B4 (2026-11-13): Benutzerverwaltung unter `/admin/benutzer` (nur Super-Admin): Konto anlegen mit
-     Einladungslink (3 Tage), Rolle ändern, deaktivieren statt löschen (`UserChecker`), erster Voter `UserVoter`
-     (eigenes Konto nie änderbar).
-   - [ ] B5 Passkeys: zurückgestellt bis nach C/D/E (eigener Prüfaufwand am Bundle-Code; Login mit Passwort reicht
-     für die Entwicklung). Kommt vor dem Zeigen an Sonja.
-   - [x] C1 (2026-11-13): Schüler:innen und Elternteile (`/admin/schueler`, `/admin/elternteile`), Embeddable
-     `Address`, Suche, `StudentVoter::DELETE` (seit C5: nicht mit Teilnahmen, damit auch nicht mit Honorarnoten), Factories und Story mit
-     erfundenen Daten (Testkonten `mike@`/`sonja@example.com`). Erklärung: `docs/erklaerungen/09-datenbank-schueler.md`.
-   - [x] C2 (2026-11-13): Kurse mit Ferien (`/admin/kurse`), Enums `Term`/`BreakSource`, Preis in Cent, Ferien-Vorschlag
-     aus der OpenHolidays API beim Anlegen (live geprüft mit Sommersemester 2027), Tests mit aufgezeichneten Antworten.
-     `symfony/http-client` jetzt direkt in `composer.json` (war nur indirekt installiert, 8.1.11). PHPStan:
-     `allowNullablePropertyForRequiredField` (Begründung in `docs/erklaerungen/10-datenbank-kurse.md`).
-   - [x] C3 (2026-11-13): Teilnahmen und Einheiten. Einheiten werden beim Anlegen erzeugt (ohne Ferien, bis
-     `plannedLessons`), neue Ferien entfernen geplante Einheiten und füllen am Ende auf, Nachholregel mit Anzeige
-     „14 von 15“ und Nachholstunde je abgesagter Einheit, Kurs mit Teilnahmen nicht löschbar. Erklärung:
-     `docs/erklaerungen/11-teilnahmen-und-einheiten.md`.
-   - [x] C5 (2026-11-13): Schnupperstunden (`/admin/schnupperstunden`), Übernahme in eine Teilnahme in einer
-     Transaktion (`fromTrial`). Schüler:innen mit Teilnahmen sind nicht mehr löschbar (vorher Datenbankfehler).
-   - [x] C6 (2026-11-13): Einstellungen (`/admin/einstellungen`): Theme der Website (öffentliche Seiten lesen es jetzt
-     aus der Datenbank, mit Rückfall auf „classic“, falls die Datenbank nicht erreichbar ist), Standarddauer,
-     Schwellwert der Nachholregel, Absenderdaten, Unterschrift als PNG in der Datenbank. BIC nur per Regex geprüft
-     (`Assert\Bic` bräuchte `symfony/intl`). Slider-Bilder bleiben vorerst in `config/services.yaml`.
-     Nach dem Deploy: Sonja trägt Absenderdaten und Unterschrift ein (vorher keine Honorarnoten möglich).
-   - [x] D1 (2026-11-13): Honorarnoten erstellen (`/admin/honorarnoten`, Erstellen auf der Seite einer Teilnahme):
-     Empfänger und Betrag als Kopie, keine Setter, Nummer je Ausstellungsjahr in einer Transaktion mit PostgreSQL
-     Advisory Lock (Abweichung vom Datenmodell, das eine Wiederholung bei Kollision vorsah). Entity `Payment` ohne
-     Oberfläche (folgt in D3). Teilnahmen mit Honorarnote sind nicht löschbar. Erklärung:
-     `docs/erklaerungen/13-honorarnoten.md`.
-   - [ ] D2 PDF: wartet auf die Entscheidung zur PDF-Bibliothek.
-   - [x] D3 (2026-11-13): Zahlungen (Formular mit Restbetrag und heute vorbelegt, Datum änderbar, nicht in der Zukunft),
-     Status berechnet, Gutschriften mit eigener Nummer (`credits`, `InvoiceVoter::CREDIT`), Rückzahlung als negative
-     Zahlung. Honorarnote und Gutschriften als ein Konto (zum Durchsehen).
-   - [x] D4 (2026-11-13): Befehl `app:invoices:remind-overdue` (eine Mail an `music@` je neu verpasster Frist,
-     `remindedFor`, `--dry-run`), Tests mit `MockClock`; `symfony/clock` direkt in `composer.json`. Lokal über Mailpit
-     geprüft.
-   - [x] D5 (2026-11-13): Einnahmen je Jahr nach Zahlungsdatum (`/admin/einnahmen`) und als CSV für Excel (Semikolon,
-     Dezimalkomma, UTF-8 mit BOM, Schutz vor Formeln). § 19 Abs. 1 EStG im RIS nachgelesen; die Ausnahme für
-     regelmäßig wiederkehrende Einnahmen (Z 1) mit der Steuerberatung klären. Mit Sonjas Excel noch prüfen.
-   - [x] E (2026-11-13): Dashboard `/admin`: nächste 7 Tage (Einheiten und Schnupperstunden), offene Honorarnoten mit
-     Überfälligkeit, Teilnahmen ohne Honorarnote, Einnahmen des Jahres je Kurs, je laufendem Kurs die zuletzt gehaltene
-     Einheit mit Inhalt. Erklärung: `docs/erklaerungen/14-dashboard.md`.
-   - F (Teil ohne Server): Aufbewahrungsfrist in § 132 BAO nachgelesen (7 Jahre ab Schluss des Kalenderjahres, Details
-     in `umsetzung-admin.md` F); die Lösch-/Anonymisierungsregel ist **zurückgestellt** (Mike, 2026-11-13: „für
-     später aufheben“).
-   - [ ] **Von Sonja nachzureichen** (über Mike, 2026-11-13): Absenderdaten für die Honorarnote (Name, Titel, Adresse,
-     IBAN, BIC, Bank, Ort, Hinweis zur Umsatzsteuer) und die Unterschrift als PNG. Beides trägt Sonja (oder Mike) in
-     Produktion unter `/admin/einstellungen` ein, nicht ins Repo. Ohne sie lassen sich keine Honorarnoten erstellen.
-   - **Kein eigener Demo-Termin** (Entscheidung 2026-11-13): Mike sieht sich die Funktionen lokal an
-     (`docs/rundgang-admin.md`) und zeigt sie Sonja in Produktion.
-   - [ ] D2 PDF und C4 Kursraster: Optionen am 2026-11-13 vorgestellt (PDF-Bibliothek; Stimulus, Turbo Frames oder
-     Live Components), Entscheidung offen.
-   - [ ] D4 Cronjob am Server (`deployment.md` B8) – **wartet auf Mikes Freigabe** (Aktion am Server)
-   - [ ] C4 Kursraster: wartet auf die Entscheidung zu Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live
-     Components). Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}` markiert.
-   - **Zum Durchsehen:** alle offenen Auslegungen gesammelt in `docs/planung/zum-durchsehen.md` (mit Sonja, mit der
-     Steuerberatung, technisch).
-   - [ ] Konten in Produktion anlegen (`deployment.md` B7) – **wartet auf Mikes Freigabe** (Aktion am Server)
-   Todos für den Admin-Bereich (Dashboard, Export der Einnahmen, PDF, Art.-13-Information) in Abschnitt 9.
-   Ziel: Datenbank und Admin-Bereich fertig, bevor Mike Sonja den Stand zeigt.
-3. **Umsetzung erstes Release** (Plan: `docs/planung/seitenstruktur.md`, Abschnitt 10)
-   - [x] Schritt 1 (2026-11-11): Twig, Translation (`de`), AssetMapper, Sass-Bundle und Bootstrap 5.3.8 (Sass aus
-         `twbs/bootstrap`, JavaScript über die Importmap). Prod-Builder führt `sass:build` vor `asset-map:compile` aus
-         und löscht danach `var/dart-sass` und `vendor/twbs` (nur zur Build-Zeit nötig); Prod-Image lokal 305 MB
-         (vorher 301 MB). CI-Job „Tests“ baut Sass vor PHPUnit. Nebenbei Symfony 8.1.10 → 8.1.11 (Security-Release,
-         `composer audit` meldete 10 Hinweise).
-   - [x] Schritt 2 (2026-11-11): Layout (`base.html.twig`, Header, Footer), Hauptmenü mit KnpMenuBundle 3.8.0
-         (`App\Menu\MenuBuilder`, eigenes Bootstrap-Template `templates/menu/main.html.twig`), alle Routen aus
-         `seitenstruktur.md` als Platzhalterseiten, Startseite mit Hero, Kurzvorstellung (leer, ausgeblendet) und
-         drei Angeboten. Übersetzungen in `messages.de.yaml` und `content.de.yaml`; Kontaktdaten als Twig-Globals
-         (`music@sonjaczak.com`, YouTube; Telefon vorerst nicht). Tests: jede Seite 200 mit Layout und ohne
-         unübersetzte Schlüssel, aktive Menüpunkte, Impressum-Anker, fehlende Übersetzungen
-         (`debug:translation --only-missing`). CI: `lint:twig`, `lint:yaml`, HTTPS-Check aktiv, Smoke-Test ruft `/`
-         am Prod-Stack ab (lokal nachgestellt: grün; php 114 MiB, database 27 MiB im Leerlauf, Mac).
-   - [x] Schritt 3: Design – **entschieden und umgesetzt (2026-11-12):** Variante A als Theme `classic` (Standard),
-         B und C bleiben als Themes `modern` und `stage` erhalten (`App\Theme\Theme`, Partials in
-         `assets/styles/partials/themes/`). Aktives Theme und Slider-Bilder liefert `App\Theme\SiteSettings`, vorerst
-         aus `config/services.yaml`; später aus der Datenbank, eingestellt von Sonja im Admin-Bereich (Dropdown für das
-         Theme, auch saisonale Themes; Verwaltung der Slider-Bilder). Vorschau per `?theme=…` nur für die eine Seite,
-         ohne sessionStorage und ohne Inline-Script (Umschalter entfernt, Datenschutzerklärung angepasst).
-         Logo und Hero-Überschrift in Allura; Great Vibes, Parisienne und Dancing Script entfernt. Logo als SVG mit
-         Pfaden (`bin/build-logo`, fontTools und HarfBuzz am Mac, inline mit `currentColor`, 2026-11-12).
-         Startseite: Slider mit Bootstrap-Carousel (`assets/slider.js`) über `hero-sonja2` und `hero-sax`, Wechsel alle
-         6 s mit Überblendung, Pfeile, Wischen, Tastatur, Pause-Knopf (WCAG 2.2.2), kein Autoplay bei „Bewegung
-         reduzieren“; ohne JavaScript nur das erste Bild.
-         Bisheriger Stand (2026-11-11), drei Varianten:
-         A klassisch-elegant (Cormorant Garamond + Jost), B modern-klar (Montserrat + Inter), C Bühne/dunkel
-         (Playfair Display + Inter); Akzentfarbe Petrol in A und B, Gold in C (Rot verworfen: zu nah an Red Mullet);
-         Unterricht im selben Stil wie die übrigen Seiten (Flyer-Pink verworfen, 2026-11-11). Logo-Kandidaten:
-         Great Vibes, Allura, Parisienne, Dancing Script. Vorschau über `/_design` und `?design=a|b|c` (auch in
-         Produktion, nicht verlinkt, `noindex`). Schriften lokal (Fontsource 5.3.0, OFL 1.1, `OFL.txt` je Schrift),
-         Hero-Bilder in Web-Größe (`assets/images/`, ohne Metadaten); Startseite derzeit mit `hero-sonja2.jpg`
-         (SonjaR_222, s/w), `hero-sonja.jpg` bis zur Entscheidung zum Vergleich.
-         Aus Schritt 4 vorgezogen (2026-11-11): `/booking` als Übersicht mit zwei Bild-Sections (`hero-wedding.jpg`,
-         `hero-band.jpg`), Unterricht mit Hero (`hero-lessons.jpg`), Variante C auf Home mit `hero-sax.jpg`
-         (sonja_sax_profil, Simon Reithofer). Auf schmalen Bildschirmen Abdunklung von unten statt von links. Nach der Entscheidung: Variante festschreiben,
-         Umschalter und ungenutzte Schriften entfernen, Logo als SVG mit Pfaden (laut OFL-FAQ 1.1 erlaubt).
-         Nebenbei: Prod-Image enthielt kein `/etc/mime.types` → woff2 ohne Content-Type; im Dockerfile ergänzt.
-   - [x] Schritt 4 (2026-11-11), Seiten mit Inhalt: Über mich, Booking solo (Anlässe, Leistungen, Region, Ablauf,
-         Stornobedingungen), Booking Band (Link zu redmulletmusic.at), Unterricht (Inhalte, Lehrerin, Ort mit
-         Maps-Link, Termine, Preise), Kontakt, Impressum (`/kontakt#impressum`), Datenschutzerklärung, 404-Seite.
-         Anfrage vorerst per `mailto:` mit Betreff (Formulare in Schritt 6). Fehlende Texte als Entwurf von Claude
-         (`# Draft` in `content.de.yaml`). Caddy kürzt IP-Adressen im Zugriffsprotokoll (`ip_mask 24 48`).
-         `symfony/asset` nachinstalliert (für `asset()`, Teil der AssetMapper-Installation).
-   - [x] Schritt 5 (2026-11-11): `bin/build-images` (ImageMagick auf dem Mac) erzeugt WebP in 640/1280/1920 px und
-         ein JPEG (1280 px) als Ersatz, Maße in `config/packages/images.yaml`. Hero und Booking-Sections als
-         `<picture>` mit `srcset` statt CSS-Hintergrund (Makro `image()`); Handy lädt 8–20 KB, Desktop 34–69 KB pro
-         Bild. Scroll-Effekte nur mit CSS (`_motion.scss`): Hero zoomt beim Hinausscrollen, Booking-Sections mit
-         Parallax, Abschnitte blenden ein; aus bei „Bewegung reduzieren“. Effekte im Browser beurteilen (Headless-
-         Screenshots zeigen keine Bewegung).
-   - [x] Schritt 6: Formulare mit Mailversand – Plan in `docs/planung/formulare.md`, freigegeben (2026-11-11):
-         IONOS-SMTP (`smtp.ionos.de`), synchron, ohne Session/Cookies, nichts in der DB. Absender
-         `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com`, `Reply-To` = Besucher:in.
-     - [x] 6a: `symfony/mailer` 8.1.10 (Absender global in `config/packages/mailer.yaml`, Tests immer `null://null`),
-           Mailpit v1.33.1 nur lokal (UI auf `127.0.0.1:8025`, ~12 MiB). `MAILER_DSN` Pflicht in `compose.prod.yaml`
-           in `/srv/sonjaczak/.env` (`deployment.md` B3). Testversand vom Server angekommen (2026-11-11).
-     - [x] 6b (2026-11-11): Kontaktformular auf `/kontakt`. `symfony/form`, `validator`, `security-csrf` (zustandslos,
-           Rezept), `rate-limiter` (5/h pro IP, filesystem-Cache). Datenklassen `src/Inquiry/`, Form-Types `src/Form/`
-           (gemeinsame Felder in `InquiryType`, Lockfeld `HoneypotType`), Versand in `InquiryProcessor` (Log ohne
-           Formulardaten). Partial `_partials/inquiry_form.html.twig` für alle drei Formulare (Sie/Du über `address`).
-           Mail nur Text (`templates/email/inquiry/`). Seite setzt weiterhin kein Cookie (Test). Lokal per Mailpit
-           geprüft. Datenschutzerklärung dafür vorgezogen (2026-11-12): Abschnitt „Kontaktformular und E-Mail“
-           (keine Speicherung, Versand über IONOS, Rate Limiter mit Prüfwert statt IP, max. 1 h).
-           Erster Live-Test scheiterte (2026-11-12): PHP im FrankenPHP-Worker fand keine CA-Zertifikate
-           (`SSL_CERT_FILE` kommt dort nicht an, das schlanke Prod-Image hat kein OpenSSL-Standardverzeichnis), die
-           Konsole schon. Lösung: `openssl.cafile` in `20-app.prod.ini`, CI-Smoke-Test prüft TLS ohne `SSL_CERT_FILE`.
-     - [x] 6c (2026-11-12): Booking-Formular auf `/booking/solo` (Anlass als Enum `App\Inquiry\Occasion` mit festen
-           Schlüsseln statt der Liste aus `content`, Datum nicht in der Vergangenheit, Ort). Gemeinsamer Ablauf im
-           Controller-Trait `InquiryFormTrait`. Datenschutzerklärung um die Booking-Felder ergänzt.
-     - [x] 6d/6e (2026-11-12): Unterrichtsformular auf `/unterricht` (Du-Form): Alter, erziehungsberechtigte Person
-           (Pflicht unter 18 per `#[Assert\Callback]`, ohne `expression-language`; `assets/inquiry.js` blendet das Feld
-           ab 18 aus, ohne JS sichtbar mit Hinweis), gewünschte Uhrzeit (Freitext), Vorerfahrung, Nachricht.
-           Datenschutzerklärung nennt alle Formularfelder. `mail_inquiry`-Partial und `mailto:`-Anfragen entfernt.
-           **Schritt 6 abgeschlossen.** Zum Durchsehen (Entwurf): Bei Minderjährigen kommt der Vertrag mit den
-           Erziehungsberechtigten zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
-   - [ ] **Vor dem Live-Gang der Inhalte klären** (Impressum/Datenschutz sind Entwürfe, keine Rechtsberatung)
-     - [x] Rechtsform (2026-11-12): Einzelunternehmen, Neue Selbständige, kein Gewerbe, keine UID → keine Angaben
-       nach § 5 Abs. 1 Z 5–7 ECG; Schlüssel `imprint.profession` entfernt
-     - [x] Zweiter schneller Kontaktweg neben der E-Mail (EuGH C-298/07: Kontaktformular genügt, Telefon nicht
-       zwingend) → Kontaktformular auf `/kontakt` (Schritt 6, live getestet 2026-11-12)
-     - [x] IONOS (2026-11-12): AVV gilt laut ionos.de/terms-gtc/avv (Ziff. 1.1, 12.3) als Teil der AGB, kein eigener
-       Abschluss; Rechenzentrum des VPS in Berlin (EU)
-     - [x] Postfach `music@` liegt bei IONOS (2026-11-12). Keine Weiterleitung an Gmail (für kostenloses Gmail kein
-       Auftragsverarbeitungsvertrag gefunden), Sonja liest es per IMAP in Apple Mail. Datenschutzerklärung nennt nur IONOS.
-     - [x] Texte in der Ich-Form statt „Sonja“ (2026-11-12; Meta-Beschreibungen und Rechtstexte bleiben neutral)
-     - [x] KI-Bilder gekennzeichnet (2026-11-12): Hinweis „KI-generiert“ in der Ecke (Liste `ai_generated_images` in
-       `config/packages/twig.yaml`) und im Bildnachweis; Austausch gegen Fotos, sobald vorhanden
-     - [x] Minderjährige (2026-11-12): Altersgrenze 14 (§ 4 Abs. 4 DSG) gilt nur für Einwilligungen, die Formulare
-       stützen sich auf Art. 6 Abs. 1 lit. b/f → freiwilliger Hinweis „unter 14 gemeinsam mit einem Elternteil“ beim
-       Unterrichtsformular
-     - Entwürfe durchsehen: Texte mit `# Draft` in `translations/content.de.yaml`
-     - Später (nach dem Release): Regeln für den Unterricht (inhalte.md E42: Absagen, Nachholstunden) und FAQ (E44),
-       Texte von Sonja; die Abschnitte bleiben bis dahin ausgeblendet
-     - Nach dem Deploy: gekürzte IPs in den Server-Logs prüfen (`docker compose logs php`)
-   - [x] **CI startet nicht** (2026-11-09 `startup_failure`): seit 2026-11-11 behoben, CI läuft wieder.
+- **Upgrade auf Symfony 8.2 vor Ende Jänner 2027** (dann endet der Support für 8.1). Danach 8.3 (Mai 2027) und
+  8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
+- **Tokens erneuern:** gh CLI läuft 2027-11-02 ab, Server-Token 2027-11-03 (Erinnerung per Cronjob, `deployment.md` S6).
 
-**Zu beachten (Frontend)**
+## Fortschritt
 
-- Bootstrap-JavaScript steht in `importmap.php` auf 5.3.8, das Sass-Paket in `composer.json` auf `^5.3`.
-  Dependabot aktualisiert nur das Composer-Paket → bei Updates die Importmap-Version mit `importmap:require
-  bootstrap@<version>` nachziehen (`importmap:outdated` zeigt Abweichungen).
-- Auf Packagist gibt es `twbs/bootstrap` v6.0.0-alpha.1; wir bleiben bei `^5.3`, Major-Upgrade erst nach Release von 6.
-- Das Sass-Bundle (v0.10.0) pinnt Dart Sass 1.69.7 (`vendor/symfonycasts/sass-bundle/src/SassBinary.php`). Eine
-  neuere Version ginge über die Option `binary`; aktuell nicht nötig.
-- Das kompilierte CSS enthält ganz Bootstrap (237 KB komprimiert, vor gzip). Später nur benutzte Teile importieren.
-- Kontrast Petrol (WCAG AA ≥ 4,5:1): A `#1F5F66` auf Creme 6,70:1, weiße Schrift darauf 7,27:1; B `#1A6670` auf
-  Weiß 6,61:1. Variante C mit Gold `#D4AF5A` statt Petrol: auf Dunkel 9,08:1, Buttons mit dunkler Schrift.
-- Bildnachweis im Impressum: Doris Sporer (Porträts), Simon Reithofer (`hero-sax.jpg`), Michael Czak (Bandfoto,
-  bestätigt 2026-11-11). KI-Bilder (`hero-wedding.jpg`, `hero-lessons.jpg`): Kennzeichnung noch offen.
+Details zu jedem Schritt: `verlauf.md`. Technische Erklärungen: `erklaerungen/`.
 
-**Erklärungen zum Setup** liegen in `docs/erklaerungen/` (Grundkonzepte, Dockerfile, Compose/FrankenPHP, Composer,
-CI/CD, stdin/EOF), jeweils mit Alternativen und Sicherheits-Checkliste. Fragen dazu jederzeit.
+**Phase 1** (2026-11-03): Jeder Push auf `main` läuft durch Tests → Build → Deploy und geht auf https://sonjaczak.com
+live. Server eingerichtet und abgesichert, Rollback getestet.
 
-**Kandidaten aus der Durchsicht (2026-11-03), noch nicht entschieden**
+**Erstes Release** (Plan: `planung/seitenstruktur.md`, Abschnitt 10)
 
-- Symfony Language Server aus dem Dev-Image entfernen (lädt ungepinnt die neueste Version, wird nicht genutzt)
-- `composer audit` als CI-Schritt
-- GitHub Actions auf Commit-SHA statt Tag pinnen; zizmor für Workflow-Sicherheit
-- Image-Scan auf bekannte Schwachstellen (`docker scout` oder Trivy) in der CI
-- Ungenutzten `allow-plugins`-Eintrag `php-http/discovery` entfernen
+- [x] 1. Twig, Übersetzungen, AssetMapper, Bootstrap (2026-11-11)
+- [x] 2. Layout, Menü, alle Routen (2026-11-11)
+- [x] 3. Design: Themes `classic` (Standard), `modern`, `stage`; Logo als SVG; Slider (2026-11-12)
+- [x] 4. Seiten mit Inhalt, Impressum, Datenschutzerklärung (2026-11-11)
+- [x] 5. Bilder in mehreren Größen, Scroll-Effekte (2026-11-11)
+- [x] 6. Formulare mit Mailversand: Kontakt, Booking, Unterricht (2026-11-12, Plan `planung/formulare.md`)
 
-**Termin:** Upgrade auf Symfony 8.2 vor Ende Januar 2027 (dann endet der Support für 8.1). Danach 8.3 (Mai 2027)
-und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
+**Admin-Bereich** (Plan: `planung/umsetzung-admin.md`, freigegeben 2026-11-13)
+
+- [x] A1 Zeitzone, Foundry, Maker, PHPStan mit Entities (2026-11-13)
+- [x] B1/B2 Login, Rollen, Sessions in PostgreSQL (2026-11-13, `erklaerungen/08`)
+- [x] B3 Passwort vergessen, Mein Konto (2026-11-13, `erklaerungen/08`)
+- [x] B4 Benutzerverwaltung mit Einladungslink (2026-11-13, `erklaerungen/08`)
+- [ ] B5 Passkeys (zurückgestellt, siehe „Später zu klären“)
+- [x] C1 Schüler:innen und Elternteile (2026-11-13, `erklaerungen/09`)
+- [x] C2 Kurse und Ferien mit OpenHolidays (2026-11-13, `erklaerungen/10`)
+- [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
+- [ ] C4 Kursraster (wartet auf Entscheidung, siehe „Jetzt“)
+- [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
+- [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`)
+- [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`)
+- [ ] D2 PDF (wartet auf Entscheidung, siehe „Jetzt“)
+- [x] D3 Zahlungen und Gutschriften (2026-11-13, `erklaerungen/13`)
+- [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
+- [x] D5 Einnahmen und CSV-Export (2026-11-13, `erklaerungen/13`)
+- [x] E Dashboard (2026-11-13, `erklaerungen/14`)
+- [ ] F Vor den echten Daten: Backups (siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
+  Aufbewahrungsfrist nachgelesen (2026-11-13)
+
+**Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
+muss).
 
 ## Getroffene Entscheidungen
 
@@ -319,19 +165,14 @@ und 8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
 | Arbeitsumgebung | Ab Repo-Anlage mit Claude Code in der IDE; CLAUDE.md und dieses Dokument liegen im Repo | Direkter Zugriff auf die Codebase; Projektstand wird mit dem Code versioniert |
 | Referenzmaterial | `claude_references/` nur lokal, in `.gitignore` (2026-11-11) | Enthält eine echte Honorarnote (DSGVO) und große Originalbilder; ins Repo kommen nur Web-Versionen |
 | CSS-Framework | Bootstrap 5.3 mit `symfonycasts/sass-bundle`, Assets über AssetMapper (2026-11-11) | Fertige Komponenten (Navbar, Formulare, Accordion), Erfahrung vorhanden; kein Node nötig. Details: `docs/planung/seitenstruktur.md` |
-| Übersetzungen | YAML, Domains `messages` (Zweck-Schlüssel), `content` (Seite.Abschnitt), `validators` (2026-11-11) | Lange Texte lesbarer als XLIFF; `content` wandert später teilweise ins CMS |
+| Übersetzungen | YAML, Domains `messages` (Zweck-Schlüssel), `content` (Seite.Abschnitt), `validators` (2026-11-11), `admin` (2026-11-13) | Lange Texte lesbarer als XLIFF; `content` wandert später teilweise ins CMS |
 | Admin-Oberfläche | Eigene Controller, Forms und Voter, kein EasyAdmin (2026-11-12) | Volle Kontrolle; Mike kennt Symfony-Forms und Voter |
 | Daten für Entwicklung | Erfundene Daten aus Fixtures (Zenstruck Foundry, nur `require-dev`); echte Daten nur über die Admin-Masken in Produktion (2026-11-12) | Keine echten Personendaten lokal oder im Repo; Factories auch für Tests |
 | Seitenstruktur | Deutsche URLs ohne Sprachpräfix; Impressum als Abschnitt auf `/kontakt`; Ansprache „Sie“, nur Unterricht „Du“; Logo „Sonja Czak“; Google Maps nur als Link (2026-11-11) | Siehe `docs/planung/seitenstruktur.md` |
 | Mail-Versand | IONOS-SMTP (`smtp.ionos.de:465`), synchron, Absender `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com` (2026-11-11) | Postfach ist bereits bei IONOS, kein weiterer Dienst; kein Messenger-Worker nötig (RAM). Details: `docs/planung/formulare.md` |
-
-## Offene Entscheidungen
-
-| Thema | Optionen | Wann |
-|---|---|---|
-| Symfony UX | Turbo, Live Components, Stimulus + `fetch` oder Kombination für die dynamischen Formulare und das Kursraster im Admin (`datenmodell.md` Abschnitt 4) | Bei der Planung des Admin-Bereichs |
-| Postfächer | Mail-Hosting für Sonjas Adressen unter sonjaczak.com | Unabhängig, sobald Domain-Setup steht |
-| Admin-Bereich | Login und Rollen: entschieden, ja. Sonja legt Unterrichtssemester und deren Termine an, verwaltet Schüler:innen mit persönlichen und Rechnungsdaten und erstellt daraus Honorarnoten. Details offen; personenbezogene Daten erfordern DSGVO-Maßnahmen (Zugriffsschutz, Backups) | Bei der App-Planung |
+| Admin-Planung | Datenmodell, Rollen und Umsetzungsplan freigegeben (2026-11-13) | `planung/datenmodell.md`, `planung/rollen.md`, `planung/umsetzung-admin.md` |
+| Vorführung | Kein eigener Demo-Termin: Mike sieht sich die Funktionen lokal an (`rundgang-admin.md`) und zeigt sie Sonja in Produktion (2026-11-13) | Spart eine eigene Demo-Umgebung; Honorarnoten in Produktion verbrauchen aber Nummern |
+| Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und im Admin-Plan) |
 
 ## Server-Konfiguration
 
@@ -346,4 +187,5 @@ bei jeder Entscheidung zu berücksichtigen.
 | SSH | Kein Root-Login, kein Passwort-Login, nur Key | /etc/ssh/sshd_config.d/00-hardening.conf |
 | Firewall | ufw: 22, 80/tcp, 443/tcp, 443/udp | `sudo ufw status verbose` |
 | Updates | unattended-upgrades, Neustart um 04:00 | /etc/apt/apt.conf.d/52unattended-upgrades-local |
-| Benutzer | mike (sudo); später deploy (ohne sudo) für GitHub Actions | `id mike` |
+| Benutzer | mike (sudo); deploy (ohne sudo, Gruppe docker) für GitHub Actions | `id mike`, `deployment.md` S1 |
+| Cronjobs (root) | Token-Erinnerungen (`deployment.md` S6) | `sudo crontab -l` |
