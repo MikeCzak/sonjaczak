@@ -19,7 +19,7 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
    `umsetzung-admin.md` C4. Empfehlung: Stimulus + `fetch`. Bis dahin werden Einheiten einzeln auf
    `/admin/einheiten/{id}` markiert.
    - Antwort:
-3. **Darf Claude die Admin-Konten am Server anlegen, und mit welcher E-Mail-Adresse für dich?** Befehle:
+3. **Sollen die Admin-Konten jetzt am Server angelegt werden, und mit welcher E-Mail-Adresse für dich?** Befehle:
    `deployment.md` S7. Vorschlag: nur dein Konto per Befehl, Sonjas Konto danach über die Benutzerverwaltung mit
    Einladungslink (sie setzt ihr Passwort selbst).
    - Antwort:
