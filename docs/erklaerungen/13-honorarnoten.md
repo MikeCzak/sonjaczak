@@ -61,6 +61,9 @@ gleichzeitige Anfragen würden dasselbe Maximum lesen.
   (`PdoSessionHandler::convertStringToInt()`). Weil das druckbare Zeichen sind, liegen sie über 2³² und können 3700001
   nicht treffen. (Auf 32-Bit-Systemen nimmt der Handler die Form mit zwei Schlüsseln; laut Doku überschneiden sich die
   beiden Schlüsselräume nicht.)
+- **Auch die Regeln „eine Honorarnote je Teilnahme“ und „Gutschriften höchstens bis zum Betrag“** werden unter dem
+  Lock noch einmal in der Datenbank geprüft (seit 2026-11-14, `InvoiceConflictException`). Vorher konnte ein
+  Doppelklick zwei Honorarnoten für dieselbe Teilnahme erzeugen. Details: `15-sperren.md`, Abschnitt 5a.
 - Ehrlich gesagt ist ein gleichzeitiges Erstellen bei einer Benutzerin selten. Teuer ist die Absicherung nicht (eine
   Abfrage), und doppelte Nummern wären bei Belegen ärgerlich.
 

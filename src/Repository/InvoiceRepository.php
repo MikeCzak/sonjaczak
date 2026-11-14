@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Enrollment;
 use App\Entity\Invoice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,6 +33,39 @@ class InvoiceRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
 
         return (is_numeric($max) ? (int) $max : 0) + 1;
+    }
+
+    /**
+     * Whether the enrollment has an invoice (credit notes do not count). Asks the database instead of the loaded
+     * collection, which may be older than what another request has committed since.
+     */
+    public function hasInvoiceFor(Enrollment $enrollment): bool
+    {
+        $count = $this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->where('i.enrollment = :enrollment')
+            ->andWhere('i.credits IS NULL')
+            ->setParameter('enrollment', $enrollment)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return is_numeric($count) && (int) $count > 0;
+    }
+
+    /**
+     * What may still be credited: original amount plus all credit amounts (negative) in the database, see
+     * hasInvoiceFor().
+     */
+    public function creditableCents(Invoice $original): int
+    {
+        $credited = $this->createQueryBuilder('i')
+            ->select('SUM(i.amountCents)')
+            ->where('i.credits = :original')
+            ->setParameter('original', $original)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $original->getAmountCents() + (is_numeric($credited) ? (int) $credited : 0);
     }
 
     /**

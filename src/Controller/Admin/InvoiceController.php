@@ -12,6 +12,7 @@ use App\Form\Admin\CreditType;
 use App\Form\Admin\InvoiceType;
 use App\Form\Admin\PaymentType;
 use App\Invoice\CreditDraft;
+use App\Invoice\InvoiceConflictException;
 use App\Invoice\InvoiceDraft;
 use App\Invoice\InvoiceIssuer;
 use App\Invoice\PaymentDraft;
@@ -92,7 +93,13 @@ final class InvoiceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $note = $issuer->credit($invoice, $draft);
+            try {
+                $note = $issuer->credit($invoice, $draft);
+            } catch (InvoiceConflictException) {
+                $this->addFlash('warning', 'credit.flash.conflict');
+
+                return $this->redirectToRoute('admin_invoice_show', ['id' => $invoice->getOriginal()->getId()]);
+            }
             $this->addFlash('success', 'credit.flash.created');
 
             return $this->redirectToRoute('admin_invoice_show', ['id' => $note->getId()]);
@@ -130,7 +137,13 @@ final class InvoiceController extends AbstractController
         $form->handleRequest($request);
 
         if ([] === $problems && $form->isSubmitted() && $form->isValid()) {
-            $invoice = $issuer->issue($enrollment, $draft);
+            try {
+                $invoice = $issuer->issue($enrollment, $draft);
+            } catch (InvoiceConflictException) {
+                $this->addFlash('warning', 'invoice.flash.conflict');
+
+                return $this->redirectToRoute('admin_enrollment_show', ['id' => $enrollment->getId()]);
+            }
             $this->addFlash('success', 'invoice.flash.created');
 
             return $this->redirectToRoute('admin_invoice_show', ['id' => $invoice->getId()]);

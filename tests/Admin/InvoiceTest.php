@@ -8,6 +8,8 @@ use App\Entity\Embeddable\Address;
 use App\Entity\Enrollment;
 use App\Entity\Invoice;
 use App\Entity\Settings;
+use App\Invoice\CreditDraft;
+use App\Invoice\InvoiceConflictException;
 use App\Invoice\InvoiceDraft;
 use App\Invoice\InvoiceIssuer;
 use App\Repository\InvoiceRepository;
@@ -76,6 +78,56 @@ final class InvoiceTest extends WebTestCase
         }
 
         self::assertSame(['1/2026', '2/2026', '1/2027', '2/2027'], $numbers);
+    }
+
+    /**
+     * Double click: the second request loaded the enrollment before the first committed, so its checks see no
+     * invoice yet. The check under the lock must stop it (docs/erklaerungen/15-sperren.md).
+     */
+    public function testOutdatedRequestCreatesNoSecondInvoice(): void
+    {
+        self::bootKernel();
+        $this->completeSettings();
+        $issuer = self::getContainer()->get(InvoiceIssuer::class);
+        $enrollment = $this->enrollment();
+        $draft = new InvoiceDraft('Gesangsunterricht', new \DateTimeImmutable('2026-11-07'));
+        $draft->dueOn = new \DateTimeImmutable('2026-11-21');
+        $issuer->issue($enrollment, $draft);
+
+        // The state of the second request: the loaded collection does not know the first invoice
+        $enrollment->getInvoices()->clear();
+        self::assertSame([], $issuer->problems($enrollment));
+
+        try {
+            $issuer->issue($enrollment, $draft);
+            self::fail('A second invoice was created.');
+        } catch (InvoiceConflictException) {
+        }
+        self::assertSame(1, $this->countInvoices());
+    }
+
+    /**
+     * Double click on "create credit note": the second must not credit more than the amount.
+     */
+    public function testOutdatedRequestCannotCreditMoreThanTheAmount(): void
+    {
+        self::bootKernel();
+        $issuer = self::getContainer()->get(InvoiceIssuer::class);
+        $invoice = InvoiceFactory::createOne(['amountCents' => 10000]);
+        $draft = new CreditDraft('Gutschrift', new \DateTimeImmutable('2026-11-07'), 10000);
+        $draft->amountCents = 10000;
+        $issuer->credit($invoice, $draft);
+
+        // The state of the second request: the loaded collection does not know the first credit note
+        $invoice->getCreditNotes()->clear();
+        self::assertSame(10000, $invoice->getCreditableCents());
+
+        try {
+            $issuer->credit($invoice, $draft);
+            self::fail('The amount was credited twice.');
+        } catch (InvoiceConflictException) {
+        }
+        self::assertSame(2, $this->countInvoices());
     }
 
     public function testRecipientIsACopy(): void
@@ -162,6 +214,16 @@ final class InvoiceTest extends WebTestCase
 
         $client->request('GET', '/admin/honorarnoten?jahr=2026');
         self::assertSelectorTextContains('table', '16/2026');
+    }
+
+    /**
+     * Counted in the database: after a failed transaction Doctrine's EntityManager is closed.
+     */
+    private function countInvoices(): int
+    {
+        $count = self::getContainer()->get(EntityManagerInterface::class)->getConnection()->fetchOne('SELECT COUNT(*) FROM invoice');
+
+        return is_numeric($count) ? (int) $count : -1;
     }
 
     private function loggedInClient(): KernelBrowser

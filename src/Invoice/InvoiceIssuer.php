@@ -19,6 +19,10 @@ use Doctrine\ORM\EntityManagerInterface;
  * maximum. So the number is assigned inside a transaction that first takes a PostgreSQL advisory lock: a second
  * request waits at the lock until the first has committed, then reads the new maximum. The unique constraint on
  * (year, number) stays as a safety net.
+ *
+ * The same goes for "one invoice per enrollment" and "credits up to the amount": problems() and the voter look at
+ * objects loaded at the start of the request. Both are checked again under the lock, in the database
+ * (docs/erklaerungen/15-sperren.md).
  */
 final readonly class InvoiceIssuer
 {
@@ -83,7 +87,8 @@ final readonly class InvoiceIssuer
     /**
      * Creates and saves the invoice.
      *
-     * @throws \LogicException if problems() is not empty (the controller checks first)
+     * @throws \LogicException            if problems() is not empty (the controller checks first)
+     * @throws InvoiceConflictException if another request has created the invoice in the meantime
      */
     public function issue(Enrollment $enrollment, InvoiceDraft $draft): Invoice
     {
@@ -94,7 +99,11 @@ final readonly class InvoiceIssuer
             throw new \LogicException('The invoice cannot be created, check problems() first.');
         }
 
-        return $this->withNextNumber((int) $issuedOn->format('Y'), static function (int $year, int $number) use ($enrollment, $draft, $recipient, $issuedOn, $dueOn): Invoice {
+        return $this->withNextNumber((int) $issuedOn->format('Y'), function (int $year, int $number) use ($enrollment, $draft, $recipient, $issuedOn, $dueOn): Invoice {
+            if ($this->invoices->hasInvoiceFor($enrollment)) {
+                throw new InvoiceConflictException('The enrollment already has an invoice.');
+            }
+
             $invoice = new Invoice(
                 $enrollment,
                 $year,
@@ -116,7 +125,8 @@ final readonly class InvoiceIssuer
      * Creates and saves a credit note for an invoice: negative amount, own number, same recipient (datenmodell.md
      * 3.7). It is due on the day it is issued; the refund is recorded as a negative payment on it.
      *
-     * @throws \LogicException if the amount is not between 1 cent and what can still be credited
+     * @throws \LogicException            if the amount is not between 1 cent and what can still be credited
+     * @throws InvoiceConflictException if another credit note in the meantime leaves less than the amount
      */
     public function credit(Invoice $invoice, CreditDraft $draft): Invoice
     {
@@ -127,7 +137,11 @@ final readonly class InvoiceIssuer
             throw new \LogicException('Invalid credit amount.');
         }
 
-        return $this->withNextNumber((int) $issuedOn->format('Y'), static function (int $year, int $number) use ($original, $draft, $issuedOn, $cents): Invoice {
+        return $this->withNextNumber((int) $issuedOn->format('Y'), function (int $year, int $number) use ($original, $draft, $issuedOn, $cents): Invoice {
+            if ($cents > $this->invoices->creditableCents($original)) {
+                throw new InvoiceConflictException('The credit exceeds what can still be credited.');
+            }
+
             $note = new Invoice(
                 $original->getEnrollment(),
                 $year,
@@ -148,7 +162,9 @@ final readonly class InvoiceIssuer
 
     /**
      * Runs $create with the next free number of the year inside a transaction that holds the lock for invoice
-     * numbers, persists the result and commits.
+     * numbers, persists the result and commits. $create runs after the lock is taken, so its database queries see
+     * everything committed by a request that held the lock before (PostgreSQL's default READ COMMITTED). If it
+     * throws, the transaction is rolled back and nothing is saved.
      *
      * @param callable(int, int): Invoice $create receives year and number
      */

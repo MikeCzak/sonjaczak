@@ -49,9 +49,10 @@ Zwei Dinge können schiefgehen:
 | Zwei Honorarnoten mit derselben Nummer | Der **Unique-Constraint** auf `(year, number)`: Die Datenbank weigert sich, die zweite „5/2026“ zu speichern | Die zweite Anfrage bricht mit Fehlerseite (500) ab. Keine doppelte Nummer, aber ein Fehler für Sonja |
 | Zwei Honorarnoten für **dieselbe Teilnahme** (Nummern 5 und 6) | Nichts: Es gibt keinen Constraint „eine Honorarnote je Teilnahme“, das prüft nur die App (`InvoiceIssuer::problems()`) | Zwei echte Honorarnoten, die sich nicht löschen lassen (Belege sind unveränderlich) |
 
-Die zweite Zeile ist die **Lücke, die Mikes Frage aufgedeckt hat** (2026-11-14): Beide Anfragen prüfen „gibt es schon
-eine Honorarnote?“, beide sehen „nein“, weil die andere noch nicht gespeichert hat. Die Sperre aus Abschnitt 5 regelt
-nur die Nummer, nicht diese Prüfung. Vorschlag zur Behebung: Projektstand, „Jetzt“.
+Die zweite Zeile war die **Lücke, die Mikes Frage aufgedeckt hat** (2026-11-14): Beide Anfragen prüfen „gibt es schon
+eine Honorarnote?“, beide sehen „nein“, weil die andere noch nicht gespeichert hat. Die Sperre aus Abschnitt 5 regelte
+nur die Nummer, nicht diese Prüfung. Dasselbe galt für Gutschriften: Zwei Gutschriften über den vollen Betrag wären
+möglich gewesen. **Behoben am 2026-11-14**, siehe Abschnitt 5a.
 
 ## 4. Transaktion: alles oder nichts
 
@@ -108,6 +109,26 @@ Es gibt zwei Sorten dieser Schilder:
 
 **Alternative:** `LOCK TABLE invoice` würde die ganze Tabelle sperren, auch für Zahlungen und Erinnerungen, die mit
 Nummern nichts zu tun haben. Das Schild sperrt nur, wer dasselbe Schild will.
+
+## 5a. Die Behebung: noch einmal nachsehen, wenn man das Schild hat
+
+Die Prüfung am Anfang der Anfrage (`InvoiceIssuer::problems()`, Voter für Gutschriften) schaut auf Objekte, die zu
+Beginn der Anfrage geladen wurden. Die können veraltet sein. Deshalb wird **nach** dem Nehmen des Schilds noch einmal
+gefragt, und zwar die Datenbank selbst:
+
+- `InvoiceRepository::hasInvoiceFor()`: Hat die Teilnahme schon eine Honorarnote?
+- `InvoiceRepository::creditableCents()`: Wie viel darf noch gutgeschrieben werden?
+
+Weil die erste Anfrage ihre Transaktion schon abgeschlossen hat, wenn die zweite das Schild bekommt, sieht die zweite
+deren Honorarnote. PostgreSQL arbeitet standardmäßig mit „Read Committed“: Jede Abfrage sieht alles, was vor ihrem
+Start committet wurde. Ist schon etwas da, wirft der Code `InvoiceConflictException`. Die Transaktion wird
+zurückgerollt, es wird nichts gespeichert, und Sonja landet mit einer Meldung („gerade schon erstellt, z. B. durch
+einen Doppelklick“) auf der Teilnahme bzw. der Honorarnote.
+
+**Test** (`InvoiceTest::testOutdatedRequest…`): Gleichzeitigkeit lässt sich im Test schlecht herstellen. Der Test
+stellt deshalb den Zustand der zweiten Anfrage nach: erste Honorarnote erstellen, dann die geladene Liste leeren (so
+weiß das Objekt nichts von der ersten), dann ein zweites Mal erstellen. Gegenprobe: Ohne die neue Prüfung schlagen
+beide Tests fehl, es entstehen zwei Honorarnoten bzw. 200 € Gutschrift auf 100 €.
 
 ## 6. Sessions: warum auch dort ein Schild hängt
 

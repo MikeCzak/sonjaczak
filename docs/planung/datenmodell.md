@@ -524,5 +524,6 @@ Weitere Angaben:
 - **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO).
 - **Erinnerungs-Mail** bei überschrittener Zahlungsfrist (Konsolenbefehl + Cronjob am Server, 3.7).
 - **Ferien-Import** aus der OpenHolidays API beim Anlegen eines Kurses (3.3).
-- **Upload der Unterschrift** in den Einstellungen (PNG von Sonja).
+- **Upload der Unterschrift** in den Einstellungen (PNG von Sonja). *2026-11-14: Keine Unterschrift nötig (Mike), siehe
+  Projektstand.*
 - **Backups** der Datenbank vor den ersten echten Daten.

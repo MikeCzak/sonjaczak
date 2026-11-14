@@ -399,6 +399,7 @@ invoice:
         hint: Honorarnoten werden auf der Seite einer Teilnahme erstellt.
     flash:
         created: Honorarnote erstellt.
+        conflict: Für diese Teilnahme wurde gerade schon eine Honorarnote erstellt (z. B. durch einen Doppelklick). Eine zweite ist nicht entstanden.
 credit:
     badge: Gutschrift
     default_description: Gutschrift zu Honorarnote %number%
@@ -420,6 +421,7 @@ credit:
         fully_credited: Der ganze Betrag ist bereits gutgeschrieben.
     flash:
         created: Gutschrift erstellt.
+        conflict: Gerade wurde schon eine Gutschrift erstellt (z. B. durch einen Doppelklick), der Betrag ist nicht mehr frei. Eine weitere ist nicht entstanden.
 payment:
     heading: Zahlungen
     owed: Zu zahlen (nach Gutschriften)
