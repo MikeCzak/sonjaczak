@@ -86,7 +86,7 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 - Nachholregel als Service mit Unit-Tests. Schwellwert vorerst als Parameter, ab C6 aus den Einstellungen.
 - `EnrollmentVoter::DELETE`.
 
-**C4 Kursraster** (`datenmodell.md` 4)
+**C4 Kursraster** (`datenmodell.md` 4) – entschieden 2026-11-14: Stimulus + `fetch`
 
 - **Entscheidung vorher:** Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live Components). Frage und Antwort im
   Projektstand („Jetzt“).
@@ -120,7 +120,7 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 - Entities `Invoice` (Embeddable `Recipient`, Nummer je Jahr mit Unique-Constraint und Wiederholung bei Kollision)
   und `Payment`. Erstellen aus einer Teilnahme mit Snapshot, Unveränderlichkeit über fehlende Setter.
 
-**D2 PDF und Download**
+**D2 PDF und Download** – entschieden 2026-11-14: dompdf
 
 - **Entscheidung vorher:** PDF-Bibliothek, die im PHP-Container läuft (kein zusätzlicher Container). Maßstab ist das
   Muster `HN16_…`. Frage und Antwort im Projektstand („Jetzt“).

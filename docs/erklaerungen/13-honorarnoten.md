@@ -39,6 +39,8 @@ die Schüler:in.
 
 ## Nummer je Jahr: Advisory Lock statt Wiederholung
 
+Von Grund auf erklärt (Race Condition, Transaktion, Sperre, Sessions): `15-sperren.md`.
+
 Die nächste Nummer ist `MAX(number) + 1` des Ausstellungsjahres (`InvoiceRepository::nextNumber()`). Zwei
 gleichzeitige Anfragen würden dasselbe Maximum lesen.
 

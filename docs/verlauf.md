@@ -287,3 +287,15 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - **Admin-Bereich** (Login und Rollen, Semester, Schüler:innen, Honorarnoten): geplant in `planung/datenmodell.md`,
   `planung/rollen.md` und `planung/umsetzung-admin.md`, alle freigegeben 2026-11-13.
 - **Symfony UX** und **Postfächer**: weiterhin offen, jetzt in `projektstand.md`.
+
+## 2026-11-14
+
+- Doku neu geordnet (Offenes nur in `projektstand.md`, Verlauf hier, Server-Schritte S1–S10).
+- Entscheidungen von Mike: dompdf (D2), Stimulus + `fetch` (C4), Cronjob für überfällige Honorarnoten freigegeben ohne
+  Prüfung der Zeitzone, Backup-Plan soll Claude schreiben. Super-Admin in Produktion von Mike angelegt, Sonjas Konto
+  folgt über die Benutzerverwaltung.
+- Absenderdaten von Sonja erhalten. Mike hatte sie in `projektstand.md` eingetragen; vor dem Commit nach
+  `claude_references/` (nur lokal) verschoben, weil das Repo öffentlich ist. Geprüft: IBAN und BIC waren in keinem
+  Commit.
+- Bei der Erklärung der Sperren gefunden: Doppelklick kann zwei Honorarnoten für dieselbe Teilnahme erzeugen
+  (`erklaerungen/15-sperren.md`, Abschnitt 3). Behebung wartet auf Freigabe.

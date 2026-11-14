@@ -165,7 +165,8 @@ Schema-Listener erkannte „nicht dieselbe Datenbank“ und `doctrine:schema:val
 der Handler Doctrines PDO-Verbindung (`config/services.yaml`, `app.session_pdo`). Weil der Handler im Standardmodus
 `LOCK_TRANSACTIONAL` von `read()` bis zum Speichern eine Transaktion offen hält (`PdoSessionHandler::getSelectSql()`),
 würde das auf der geteilten Verbindung mit Doctrines Transaktionen kollidieren. Deshalb `LOCK_ADVISORY`: PostgreSQL-
-Advisory-Locks (`pg_advisory_lock`) sperren die Session, ohne eine Transaktion offen zu halten.
+Advisory-Locks (`pg_advisory_lock`) sperren die Session, ohne eine Transaktion offen zu halten. Von Grund auf erklärt:
+`15-sperren.md`.
 
 ### Benutzerverwaltung und der erste Voter (B4)
 

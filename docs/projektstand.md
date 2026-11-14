@@ -12,30 +12,30 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **Welche PDF-Bibliothek für die Honorarnoten?** Optionen mit Version, Lizenz, Pro und Contra:
-   `umsetzung-admin.md` D2. Empfehlung: dompdf. Alle Optionen brauchen die PHP-Erweiterung GD im Image.
+1. **Unterschrift: als PNG hochladen oder ganz weglassen?** (2026-11-14) Die Datei kommt nie ins Repo: Sie wird in
+   Produktion unter `/admin/einstellungen` hochgeladen und liegt nur in der Datenbank am Server (ohne Port nach außen)
+   und später in den verschlüsselten Backups. Sichtbar ist sie in jedem PDF, das an Schüler:innen geht, wie bei einer
+   Honorarnote auf Papier. Ob eine Honorarnote überhaupt eine Unterschrift braucht, hat Claude nicht geprüft (Frage
+   an die Steuerberatung). Empfehlung: hochladen wie geplant, die Originaldatei nicht per Mail oder Chat
+   weitergeben, sondern von Sonjas oder deinem Mac direkt hochladen.
    - Antwort:
-2. **Womit wird das Kursraster gebaut: Stimulus + `fetch`, Turbo Frames oder Live Components?** Optionen:
-   `umsetzung-admin.md` C4. Empfehlung: Stimulus + `fetch`. Bis dahin werden Einheiten einzeln auf
-   `/admin/einheiten/{id}` markiert.
+2. **Darf Claude die Lücke „Doppelklick erzeugt zwei Honorarnoten“ schließen?** (2026-11-14, `umsetzung-admin.md` D1)
+   Die Prüfung „gibt es schon eine Honorarnote?“ läuft vor der Sperre für die Nummernvergabe. Zwei fast gleichzeitige
+   Anfragen (Doppelklick, zwei Tabs) können beide „noch keine“ sehen und zwei Honorarnoten mit aufeinanderfolgenden
+   Nummern anlegen, die sich nicht löschen lassen. Vorschlag: die Prüfung zusätzlich innerhalb der Sperre wiederholen
+   (in der Datenbank, nicht im geladenen Objekt), dieselbe Prüfung für Gutschriften, plus Test. Erklärung:
+   `erklaerungen/15-sperren.md`.
    - Antwort:
-3. **Sollen die Admin-Konten jetzt am Server angelegt werden, und mit welcher E-Mail-Adresse für dich?** Befehle:
-   `deployment.md` S7. Vorschlag: nur dein Konto per Befehl, Sonjas Konto danach über die Benutzerverwaltung mit
-   Einladungslink (sie setzt ihr Passwort selbst).
+3. **Backup-Plan freigeben** (`umsetzung-admin.md` F): Claude schreibt ihn als Nächstes (Mike, 2026-11-14: ja). Dann
+   hier freigeben. **Echte Daten erst danach.**
    - Antwort:
-4. **Darf der Cronjob für überfällige Honorarnoten eingetragen werden (täglich 07:30, Mail an `music@`)?** Eintrag:
-   `deployment.md` S8. Vorher prüfen wir die Zeitzone des Servers (`timedatectl`). Sinnvoll erst, wenn es echte
-   Honorarnoten gibt.
-   - Antwort:
-5. **Backup-Plan:** Noch keine Frage an dich. Claude schreibt zuerst den Plan (`umsetzung-admin.md` F) mit den
-   Entscheidungen Verschlüsselung (`age` oder GPG), Ablage und Aufbewahrung am Mac, ob der Mac zur Sicherungszeit
-   läuft, eingeschränkter SSH-Zugang. Dann gibst du frei, danach folgen die Schritte am Server und ein Test der
-   Rücksicherung. **Echte Daten erst danach.**
-   - Antwort (soll Claude den Plan jetzt schreiben?):
 
-**Ausständig von Sonja** (über Mike, 2026-11-13): Absenderdaten für die Honorarnote (Name, Titel, Adresse, IBAN, BIC,
-Bank, Ort, Hinweis zur Umsatzsteuer) und die Unterschrift als PNG. Werden in Produktion unter `/admin/einstellungen`
-eingetragen, nicht ins Repo. Ohne sie lassen sich keine Honorarnoten erstellen.
+**Todos für Mike (keine Frage offen):**
+
+- [ ] Sonjas Konto über die Benutzerverwaltung anlegen (`/admin/benutzer`, Einladungslink).
+- [ ] Absenderdaten in Produktion unter `/admin/einstellungen` eintragen. Die Daten liegen lokal in
+  `claude_references/absenderdaten-sonja.md` (nicht im Repo, das Repo ist öffentlich).
+- [ ] Cronjob für überfällige Honorarnoten eintragen (`deployment.md` S8, freigegeben 2026-11-14).
 
 ## Später zu klären
 
@@ -91,7 +91,7 @@ verlinkten Erklärung.
 
 - [ ] **Passkeys** (`umsetzung-admin.md` B5, zurückgestellt 2026-11-13; Login mit Passwort reicht für die Entwicklung). **Zu
   klären:** Bisher stand im Projektstand „kommt vor dem Zeigen an Sonja“, in `umsetzung-admin.md` (Meilensteine) „spätestens
-  vor dem Echtbetrieb“.
+  vor dem Echtbetrieb“. - reicht auch erst im Betrieb, ein Passwort ist ja nicht per se unsicher. Aber ich möchte nicht darauf vergessen, weil es für Sonja hinsichtlich der 2FA viel einfacher ist, nur ihren Fingerabdruck verwenden zu müssen, als zb ein OTP einzugeben.
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
@@ -144,13 +144,13 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] C1 Schüler:innen und Elternteile (2026-11-13, `erklaerungen/09`)
 - [x] C2 Kurse und Ferien mit OpenHolidays (2026-11-13, `erklaerungen/10`)
 - [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
-- [ ] C4 Kursraster (wartet auf Entscheidung, siehe „Jetzt“)
+- [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; noch nicht gebaut)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
 - [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`)
 - [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`)
-- [ ] D2 PDF (wartet auf Entscheidung, siehe „Jetzt“)
+- [ ] D2 PDF (entschieden 2026-11-14: dompdf; noch nicht gebaut)
 - [x] D3 Zahlungen und Gutschriften (2026-11-13, `erklaerungen/13`)
-- [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
+- [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob freigegeben, Eintrag siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
 - [x] D5 Einnahmen und CSV-Export (2026-11-13, `erklaerungen/13`)
 - [x] E Dashboard (2026-11-13, `erklaerungen/14`)
 - [ ] F Vor den echten Daten: Backups (siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
@@ -182,6 +182,11 @@ muss).
 | Mail-Versand | IONOS-SMTP (`smtp.ionos.de:465`), synchron, Absender `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com` (2026-11-11) | Postfach ist bereits bei IONOS, kein weiterer Dienst; kein Messenger-Worker nötig (RAM). Details: `docs/planung/formulare.md` |
 | Admin-Planung | Datenmodell, Rollen und Umsetzungsplan freigegeben (2026-11-13) | `planung/datenmodell.md`, `planung/rollen.md`, `planung/umsetzung-admin.md` |
 | Vorführung | Kein eigener Demo-Termin: Mike sieht sich die Funktionen lokal an (`rundgang-admin.md`) und zeigt sie Sonja in Produktion (2026-11-13) | Spart eine eigene Demo-Umgebung; Honorarnoten in Produktion verbrauchen aber Nummern |
+| PDF-Bibliothek | dompdf (2026-11-14) | HTML aus Twig mit Übersetzungsschlüsseln, LGPL-2.1, läuft im PHP-Container; braucht GD. Optionen: `planung/umsetzung-admin.md` D2 |
+| Kursraster | Stimulus + `fetch` (2026-11-14) | Tastaturlastig, viele kleine Änderungen; durchschaubar. Live Components ggf. später fürs Booking-Formular. Optionen: `planung/umsetzung-admin.md` C4 |
+| Konten in Produktion | Super-Admin (Mike) per Befehl angelegt; Sonjas Konto über die Benutzerverwaltung mit Einladungslink (2026-11-14) | Sonja setzt ihr Passwort selbst |
+| Cronjob überfällige Honorarnoten | Freigegeben, täglich 07:30, ohne Prüfung der Zeitzone (2026-11-14) | Es geht um Tage, nicht Stunden; eine Stunde früher oder später ist egal |
+| Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

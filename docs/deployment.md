@@ -217,8 +217,9 @@ einmal. Vorschlag für den Eintrag in der crontab von root (wie S6), täglich um
   sichtbar im Journal (`journalctl -u cron`).
 - Die Links in der Mail entstehen aus `DEFAULT_URI` (`compose.yaml`: `https://${SERVER_NAME}:443`); lokal mit diesem
   Wert geprüft, der Port fällt im Link weg (`https://sonjaczak.com/admin/honorarnoten/2`).
-- cron nimmt die Zeitzone des Servers; vor dem Eintragen mit `timedatectl` nachsehen (bei UTC ist 07:30 in Wien 08:30
-  bzw. 09:30). Ob etwas überfällig ist, rechnet PHP ohnehin in `Europe/Vienna`.
+- cron nimmt die Zeitzone des Servers (bei UTC ist 07:30 in Wien 08:30 bzw. 09:30). Ob etwas überfällig ist,
+  rechnet PHP ohnehin in `Europe/Vienna`. Eine Prüfung mit `timedatectl` ist deshalb nicht nötig (Entscheidung
+  2026-11-14: eine Stunde früher oder später ist egal).
 
 ### S9. GitHub-Environment und Secrets (Mac, mit gh)
 
