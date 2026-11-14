@@ -41,8 +41,9 @@ Regeln:
 
 - **Jede Annahme oder Auslegung**, die Claude beim Umsetzen trifft, kommt sofort mit Datum und Schritt nach
   `projektstand.md` → „Später zu klären“, nirgendwo sonst. Was eine Freigabe oder Entscheidung von Mike braucht,
-  kommt nach „Jetzt“. Ist ein Punkt geklärt, wandert er zu „Getroffene Entscheidungen“.
-- **Verweise immer mit Ort:** „Admin-Plan D2“ (`docs/planung/umsetzung-admin.md`), „`deployment.md` S8“
+  kommt nach „Jetzt“, formuliert als Frage mit Zeile „Antwort:“; die Optionen mit Pro und Contra stehen im
+  Plan (`docs/planung/`), nicht nur im Chat. Ist ein Punkt geklärt, wandert er zu „Getroffene Entscheidungen“.
+- **Verweise immer mit Ort:** „`umsetzung-admin.md` D2“ (`docs/planung/`), „`deployment.md` S8“
   (Server-Schritte S1–S10). Nie ein Kürzel allein.
 - Nach jedem abgeschlossenen Schritt: Zeile unter „Fortschritt“ abhaken, Details nach `verlauf.md`.
 

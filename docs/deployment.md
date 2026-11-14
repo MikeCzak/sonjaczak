@@ -40,7 +40,7 @@ wer den Key hat, kann also nur Images starten, die unsere CI gebaut hat.
 In den Befehlen `SERVER_IP` durch die IPv4-Adresse des VPS ersetzen. Ob ein Schritt erledigt ist oder noch auf
 Freigabe wartet, steht in `projektstand.md`.
 
-**Nummerierung:** Bis 2026-11-13 hießen die Schritte B1–B8, C und D. Weil der Admin-Plan dieselben Buchstaben nutzt,
+**Nummerierung:** Bis 2026-11-13 hießen die Schritte B1–B8, C und D. Weil `umsetzung-admin.md` dieselben Buchstaben nutzt,
 heißen sie jetzt S1–S10 (B1–B8 → S1–S8, C → S9, D → S10). In älteren Commits, im `verlauf.md` und im Text der
 Token-Erinnerungen in der crontab des Servers stehen noch die alten Namen.
 
@@ -185,7 +185,7 @@ Erklärung:
   Uhrzeit auf die nächste Minute setzt.
 - `crontab -l` zeigt die Einträge, nach dem Erneuern eines Tokens das Datum anpassen.
 
-### S7. Admin-Konten anlegen (auf dem Server, einmalig nach dem Deploy von Admin-Plan B1)
+### S7. Admin-Konten anlegen (auf dem Server, einmalig nach dem Deploy von `umsetzung-admin.md` B1)
 
 Das erste Konto kann nicht über die App entstehen (`docs/planung/rollen.md` 4.1). Der Befehl fragt das Passwort
 verdeckt und zweimal ab (mindestens 12 Zeichen, nicht zu leicht zu erraten); `-it` ist nötig, damit die verdeckte
@@ -197,12 +197,12 @@ docker exec -it sonjaczak-php-1 bin/console app:user:create music@sonjaczak.com
 ```
 
 Das zweite Konto (Sonja, `ROLE_ADMIN`) kann stattdessen später in der Benutzerverwaltung entstehen
-(Admin-Plan B4), dann setzt Sonja ihr Passwort selbst über den Einladungslink. Danach im Browser
+(`umsetzung-admin.md` B4), dann setzt Sonja ihr Passwort selbst über den Einladungslink. Danach im Browser
 `https://sonjaczak.com/admin` öffnen und anmelden. Hintergrund: `docs/erklaerungen/08-login-und-sessions.md`.
 
 ### S8. Erinnerung an überfällige Honorarnoten (auf dem Server)
 
-Der Befehl `app:invoices:remind-overdue` (Admin-Plan D4) schickt Sonja eine Mail an `music@sonjaczak.com`
+Der Befehl `app:invoices:remind-overdue` (`umsetzung-admin.md` D4) schickt Sonja eine Mail an `music@sonjaczak.com`
 (`app.contact_email`) mit allen Honorarnoten, deren Frist seit dem letzten Lauf überschritten ist; je Frist nur
 einmal. Vorschlag für den Eintrag in der crontab von root (wie S6), täglich um 07:30:
 

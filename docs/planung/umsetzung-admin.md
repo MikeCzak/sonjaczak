@@ -88,8 +88,19 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 
 **C4 Kursraster** (`datenmodell.md` 4)
 
-- **Entscheidung vorher:** Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live Components). Ich stelle die drei mit
-  einem kleinen Beispiel aus dem Raster gegenüber.
+- **Entscheidung vorher:** Symfony UX (Stimulus + `fetch`, Turbo Frames oder Live Components). Frage und Antwort im
+  Projektstand („Jetzt“).
+
+  *Optionen (vorgestellt 2026-11-13).* Alle drei laufen mit AssetMapper ohne Node, bauen auf
+  `symfony/stimulus-bundle` 3.7.0 auf (PHP ≥ 8.4, Packagist) und brauchen am Server keinen zusätzlichen Prozess.
+
+  | | Stimulus + `fetch` | Turbo Frames (`symfony/ux-turbo` 3.7.0) | Live Components (`symfony/ux-live-component` 3.7.2) |
+  |---|---|---|---|
+  | Pro | Volle Kontrolle über Tastatur und Zellen; eine Anfrage pro Änderung; durchschaubar (kleines eigenes JavaScript plus JSON-Endpunkt) | Fast kein eigenes JavaScript; Symfony-Forms und Validierung bleiben; Tests mit WebTestCase | Kaum JavaScript; das Raster wird nach jeder Änderung neu gerendert, Zählungen stimmen automatisch; später passend für die Preisschätzung im Booking-Formular |
+  | Contra | Mehr eigenes JavaScript; Zählungen und Fehler im Browser nachführen; JavaScript braucht eigene Tests | Je Zelle zwei Anfragen (Formular laden, absenden); Zählungen außerhalb des Frames brauchen Turbo Streams; Turbo Drive gilt sonst seitenweit und müsste auf `/admin` beschränkt werden | Eigene Konzepte (LiveProp, writable, Hydration), schwerer zu debuggen; jede Änderung schickt den Zustand des ganzen Rasters hin und zurück; zwei zusätzliche Pakete |
+
+  **Empfehlung Claude:** Stimulus + `fetch` für das Raster (tastaturlastig, viele kleine Änderungen). Live Components
+  erst beim Booking-Formular erwägen. Bei Unsicherheit: eine Rasterzeile in zwei Varianten zum Vergleichen.
 - Raster nach Kalenderwochen, Bearbeiten direkt in der Zelle, Tastatur, Ferien per Zeile, Zählung je Spalte.
 - Design mit Sonjas Rückmeldung nachschärfen, wenn Mike es ihr in Produktion zeigt.
 
@@ -111,8 +122,23 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 
 **D2 PDF und Download**
 
-- **Entscheidung vorher:** PDF-Bibliothek, die im PHP-Container läuft (kein zusätzlicher Container). Kandidaten
-  stelle ich mit Version, Lizenz und RAM-Bedarf vor; Maßstab ist das Muster `HN16_…`.
+- **Entscheidung vorher:** PDF-Bibliothek, die im PHP-Container läuft (kein zusätzlicher Container). Maßstab ist das
+  Muster `HN16_…`. Frage und Antwort im Projektstand („Jetzt“).
+
+  *Optionen (vorgestellt 2026-11-13, Versionen und Lizenzen von Packagist).* Ausgeschlossen: wkhtmltopdf (GitHub-Repo
+  seit 2023 archiviert), Gotenberg (zusätzlicher Container), Headless Chrome (zu viel RAM).
+
+  | Bibliothek | Version, Lizenz | Arbeitsweise | Pro | Contra |
+  |---|---|---|---|---|
+  | `dompdf/dompdf` | 3.1.6, LGPL-2.1 | HTML und CSS aus Twig (mit Übersetzungsschlüsseln) | Layout wie eine Webseite, leicht änderbar | Laut README kein Flexbox und kein Grid, Layout über Tabellen |
+  | `mpdf/mpdf` | 8.3.1, GPL-2.0-only | HTML und CSS | Etwas mehr Funktionen für Seiten (Kopf-/Fußzeilen) | Strengere Lizenz (Copyleft), mehr Abhängigkeiten |
+  | `tecnickcom/tc-lib-pdf` | 8.84.0, LGPL-3.0+ | PHP-Code mit Koordinaten | Pixelgenau, sehr aktiv (Nachfolger von TCPDF) | Viel mehr Code, Layout in PHP statt Template |
+  | `setasign/fpdf` | 1.9.0, MIT | PHP-Code mit Koordinaten | Winzig | Laut FAQ kein UTF-8 (nur windows-1252) |
+
+  Alle brauchen die PHP-Erweiterung GD für die Unterschrift (PNG mit transparentem Hintergrund): eine Zeile im
+  `Dockerfile` (`install-php-extensions gd`), das Image wird etwas größer (beim Einbau messen).
+
+  **Empfehlung Claude:** dompdf; vorher RAM-Bedarf und Ergebnis an einem Prototyp messen.
 - PDF beim Erstellen erzeugen und in `invoice_pdf` ablegen, Dateiname nach Schema, Download einzeln und als ZIP je
   Kurs mit Hinweis auf fehlende Honorarnoten.
 

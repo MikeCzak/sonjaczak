@@ -3,25 +3,35 @@
 Stand: 2026-11-14. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
-**Verweise:** Schritte des Admin-Plans heißen „Admin-Plan C4“ (`planung/umsetzung-admin.md`), Schritte der
-Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt, verschwindet er hier und landet unter „Getroffene
-Entscheidungen“ (oder im Plan, falls er nur einen Schritt betrifft).
+**Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
+Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt, verschwindet er hier und landet unter
+„Getroffene Entscheidungen“ (oder im Plan, falls er nur einen Schritt betrifft).
 
 ## Jetzt (wartet auf Mike)
 
-1. **Entscheidung PDF-Bibliothek** (Admin-Plan D2, Optionen vorgestellt 2026-11-13). Empfehlung: dompdf (HTML aus
-   Twig, LGPL-2.1). Alternativen: mpdf (GPL-2.0-only), tc-lib-pdf (Layout in PHP). Alle brauchen die PHP-Erweiterung
-   GD für die Unterschrift (eine Zeile im `Dockerfile`).
-2. **Entscheidung Kursraster** (Admin-Plan C4, Optionen vorgestellt 2026-11-13). Empfehlung: Stimulus + `fetch`.
-   Alternativen: Turbo Frames, Live Components. Bis dahin werden Einheiten einzeln auf `/admin/einheiten/{id}`
-   markiert.
-3. **Freigabe: Admin-Konten am Server** (`deployment.md` S7). Nötig: dein Ja und deine E-Mail-Adresse. Sonjas Konto
-   besser danach über die Benutzerverwaltung mit Einladungslink.
-4. **Freigabe: Cronjob für überfällige Honorarnoten** (`deployment.md` S8, Befehl aus Admin-Plan D4). Vorher die
-   Zeitzone des Servers prüfen (`timedatectl`).
-5. **Backup-Plan** (Admin-Plan F, DSGVO): Claude schreibt den Plan, Mike gibt ihn frei, dann die Schritte am Server
-   und ein Test der Rücksicherung. Zu entscheiden: Verschlüsselung (`age` oder GPG), Ablage und Aufbewahrung am Mac,
-   ob der Mac zur Sicherungszeit läuft, eingeschränkter SSH-Zugang. **Echte Daten erst danach.**
+**So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
+in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
+
+1. **Welche PDF-Bibliothek für die Honorarnoten?** Optionen mit Version, Lizenz, Pro und Contra:
+   `umsetzung-admin.md` D2. Empfehlung: dompdf. Alle Optionen brauchen die PHP-Erweiterung GD im Image.
+   - Antwort:
+2. **Womit wird das Kursraster gebaut: Stimulus + `fetch`, Turbo Frames oder Live Components?** Optionen:
+   `umsetzung-admin.md` C4. Empfehlung: Stimulus + `fetch`. Bis dahin werden Einheiten einzeln auf
+   `/admin/einheiten/{id}` markiert.
+   - Antwort:
+3. **Darf Claude die Admin-Konten am Server anlegen, und mit welcher E-Mail-Adresse für dich?** Befehle:
+   `deployment.md` S7. Vorschlag: nur dein Konto per Befehl, Sonjas Konto danach über die Benutzerverwaltung mit
+   Einladungslink (sie setzt ihr Passwort selbst).
+   - Antwort:
+4. **Darf der Cronjob für überfällige Honorarnoten eingetragen werden (täglich 07:30, Mail an `music@`)?** Eintrag:
+   `deployment.md` S8. Vorher prüfen wir die Zeitzone des Servers (`timedatectl`). Sinnvoll erst, wenn es echte
+   Honorarnoten gibt.
+   - Antwort:
+5. **Backup-Plan:** Noch keine Frage an dich. Claude schreibt zuerst den Plan (`umsetzung-admin.md` F) mit den
+   Entscheidungen Verschlüsselung (`age` oder GPG), Ablage und Aufbewahrung am Mac, ob der Mac zur Sicherungszeit
+   läuft, eingeschränkter SSH-Zugang. Dann gibst du frei, danach folgen die Schritte am Server und ein Test der
+   Rücksicherung. **Echte Daten erst danach.**
+   - Antwort (soll Claude den Plan jetzt schreiben?):
 
 **Ausständig von Sonja** (über Mike, 2026-11-13): Absenderdaten für die Honorarnote (Name, Titel, Adresse, IBAN, BIC,
 Bank, Ort, Hinweis zur Umsatzsteuer) und die Unterschrift als PNG. Werden in Produktion unter `/admin/einstellungen`
@@ -34,7 +44,7 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
-- [ ] **Schwellwert der Nachholregel** (2026-11-13, Admin-Plan C3, `erklaerungen/11`): Sonja beschreibt in
+- [ ] **Schwellwert der Nachholregel** (2026-11-13, `umsetzung-admin.md` C3, `erklaerungen/11`): Sonja beschreibt in
   `planung/anforderungen.md` (Frage 6) eine **Gesamtzahl** („sofern die Gesamtanzahl der Stunden einen bestimmten
   Schwellwert unterschreiten würde“, z. B. 13), das Datenmodell einen **Abstand** (`plannedLessons − Schwellwert`,
   z. B. 2). Umgesetzt ist der Abstand, der Wert ist seit C6 eine Einstellung (Standard 0). Welche Variante, welcher
@@ -65,22 +75,22 @@ verlinkten Erklärung.
   Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (Antwort 8 im Datenmodell)?
 - [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
   der Export ordnet streng nach Zahlungsdatum zu.
-- [ ] **Lösch- und Anonymisierungsregel** (2026-11-13, Admin-Plan F; **zurückgestellt**, Mike: „für später
+- [ ] **Lösch- und Anonymisierungsregel** (2026-11-13, `umsetzung-admin.md` F; **zurückgestellt**, Mike: „für später
   aufheben“). Grundlage: § 132 BAO, 7 Jahre ab Schluss des Kalenderjahres (Zitat in `umsetzung-admin.md` F). Beispiel:
   Honorarnoten ab dem 8. Jahr anonymisieren, Schüler:innen ohne Teilnahmen in Frist löschen. Hängt damit zusammen:
   Schüler:innen mit Teilnahmen sind nicht löschbar (C5).
 
 ### Rechtliches
 
-- [ ] **Datenschutz-Information für Schüler:innen und Eltern** (Art. 13 DSGVO, Admin-Plan F): Entwurf zum Prüfen,
+- [ ] **Datenschutz-Information für Schüler:innen und Eltern** (Art. 13 DSGVO, `umsetzung-admin.md` F): Entwurf zum Prüfen,
   **vor den echten Daten**.
 - [ ] **Minderjährige im Unterricht** (2026-11-12, Release-Schritt 6): Der Vertrag kommt mit den Erziehungsberechtigten
   zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
 
 ### Technisch (Mike)
 
-- [ ] **Passkeys** (Admin-Plan B5, zurückgestellt 2026-11-13; Login mit Passwort reicht für die Entwicklung). **Zu
-  klären:** Bisher stand im Projektstand „kommt vor dem Zeigen an Sonja“, im Admin-Plan (Meilensteine) „spätestens
+- [ ] **Passkeys** (`umsetzung-admin.md` B5, zurückgestellt 2026-11-13; Login mit Passwort reicht für die Entwicklung). **Zu
+  klären:** Bisher stand im Projektstand „kommt vor dem Zeigen an Sonja“, in `umsetzung-admin.md` (Meilensteine) „spätestens
   vor dem Echtbetrieb“.
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
@@ -172,7 +182,7 @@ muss).
 | Mail-Versand | IONOS-SMTP (`smtp.ionos.de:465`), synchron, Absender `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com` (2026-11-11) | Postfach ist bereits bei IONOS, kein weiterer Dienst; kein Messenger-Worker nötig (RAM). Details: `docs/planung/formulare.md` |
 | Admin-Planung | Datenmodell, Rollen und Umsetzungsplan freigegeben (2026-11-13) | `planung/datenmodell.md`, `planung/rollen.md`, `planung/umsetzung-admin.md` |
 | Vorführung | Kein eigener Demo-Termin: Mike sieht sich die Funktionen lokal an (`rundgang-admin.md`) und zeigt sie Sonja in Produktion (2026-11-13) | Spart eine eigene Demo-Umgebung; Honorarnoten in Produktion verbrauchen aber Nummern |
-| Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und im Admin-Plan) |
+| Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration
 

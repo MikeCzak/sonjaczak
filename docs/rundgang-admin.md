@@ -98,4 +98,4 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 3. **Achtung, Produktion ist echt:** Honorarnoten lassen sich nicht löschen und verbrauchen Nummern (1/2026, 2/2026 …).
    Beim Zeigen also keine Honorarnote zum Ausprobieren erstellen. Schüler:innen, Kurse und Teilnahmen lassen sich
    wieder löschen.
-4. **Echte Daten** (Sonjas Schüler:innen) erst nach Admin-Plan F (Backups, Datenschutz-Information).
+4. **Echte Daten** (Sonjas Schüler:innen) erst nach `umsetzung-admin.md` F (Backups, Datenschutz-Information).
