@@ -299,3 +299,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Commit.
 - Bei der Erklärung der Sperren gefunden: Doppelklick kann zwei Honorarnoten für dieselbe Teilnahme erzeugen
   (`erklaerungen/15-sperren.md`, Abschnitt 3). Behebung wartet auf Freigabe.
+- Mike: keine Unterschrift auf der Honorarnote nötig; Doppelklick-Lücke schließen; Backup-Plan schreiben.
+- Doppelklick-Lücke geschlossen: `InvoiceIssuer` prüft unter dem Lock in der Datenbank erneut
+  (`InvoiceRepository::hasInvoiceFor()`, `creditableCents()`), sonst `InvoiceConflictException` mit Meldung und
+  Weiterleitung. Zwei Tests stellen den veralteten Zustand der zweiten Anfrage nach; Gegenprobe ohne die Prüfung:
+  beide schlagen fehl. Volle Suite 115 Tests grün, PHPStan ohne Fehler.
+- Backup-Plan als Entwurf: `planung/backups.md` (age am Server 1.1.1 aus Ubuntu universe, am Mac 1.3.2 über Homebrew;
+  launchd holt verpasste Termine nach dem Aufwachen nach, `man launchd.plist`).

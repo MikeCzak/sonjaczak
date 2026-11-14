@@ -12,22 +12,16 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **Unterschrift: als PNG hochladen oder ganz weglassen?** (2026-11-14) Die Datei kommt nie ins Repo: Sie wird in
-   Produktion unter `/admin/einstellungen` hochgeladen und liegt nur in der Datenbank am Server (ohne Port nach außen)
-   und später in den verschlüsselten Backups. Sichtbar ist sie in jedem PDF, das an Schüler:innen geht, wie bei einer
-   Honorarnote auf Papier. Ob eine Honorarnote überhaupt eine Unterschrift braucht, hat Claude nicht geprüft (Frage
-   an die Steuerberatung). Empfehlung: hochladen wie geplant, die Originaldatei nicht per Mail oder Chat
-   weitergeben, sondern von Sonjas oder deinem Mac direkt hochladen.
+1. **Backup-Plan freigeben?** (2026-11-14) Plan: `planung/backups.md`. Sieben Entscheidungen stehen dort in der
+   Tabelle „Zu entscheiden“ mit Empfehlung und Alternative (age, Verschlüsselung am Server, privater Schlüssel im
+   Passwort-Manager, 14 Tage + 12 Monate, täglich 12:00, Test in temporärer Datenbank am Server, Sessions ohne
+   Inhalt). Antwort z. B. „alle Empfehlungen“ oder je Nummer. **Echte Daten erst nach Umsetzung und Test.**
    - Antwort:
-2. **Darf Claude die Lücke „Doppelklick erzeugt zwei Honorarnoten“ schließen?** (2026-11-14, `umsetzung-admin.md` D1)
-   Die Prüfung „gibt es schon eine Honorarnote?“ läuft vor der Sperre für die Nummernvergabe. Zwei fast gleichzeitige
-   Anfragen (Doppelklick, zwei Tabs) können beide „noch keine“ sehen und zwei Honorarnoten mit aufeinanderfolgenden
-   Nummern anlegen, die sich nicht löschen lassen. Vorschlag: die Prüfung zusätzlich innerhalb der Sperre wiederholen
-   (in der Datenbank, nicht im geladenen Objekt), dieselbe Prüfung für Gutschriften, plus Test. Erklärung:
-   `erklaerungen/15-sperren.md`.
-   - Antwort:
-3. **Backup-Plan freigeben** (`umsetzung-admin.md` F): Claude schreibt ihn als Nächstes (Mike, 2026-11-14: ja). Dann
-   hier freigeben. **Echte Daten erst danach.**
+2. **Unterschrift-Upload entfernen?** (2026-11-14) Weil keine Unterschrift nötig ist, wird das Feld in
+   `/admin/einstellungen` nicht gebraucht. Vorschlag: Feld, Prüfung und Spalte `settings.signature` entfernen (eine
+   Migration). Vorteil: nichts Ungenutztes, und es kann nicht versehentlich eine Unterschrift in die Datenbank und die
+   Backups geraten. Möglicherweise braucht dompdf dann auch die PHP-Erweiterung GD nicht: Die README von dompdf nennt
+   GD „for image processing“; prüfe ich beim Einbau von D2. Alternative: Feld lassen, nur nicht benutzen.
    - Antwort:
 
 **Todos für Mike (keine Frage offen):**
@@ -147,13 +141,13 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; noch nicht gebaut)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
 - [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`)
-- [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`)
+- [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)
 - [ ] D2 PDF (entschieden 2026-11-14: dompdf; noch nicht gebaut)
 - [x] D3 Zahlungen und Gutschriften (2026-11-13, `erklaerungen/13`)
 - [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob freigegeben, Eintrag siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
 - [x] D5 Einnahmen und CSV-Export (2026-11-13, `erklaerungen/13`)
 - [x] E Dashboard (2026-11-13, `erklaerungen/14`)
-- [ ] F Vor den echten Daten: Backups (siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
+- [ ] F Vor den echten Daten: Backups (Plan `planung/backups.md`, siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
   Aufbewahrungsfrist nachgelesen (2026-11-13)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -186,6 +180,8 @@ muss).
 | Kursraster | Stimulus + `fetch` (2026-11-14) | Tastaturlastig, viele kleine Änderungen; durchschaubar. Live Components ggf. später fürs Booking-Formular. Optionen: `planung/umsetzung-admin.md` C4 |
 | Konten in Produktion | Super-Admin (Mike) per Befehl angelegt; Sonjas Konto über die Benutzerverwaltung mit Einladungslink (2026-11-14) | Sonja setzt ihr Passwort selbst |
 | Cronjob überfällige Honorarnoten | Freigegeben, täglich 07:30, ohne Prüfung der Zeitzone (2026-11-14) | Es geht um Tage, nicht Stunden; eine Stunde früher oder später ist egal |
+| Unterschrift | Keine Unterschrift auf der Honorarnote (2026-11-14) | Nicht nötig (Mike); kein Risiko durch eine Unterschrift in PDFs, Datenbank und Backups |
+| Doppelklick bei Honorarnoten | Regeln „eine je Teilnahme“ und „Gutschriften bis zum Betrag“ werden unter dem Lock in der Datenbank erneut geprüft (2026-11-14) | Lücke gefunden bei Mikes Frage zu Sperren; `erklaerungen/15-sperren.md` |
 | Passkeys (B5) | Dürfen nach dem Start des Echtbetriebs kommen, bleiben aber eingeplant (2026-11-14) | Passwort reicht vorerst; Fingerabdruck ist für Sonja einfacher als ein Einmalcode |
 | Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |

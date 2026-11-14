@@ -135,6 +135,7 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
   | `tecnickcom/tc-lib-pdf` | 8.84.0, LGPL-3.0+ | PHP-Code mit Koordinaten | Pixelgenau, sehr aktiv (Nachfolger von TCPDF) | Viel mehr Code, Layout in PHP statt Template |
   | `setasign/fpdf` | 1.9.0, MIT | PHP-Code mit Koordinaten | Winzig | Laut FAQ kein UTF-8 (nur windows-1252) |
 
+  (2026-11-14: Die Honorarnote bekommt keine Unterschrift; ob GD dann noch nötig ist, beim Einbau prüfen.)
   Alle brauchen die PHP-Erweiterung GD für die Unterschrift (PNG mit transparentem Hintergrund): eine Zeile im
   `Dockerfile` (`install-php-extensions gd`), das Image wird etwas größer (beim Einbau messen).
 
@@ -164,7 +165,7 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 ## F. Vor den echten Daten
 
 - **Backups** der Datenbank: Mac zieht täglich einen verschlüsselten Dump per SSH (launchd, eingeschränkter Schlüssel),
-  Rücksicherung einmal testen. Plan dazu als eigener Schritt, Server-Teil nach Rückfrage.
+  Rücksicherung einmal testen. Plan: `backups.md` (Entwurf 2026-11-14), Server-Teil nach Rückfrage.
 - **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO), Entwurf zum Prüfen.
 - **Aufbewahrungsfrist** der Honorarnoten in der BAO nachlesen, Lösch-/Anonymisierungsregel festhalten.
   Nachgelesen 2026-11-13 (RIS, § 132 BAO): Abs. 1 „Bücher und Aufzeichnungen sowie die zu den Büchern und
