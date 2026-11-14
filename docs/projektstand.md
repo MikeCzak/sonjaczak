@@ -12,7 +12,16 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Gerade keine offene Frage.
+1. **Nachholregel: Mindestzahl = Einheiten des Kurses?** (2026-11-14, `umsetzung-admin.md` C3/C6) Mike hat die Regel
+   geklärt: Von Schüler:innen abgesagte Stunden werden nie nachgeholt. Erreicht ein Kurs wegen Absagen durch Sonja
+   nicht die Mindestzahl (z. B. 15), wird nachgeholt, bis sie erreicht ist. Die Mindestzahl ist je Kurs einstellbar,
+   mit Standard aus den Einstellungen. Umgesetzt ist das heute nur zufällig richtig: Die Einstellung „Schwellwert“
+   ist ein Abstand von den Einheiten des Kurses (Standard 0), und der Standard 15 für neue Kurse steht fest im Code.
+   **Vorschlag:** „Schwellwert“ ersetzen durch „Einheiten pro Semester (Standard für neue Kurse)“, Kursformular damit
+   vorbelegen, Regel: fällig = Einheiten des Kurses − gezählte Einheiten (Migration, Tests, `erklaerungen/11`).
+   **Frage:** Ist die Mindestzahl immer gleich der Zahl der geplanten Einheiten des Kurses (oder gibt es z. B. 16
+   geplante Termine bei 15 geschuldeten)?
+   - Antwort:
 
 **Todos für Mike (keine Frage offen):**
 
@@ -33,11 +42,6 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
-- [ ] **Schwellwert der Nachholregel** (2026-11-13, `umsetzung-admin.md` C3, `erklaerungen/11`): Sonja beschreibt in
-  `planung/anforderungen.md` (Frage 6) eine **Gesamtzahl** („sofern die Gesamtanzahl der Stunden einen bestimmten
-  Schwellwert unterschreiten würde“, z. B. 13), das Datenmodell einen **Abstand** (`plannedLessons − Schwellwert`,
-  z. B. 2). Umgesetzt ist der Abstand, der Wert ist seit C6 eine Einstellung (Standard 0). Welche Variante, welcher
-  Wert?
 - [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3): Für entfallene Einheiten kommen am Ende neue dazu (bis zum
   Kursende).
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht

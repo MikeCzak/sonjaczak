@@ -317,3 +317,4 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   getestet, age aus einem Wegwerf-Container (Alpine, age 1.2.1): Dump 36 KB, Rücksicherung mit gleicher Zeilenzahl je
   Tabelle, Testdatenbank danach gelöscht. Gegenprobe: Scheitert `pg_dump`, endet das Skript mit 1, liefert aber eine
   200-Byte-age-Datei; deshalb prüft `bin/backup-pull` den Exit-Code. Rotation mit erfundenen Dateien geprüft.
+- Mike hat die Nachholregel geklärt (Absagen durch Schüler:innen nie nachholen; Mindestzahl je Kurs, Standard aus den Einstellungen). Umbau des Schwellwerts vorgeschlagen, Frage im Projektstand.
