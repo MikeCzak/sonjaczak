@@ -34,15 +34,6 @@
                         <div class="col-md-6">{{ form_row(form.invoicePlace) }}</div>
                     </div>
                     {{ form_row(form.vatNote) }}
-                    {% if settings.signature %}
-                        <p class="mb-1">{{ 'settings.signature.current'|trans({}, 'admin') }}</p>
-                        <img src="{{ path('admin_settings_signature') }}" alt="{{ 'settings.signature.alt'|trans({}, 'admin') }}"
-                             class="border rounded p-2 mb-2 bg-white" style="max-height: 6rem; max-width: 100%">
-                        {{ form_row(form.removeSignature) }}
-                    {% else %}
-                        {% do form.removeSignature.setRendered %}
-                    {% endif %}
-                    {{ form_row(form.signatureFile) }}
                 </fieldset>
 
                 <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>

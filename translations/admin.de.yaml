@@ -344,12 +344,6 @@ settings:
         invoice_place: Ort
         invoice_place_help: Steht vor dem Datum, z. B. „Graz, am 07.11.2026“.
         vat_note: Hinweis zur Umsatzsteuer
-        signature: Unterschrift hochladen
-        signature_help: PNG, höchstens 1 MB. Am besten auf weißem Papier, gescannt mit 300–600 dpi, mit transparentem Hintergrund.
-        remove_signature: Unterschrift entfernen
-    signature:
-        current: Gespeicherte Unterschrift
-        alt: Unterschrift für die Honorarnote
     flash:
         saved: Einstellungen gespeichert.
 invoice:

@@ -12,17 +12,8 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **Backup-Plan freigeben?** (2026-11-14) Plan: `planung/backups.md`. Sieben Entscheidungen stehen dort in der
-   Tabelle „Zu entscheiden“ mit Empfehlung und Alternative (age, Verschlüsselung am Server, privater Schlüssel im
-   Passwort-Manager, 14 Tage + 12 Monate, täglich 12:00, Test in temporärer Datenbank am Server, Sessions ohne
-   Inhalt). Antwort z. B. „alle Empfehlungen“ oder je Nummer. **Echte Daten erst nach Umsetzung und Test.**
-   - Antwort:
-2. **Unterschrift-Upload entfernen?** (2026-11-14) Weil keine Unterschrift nötig ist, wird das Feld in
-   `/admin/einstellungen` nicht gebraucht. Vorschlag: Feld, Prüfung und Spalte `settings.signature` entfernen (eine
-   Migration). Vorteil: nichts Ungenutztes, und es kann nicht versehentlich eine Unterschrift in die Datenbank und die
-   Backups geraten. Möglicherweise braucht dompdf dann auch die PHP-Erweiterung GD nicht: Die README von dompdf nennt
-   GD „for image processing“; prüfe ich beim Einbau von D2. Alternative: Feld lassen, nur nicht benutzen.
-   - Antwort:
+Gerade keine offene Frage. Claude baut den Repo-Teil der Backups (`planung/backups.md`, „Umsetzung nach Freigabe“
+Schritt 1); danach kommen die Schritte am Mac und am Server als Todos hierher.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -180,8 +171,9 @@ muss).
 | Kursraster | Stimulus + `fetch` (2026-11-14) | Tastaturlastig, viele kleine Änderungen; durchschaubar. Live Components ggf. später fürs Booking-Formular. Optionen: `planung/umsetzung-admin.md` C4 |
 | Konten in Produktion | Super-Admin (Mike) per Befehl angelegt; Sonjas Konto über die Benutzerverwaltung mit Einladungslink (2026-11-14) | Sonja setzt ihr Passwort selbst |
 | Cronjob überfällige Honorarnoten | Freigegeben, täglich 07:30, ohne Prüfung der Zeitzone (2026-11-14) | Es geht um Tage, nicht Stunden; eine Stunde früher oder später ist egal |
-| Unterschrift | Keine Unterschrift auf der Honorarnote (2026-11-14) | Nicht nötig (Mike); kein Risiko durch eine Unterschrift in PDFs, Datenbank und Backups |
+| Unterschrift | Keine Unterschrift auf der Honorarnote; Upload-Feld und Spalte entfernt (2026-11-14) | Nicht nötig (Mike); kein Risiko durch eine Unterschrift in PDFs, Datenbank und Backups |
 | Doppelklick bei Honorarnoten | Regeln „eine je Teilnahme“ und „Gutschriften bis zum Betrag“ werden unter dem Lock in der Datenbank erneut geprüft (2026-11-14) | Lücke gefunden bei Mikes Frage zu Sperren; `erklaerungen/15-sperren.md` |
+| Backups | Plan `planung/backups.md` mit allen Empfehlungen freigegeben (2026-11-14): age, Verschlüsselung am Server, privater Schlüssel im Passwort-Manager, 14 Tage + 12 Monate, täglich 12:00 per launchd, Rücksicherungstest in temporärer Datenbank am Server, Sessions ohne Inhalt | Begründungen im Plan |
 | Passkeys (B5) | Dürfen nach dem Start des Echtbetriebs kommen, bleiben aber eingeplant (2026-11-14) | Passwort reicht vorerst; Fingerabdruck ist für Sonja einfacher als ein Einmalcode |
 | Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |

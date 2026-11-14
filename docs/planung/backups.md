@@ -1,8 +1,7 @@
-# Backups der Datenbank (Entwurf)
+# Backups der Datenbank
 
-Stand: 2026-11-14, **Entwurf zur Freigabe**. Teil von `umsetzung-admin.md` F. Echte Daten erst, wenn das hier läuft
-und eine Rücksicherung einmal geklappt hat. Offene Entscheidungen: Abschnitt „Zu entscheiden“; die Frage dazu steht
-im Projektstand unter „Jetzt“.
+Stand: 2026-11-14, **freigegeben** (alle Empfehlungen). Teil von `umsetzung-admin.md` F. Echte Daten erst, wenn das hier läuft
+und eine Rücksicherung einmal geklappt hat. Die Entscheidungen stehen in der Tabelle „Zu entscheiden“ (jeweils die Empfehlung).
 
 ## Was gesichert werden muss
 

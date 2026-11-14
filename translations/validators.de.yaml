@@ -21,8 +21,6 @@ course_break:
 enrollment:
     already_enrolled: Diese Person nimmt an diesem Kurs schon teil.
 settings:
-    signature:
-        png_only: Bitte eine PNG-Datei hochladen.
     bic:
         invalid: Der BIC hat 8 oder 11 Zeichen, z. B. BKAUATWW.
 invoice:

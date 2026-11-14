@@ -20,7 +20,7 @@ Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demse
 | [09-datenbank-schueler.md](09-datenbank-schueler.md) | Schüler:innen und Elternteile: Embeddable, Owning/Inverse Side, Migration, Formulare, Suche |
 | [10-datenbank-kurse.md](10-datenbank-kurse.md) | Kurse und Ferien: Enums, Geld in Cent, Cascade/orphanRemoval, OpenHolidays mit Scoped Client und Mock |
 | [11-teilnahmen-und-einheiten.md](11-teilnahmen-und-einheiten.md) | Teilnahmen, Einheiten, Schnupperstunden: Unique über zwei Spalten, Zeiten ohne Zeitzone, Selbstreferenz, Einheiten erzeugen, Nachholregel |
-| [12-einstellungen.md](12-einstellungen.md) | Einstellungen: eine Zeile per Primärschlüssel, Worker-Modus, Unterschrift als BLOB, IBAN/BIC |
+| [12-einstellungen.md](12-einstellungen.md) | Einstellungen: eine Zeile per Primärschlüssel, Worker-Modus, BLOB (Unterschrift, inzwischen entfernt), IBAN/BIC |
 | [13-honorarnoten.md](13-honorarnoten.md) | Honorarnoten, Zahlungen, Gutschriften, Erinnerungen, Einnahmen-Export: unveränderliche Entity, Empfänger als Kopie (verschachteltes Embeddable), Nummer je Jahr mit Advisory Lock |
 | [14-dashboard.md](14-dashboard.md) | Dashboard: Fetch Join gegen N+1, Fallstrick gefilterter Fetch Join, Clock in Tests |
 | [15-sperren.md](15-sperren.md) | Von Grund auf: Race Condition, Transaktion, Sperren, Advisory Locks, warum Sessions gesperrt werden |

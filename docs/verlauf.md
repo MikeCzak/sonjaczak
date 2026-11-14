@@ -306,3 +306,7 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   beide schlagen fehl. Volle Suite 115 Tests grün, PHPStan ohne Fehler.
 - Backup-Plan als Entwurf: `planung/backups.md` (age am Server 1.1.1 aus Ubuntu universe, am Mac 1.3.2 über Homebrew;
   launchd holt verpasste Termine nach dem Aufwachen nach, `man launchd.plist`).
+- Mike: alle Empfehlungen des Backup-Plans freigegeben; Upload-Feld der Unterschrift entfernen.
+- Unterschrift entfernt: Feld, Route `/admin/einstellungen/unterschrift`, Übersetzungen, Tests; Migration
+  `Version20261114022327` löscht `settings.signature`. 114 Tests grün (Upload-Tests ersetzt durch einen Test der
+  IBAN-Normalisierung).

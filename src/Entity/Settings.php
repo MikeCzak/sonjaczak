@@ -88,14 +88,6 @@ class Settings
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $vatNote = null;
 
-    /**
-     * Signature as PNG. BYTEA in PostgreSQL; Doctrine returns a stream when loading, see getSignature().
-     *
-     * @var resource|string|null
-     */
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private mixed $signature = null;
-
     public function __construct()
     {
         $this->senderAddress = new Address();
@@ -237,26 +229,6 @@ class Settings
     public function setVatNote(?string $vatNote): static
     {
         $this->vatNote = $vatNote;
-
-        return $this;
-    }
-
-    /**
-     * The PNG bytes, or null. A loaded BLOB arrives as a stream that can only be read once, so it is converted
-     * to a string on first access.
-     */
-    public function getSignature(): ?string
-    {
-        if (\is_resource($this->signature)) {
-            $this->signature = (string) stream_get_contents($this->signature);
-        }
-
-        return \is_string($this->signature) && '' !== $this->signature ? $this->signature : null;
-    }
-
-    public function setSignature(?string $png): static
-    {
-        $this->signature = $png;
 
         return $this;
     }

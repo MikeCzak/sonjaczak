@@ -8,7 +8,7 @@ Plan: `docs/planung/datenmodell.md` 3.9. Seite: `/admin/einstellungen` (für `RO
 |---|---|
 | `src/Entity/Settings.php`, `src/Repository/SettingsRepository.php` | Eine Zeile mit typisierten Spalten |
 | `src/Migrations/Version20261113094819.php` | Tabelle `settings` |
-| `src/Form/Admin/SettingsType.php`, `src/Controller/Admin/SettingsController.php`, `templates/admin/settings/` | Oberfläche, Upload der Unterschrift |
+| `src/Form/Admin/SettingsType.php`, `src/Controller/Admin/SettingsController.php`, `templates/admin/settings/` | Oberfläche |
 | `src/Theme/SiteSettings.php` | Liest das Theme jetzt aus der Datenbank |
 | `tests/Admin/SettingsTest.php` | Tests |
 
@@ -41,7 +41,12 @@ Erwogen und verworfen: das Theme im Symfony-Cache (`cache.app`) zu halten und be
 Abfrage, bringt aber eine zweite Stelle, die stimmen muss (Tests mit zurückgesetzter Datenbank, mehrere Worker). Bei
 einer Abfrage per Primärschlüssel lohnt sich das nicht.
 
-## Unterschrift als BLOB
+## Unterschrift als BLOB (entfernt 2026-11-14)
+
+Die Honorarnote braucht keine Unterschrift (Entscheidung Mike). Feld, Route und Spalte sind seit Migration
+`Version20261114022327` weg. Der Abschnitt bleibt als Erklärung, wie es gebaut war (in Git nachlesbar, Commit vor
+dem Entfernen: `36afe4c`).
+
 
 - Upload als PNG, höchstens 1 MB (`Assert\Image` mit `mimeTypes: ['image/png']`; die Prüfung nutzt `getimagesize()`
   und braucht kein GD). PHPs Upload-Grenze im Container ist 2 MB (`upload_max_filesize`).
