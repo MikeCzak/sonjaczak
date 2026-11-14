@@ -12,8 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Gerade keine offene Frage. Claude baut den Repo-Teil der Backups (`planung/backups.md`, „Umsetzung nach Freigabe“
-Schritt 1); danach kommen die Schritte am Mac und am Server als Todos hierher.
+Gerade keine offene Frage.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -21,6 +20,11 @@ Schritt 1); danach kommen die Schritte am Mac und am Server als Todos hierher.
 - [ ] Absenderdaten in Produktion unter `/admin/einstellungen` eintragen. Die Daten liegen lokal in
   `claude_references/absenderdaten-sonja.md` (nicht im Repo, das Repo ist öffentlich).
 - [ ] Cronjob für überfällige Honorarnoten eintragen (`deployment.md` S8, freigegeben 2026-11-14).
+- [ ] **Backups einrichten** (Repo-Teil fertig und lokal getestet 2026-11-14), in dieser Reihenfolge:
+  1. Mac: age und Schlüssel, SSH-Key (`entwicklung.md`, „Backups“, Schritte 1–2)
+  2. Server: `deployment.md` S11
+  3. Mac: Skript und LaunchAgent (`entwicklung.md`, „Backups“, Schritt 4)
+  4. Test der Rücksicherung (`deployment.md` S11). **Danach dürfen echte Daten eingetragen werden.**
 
 ## Später zu klären
 
@@ -88,6 +92,9 @@ verlinkten Erklärung.
 - [ ] **Bootstrap-CSS verkleinern:** nur benutzte Teile importieren (derzeit 237 KB vor gzip, 2026-11-11).
 - [ ] **Alte Images in ghcr.io aufräumen** (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit
   1 Monat Vorlauf).
+- [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
+  `planung/backups.md`, „Rücksicherung“). Der Test in die temporäre Datenbank deckt das Einspielen ab, nicht den
+  ganzen Ablauf.
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
   noch etwas offen ist).
 - [ ] Kandidaten aus der Durchsicht des Templates (2026-11-03):
@@ -138,7 +145,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob freigegeben, Eintrag siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
 - [x] D5 Einnahmen und CSV-Export (2026-11-13, `erklaerungen/13`)
 - [x] E Dashboard (2026-11-13, `erklaerungen/14`)
-- [ ] F Vor den echten Daten: Backups (Plan `planung/backups.md`, siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
+- [ ] F Vor den echten Daten: Backups (Plan `planung/backups.md` freigegeben, Repo-Teil fertig; Einrichtung siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
   Aufbewahrungsfrist nachgelesen (2026-11-13)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

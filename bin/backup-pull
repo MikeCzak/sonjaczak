@@ -1,0 +1,73 @@
+#!/bin/bash
+# Pulls an encrypted database dump from the server and keeps the last 14 days plus the 1st of each month for
+# 12 months (docs/planung/backups.md). Runs on the Mac, started daily by launchd (docs/entwicklung.md, "Backups");
+# can also be run by hand.
+#
+# Needs no secrets: the SSH key may only run the backup command on the server, and the dump is encrypted for an
+# age key that is not on this Mac. Runs with macOS's /bin/bash (3.2), so no newer bash features.
+set -euo pipefail
+
+BACKUP_DIR=${SONJACZAK_BACKUP_DIR:-$HOME/Backups/sonjaczak}
+SSH_KEY=$HOME/.ssh/sonjaczak_backup
+SERVER=dbbackup@sonjaczak.com
+KEEP_DAYS=14
+KEEP_MONTHLY_DAYS=366
+STALE_DAYS=3
+
+log() { echo "$(date '+%F %T') $*"; }
+
+notify() {
+    log "$1"
+    osascript -e "display notification \"$1\" with title \"Backup sonjaczak.com\"" >/dev/null 2>&1 || true
+}
+
+# Days since the date in a file name like 2026-11-14.dump.age
+age_in_days() {
+    local day=${1%%.*}
+    echo $(( ($(date +%s) - $(date -j -f %F "$day" +%s)) / 86400 ))
+}
+
+newest() {
+    ls "$BACKUP_DIR" 2>/dev/null | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.dump\.age$' | sort | tail -n 1 || true
+}
+
+mkdir -p "$BACKUP_DIR"
+chmod 700 "$BACKUP_DIR"
+
+# Missed days (Mac switched off) are reported before trying again
+last=$(newest)
+last=${last:-keine}
+if [ "$last" != keine ] && [ "$(age_in_days "$last")" -gt "$STALE_DAYS" ]; then
+    notify "Letzte Sicherung ist vom ${last%%.*}, älter als $STALE_DAYS Tage."
+fi
+
+incoming="$BACKUP_DIR/.incoming.$$"
+trap 'rm -f "$incoming"' EXIT
+
+# BatchMode: never ask for anything, launchd has no terminal
+if ! ssh -i "$SSH_KEY" -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER" >"$incoming"; then
+    notify "Sicherung fehlgeschlagen (Server). Letzte: ${last%%.*}."
+    exit 1
+fi
+if [ "$(head -c 21 "$incoming")" != 'age-encryption.org/v1' ]; then
+    notify "Sicherung fehlgeschlagen (keine age-Datei). Letzte: ${last%%.*}."
+    exit 1
+fi
+
+target="$BACKUP_DIR/$(date +%F).dump.age"
+mv "$incoming" "$target"
+chmod 600 "$target"
+log "Saved $(basename "$target") ($(wc -c <"$target" | tr -d ' ') bytes)"
+
+# Rotation only after a successful backup, so failures never delete anything
+for file in $(ls "$BACKUP_DIR" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}\.dump\.age$'); do
+    days=$(age_in_days "$file")
+    if [ "$days" -le "$KEEP_DAYS" ]; then
+        continue
+    fi
+    if [ "${file:8:2}" = '01' ] && [ "$days" -le "$KEEP_MONTHLY_DAYS" ]; then
+        continue
+    fi
+    rm -f "$BACKUP_DIR/$file"
+    log "Deleted $file"
+done

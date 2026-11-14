@@ -40,7 +40,7 @@ wer den Key hat, kann also nur Images starten, die unsere CI gebaut hat.
 In den Befehlen `SERVER_IP` durch die IPv4-Adresse des VPS ersetzen. Ob ein Schritt erledigt ist oder noch auf
 Freigabe wartet, steht in `projektstand.md`.
 
-**Nummerierung:** Bis 2026-11-13 hießen die Schritte B1–B8, C und D. Weil `umsetzung-admin.md` dieselben Buchstaben nutzt,
+**Nummerierung:** Bis 2026-11-13 hießen die Schritte B1–B8, C und D. S11 (Backups) kam 2026-11-14 dazu. Weil `umsetzung-admin.md` dieselben Buchstaben nutzt,
 heißen sie jetzt S1–S10 (B1–B8 → S1–S8, C → S9, D → S10). In älteren Commits, im `verlauf.md` und im Text der
 Token-Erinnerungen in der crontab des Servers stehen noch die alten Namen.
 
@@ -260,6 +260,75 @@ dig +short sonjaczak.com AAAA
 
 Caddy holt das Zertifikat beim Start selbst (Let's Encrypt, Ersatz ZeroSSL; Quelle: Caddy-Doku *Automatic HTTPS*).
 Voraussetzung: DNS zeigt auf den Server, Ports 80/443 offen. Ein gekauftes Zertifikat ist nicht nötig.
+
+### S11. Backups der Datenbank (auf dem Server, als mike)
+
+Plan und Begründungen: `docs/planung/backups.md`. Vorher am Mac die Schritte 1–2 aus `docs/entwicklung.md`,
+„Backups“ (age-Schlüssel und SSH-Key erzeugen).
+
+```bash
+# Mac, im Projektordner: Skripte und öffentlichen SSH-Key hochladen
+scp deploy/backup.sh deploy/restore-test.sh ~/.ssh/sonjaczak_backup.pub mike@SERVER_IP:/tmp/
+
+# Server
+sudo apt install age
+age --version                                                   # erwartet: v1.1.1 (Ubuntu 24.04)
+
+sudo install -o root -g root -m 755 /tmp/backup.sh /usr/local/sbin/sonjaczak-backup
+sudo install -o root -g root -m 755 /tmp/restore-test.sh /usr/local/sbin/sonjaczak-restore-test
+rm /tmp/backup.sh /tmp/restore-test.sh
+
+# Öffentlicher age-Schlüssel (beginnt mit age1…, nicht geheim)
+echo 'age1…' | sudo tee /srv/sonjaczak/backup-recipient.txt
+
+# Benutzer ohne Docker-Rechte; '*' statt gesperrtem Passwort, sonst lehnt sshd den Key ab (siehe S5)
+sudo useradd --create-home --shell /bin/sh dbbackup
+sudo usermod -p '*' dbbackup
+sudo install -d -o dbbackup -g dbbackup -m 700 /home/dbbackup/.ssh
+echo "restrict,command=\"sudo /usr/local/sbin/sonjaczak-backup\" $(cat /tmp/sonjaczak_backup.pub)" \
+  | sudo tee /home/dbbackup/.ssh/authorized_keys >/dev/null
+sudo chown dbbackup:dbbackup /home/dbbackup/.ssh/authorized_keys
+sudo chmod 600 /home/dbbackup/.ssh/authorized_keys
+rm /tmp/sonjaczak_backup.pub
+
+# sudo-Regeln: je genau ein Skript, ohne Argumente ("") und ohne Passwort
+sudo visudo -f /etc/sudoers.d/sonjaczak-backup
+```
+
+Inhalt von `/etc/sudoers.d/sonjaczak-backup`:
+
+```
+dbbackup ALL=(root) NOPASSWD: /usr/local/sbin/sonjaczak-backup ""
+mike ALL=(root) NOPASSWD: /usr/local/sbin/sonjaczak-restore-test ""
+```
+
+- `visudo -f` prüft die Syntax vor dem Speichern. Ein Fehler in einer sudoers-Datei kann sudo ganz sperren.
+- Die zweite Zeile braucht der Test der Rücksicherung: Dort ist die Eingabe der Datenstrom, `sudo` könnte nicht nach
+  dem Passwort fragen.
+- `/usr/local/sbin` statt `/srv/sonjaczak`, weil `/srv/sonjaczak` nur für root und `deploy` lesbar ist.
+
+Test vom Mac (erwartet: `age-encryption.org/v1`):
+
+```bash
+ssh -i ~/.ssh/sonjaczak_backup dbbackup@sonjaczak.com | head -c 21; echo
+```
+
+Beim ersten Mal fragt ssh nach dem Host-Key. Fingerabdruck vergleichen wie in S9
+(`ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub` am Server). Danach weiter in `docs/entwicklung.md`, „Backups“.
+
+**Test der Rücksicherung** (vom Mac; der private Schlüssel kommt aus dem Passwort-Manager in die Zwischenablage):
+
+```bash
+age -d -i <(pbpaste) ~/Backups/sonjaczak/$(date +%F).dump.age \
+  | ssh mike@sonjaczak.com sudo /usr/local/sbin/sonjaczak-restore-test
+pbcopy < /dev/null      # Zwischenablage leeren
+```
+
+Erwartet: je Tabelle „live / restored“ mit `ok`; `sessions` und `reset_password_request` sind absichtlich leer. Am
+Ende wird `app_restore_test` wieder gelöscht. Lokal mit dem Dev-Stack geprüft (2026-11-14).
+
+**Skripte aktualisieren:** Ändern sich `deploy/backup.sh` oder `deploy/restore-test.sh`, die `scp`- und
+`install`-Zeilen wiederholen.
 
 ## Erster Deploy
 

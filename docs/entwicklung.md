@@ -210,6 +210,58 @@ docker compose exec php bin/console app:invoices:remind-overdue --dry-run   # nu
 docker compose exec php bin/console app:invoices:remind-overdue             # Mail an Mailpit, je Frist einmal
 ```
 
+## Backups (Mac)
+
+Der Mac holt täglich um 12:00 eine verschlüsselte Sicherung der Produktionsdatenbank nach `~/Backups/sonjaczak/`.
+Plan: `docs/planung/backups.md`, Server-Teil: `docs/deployment.md` S11.
+
+**Einmalig einrichten:**
+
+1. **age und Schlüsselpaar.** Der private Schlüssel kommt direkt in den Passwort-Manager, nie als Datei:
+
+   ```bash
+   brew install age
+   age-keygen | pbcopy     # privater Schlüssel in der Zwischenablage; der öffentliche (age1…) steht im Terminal
+   # → in den Passwort-Manager einfügen (neuer Eintrag „sonjaczak Backup age-Schlüssel“), dann:
+   pbcopy < /dev/null      # Zwischenablage leeren
+   ```
+
+   Den öffentlichen Schlüssel (`age1…`) braucht S11. Die Warnung „writing secret key to a world-readable file“ betrifft
+   hier nur die Zwischenablage (im Container ausprobiert: der öffentliche Schlüssel kommt auf stderr, der private auf
+   stdout).
+2. **SSH-Key nur für Backups** (ohne Passphrase, launchd kann keine eingeben; der Key darf am Server nur das
+   Backup-Skript starten):
+
+   ```bash
+   ssh-keygen -t ed25519 -N "" -C "sonjaczak-backup" -f ~/.ssh/sonjaczak_backup
+   ```
+
+3. Server einrichten: `docs/deployment.md` S11.
+4. **Skript und LaunchAgent installieren.** Das Skript wird nach `~/.local/bin` kopiert, statt es aus dem
+   Projektordner zu starten: Der liegt auf dem Schreibtisch, und macOS kann Hintergrundprogrammen den Zugriff
+   darauf verweigern (Datenschutz-Einstellungen für „Schreibtisch“).
+
+   ```bash
+   mkdir -p ~/.local/bin ~/Library/LaunchAgents
+   install -m 755 bin/backup-pull ~/.local/bin/sonjaczak-backup-pull
+   sed "s#__HOME__#$HOME#g" deploy/launchd/com.sonjaczak.backup.plist > ~/Library/LaunchAgents/com.sonjaczak.backup.plist
+   ~/.local/bin/sonjaczak-backup-pull                    # erster Lauf von Hand
+   launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.sonjaczak.backup.plist
+   launchctl kickstart gui/$(id -u)/com.sonjaczak.backup # sofort einmal über launchd starten
+   tail ~/Library/Logs/sonjaczak-backup.log
+   ```
+
+5. **Rücksicherung testen:** `docs/deployment.md` S11, „Test der Rücksicherung“.
+
+**Was das Skript tut** (`bin/backup-pull`): holt den Dump über `ssh` in eine temporäre Datei, prüft Exit-Code und
+Kopfzeile (`age-encryption.org/v1`; ein fehlgeschlagener Dump am Server wäre sonst eine gültige, leere age-Datei),
+speichert ihn als `JJJJ-MM-TT.dump.age` und löscht danach Sicherungen außerhalb der Aufbewahrung (14 Tage, dazu der
+1. jedes Monats für 12 Monate). Bei einem Fehler oder wenn die letzte Sicherung älter als 3 Tage ist: Mitteilung
+von macOS und Eintrag im Log. Gelöscht wird nur nach einer erfolgreichen Sicherung.
+
+**Nach Änderungen an `bin/backup-pull`** die `install`-Zeile wiederholen. Ausschalten:
+`launchctl bootout gui/$(id -u)/com.sonjaczak.backup`.
+
 ## Zeitzone
 
 PHP läuft im Container mit `Europe/Vienna` (`frankenphp/conf.d/10-app.ini`). Die Datei wird beim Build ins Image

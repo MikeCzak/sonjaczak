@@ -310,3 +310,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - Unterschrift entfernt: Feld, Route `/admin/einstellungen/unterschrift`, Übersetzungen, Tests; Migration
   `Version20261114022327` löscht `settings.signature`. 114 Tests grün (Upload-Tests ersetzt durch einen Test der
   IBAN-Normalisierung).
+- Backups, Repo-Teil: `deploy/backup.sh` (am Server `/usr/local/sbin/sonjaczak-backup`), `deploy/restore-test.sh`,
+  `bin/backup-pull`, LaunchAgent-Vorlage `deploy/launchd/`, Anleitungen `deployment.md` S11 und `entwicklung.md`.
+  Abweichungen vom Plan: Benutzer `dbbackup` statt `backup` (gibt es in Ubuntu schon, im Image `ubuntu:24.04` geprüft),
+  Skripte in `/usr/local/sbin` statt `/srv/sonjaczak` (dort nur root und `deploy`). Lokal gegen den Dev-Stack
+  getestet, age aus einem Wegwerf-Container (Alpine, age 1.2.1): Dump 36 KB, Rücksicherung mit gleicher Zeilenzahl je
+  Tabelle, Testdatenbank danach gelöscht. Gegenprobe: Scheitert `pg_dump`, endet das Skript mit 1, liefert aber eine
+  200-Byte-age-Datei; deshalb prüft `bin/backup-pull` den Exit-Code. Rotation mit erfundenen Dateien geprüft.

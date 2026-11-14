@@ -18,7 +18,7 @@ und eine Rücksicherung einmal geklappt hat. Die Entscheidungen stehen in der Ta
 
 ```
 Mac (launchd, täglich)                         Server
-ssh -i ~/.ssh/sonjaczak_backup backup@…  ──►   erzwungener Befehl: sudo /srv/sonjaczak/backup.sh
+ssh -i ~/.ssh/sonjaczak_backup dbbackup@… ──►  erzwungener Befehl: sudo /usr/local/sbin/sonjaczak-backup
                                                   docker exec sonjaczak-database-1 pg_dump … -Fc
                                                   | age -r <öffentlicher Schlüssel>   (verschlüsselt)
 ~/Backups/sonjaczak/2026-11-14.dump.age   ◄──    Ausgabe über die SSH-Verbindung
@@ -35,14 +35,17 @@ ssh -i ~/.ssh/sonjaczak_backup backup@…  ──►   erzwungener Befehl: sudo 
 
 ### Server
 
-- **Eigener Benutzer `backup`**, nicht in der Gruppe `docker` (die ist faktisch root, `deployment.md` „Ablauf“).
-- **`/srv/sonjaczak/backup.sh`**, gehört root, im Repo unter `deploy/backup.sh` (wie `deploy.sh`). Nimmt keine
+- **Eigener Benutzer `dbbackup`**, nicht in der Gruppe `docker` (die ist faktisch root, `deployment.md` „Ablauf“).
+  Nicht `backup`: Den gibt es in Ubuntu schon als Systembenutzer (im Image `ubuntu:24.04` geprüft).
+- **`/usr/local/sbin/sonjaczak-backup`**, gehört root, im Repo unter `deploy/backup.sh`. Nicht in `/srv/sonjaczak/`,
+  weil der Ordner nur für root und `deploy` lesbar ist (`deployment.md`, „Verzeichnisse“). Nimmt keine
   Argumente, schreibt nur den verschlüsselten Dump auf die Standardausgabe. Mit `bash` und `set -o pipefail`, damit
   ein Fehler von `pg_dump` den ganzen Befehl scheitern lässt (sonst käme eine gültige, aber leere verschlüsselte Datei
   heraus).
-- **sudo nur für dieses Skript:** `backup ALL=(root) NOPASSWD: /srv/sonjaczak/backup.sh` in `/etc/sudoers.d/`. Der
+- **sudo nur für dieses Skript:** `dbbackup ALL=(root) NOPASSWD: /usr/local/sbin/sonjaczak-backup ""` in
+  `/etc/sudoers.d/` (`""` heißt: ohne Argumente). Der
   Benutzer darf also genau einen Befehl als root ausführen, ohne Docker-Rechte.
-- **SSH-Key nur für diesen Befehl:** `restrict,command="sudo /srv/sonjaczak/backup.sh"` in `authorized_keys`, wie beim
+- **SSH-Key nur für diesen Befehl:** `restrict,command="sudo /usr/local/sbin/sonjaczak-backup"` in `authorized_keys`, wie beim
   Deploy-Key (`deployment.md` S5). Wer den Schlüssel stiehlt, bekommt verschlüsselte Dumps, sonst nichts.
 - **age am Server:** Paket `age` aus Ubuntu (24.04 „noble“, Bereich universe, Version 1.1.1, laut
   packages.ubuntu.com/noble/age mit Sicherheitsupdates). Der öffentliche Schlüssel liegt in
@@ -55,7 +58,8 @@ ssh -i ~/.ssh/sonjaczak_backup backup@…  ──►   erzwungener Befehl: sudo 
 - **Schlüsselpaar** einmalig mit `age-keygen`. Der **private Schlüssel** kommt in den Passwort-Manager (und nach Wunsch
   ausgedruckt an einen sicheren Ort), **nicht** als Datei auf den Mac. Grund: Lägen Sicherungen und Schlüssel auf
   derselben Platte, schützte die Verschlüsselung die Kopien (Time Machine, alte Platte) nicht mehr.
-- **Skript `bin/backup-pull`** (im Repo, ohne Geheimnisse, wie `bin/build-images`): holt den Dump in eine temporäre
+- **Skript `bin/backup-pull`** (im Repo, ohne Geheimnisse, wie `bin/build-images`; installiert als Kopie in
+  `~/.local/bin`, weil macOS Hintergrundprogrammen den Schreibtisch sperren kann): holt den Dump in eine temporäre
   Datei, prüft, dass sie mit der Kopfzeile von age beginnt und nicht leer ist, benennt sie dann nach dem Datum um und
   löscht alte Sicherungen nach der Aufbewahrungsregel. Bei einem Fehler: macOS-Mitteilung (`osascript … display
   notification`) und Eintrag im Log.
@@ -83,21 +87,22 @@ echte Daten nicht auf dem Mac landen und nirgends unverschlüsselt auf einer Pla
 allein hat den privaten Schlüssel) und schickt den Datenstrom per SSH direkt an `pg_restore`:
 
 ```bash
-# Mac (Prinzip, noch nicht getestet)
-age -d -i <schlüsseldatei> ~/Backups/sonjaczak/2026-11-14.dump.age \
-  | ssh mike@SERVER_IP 'sudo docker exec -i sonjaczak-database-1 pg_restore -U app -d app_restore_test'
+# Mac; der private Schlüssel kommt aus der Zwischenablage, nie als Datei
+age -d -i <(pbpaste) ~/Backups/sonjaczak/2026-11-14.dump.age \
+  | ssh mike@sonjaczak.com sudo /usr/local/sbin/sonjaczak-restore-test
 ```
 
-Offen für die Ausarbeitung: `sudo` fragt am Server nach mikes Passwort, kann das aber nicht, solange die Eingabe für
-die Daten gebraucht wird. Das löse ich in S11 (z. B. vorher in derselben Verbindung `sudo -v`).
+`sonjaczak-restore-test` (im Repo `deploy/restore-test.sh`) legt `app_restore_test` an, spielt den Dump ein,
+vergleicht die Zeilen je Tabelle mit der echten Datenbank und löscht die Testdatenbank wieder. `sudo` könnte hier
+nicht nach mikes Passwort fragen (die Eingabe ist ja der Datenstrom), deshalb darf mike genau dieses Skript ohne
+Passwort ausführen (eigene sudo-Regel, ohne Argumente). Anleitung: `deployment.md` S11.
 
-Davor die leere Datenbank `app_restore_test` anlegen, danach Zeilen zählen und mit `app` vergleichen, dann
-`DROP DATABASE app_restore_test`. Die genauen Befehle kommen in `deployment.md` (neuer Schritt S11), sobald der Plan
-freigegeben ist. Wie der private Schlüssel kurzzeitig als Datei bereitsteht (und danach gelöscht wird), regle ich dort.
 
-**Ernstfall** (Server weg): neuen Server nach `deployment.md` einrichten, deployen (legt die leere Datenbank mit
-Migrationen an), dann dieselbe Pipe mit `pg_restore --clean -d app`. Auch das wird beim Test einmal durchgespielt,
-nur in die Testdatenbank.
+**Ernstfall** (Server weg), Ablauf in Grundzügen: neuen Server nach `deployment.md` einrichten, nur den
+Datenbank-Container starten, den Dump in die leere Datenbank `app` einspielen (er enthält auch
+`doctrine_migration_versions`, die Migrationen laufen danach also nicht noch einmal), dann deployen. Der Test oben
+deckt das Einspielen in eine leere Datenbank ab. Die genauen Befehle für den Ernstfall sind **noch nicht
+ausgearbeitet** (offener Punkt im Projektstand).
 
 ## Zu entscheiden
 
