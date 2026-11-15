@@ -12,16 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **Nachholregel: Mindestzahl = Einheiten des Kurses?** (2026-11-14, `umsetzung-admin.md` C3/C6) Mike hat die Regel
-   geklärt: Von Schüler:innen abgesagte Stunden werden nie nachgeholt. Erreicht ein Kurs wegen Absagen durch Sonja
-   nicht die Mindestzahl (z. B. 15), wird nachgeholt, bis sie erreicht ist. Die Mindestzahl ist je Kurs einstellbar,
-   mit Standard aus den Einstellungen. Umgesetzt ist das heute nur zufällig richtig: Die Einstellung „Schwellwert“
-   ist ein Abstand von den Einheiten des Kurses (Standard 0), und der Standard 15 für neue Kurse steht fest im Code.
-   **Vorschlag:** „Schwellwert“ ersetzen durch „Einheiten pro Semester (Standard für neue Kurse)“, Kursformular damit
-   vorbelegen, Regel: fällig = Einheiten des Kurses − gezählte Einheiten (Migration, Tests, `erklaerungen/11`).
-   **Frage:** Ist die Mindestzahl immer gleich der Zahl der geplanten Einheiten des Kurses (oder gibt es z. B. 16
-   geplante Termine bei 15 geschuldeten)?
-   - Antwort: Ja, Mindestzahl ist immer gleich den geplanten Einheiten. Es kann vorkommen, dass mehr Einheiten als vereinbart gehalten werden, aber nicht weniger.
+Derzeit keine offene Frage.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -148,7 +139,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
 - [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; noch nicht gebaut)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
-- [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`)
+- [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`; Schwellwert durch „Einheiten pro Semester“ ersetzt 2026-11-15)
 - [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)
 - [ ] D2 PDF (entschieden 2026-11-14: dompdf; noch nicht gebaut)
 - [x] D3 Zahlungen und Gutschriften (2026-11-13, `erklaerungen/13`)
@@ -193,6 +184,7 @@ muss).
 | Backups | Plan `planung/backups.md` mit allen Empfehlungen freigegeben (2026-11-14): age, Verschlüsselung am Server, privater Schlüssel im Passwort-Manager, 14 Tage + 12 Monate, täglich 12:00 per launchd, Rücksicherungstest in temporärer Datenbank am Server, Sessions ohne Inhalt | Begründungen im Plan |
 | Passkeys (B5) | Dürfen nach dem Start des Echtbetriebs kommen, bleiben aber eingeplant (2026-11-14) | Passwort reicht vorerst; Fingerabdruck ist für Sonja einfacher als ein Einmalcode |
 | Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
+| Nachholregel | Mindestzahl = geplante Einheiten des Kurses, kein Schwellwert; Einstellung „Einheiten pro Semester“ belegt neue Kurse vor (2026-11-15) | Absagen durch Schüler:innen werden nie nachgeholt; mehr Einheiten als vereinbart sind möglich, weniger nicht (Mike). `erklaerungen/11` |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

@@ -50,7 +50,10 @@ final class CourseController extends AbstractController
     #[Route('/neu', name: 'admin_course_new', methods: ['GET', 'POST'])]
     public function new(Request $request, HolidayImporter $holidays): Response
     {
-        $course = new Course()->setLessonMinutes($this->settings->current()->getLessonMinutes());
+        $settings = $this->settings->current();
+        $course = new Course()
+            ->setLessonMinutes($settings->getLessonMinutes())
+            ->setPlannedLessons($settings->getPlannedLessons());
         $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
 
@@ -163,10 +166,9 @@ final class CourseController extends AbstractController
      */
     private function renderEdit(Course $course, FormInterface $form, FormInterface $breakForm, MakeUpRule $makeUpRule): Response
     {
-        $threshold = $this->settings->current()->getMakeUpThreshold();
         $makeUpsDue = [];
         foreach ($course->getEnrollments() as $enrollment) {
-            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment, $threshold);
+            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment);
         }
 
         return $this->render('admin/course/edit.html.twig', [

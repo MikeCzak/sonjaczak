@@ -292,6 +292,8 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
   ausgefallene Einheit. So bleibt nachvollziehbar, welche Absage nachgeholt wurde.
 - **Nachholregel:** Gezählt werden alle Einheiten der Teilnahme außer `cancelled_by_teacher`. Liegt die Zahl unter
   `plannedLessons − Schwellwert`, schlägt die App eine Nachholstunde vor. Der Schwellwert ist eine Einstellung.
+  **Geändert 2026-11-15:** kein Schwellwert mehr, die Mindestzahl ist immer `plannedLessons` (Entscheidung im
+  Projektstand).
 
 ### 3.6 TrialLesson (Schnupperstunde)
 
@@ -380,7 +382,7 @@ bezahlt“ legt eine Zahlung über den offenen Restbetrag mit dem heutigen Datum
 ### 3.9 Einstellungen und Startseite
 
 - **`Settings` als Entity mit genau einer Zeile und typisierten Spalten:** aktives Theme (`App\Theme\Theme`),
-  Standarddauer einer Einheit (50), Schwellwert für Nachholstunden, Absenderdaten der Honorarnote (Name, Titel,
+  Standarddauer einer Einheit (50), Schwellwert für Nachholstunden (seit 2026-11-15: Einheiten pro Semester als Vorschlag für neue Kurse), Absenderdaten der Honorarnote (Name, Titel,
   Adresse als `Address`, IBAN, BIC, Bank, Ort, Text zur Umsatzsteuerbefreiung) und die Unterschrift als Bild.
   Alternative: Schlüssel-Wert-Tabelle. Die braucht keine Migration für neue Einstellungen, verliert aber Typen und
   Validierung. `App\Theme\SiteSettings` liest dann hier statt aus `config/services.yaml`.

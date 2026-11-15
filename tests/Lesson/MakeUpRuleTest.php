@@ -15,20 +15,19 @@ use PHPUnit\Framework\TestCase;
 final class MakeUpRuleTest extends TestCase
 {
     /**
-     * @return iterable<string, array{int, int, int, int}>
+     * @return iterable<string, array{int, int, int}>
      */
     public static function cases(): iterable
     {
-        // threshold, cancelled by Sonja, cancelled by student, expected make-up lessons (15 lessons planned)
-        yield 'nothing cancelled' => [0, 0, 0, 0];
-        yield 'student cancellations are lost' => [0, 0, 3, 0];
-        yield 'one by Sonja, threshold 0' => [0, 1, 0, 1];
-        yield 'one by Sonja, within threshold 1' => [1, 1, 0, 0];
-        yield 'three by Sonja, threshold 1' => [1, 3, 0, 2];
+        // cancelled by Sonja, cancelled by student, expected make-up lessons (15 lessons planned)
+        yield 'nothing cancelled' => [0, 0, 0];
+        yield 'student cancellations are lost' => [0, 3, 0];
+        yield 'one by Sonja' => [1, 0, 1];
+        yield 'three by Sonja and two by the student' => [3, 2, 3];
     }
 
     #[DataProvider('cases')]
-    public function testDue(int $threshold, int $bySonja, int $byStudent, int $expected): void
+    public function testDue(int $bySonja, int $byStudent, int $expected): void
     {
         $enrollment = new Enrollment(new Course()->setPlannedLessons(15));
         for ($i = 0; $i < 15; ++$i) {
@@ -40,7 +39,17 @@ final class MakeUpRuleTest extends TestCase
             });
         }
 
-        self::assertSame($expected, new MakeUpRule()->due($enrollment, $threshold));
+        self::assertSame($expected, new MakeUpRule()->due($enrollment));
+    }
+
+    public function testMoreLessonsThanPlannedAreAllowed(): void
+    {
+        $enrollment = new Enrollment(new Course()->setPlannedLessons(2));
+        for ($i = 0; $i < 3; ++$i) {
+            new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30')->modify("+$i weeks"));
+        }
+
+        self::assertSame(0, new MakeUpRule()->due($enrollment));
     }
 
     public function testMakeUpLessonCounts(): void
@@ -48,9 +57,9 @@ final class MakeUpRuleTest extends TestCase
         $enrollment = new Enrollment(new Course()->setPlannedLessons(2));
         $cancelled = new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30'))->setStatus(LessonStatus::CancelledByTeacher);
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-16 15:30'));
-        self::assertSame(1, new MakeUpRule()->due($enrollment, 0));
+        self::assertSame(1, new MakeUpRule()->due($enrollment));
 
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-20 15:30'))->setMakeUpFor($cancelled);
-        self::assertSame(0, new MakeUpRule()->due($enrollment, 0));
+        self::assertSame(0, new MakeUpRule()->due($enrollment));
     }
 }

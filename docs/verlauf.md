@@ -335,3 +335,8 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - Erklärung `erklaerungen/16-backups.md` geschrieben (Konzepte, Schritte, Alternativen, Praxis in Firmen); dabei
   gegen PostgreSQL-18-Doku und man-Seiten geprüft. Die Doku von `pg_dump` nennt es „except in simple cases“ nicht die
   richtige Wahl für Produktion; unsere Datenbank ist ein solcher einfacher Fall.
+- Nachholregel umgebaut: Einstellung „Schwellwert“ ersetzt durch „Einheiten pro Semester“ (Vorschlag für neue Kurse,
+  vorher fest 15 in `Course`); `MakeUpRule::due()` ohne Schwellwert. Migration `Version20261115201517`: Diff schlug nur
+  eine Umbenennung vor, die den alten Wert 0 übernommen hätte; ergänzt um `UPDATE … = 15`. Hin und zurück lokal
+  geprüft. Tests: Fall „mehr gehalten als geplant“ neu, Einstellungstest prüft jetzt die Vorbelegung des
+  Kursformulars. 114 Tests grün, PHPStan ohne Fehler, Schema in Sync.

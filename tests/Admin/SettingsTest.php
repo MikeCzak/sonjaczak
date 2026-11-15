@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Admin;
 
-use App\Entity\Enum\LessonStatus;
 use App\Entity\Settings;
 use App\Repository\SettingsRepository;
-use App\Tests\Factory\EnrollmentFactory;
 use App\Tests\Factory\UserFactory;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -64,21 +61,16 @@ final class SettingsTest extends WebTestCase
         self::assertSame('AT611904300234573201', $settings->getIban());
     }
 
-    public function testThresholdFromSettingsIsUsed(): void
+    public function testPlannedLessonsPrefillNewCourses(): void
     {
         $client = $this->loggedInClient();
-        $enrollment = EnrollmentFactory::createOne();
-        $enrollment->getLessons()->first() ?: self::fail('No lessons');
-        $enrollment->getLessons()->first()->setStatus(LessonStatus::CancelledByTeacher);
-        self::getContainer()->get(EntityManagerInterface::class)->flush();
-
-        $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId());
-        self::assertSelectorTextContains('main', '1 Nachholstunde fällig');
 
         $client->request('GET', '/admin/einstellungen');
-        $client->submitForm('Speichern', ['settings[makeUpThreshold]' => '1']);
-        $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId());
-        self::assertSelectorTextNotContains('main', 'Nachholstunde fällig');
+        $client->submitForm('Speichern', ['settings[plannedLessons]' => '16']);
+        self::assertResponseRedirects('/admin/einstellungen');
+
+        $crawler = $client->request('GET', '/admin/kurse/neu');
+        self::assertSame('16', $crawler->filter('input[name="course[plannedLessons]"]')->attr('value'));
     }
 
     private function loggedInClient(): KernelBrowser

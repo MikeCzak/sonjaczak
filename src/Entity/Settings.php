@@ -38,11 +38,12 @@ class Settings
     private int $lessonMinutes = 50;
 
     /**
-     * Make-up rule (App\Lesson\MakeUpRule): a make-up lesson is due below plannedLessons minus this number.
+     * Default for new courses. A course's planned lessons are also the minimum for the make-up rule
+     * (App\Lesson\MakeUpRule). Same range as Course::$plannedLessons.
      */
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Assert\Range(min: 0, max: 20)]
-    private int $makeUpThreshold = 0;
+    #[Assert\Range(min: 1, max: 40)]
+    private int $plannedLessons = 15;
 
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Length(max: 100)]
@@ -122,14 +123,14 @@ class Settings
         return $this;
     }
 
-    public function getMakeUpThreshold(): int
+    public function getPlannedLessons(): int
     {
-        return $this->makeUpThreshold;
+        return $this->plannedLessons;
     }
 
-    public function setMakeUpThreshold(int $makeUpThreshold): static
+    public function setPlannedLessons(int $plannedLessons): static
     {
-        $this->makeUpThreshold = $makeUpThreshold;
+        $this->plannedLessons = $plannedLessons;
 
         return $this;
     }

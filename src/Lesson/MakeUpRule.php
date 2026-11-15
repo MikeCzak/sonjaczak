@@ -8,21 +8,17 @@ use App\Entity\Enrollment;
 
 /**
  * When Sonja owes a make-up lesson (docs/planung/datenmodell.md 3.5): all lessons of the enrollment count except
- * cancellations by Sonja; if that number is below plannedLessons − threshold, a make-up lesson is due.
- * Cancellations by the student count (they are lost), so they never lead to a make-up lesson.
- *
- * The threshold is passed in (App\Entity\Settings::getMakeUpThreshold()) instead of injected: the service lives
- * across requests in FrankenPHP's worker mode and must not keep an old value.
+ * cancellations by Sonja; if that number is below the course's planned lessons (the minimum Sonja owes), make-up
+ * lessons are due until it is reached. Cancellations by the student count (they are lost), so they never lead to a
+ * make-up lesson. Holding more lessons than planned is allowed and simply means nothing is due.
  */
 final class MakeUpRule
 {
     /**
      * How many make-up lessons are due, 0 if none.
      */
-    public function due(Enrollment $enrollment, int $threshold): int
+    public function due(Enrollment $enrollment): int
     {
-        $minimum = $enrollment->getCourse()->getPlannedLessons() - $threshold;
-
-        return max(0, $minimum - $enrollment->countedLessons());
+        return max(0, $enrollment->getCourse()->getPlannedLessons() - $enrollment->countedLessons());
     }
 }

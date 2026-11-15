@@ -53,7 +53,7 @@ Status, nur Nachholstunden zählen nicht. Wochen, die schon eine reguläre Einhe
 Aufruf füllt also nur Lücken.
 
 **Warum nicht nach der Nachholregel zählen?** Zuerst habe ich das so gebaut, und der Test hat es aufgedeckt: Dann füllt
-der Planer jede Absage durch Sonja hinten wieder auf, und die Nachholregel mit Schwellwert wäre wirkungslos. Ob für
+der Planer jede Absage durch Sonja hinten wieder auf, und die Nachholregel wäre wirkungslos. Ob für
 Sonjas Absage nachgeholt wird, entscheidet jetzt nur `MakeUpRule`.
 
 `applyBreaks()` (nach neuen Ferien, auch nach „Ferien vorschlagen lassen“): geplante Einheiten in den Ferien werden
@@ -65,9 +65,22 @@ Werden Ferien **gelöscht**, passiert nichts: die Teilnahme hat ihre 15 Einheite
 ## Nachholregel (`MakeUpRule`)
 
 Gezählt werden alle Einheiten außer `cancelled_by_teacher` (also auch geplante, gehaltene, vom Schüler abgesagte und
-Nachholstunden). Fällig sind `plannedLessons − Schwellwert − gezählt` Nachholstunden, mindestens 0. Anzeige: „14 von 15“
+Nachholstunden). Fällig sind `plannedLessons − gezählt` Nachholstunden, mindestens 0. Anzeige: „14 von 15“
 und „1 Nachholstunde fällig“ auf Kurs- und Teilnahmeseite. Eine Nachholstunde wird zu einer bestimmten abgesagten
 Einheit eingetragen (`makeUpFor`); jede abgesagte Einheit kann nur einmal nachgeholt werden.
+
+**Geändert 2026-11-15:** Bis dahin gab es eine Einstellung „Schwellwert“, und fällig waren
+`plannedLessons − Schwellwert − gezählt`. Mike hat geklärt: Die Mindestzahl, die Sonja schuldet, ist **immer** die Zahl
+der geplanten Einheiten des Kurses. Mehr Einheiten zu halten ist erlaubt, weniger nicht. Ein Abstand davon ergibt also
+keinen Sinn. Statt des Schwellwerts gibt es in den Einstellungen „Einheiten pro Semester“ als Vorschlag für neue Kurse
+(vorher fest 15 in `Course`).
+
+**Fallstrick bei der Migration** (`Version20261115201517`): `doctrine:migrations:diff` schlug nur
+`RENAME COLUMN make_up_threshold TO planned_lessons` vor. Der Vergleich sieht nur das Schema: Eine Spalte
+verschwindet, eine mit gleichem Typ kommt dazu, also hält er das für eine Umbenennung. Damit wäre der alte Wert
+übernommen worden (Schwellwert 0 → „0 Einheiten pro Semester“, ungültig). Die Bedeutung kennt nur der Mensch. Deshalb
+setzt die Migration den Wert danach ausdrücklich auf 15. Allgemein: Den erzeugten Diff immer lesen, bevor er läuft,
+besonders bei Umbenennungen und bei `NOT NULL`-Spalten in Tabellen mit Daten.
 
 ## Oberfläche ohne JavaScript
 

@@ -334,8 +334,8 @@ settings:
         theme: Design der Website
         theme_help: Gilt sofort für alle Besucher:innen. Vorher ansehen mit ?theme=… an einer beliebigen Seitenadresse.
         lesson_minutes: Standarddauer einer Einheit (Minuten)
-        make_up_threshold: Schwellwert für Nachholstunden
-        make_up_threshold_help: Eine Nachholstunde ist fällig, wenn eine Teilnahme mehr als so viele Einheiten unter der geplanten Anzahl liegt (Absagen durch dich nicht mitgezählt).
+        planned_lessons: Einheiten pro Semester
+        planned_lessons_help: Vorschlag für neue Kurse. Die Einheiten eines Kurses sind zugleich die Mindestzahl, die du schuldest. Sagst du ab und wird sie dadurch unterschritten, ist eine Nachholstunde fällig. Absagen von Schüler:innen werden nie nachgeholt.
         sender_name: Name
         sender_title: Titel
         iban: IBAN

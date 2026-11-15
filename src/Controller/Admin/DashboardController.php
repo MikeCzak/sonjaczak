@@ -13,7 +13,6 @@ use App\Repository\CourseRepository;
 use App\Repository\InvoiceRepository;
 use App\Repository\LessonRepository;
 use App\Repository\PaymentRepository;
-use App\Repository\SettingsRepository;
 use App\Repository\TrialLessonRepository;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +39,6 @@ final class DashboardController extends AbstractController
         CourseRepository $courses,
         InvoiceRepository $invoices,
         PaymentRepository $payments,
-        SettingsRepository $settings,
         MakeUpRule $makeUpRule,
     ): Response {
         $now = \DateTimeImmutable::createFromInterface($clock->now());
@@ -58,7 +56,6 @@ final class DashboardController extends AbstractController
         usort($upcoming, static fn (array $a, array $b): int => $a['startsAt'] <=> $b['startsAt']);
 
         // Running courses: one row per enrollment
-        $threshold = $settings->current()->getMakeUpThreshold();
         $running = [];
         $withoutInvoice = 0;
         foreach ($courses->findRunningOn($today) as $course) {
@@ -70,7 +67,7 @@ final class DashboardController extends AbstractController
                     'last' => $held->last() ?: null,
                     'held' => $held->count(),
                     'cancelled' => $enrollment->getLessons()->filter(static fn ($lesson): bool => \in_array($lesson->getStatus(), [LessonStatus::CancelledByStudent, LessonStatus::CancelledByTeacher], true))->count(),
-                    'make_up_due' => $makeUpRule->due($enrollment, $threshold),
+                    'make_up_due' => $makeUpRule->due($enrollment),
                 ];
                 if (!$enrollment->getInvoices()->exists(static fn (int $key, Invoice $invoice): bool => !$invoice->isCreditNote())) {
                     ++$withoutInvoice;

@@ -33,9 +33,9 @@ final class SettingsType extends AbstractType
                 'choice_translation_domain' => 'messages',
             ])
             ->add('lessonMinutes', IntegerType::class, ['label' => 'settings.field.lesson_minutes'])
-            ->add('makeUpThreshold', IntegerType::class, [
-                'label' => 'settings.field.make_up_threshold',
-                'help' => 'settings.field.make_up_threshold_help',
+            ->add('plannedLessons', IntegerType::class, [
+                'label' => 'settings.field.planned_lessons',
+                'help' => 'settings.field.planned_lessons_help',
             ])
             ->add('senderName', TextType::class, ['label' => 'settings.field.sender_name'] + $optional)
             ->add('senderTitle', TextType::class, ['label' => 'settings.field.sender_title'] + $optional)

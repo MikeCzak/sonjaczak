@@ -28,8 +28,8 @@ FrankenPHP läuft als Worker: Ein Dienst lebt über viele Anfragen. Würde `Site
 laden und sich merken, sähen Besucher:innen nach Sonjas Änderung weiter das alte Theme, bis der Worker neu startet.
 Deshalb fragt `SettingsRepository::current()` jedes Mal (eine Abfrage per Primärschlüssel). Doctrines Identity Map
 wird nach jeder Anfrage geleert (`Doctrine\Bundle\DoctrineBundle\Registry::reset()`, im Container mit `kernel.reset`
-markiert: `vendor/doctrine/doctrine-bundle/config/dbal.php`). Aus demselben Grund bekommt `MakeUpRule` den Schwellwert als Argument statt im
-Konstruktor.
+markiert: `vendor/doctrine/doctrine-bundle/config/dbal.php`). Aus demselben Grund bekam `MakeUpRule` den Schwellwert als Argument statt im
+Konstruktor (seit 2026-11-15 braucht die Regel keine Einstellung mehr, `erklaerungen/11`, „Nachholregel“).
 
 ## Öffentliche Seiten fragen jetzt die Datenbank
 
