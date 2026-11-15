@@ -318,3 +318,20 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Tabelle, Testdatenbank danach gelöscht. Gegenprobe: Scheitert `pg_dump`, endet das Skript mit 1, liefert aber eine
   200-Byte-age-Datei; deshalb prüft `bin/backup-pull` den Exit-Code. Rotation mit erfundenen Dateien geprüft.
 - Mike hat die Nachholregel geklärt (Absagen durch Schüler:innen nie nachholen; Mindestzahl je Kurs, Standard aus den Einstellungen). Umbau des Schwellwerts vorgeschlagen, Frage im Projektstand.
+
+## 2026-11-15
+
+- Mike hat Sonjas Konto angelegt (Rolle „Verwaltung“ = `ROLE_ADMIN`), Absenderdaten und Cronjob für überfällige
+  Honorarnoten eingetragen.
+- Backups eingerichtet (Mac und Server nach `entwicklung.md` und `deployment.md` S11). Stolpersteine:
+  - `visudo` öffnet `sonjaczak-backup.tmp`; unter dem Zielnamen gespeichert → „unchanged“, Datei nicht angelegt.
+    Hinweis in S11 ergänzt (Name beim Speichern nicht ändern).
+  - SSH-Test meldete „PTY allocation request failed“ (`restrict` verbietet ein Terminal), Ergebnis trotzdem richtig.
+    `ssh -T` in Testbefehl und `bin/backup-pull` ergänzt.
+  - Erster Rücksicherungstest ohne Sicherung gestartet (Schritt 3 noch nicht gemacht): `pg_restore` brach bei leerem
+    Datenstrom ab, Testdatenbank wurde wieder gelöscht.
+  - `tail` des Logs direkt nach `launchctl kickstart` fand noch nichts, weil der Job im Hintergrund läuft.
+- Erste Sicherung 33 729 Byte, LaunchAgent `runs = 1`, `last exit code = 0`. Rücksicherungstest erfolgreich.
+- Erklärung `erklaerungen/16-backups.md` geschrieben (Konzepte, Schritte, Alternativen, Praxis in Firmen); dabei
+  gegen PostgreSQL-18-Doku und man-Seiten geprüft. Die Doku von `pg_dump` nennt es „except in simple cases“ nicht die
+  richtige Wahl für Produktion; unsere Datenbank ist ein solcher einfacher Fall.

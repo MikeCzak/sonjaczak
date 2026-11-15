@@ -45,7 +45,7 @@ incoming="$BACKUP_DIR/.incoming.$$"
 trap 'rm -f "$incoming"' EXIT
 
 # BatchMode: never ask for anything, launchd has no terminal
-if ! ssh -i "$SSH_KEY" -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER" >"$incoming"; then
+if ! ssh -T -i "$SSH_KEY" -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER" >"$incoming"; then
     notify "Sicherung fehlgeschlagen (Server). Letzte: ${last%%.*}."
     exit 1
 fi

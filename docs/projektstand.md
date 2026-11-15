@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-14. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-15. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -21,15 +21,16 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
    vorbelegen, Regel: fällig = Einheiten des Kurses − gezählte Einheiten (Migration, Tests, `erklaerungen/11`).
    **Frage:** Ist die Mindestzahl immer gleich der Zahl der geplanten Einheiten des Kurses (oder gibt es z. B. 16
    geplante Termine bei 15 geschuldeten)?
-   - Antwort:
+   - Antwort: Ja, Mindestzahl ist immer gleich den geplanten Einheiten. Es kann vorkommen, dass mehr Einheiten als vereinbart gehalten werden, aber nicht weniger.
 
 **Todos für Mike (keine Frage offen):**
 
-- [ ] Sonjas Konto über die Benutzerverwaltung anlegen (`/admin/benutzer`, Einladungslink).
-- [ ] Absenderdaten in Produktion unter `/admin/einstellungen` eintragen. Die Daten liegen lokal in
+- [x] Sonjas Konto über die Benutzerverwaltung anlegen (`/admin/benutzer`, Einladungslink).
+- [x] Absenderdaten in Produktion unter `/admin/einstellungen` eintragen. Die Daten liegen lokal in
   `claude_references/absenderdaten-sonja.md` (nicht im Repo, das Repo ist öffentlich).
-- [ ] Cronjob für überfällige Honorarnoten eintragen (`deployment.md` S8, freigegeben 2026-11-14).
-- [ ] **Backups einrichten** (Repo-Teil fertig und lokal getestet 2026-11-14), in dieser Reihenfolge:
+- [x] Cronjob für überfällige Honorarnoten eintragen (`deployment.md` S8, freigegeben 2026-11-14).
+- [x] **Backups einrichten** (Repo-Teil fertig und lokal getestet 2026-11-14; eingerichtet und Rücksicherung
+  erfolgreich getestet 2026-11-15, Erklärung `erklaerungen/16-backups.md`), in dieser Reihenfolge:
   1. Mac: age und Schlüssel, SSH-Key (`entwicklung.md`, „Backups“, Schritte 1–2)
   2. Server: `deployment.md` S11
   3. Mac: Skript und LaunchAgent (`entwicklung.md`, „Backups“, Schritt 4)
@@ -99,6 +100,9 @@ verlinkten Erklärung.
 - [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
   `planung/backups.md`, „Rücksicherung“). Der Test in die temporäre Datenbank deckt das Einspielen ab, nicht den
   ganzen Ablauf.
+- [ ] **Zweite Kopie der Backups außer Haus** (2026-11-15, `erklaerungen/16`, Abschnitt 5): Heute liegen die Sicherungen
+  nur am Mac (und in Time Machine, falls eingerichtet). Möglich: Cloud-Speicher mit Push vom Server oder eine externe
+  Platte an einem anderen Ort. Auch prüfen: Läuft Time Machine, und ist der private age-Schlüssel ausgedruckt?
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
   noch etwas offen ist).
 - [ ] Kandidaten aus der Durchsicht des Templates (2026-11-03):
@@ -112,6 +116,8 @@ verlinkten Erklärung.
 
 - **Upgrade auf Symfony 8.2 vor Ende Jänner 2027** (dann endet der Support für 8.1). Danach 8.3 (Mai 2027) und
   8.4 LTS (laut Release-Regeln voraussichtlich November 2027).
+- **Rücksicherung der Backups erneut testen** etwa jährlich (nächstes Mal ca. November 2027) und nach jedem
+  PostgreSQL-Upgrade (`deployment.md` S11, „Test der Rücksicherung“).
 - **Tokens erneuern:** gh CLI läuft 2027-11-02 ab, Server-Token 2027-11-03 (Erinnerung per Cronjob, `deployment.md` S6).
 
 ## Fortschritt
@@ -149,7 +155,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob freigegeben, Eintrag siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
 - [x] D5 Einnahmen und CSV-Export (2026-11-13, `erklaerungen/13`)
 - [x] E Dashboard (2026-11-13, `erklaerungen/14`)
-- [ ] F Vor den echten Daten: Backups (Plan `planung/backups.md` freigegeben, Repo-Teil fertig; Einrichtung siehe „Jetzt“), Datenschutz-Information und Löschregel (siehe „Später“);
+- [ ] F Vor den echten Daten: Backups **fertig** (eingerichtet, Rücksicherung getestet 2026-11-15, `erklaerungen/16`), Datenschutz-Information und Löschregel (siehe „Später“);
   Aufbewahrungsfrist nachgelesen (2026-11-13)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -202,5 +208,6 @@ bei jeder Entscheidung zu berücksichtigen.
 | SSH | Kein Root-Login, kein Passwort-Login, nur Key | /etc/ssh/sshd_config.d/00-hardening.conf |
 | Firewall | ufw: 22, 80/tcp, 443/tcp, 443/udp | `sudo ufw status verbose` |
 | Updates | unattended-upgrades, Neustart um 04:00 | /etc/apt/apt.conf.d/52unattended-upgrades-local |
-| Benutzer | mike (sudo); deploy (ohne sudo, Gruppe docker) für GitHub Actions | `id mike`, `deployment.md` S1 |
+| Benutzer | mike (sudo); deploy (ohne sudo, Gruppe docker) für GitHub Actions; dbbackup (ohne Docker, nur Backup-Skript per sudo) | `id mike`, `deployment.md` S1, S11 |
+| Backups | Mac holt täglich 12:00 einen mit age verschlüsselten Dump; Skripte in /usr/local/sbin, sudo-Regeln in /etc/sudoers.d/sonjaczak-backup | `deployment.md` S11 |
 | Cronjobs (root) | Token-Erinnerungen (`deployment.md` S6) | `sudo crontab -l` |

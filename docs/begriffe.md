@@ -345,3 +345,26 @@ N+1 Abfragen statt einer. Abhilfe in Doctrine: Fetch Join (`join` + `addSelect`)
 
 **Fetch Join** – Join in DQL, dessen Tabelle mit `addSelect` auch geladen wird, sodass die Beziehung danach ohne
 weitere Abfrage gefüllt ist. Nicht auf der verbundenen Seite filtern, sonst bleibt die Sammlung unvollständig.
+
+## Backups
+
+**RPO / RTO** – Recovery Point Objective (wie viele Daten höchstens verloren gehen dürfen) und Recovery Time Objective
+(wie lange die Wiederherstellung dauern darf). Bei uns: bis zu ein Tag bzw. einige Stunden (`erklaerungen/16`).
+
+**3-2-1-Regel** – Faustregel: 3 Kopien, 2 Medien, 1 davon an einem anderen Ort.
+
+**Logisches / physisches Backup** – Export des Inhalts (`pg_dump`, unseres) gegenüber Kopie der Datendateien.
+Logische Dumps lassen sich in neuere PostgreSQL-Versionen einspielen.
+
+**PITR** – Point-in-Time Recovery: Wiederherstellung zu einem beliebigen Zeitpunkt über das archivierte
+Transaktionsprotokoll (WAL). Bei uns nicht im Einsatz.
+
+**age** – Verschlüsselungswerkzeug mit Schlüsselpaar: öffentlicher Schlüssel (am Server) verschlüsselt, privater
+(im Passwort-Manager) entschlüsselt. Dateien beginnen mit `age-encryption.org/v1`.
+
+**Erzwungener Befehl** – `command="…"` in `authorized_keys`: Ein SSH-Key kann nur diesen einen Befehl starten.
+Bei uns für `deploy` und `dbbackup`.
+
+**LaunchAgent** – Hintergrundjob von macOS (launchd) für den angemeldeten Benutzer; holt verpasste Termine nach dem
+Aufwachen nach, anders als cron. Bei uns: `com.sonjaczak.backup`.
+

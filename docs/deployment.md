@@ -303,6 +303,9 @@ mike ALL=(root) NOPASSWD: /usr/local/sbin/sonjaczak-restore-test ""
 ```
 
 - `visudo -f` prüft die Syntax vor dem Speichern. Ein Fehler in einer sudoers-Datei kann sudo ganz sperren.
+- **Fallstrick nano:** visudo öffnet eine Kopie `sonjaczak-backup.tmp`. Beim Speichern den Dateinamen **nicht** ändern
+  (Strg+O, Enter, Strg+X). visudo prüft danach die `.tmp`-Datei und legt sie selbst unter dem richtigen Namen ab.
+  Speichert man direkt unter dem Zielnamen, meldet visudo „unchanged“ und die Prüfung entfällt.
 - Die zweite Zeile braucht der Test der Rücksicherung: Dort ist die Eingabe der Datenstrom, `sudo` könnte nicht nach
   dem Passwort fragen.
 - `/usr/local/sbin` statt `/srv/sonjaczak`, weil `/srv/sonjaczak` nur für root und `deploy` lesbar ist.
@@ -310,7 +313,7 @@ mike ALL=(root) NOPASSWD: /usr/local/sbin/sonjaczak-restore-test ""
 Test vom Mac (erwartet: `age-encryption.org/v1`):
 
 ```bash
-ssh -i ~/.ssh/sonjaczak_backup dbbackup@sonjaczak.com | head -c 21; echo
+ssh -T -i ~/.ssh/sonjaczak_backup dbbackup@sonjaczak.com | head -c 21; echo
 ```
 
 Beim ersten Mal fragt ssh nach dem Host-Key. Fingerabdruck vergleichen wie in S9
