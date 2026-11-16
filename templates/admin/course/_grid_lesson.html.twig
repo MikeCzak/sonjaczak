@@ -1,8 +1,10 @@
-{# One lesson in the course grid. Date always; weekday and time only if they differ from the column (moved, make-up). #}
+{# One lesson in the course grid. Date always; weekday and time only if they differ from the column (moved, make-up).
+   Without JavaScript the link opens the edit page; with it, the grid controller opens the editor in the cell (C4d). #}
 {% set state = lesson_state(lesson) %}
 {% set moved = lesson.startsAt|date('N') != column.weekday or lesson.startsAt|date('H:i') != column.startTime %}
 <a class="grid-lesson grid-lesson--{{ state.value }} d-block text-decoration-none" href="{{ path('admin_lesson_edit', {id: lesson.id}) }}"
-   title="{{ state.labelKey|trans({}, 'admin') }}{{ lesson.note ? ': ' ~ lesson.note }}">
+   title="{{ state.labelKey|trans({}, 'admin') }}{{ lesson.note ? ': ' ~ lesson.note }}"
+   data-action="grid#open:prevent" data-cancelled-by="{{ lesson.cancelledBy.value ?? '' }}" data-note="{{ lesson.note }}">
     <span class="grid-lesson__name">{{ lesson.enrollment.student.fullName }}</span>
     <span class="grid-lesson__meta d-block small">
         {%- if moved %}{{ ('weekday_short.' ~ lesson.startsAt|date('N'))|trans({}, 'admin') }} {% endif -%}
@@ -17,7 +19,5 @@
     {% if lesson.fromTrial %}
         <span class="badge text-bg-light">{{ 'lesson.from_trial'|trans({}, 'admin') }}</span>
     {% endif %}
-    {% if lesson.note %}
-        <span class="grid-lesson__note d-block small text-truncate">{{ lesson.note }}</span>
-    {% endif %}
+    <span class="grid-lesson__note d-block small text-truncate" data-note-text>{{ lesson.note }}</span>
 </a>

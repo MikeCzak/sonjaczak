@@ -4,8 +4,12 @@
 {% block title %}{{ 'grid.title'|trans({'%course%': course_title}, 'admin') }}{% endblock %}
 
 {% block body %}
-    {# Session token for the PATCH endpoint (C4c), read by the grid controller (C4d) #}
-    <div class="course-grid-page" data-grid-token-value="{{ csrf_token('lesson-grid-' ~ course.id) }}">
+    {# Grid controller (assets/controllers/grid_controller.js, C4d) with the session token for the endpoints (C4c)
+       and the texts it shows, already translated #}
+    <div class="course-grid-page" data-controller="grid"
+         data-grid-token-value="{{ csrf_token('lesson-grid-' ~ course.id) }}"
+         data-grid-confirm-delete-value="{{ 'grid.confirm.delete'|trans({}, 'admin') }}"
+         data-grid-error-value="{{ 'grid.error.request'|trans({}, 'admin') }}">
     <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
         <h1 class="h3 mb-0">{{ 'grid.title'|trans({'%course%': course_title}, 'admin') }}</h1>
         <a href="{{ path('admin_course_edit', {id: course.id}) }}">{{ 'grid.to_course'|trans({}, 'admin') }}</a>
@@ -59,6 +63,19 @@
                                     {% for lesson in row.cells[column.key] ?? [] %}
                                         {{ include('admin/course/_grid_lesson.html.twig') }}
                                     {% endfor %}
+                                    {% if row.doubleOffers[column.key] is defined %}
+                                        <div class="grid-doubles d-flex justify-content-between gap-1">
+                                            {% for offer in row.doubleOffers[column.key] %}
+                                                <button type="button" class="btn btn-sm btn-outline-secondary grid-double grid-double--{{ offer.position }}"
+                                                        data-action="grid#double"
+                                                        data-grid-url-param="{{ path('admin_lesson_double', {id: offer.lesson.id}) }}"
+                                                        data-grid-position-param="{{ offer.position }}"
+                                                        title="{{ 'grid.double.title'|trans({'%name%': offer.lesson.enrollment.student.fullName}, 'admin') }}">
+                                                    {{- ('grid.double.' ~ offer.position)|trans({'%name%': offer.lesson.enrollment.student.firstName}, 'admin') -}}
+                                                </button>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
@@ -79,6 +96,29 @@
             </table>
         </div>
         <p class="small text-body-secondary">{{ 'grid.help'|trans({}, 'admin') }}</p>
+
+        {# Editor for one lesson, cloned into the cell by the grid controller #}
+        <template data-grid-target="editor">
+            <div class="grid-editor mt-1 p-2 border rounded bg-body">
+                <div class="d-flex flex-wrap gap-1 mb-2" role="group" aria-label="{{ 'lesson.field.cancelled_by'|trans({}, 'admin') }}">
+                    {% for value in ['student', 'teacher'] %}
+                        <button type="button" class="btn btn-sm btn-outline-danger" aria-pressed="false"
+                                data-cancel="{{ value }}" data-action="grid#toggleCancel">{{ ('lesson.cancelled_by.' ~ value)|trans({}, 'admin') }}</button>
+                    {% endfor %}
+                </div>
+                <textarea class="form-control form-control-sm mb-2" rows="2" data-note-input
+                          aria-label="{{ 'lesson.field.note'|trans({}, 'admin') }}"
+                          placeholder="{{ 'lesson.field.note'|trans({}, 'admin') }}"></textarea>
+                <p class="text-danger small mb-2" data-error hidden></p>
+                <div class="d-flex flex-wrap align-items-center gap-1">
+                    <button type="button" class="btn btn-sm btn-primary" data-action="grid#save">{{ 'action.save'|trans({}, 'admin') }}</button>
+                    <button type="button" class="btn btn-sm btn-outline-success" data-uncancel data-action="grid#uncancel" hidden>{{ 'grid.uncancel'|trans({}, 'admin') }}</button>
+                    <button type="button" class="btn btn-sm btn-link" data-action="grid#close">{{ 'action.cancel'|trans({}, 'admin') }}</button>
+                    <a class="btn btn-sm btn-link" data-edit-link>{{ 'grid.more'|trans({}, 'admin') }}</a>
+                    <button type="button" class="btn btn-sm btn-link text-danger ms-auto" data-action="grid#remove">{{ 'action.delete'|trans({}, 'admin') }}</button>
+                </div>
+            </div>
+        </template>
     {% endif %}
     </div>
 {% endblock %}

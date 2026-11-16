@@ -42,6 +42,12 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    von Sophia Schmied in der roten Zeile unter KW 42 und 43, die aktuelle Woche mit blauem Strich links. Gehaltene
    Einheiten grau mit ✓, geplante fett. Klick auf eine Einheit öffnet die Bearbeitungsseite. Wer eine Nachholstunde an
    einem anderen Tag einträgt, findet sie in der Spalte der Teilnahme, mit Wochentag und Uhrzeit.
+5. Im Raster bearbeiten (braucht JavaScript): Klick auf eine zukünftige Einheit → „abgesagt (ich)“, Notiz, Speichern.
+   Die Einheit wandert in die rote Zeile, die Zählung im Kopf sinkt, „1 Nachholstunde fällig“ erscheint. In der frei
+   gewordenen Zelle „← + Doppelstunde …“ klicken: Die Nachbarin bekommt eine zweite Einheit (mit Uhrzeit), ihre letzte am
+   Kursende fällt weg. Dann die abgesagte Einheit öffnen → „Absage aufheben“: Ein Popup nennt die Doppelstunde, nach
+   „OK“ ist sie weg und die Nachbarin hat ihre letzte Einheit wieder. Nur die Notiz ändern: Die Seite lädt nicht neu.
+   „Löschen“ fragt nach, danach hängt am Kursende eine Einheit an.
 
 ## 4. Teilnahme und Einheiten
 

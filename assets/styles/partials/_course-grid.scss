@@ -68,3 +68,30 @@
         color: var(--bs-danger-text-emphasis);
     }
 }
+
+// Editor and double lesson buttons (C4d)
+.course-grid {
+    .grid-editor {
+        min-width: 14rem;
+    }
+
+    .grid-double {
+        --bs-btn-padding-y: 0;
+        --bs-btn-padding-x: .25rem;
+        --bs-btn-font-size: .75rem;
+    }
+
+    .grid-double--before {
+        margin-left: auto;
+    }
+}
+
+// Tablet and phone: bigger buttons for fingers (Mike: fine below the laptop breakpoint)
+@include media-breakpoint-down(lg) {
+    .course-grid .grid-editor .btn,
+    .course-grid .grid-double {
+        --bs-btn-padding-y: .5rem;
+        --bs-btn-padding-x: .75rem;
+        --bs-btn-font-size: 1rem;
+    }
+}

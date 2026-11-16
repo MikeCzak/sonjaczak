@@ -25,6 +25,29 @@ final class LessonPlanner
      */
     public function fillUp(Enrollment $enrollment): int
     {
+        return $this->fill($enrollment, null);
+    }
+
+    /**
+     * Like fillUp(), but only after the last regular lesson: used when a lesson was deleted on purpose (course grid,
+     * umsetzung-admin.md C4 question 10). fillUp() would put it back into the week it was just deleted from.
+     *
+     * @return int number of added lessons
+     */
+    public function fillUpAtEnd(Enrollment $enrollment): int
+    {
+        $last = null;
+        foreach ($enrollment->getLessons() as $lesson) {
+            if (null === $lesson->getMakeUpFor() && null !== $lesson->getStartsAt() && (null === $last || $lesson->getStartsAt() > $last)) {
+                $last = $lesson->getStartsAt();
+            }
+        }
+
+        return $this->fill($enrollment, $last?->setTime(0, 0)->modify('+1 day'));
+    }
+
+    private function fill(Enrollment $enrollment, ?\DateTimeImmutable $from): int
+    {
         $course = $enrollment->getCourse();
         $startsOn = $course->getStartsOn();
         $endsOn = $course->getEndsOn();
@@ -38,7 +61,8 @@ final class LessonPlanner
         $missing = $course->getPlannedLessons() - $regular;
         $added = 0;
 
-        for ($day = $this->firstWeekday($startsOn, $enrollment->getWeekday()); $missing > 0 && $day <= $endsOn; $day = $day->modify('+1 week')) {
+        $from = null !== $from && $from > $startsOn ? $from : $startsOn;
+        for ($day = $this->firstWeekday($from, $enrollment->getWeekday()); $missing > 0 && $day <= $endsOn; $day = $day->modify('+1 week')) {
             if ($course->isBreakDay($day) || isset($weeksTaken[$day->format('o-W')])) {
                 continue;
             }

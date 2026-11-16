@@ -52,7 +52,41 @@ final class CourseGrid
             unset($lessons);
         }
 
-        return new Grid(array_values($columns), array_values($rows));
+        $columnList = array_values($columns);
+        foreach ($rows as $row) {
+            $this->offerDoubles($row, $columnList);
+        }
+
+        return new Grid($columnList, array_values($rows));
+    }
+
+    /**
+     * An empty cell (nothing that takes place there, e.g. the lesson was cancelled) offers a double lesson to the
+     * neighbours on the same day: the left one continues after its lesson, the right one starts earlier. Whether it
+     * really fits is checked by the server when the button is used (LessonController::double()).
+     *
+     * @param list<GridColumn> $columns ordered by weekday and time
+     */
+    private function offerDoubles(GridRow $row, array $columns): void
+    {
+        foreach ($columns as $i => $column) {
+            if ([] !== ($row->cells[$column->key] ?? [])) {
+                continue;
+            }
+            $left = $columns[$i - 1] ?? null;
+            $right = $columns[$i + 1] ?? null;
+            $offers = [];
+            if (null !== $left && $left->weekday === $column->weekday && [] !== ($row->cells[$left->key] ?? [])) {
+                $cell = $row->cells[$left->key];
+                $offers[] = ['lesson' => $cell[\count($cell) - 1], 'position' => 'after'];
+            }
+            if (null !== $right && $right->weekday === $column->weekday && [] !== ($row->cells[$right->key] ?? [])) {
+                $offers[] = ['lesson' => $row->cells[$right->key][0], 'position' => 'before'];
+            }
+            if ([] !== $offers) {
+                $row->doubleOffers[$column->key] = $offers;
+            }
+        }
     }
 
     /**

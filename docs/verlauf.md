@@ -370,3 +370,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   dem Stand vor C4c und mit der alten Datei; nacheinander (`--debug`) keine, kurz danach auch parallel keine mehr, ohne
   Änderung. Ursache nicht gefunden (vermutlich parallele Worker), CI-Lauf beobachten. Frage zum Kursnamen nach „Jetzt“.
   133 Tests grün.
+- C4d: Stimulus-Controller `grid` (Editor in der Zelle, Absage als Schalter, Notiz, Löschen, Absage aufheben,
+  Doppelstunde), Endpunkte `DELETE /admin/einheiten/{id}` und `POST …/doppelstunde`. Beim Planen gefunden: `fillUp()`
+  füllt Lücken ab Kursbeginn und hätte eine gelöschte Einheit in dieselbe Woche zurückgelegt → `fillUpAtEnd()`.
+  Action-Parameter (`data-grid-…-param`) wandelt Stimulus um („123“ würde eine Zahl), die Notiz steht deshalb in
+  `data-note`. Im Browser geprüft: Node 20 hat kein WebSocket, daher ein kleiner DevTools-Client in Python (nur
+  Standardbibliothek) im Scratchpad; Absage mit Notiz, Doppelstunde, Absage aufheben mit Popup, nur Notiz ohne
+  Neuladen, Löschen mit Auffüllen, keine Fehler in der Konsole. 139 Tests grün, PHPStan ohne Fehler.

@@ -21,7 +21,8 @@ use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
- * PATCH /admin/einheiten/{id}: the course grid's endpoint (umsetzung-admin.md C4c).
+ * The course grid's endpoints (umsetzung-admin.md C4c/C4d): PATCH and DELETE /admin/einheiten/{id},
+ * POST /admin/einheiten/{id}/doppelstunde.
  * Anonymous access is covered by AdminRoutesRequireLoginTest.
  */
 final class LessonPatchTest extends WebTestCase
@@ -137,6 +138,105 @@ final class LessonPatchTest extends WebTestCase
         $lessons = self::getContainer()->get(LessonRepository::class);
         self::assertNull($lessons->find($double->getId() ?? 0));
         self::assertSame(15, $lessons->count(['enrollment' => $berta->getId()]));
+    }
+
+    public function testDeleteAddsALessonAtTheEnd(): void
+    {
+        $course = CourseFactory::createOne();
+        $enrollment = EnrollmentFactory::createOne(['course' => $course]);
+        $lesson = $this->lessonOn($enrollment, '2026-10-16');
+        $lastBefore = $this->lastStart($enrollment);
+
+        $this->client->request('DELETE', '/admin/einheiten/'.$lesson->getId(), server: ['HTTP_X_CSRF_TOKEN' => $this->token($course)]);
+
+        self::assertResponseIsSuccessful();
+        $lessons = self::getContainer()->get(LessonRepository::class)->findBy(['enrollment' => $enrollment->getId()], ['startsAt' => 'ASC']);
+        self::assertCount(15, $lessons);
+        self::assertNotContains('2026-10-16', array_map(static fn (Lesson $l): string => $l->getStartsAt()?->format('Y-m-d') ?? '', $lessons), 'not put back into the same week');
+        self::assertGreaterThan($lastBefore, $lessons[14]->getStartsAt());
+    }
+
+    public function testDeleteNeedsTheToken(): void
+    {
+        $course = CourseFactory::createOne();
+        $lesson = $this->lessonOn(EnrollmentFactory::createOne(['course' => $course]), '2026-10-16');
+
+        $this->client->request('DELETE', '/admin/einheiten/'.$lesson->getId(), server: ['HTTP_X_CSRF_TOKEN' => 'wrong']);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    /**
+     * Anna 15:30, Berta 16:20. Anna gets a double lesson after hers, in Berta's slot: only once Berta cancelled.
+     */
+    public function testDoubleLessonInTheFreedSlot(): void
+    {
+        $course = CourseFactory::createOne();
+        $anna = EnrollmentFactory::createOne(['course' => $course, 'startTime' => new \DateTimeImmutable('15:30')]);
+        $berta = EnrollmentFactory::createOne([
+            'course' => $course,
+            'student' => StudentFactory::new(['firstName' => 'Berta', 'lastName' => 'Nachbar']),
+            'startTime' => new \DateTimeImmutable('16:20'),
+        ]);
+        $annaLesson = $this->lessonOn($anna, '2026-10-16');
+        $lastBefore = $this->lastStart($anna);
+        $token = $this->token($course);
+        $url = '/admin/einheiten/'.$annaLesson->getId().'/doppelstunde';
+
+        $answer = $this->post($url, ['position' => 'after'], $token);
+        self::assertResponseStatusCodeSame(409);
+        self::assertStringContainsString('Berta Nachbar, 16.10. 16:20', $answer['error']);
+
+        $this->patch($this->lessonOn($berta, '2026-10-16'), ['cancelledBy' => 'student'], $token);
+        $answer = $this->post($url, ['position' => 'after'], $token);
+
+        self::assertResponseIsSuccessful();
+        self::assertNull($answer['message'], 'the last lesson went');
+        $lessons = self::getContainer()->get(LessonRepository::class)->findBy(['enrollment' => $anna->getId()], ['startsAt' => 'ASC']);
+        self::assertCount(15, $lessons);
+        $starts = array_map(static fn (Lesson $l): string => $l->getStartsAt()?->format('Y-m-d H:i') ?? '', $lessons);
+        self::assertContains('2026-10-16 16:20', $starts);
+        self::assertNotContains($lastBefore->format('Y-m-d H:i'), $starts);
+        self::assertSame(50, $lessons[2]->getDurationMinutes(), 'the length of Anna\'s enrollment');
+    }
+
+    public function testDoubleLessonBeforeAndInvalidPosition(): void
+    {
+        $course = CourseFactory::createOne();
+        $lesson = $this->lessonOn(EnrollmentFactory::createOne(['course' => $course]), '2026-10-16');
+        $token = $this->token($course);
+        $url = '/admin/einheiten/'.$lesson->getId().'/doppelstunde';
+
+        $this->post($url, ['position' => 'beside'], $token);
+        self::assertResponseStatusCodeSame(422);
+
+        $this->post($url, ['position' => 'before'], $token);
+        self::assertResponseIsSuccessful();
+        self::assertNotNull(self::getContainer()->get(LessonRepository::class)->findOneBy(['startsAt' => new \DateTimeImmutable('2026-10-16 14:40')]));
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array{error: string, message: string|null}
+     */
+    private function post(string $url, array $data, string $token): array
+    {
+        $this->client->request('POST', $url, server: [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_CSRF_TOKEN' => $token,
+        ], content: json_encode($data, \JSON_THROW_ON_ERROR));
+
+        /** @var array{error: string, message: string|null} */
+        return json_decode((string) $this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
+    }
+
+    private function lastStart(Enrollment $enrollment): \DateTimeImmutable
+    {
+        $last = $enrollment->getLessons()->last();
+        self::assertInstanceOf(Lesson::class, $last);
+
+        return $last->getStartsAt() ?? throw new \LogicException('No start');
     }
 
     /**

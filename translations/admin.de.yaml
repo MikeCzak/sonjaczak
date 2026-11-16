@@ -241,9 +241,20 @@ grid:
         invalid_json: Die Anfrage war unvollständig. Bitte neu laden.
         invalid_cancelled_by: Unbekannte Art der Absage.
         invalid_note: Die Notiz muss Text sein.
+        invalid_double: Eine Doppelstunde geht nur neben einer Einheit, die nicht abgesagt ist.
+        double_overlaps: "Die Doppelstunde hat dort keinen Platz, sie überschneidet sich mit:\n%lessons%"
+        request: Das hat nicht geklappt. Bitte die Seite neu laden und noch einmal versuchen.
     confirm:
+        delete: Diese Einheit endgültig löschen? Eine Notiz geht dabei verloren. Am Kursende wird dafür eine Einheit angehängt.
         delete_overlapping: "Im Zeitfenster dieser Einheit ist inzwischen etwas eingetragen. Es wird gelöscht:\n%lessons%\n\nAm Kursende wird dafür wieder aufgefüllt. Fortfahren?"
-    help: Klick auf eine Einheit öffnet sie zum Bearbeiten. Gelbe Wochen enthalten Ferien oder freie Tage, abgesagte Einheiten stehen in der roten Zeile darunter.
+    uncancel: Absage aufheben
+    more: Beginn, Dauer …
+    double:
+        after: '← + Doppelstunde %name%'
+        before: '+ Doppelstunde %name% →'
+        title: 'Zweite Einheit von %name% in diesem Zeitfenster anlegen (zählt als eigene Einheit, die letzte am Kursende fällt dafür weg)'
+        not_trimmed: Am Kursende war keine Einheit mehr zum Weglassen. Die Teilnahme hat jetzt eine Einheit mehr als geplant.
+    help: Klick auf eine Einheit öffnet Absage und Notiz. Gelbe Wochen enthalten Ferien oder freie Tage, abgesagte Einheiten stehen in der roten Zeile darunter. In einem frei gewordenen Zeitfenster kann die Nachbarin oder der Nachbar eine Doppelstunde bekommen.
 weekday:
     1: Montag
     2: Dienstag

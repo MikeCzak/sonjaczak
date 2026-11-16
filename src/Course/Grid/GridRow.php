@@ -28,6 +28,14 @@ final class GridRow
     public array $cancelled = [];
 
     /**
+     * Buttons for a double lesson in an empty cell, by column key: the lesson of the neighbouring slot on the same
+     * day and on which side of it the second lesson goes (umsetzung-admin.md C4, question 8, point 10).
+     *
+     * @var array<string, list<array{lesson: Lesson, position: 'before'|'after'}>>
+     */
+    public array $doubleOffers = [];
+
+    /**
      * @param list<CourseBreak> $breaks breaks that touch this week
      */
     public function __construct(

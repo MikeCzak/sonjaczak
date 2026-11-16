@@ -136,9 +136,16 @@ Schritte (je ein Commit):
    Teilnahmen am Ende aufgefüllt. Verschieben, Dauer und Nachholstunden bleiben auf den bestehenden Seiten.
    WebTestCases: speichern, nur gesendete Schlüssel, ungültige Absage, Token eines anderen Kurses, Absage aufheben mit
    Bestätigung; ohne Login über `AdminRoutesRequireLoginTest`.
-4. **C4d Stimulus-Controller `grid`:** Klick oder Enter öffnet die Zelle (Status-Knöpfe und Notizfeld), Enter
-   speichert, Escape verwirft (Bedienung laut Frage 3 ohne Kürzel, nur Knöpfe). Während des Speicherns ist die Zelle gesperrt; bei Fehlern bleibt die Eingabe stehen und eine Meldung
-   erscheint in der Zelle.
+4. **C4d Stimulus-Controller `grid`** (erledigt 2026-11-16)**:** Klick auf eine Einheit öffnet in der Zelle die Knöpfe
+   „abgesagt (Schüler:in)“ / „abgesagt (ich)“ (Schalter), Notiz, Speichern, Abbrechen, „Beginn, Dauer …“ (bestehende
+   Seite), Löschen (Popup, danach am Kursende anhängen); in der roten Zeile zusätzlich „Absage aufheben“ (Popup, falls
+   etwas überschneidet). Leere Zellen bieten „← + Doppelstunde Laura“ / „+ Doppelstunde Petra →“ für die Nachbarn am
+   selben Tag (`POST /admin/einheiten/{id}/doppelstunde`, Dauer der Teilnahme, letzte zukünftige Einheit fällt weg).
+   Keine Tastaturkürzel (Frage 3). Nur eine geänderte Notiz wird ohne Neuladen eingetragen, alles andere lädt die Seite
+   neu (der Server zählt, der Browser rechnet nichts). Während einer Anfrage sind die Knöpfe gesperrt; Fehler stehen im
+   Editor. Controller wird nur auf der Rasterseite geladen (`stimulusFetch: 'lazy'`). Neu: `LessonPlanner::fillUpAtEnd()`,
+   weil `fillUp()` eine gelöschte Einheit in dieselbe Woche zurücklegen würde. Geprüft mit Headless Chrome über das
+   DevTools-Protokoll (Skript im Scratchpad, nicht im Repo).
 5. **C4e Ferien per Zeile:** Knopf in der Wochenzeile legt einen `CourseBreak` für Montag bis Sonntag dieser Woche an
    (bestehende Logik `applyBreaks()`/`fillUp()`), danach lädt die Seite neu. Normales Formular, kein JavaScript nötig.
 6. **C4f Doku:** `erklaerungen/18-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),

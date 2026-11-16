@@ -51,6 +51,21 @@ final class LessonPlannerTest extends TestCase
         self::assertCount(15, $enrollment->getLessons());
     }
 
+    public function testFillUpAtEndLeavesTheGapOfADeletedLesson(): void
+    {
+        $planner = new LessonPlanner();
+        $enrollment = $this->enrollment($this->course('2026-10-05', '2027-02-26'));
+        $planner->fillUp($enrollment);
+        $second = $enrollment->getLessons()->get(1);
+        self::assertNotNull($second);
+        $enrollment->removeLesson($second);
+
+        self::assertSame(1, $planner->fillUpAtEnd($enrollment));
+        $starts = $enrollment->getLessons()->map(static fn ($lesson): string => $lesson->getStartsAt()?->format('Y-m-d') ?? '')->toArray();
+        self::assertNotContains('2026-10-16', $starts, 'fillUp() would put it back here');
+        self::assertContains('2027-01-22', $starts, 'one week after the former last lesson (2027-01-15)');
+    }
+
     public function testCancellationBySonjaIsNotFilledUpButCancellationByStudentIs(): void
     {
         $planner = new LessonPlanner();

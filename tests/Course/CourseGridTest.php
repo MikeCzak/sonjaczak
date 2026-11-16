@@ -70,6 +70,17 @@ final class CourseGridTest extends TestCase
         self::assertSame($this->b, $cell[0]->getEnrollment());
     }
 
+    public function testEmptyCellOffersADoubleLessonToItsNeighbours(): void
+    {
+        $this->lesson($this->a, '2026-10-16 15:00')->setCancelledBy(CancelledBy::Student);
+        $berta = $this->lesson($this->b, '2026-10-16 15:50');
+
+        $grid = $this->build();
+
+        self::assertSame([['lesson' => $berta, 'position' => 'before']], $grid->rows[1]->doubleOffers['5-15:00']);
+        self::assertSame([], $grid->rows[0]->doubleOffers, 'no empty cell in the first week');
+    }
+
     public function testMakeUpOnAnotherDayStaysInItsOwnColumn(): void
     {
         $makeUp = new Lesson($this->b, new \DateTimeImmutable('2026-10-21 17:00'));

@@ -24,20 +24,35 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * A single lesson: the edit page (GET/POST, HTML) and the course grid's endpoint (PATCH, JSON, step C4c).
- * Same address, because the grid cell is the lesson; one route per kind keeps HTML and JSON apart.
+ * A single lesson: the edit page (GET/POST, HTML) and the course grid's endpoints (JSON, steps C4c/C4d): PATCH
+ * changes cancellation and note, DELETE removes the lesson, POST …/doppelstunde adds a second lesson next to it.
+ * Same address for page and PATCH/DELETE, because the grid cell is the lesson; one route per kind keeps HTML and
+ * JSON apart.
+ *
+ * CSRF for the JSON endpoints: a session token per course (csrf_token('lesson-grid-<course id>') in the grid), sent
+ * in the header X-CSRF-Token, because there is no form (erklaerungen/17-csrf.md).
  */
 #[IsGranted(User::ROLE_ADMIN)]
 final class LessonController extends AbstractController
 {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LessonRepository $lessons,
+        private readonly LessonPlanner $planner,
+        private readonly MakeUpRule $makeUpRule,
+        private readonly TranslatorInterface $translator,
+        private readonly ClockInterface $clock,
+    ) {
+    }
+
     #[Route('/admin/einheiten/{id}', name: 'admin_lesson_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Lesson $lesson, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Lesson $lesson): Response
     {
         $form = $this->createForm(LessonType::class, $lesson);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->entityManager->flush();
             $this->addFlash('success', 'lesson.flash.saved');
 
             return $this->redirectToRoute('admin_enrollment_show', ['id' => $lesson->getEnrollment()->getId()]);
@@ -52,48 +67,30 @@ final class LessonController extends AbstractController
      *
      * Withdrawing a cancellation puts the lesson back into its slot. Lessons that were put into that slot in the
      * meantime (e.g. a double lesson of the neighbour) overlap it; they are only deleted with "deleteOverlapping":
-     * true, otherwise the answer is 409 with a message for a confirm() popup. Their enrollments are filled up at the
-     * end again (LessonPlanner::fillUp(), umsetzung-admin.md C4, question 8, point 4).
-     *
-     * CSRF: a session token per course (csrf_token('lesson-grid-<course id>') in the grid), sent in the header
-     * X-CSRF-Token, because there is no form (erklaerungen/17-csrf.md).
+     * true, otherwise the answer is 409 with a message for a confirm() popup. Their enrollments get a lesson at the
+     * end again (umsetzung-admin.md C4, question 8, point 4).
      */
     #[Route('/admin/einheiten/{id}', name: 'admin_lesson_patch', requirements: ['id' => '\d+'], methods: ['PATCH'])]
-    public function patch(
-        Request $request,
-        Lesson $lesson,
-        EntityManagerInterface $entityManager,
-        LessonRepository $lessons,
-        LessonPlanner $planner,
-        MakeUpRule $makeUpRule,
-        ValidatorInterface $validator,
-        TranslatorInterface $translator,
-        ClockInterface $clock,
-    ): JsonResponse {
+    public function patch(Request $request, Lesson $lesson, ValidatorInterface $validator): JsonResponse
+    {
+        $data = $this->readJson($request, $lesson);
+        if ($data instanceof JsonResponse) {
+            return $data;
+        }
+
         $enrollment = $lesson->getEnrollment();
-        $tokenId = 'lesson-grid-'.$enrollment->getCourse()->getId();
-        if (!$this->isCsrfTokenValid($tokenId, (string) $request->headers->get('X-CSRF-Token'))) {
-            return $this->error($translator, 'grid.error.csrf', Response::HTTP_FORBIDDEN);
-        }
-
-        try {
-            $data = $request->toArray();
-        } catch (\Throwable) {
-            return $this->error($translator, 'grid.error.invalid_json', Response::HTTP_BAD_REQUEST);
-        }
-
         $wasCancelled = $lesson->isCancelled();
         if (\array_key_exists('cancelledBy', $data)) {
             $value = $data['cancelledBy'];
             $cancelledBy = \is_string($value) ? CancelledBy::tryFrom($value) : null;
             if (null !== $value && null === $cancelledBy) {
-                return $this->error($translator, 'grid.error.invalid_cancelled_by', Response::HTTP_UNPROCESSABLE_ENTITY);
+                return $this->error('grid.error.invalid_cancelled_by', Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             $lesson->setCancelledBy($cancelledBy);
         }
         if (\array_key_exists('note', $data)) {
             if (null !== $data['note'] && !\is_string($data['note'])) {
-                return $this->error($translator, 'grid.error.invalid_note', Response::HTTP_UNPROCESSABLE_ENTITY);
+                return $this->error('grid.error.invalid_note', Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             $note = trim($data['note'] ?? '');
             $lesson->setNote('' === $note ? null : $note);
@@ -108,13 +105,15 @@ final class LessonController extends AbstractController
         $affected = [spl_object_id($enrollment) => $enrollment];
         $deleted = [];
         $added = 0;
-        if ($wasCancelled && !$lesson->isCancelled()) {
-            $overlapping = $lessons->findOverlapping($lesson);
+        $startsAt = $lesson->getStartsAt();
+        $endsAt = $lesson->getEndsAt();
+        if ($wasCancelled && !$lesson->isCancelled() && null !== $startsAt && null !== $endsAt) {
+            $overlapping = $this->lessons->findOverlapping($enrollment->getCourse(), $startsAt, $endsAt, $lesson);
             if ([] !== $overlapping && true !== ($data['deleteOverlapping'] ?? false)) {
                 // Nothing is flushed: the lesson stays cancelled until Sonja confirms
                 return $this->json([
-                    'confirm' => $translator->trans('grid.confirm.delete_overlapping', [
-                        '%lessons%' => implode("\n", array_map($this->describe(...), $overlapping)),
+                    'confirm' => $this->translator->trans('grid.confirm.delete_overlapping', [
+                        '%lessons%' => $this->describeAll($overlapping),
                     ], 'admin'),
                 ], Response::HTTP_CONFLICT);
             }
@@ -128,12 +127,12 @@ final class LessonController extends AbstractController
                 $emptied[spl_object_id($otherEnrollment)] = $otherEnrollment;
             }
             foreach ($emptied as $otherEnrollment) {
-                $added += $planner->fillUp($otherEnrollment);
+                $added += $this->planner->fillUpAtEnd($otherEnrollment);
             }
         }
-        $entityManager->flush();
+        $this->entityManager->flush();
 
-        $state = $lesson->state($clock->now());
+        $state = $lesson->state($this->clock->now());
 
         return $this->json([
             'lesson' => [
@@ -141,9 +140,9 @@ final class LessonController extends AbstractController
                 'cancelledBy' => $lesson->getCancelledBy()?->value,
                 'note' => $lesson->getNote(),
                 'state' => $state->value,
-                'stateLabel' => $translator->trans($state->labelKey(), [], 'admin'),
+                'stateLabel' => $this->translator->trans($state->labelKey(), [], 'admin'),
             ],
-            'enrollments' => array_map(fn (Enrollment $each): array => $this->counts($each, $makeUpRule, $translator), array_values($affected)),
+            'enrollments' => array_map($this->counts(...), array_values($affected)),
             // Lessons deleted or added elsewhere in the grid: the browser reloads the page instead of rebuilding it
             'deleted' => $deleted,
             'added' => $added,
@@ -151,33 +150,159 @@ final class LessonController extends AbstractController
     }
 
     /**
+     * Deletes a lesson (entered by mistake, or Sonja does not want to mark it cancelled). The enrollment gets a
+     * lesson at the end instead, so it keeps its planned number (umsetzung-admin.md C4, question 10). The browser
+     * asks before (the note is lost).
+     */
+    #[Route('/admin/einheiten/{id}', name: 'admin_lesson_delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    public function delete(Request $request, Lesson $lesson): JsonResponse
+    {
+        if (!$this->isTokenValid($request, $lesson)) {
+            return $this->error('grid.error.csrf', Response::HTTP_FORBIDDEN);
+        }
+
+        $enrollment = $lesson->getEnrollment();
+        $enrollment->removeLesson($lesson);
+        $added = $this->planner->fillUpAtEnd($enrollment);
+        $this->entityManager->flush();
+
+        return $this->json(['reload' => true, 'added' => $added]);
+    }
+
+    /**
+     * Double lesson (umsetzung-admin.md C4, questions 8 and 9): a second lesson of the same enrollment directly
+     * before or after this one, typically in the slot of a neighbour who cancelled. JSON {"position": "before"|"after"}.
+     *
+     * It takes the enrollment's agreed length, not the length of the freed slot: students pay for that length
+     * (Mike, question 8 point 6). If it would run into another lesson, nothing is added (409). A double lesson counts
+     * as two, so the last future lesson of the enrollment goes, to keep the planned number; if there is none, the
+     * enrollment has one lesson more and the answer says so.
+     */
+    #[Route('/admin/einheiten/{id}/doppelstunde', name: 'admin_lesson_double', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function double(Request $request, Lesson $lesson): JsonResponse
+    {
+        $data = $this->readJson($request, $lesson);
+        if ($data instanceof JsonResponse) {
+            return $data;
+        }
+        $position = $data['position'] ?? null;
+        $startsAt = $lesson->getStartsAt();
+        $endsAt = $lesson->getEndsAt();
+        if (!\in_array($position, ['before', 'after'], true) || null === $startsAt || null === $endsAt || $lesson->isCancelled()) {
+            return $this->error('grid.error.invalid_double', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $enrollment = $lesson->getEnrollment();
+        $minutes = $enrollment->getLessonMinutes();
+        $newStart = 'after' === $position ? $endsAt : $startsAt->modify(\sprintf('-%d minutes', $minutes));
+        $newEnd = $newStart->modify(\sprintf('+%d minutes', $minutes));
+
+        $overlapping = $this->lessons->findOverlapping($enrollment->getCourse(), $newStart, $newEnd);
+        if ([] !== $overlapping) {
+            return $this->json(['error' => $this->translator->trans('grid.error.double_overlaps', [
+                '%lessons%' => $this->describeAll($overlapping),
+            ], 'admin')], Response::HTTP_CONFLICT);
+        }
+
+        $double = new Lesson($enrollment, $newStart, $minutes);
+        $this->entityManager->persist($double);
+        $trimmed = $this->removeLastFutureLesson($enrollment, [$double, $lesson]);
+        $this->entityManager->flush();
+
+        return $this->json([
+            'reload' => true,
+            'message' => $trimmed ? null : $this->translator->trans('grid.double.not_trimmed', [], 'admin'),
+        ]);
+    }
+
+    /**
+     * Removes the last regular lesson that is still to come and not cancelled, except the double lesson and the one
+     * it belongs to. False if there is none (end of the course reached).
+     *
+     * @param list<Lesson> $except
+     */
+    private function removeLastFutureLesson(Enrollment $enrollment, array $except): bool
+    {
+        $now = $this->clock->now();
+        $last = null;
+        foreach ($enrollment->getLessons() as $lesson) {
+            $startsAt = $lesson->getStartsAt();
+            if (\in_array($lesson, $except, true) || null !== $lesson->getMakeUpFor() || $lesson->isCancelled() || null === $startsAt || $startsAt <= $now) {
+                continue;
+            }
+            if (null === $last || $startsAt > $last->getStartsAt()) {
+                $last = $lesson;
+            }
+        }
+        if (null === $last) {
+            return false;
+        }
+        $enrollment->removeLesson($last);
+
+        return true;
+    }
+
+    /**
+     * Checks the token and decodes the body. Returns the data, or the error answer.
+     *
+     * @return array<mixed>|JsonResponse
+     */
+    private function readJson(Request $request, Lesson $lesson): array|JsonResponse
+    {
+        if (!$this->isTokenValid($request, $lesson)) {
+            return $this->error('grid.error.csrf', Response::HTTP_FORBIDDEN);
+        }
+
+        try {
+            return $request->toArray();
+        } catch (\Throwable) {
+            return $this->error('grid.error.invalid_json', Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function isTokenValid(Request $request, Lesson $lesson): bool
+    {
+        $tokenId = 'lesson-grid-'.$lesson->getEnrollment()->getCourse()->getId();
+
+        return $this->isCsrfTokenValid($tokenId, (string) $request->headers->get('X-CSRF-Token'));
+    }
+
+    /**
      * The numbers in the column header, already translated, so the browser calculates nothing itself.
      *
      * @return array{id: int|null, count: string, makeUpsDue: int, makeUpLabel: string|null}
      */
-    private function counts(Enrollment $enrollment, MakeUpRule $makeUpRule, TranslatorInterface $translator): array
+    private function counts(Enrollment $enrollment): array
     {
-        $due = $makeUpRule->due($enrollment);
+        $due = $this->makeUpRule->due($enrollment);
 
         return [
             'id' => $enrollment->getId(),
-            'count' => $translator->trans('enrollment.count', [
+            'count' => $this->translator->trans('enrollment.count', [
                 '%counted%' => $enrollment->countedLessons(),
                 '%planned%' => $enrollment->getCourse()->getPlannedLessons(),
             ], 'admin'),
             'makeUpsDue' => $due,
-            'makeUpLabel' => $due > 0 ? $translator->trans('enrollment.make_up_due', ['%count%' => $due], 'admin') : null,
+            'makeUpLabel' => $due > 0 ? $this->translator->trans('enrollment.make_up_due', ['%count%' => $due], 'admin') : null,
         ];
     }
 
-    private function describe(Lesson $lesson): string
+    /**
+     * "Berta Nachbar, 16.10. 15:30 (Vorsingen)", one line per lesson, for the popup texts.
+     *
+     * @param list<Lesson> $lessons
+     */
+    private function describeAll(array $lessons): string
     {
-        return \sprintf('%s, %s%s', $lesson->getEnrollment()->getStudent()?->getFullName() ?? '?',
-            $lesson->getStartsAt()?->format('d.m. H:i') ?? '', null !== $lesson->getNote() ? ' ('.$lesson->getNote().')' : '');
+        return implode("\n", array_map(static fn (Lesson $lesson): string => \sprintf('%s, %s%s',
+            $lesson->getEnrollment()->getStudent()?->getFullName() ?? '?',
+            $lesson->getStartsAt()?->format('d.m. H:i') ?? '',
+            null !== $lesson->getNote() ? ' ('.$lesson->getNote().')' : '',
+        ), $lessons));
     }
 
-    private function error(TranslatorInterface $translator, string $key, int $status): JsonResponse
+    private function error(string $key, int $status): JsonResponse
     {
-        return $this->json(['error' => $translator->trans($key, [], 'admin')], $status);
+        return $this->json(['error' => $this->translator->trans($key, [], 'admin')], $status);
     }
 }
