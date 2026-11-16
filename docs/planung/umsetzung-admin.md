@@ -124,14 +124,18 @@ Schritte (je ein Commit):
    Link auf `/admin/einheiten/{id}`, das Raster funktioniert also auch ohne JavaScript. Eine Abfrage mit Fetch Join
    (Teilnahmen, Schüler:innen, Einheiten). Unit-Test für `CourseGrid`, WebTestCase für die Seite.
 0. **C4-0 Status umbauen** (Frage 5) und **Ferien mit Bestätigung** (Frage 6, 7), vor dem Raster.
-3. **C4c Endpunkt zum Speichern:** `PATCH /admin/einheiten/{id}` mit JSON `{cancelledBy, note}` (geändert 2026-11-16 auf
-   Mikes Frage: Die Zelle **ist** die Einheit, also dieselbe Adresse wie die Bearbeitungsseite; `PATCH` heißt „Teile
-   ändern“, und eine eigene Route je Methode hält die HTML-Seite (GET/POST) und den JSON-Endpunkt getrennt). Antwort JSON mit der
-   neuen Zelle und der neuen Zählung der Spalte, damit der Browser nichts selbst rechnet. Validierung über den
-   Validator der Entity, Fehler als 422 mit Meldung. CSRF: Token aus der Session (`csrf_token('lesson_cell')` im
-   Template, im Header `X-CSRF-Token` mitgeschickt, `isCsrfTokenValid()`). Nur Status und Notiz; Verschieben, Dauer
-   und Nachholstunden bleiben auf den bestehenden Seiten. WebTestCases: speichern, ungültiger Status, falsches Token,
-   fremde Rolle.
+3. **C4c Endpunkt zum Speichern** (erledigt 2026-11-16)**:** `PATCH /admin/einheiten/{id}` mit JSON `{cancelledBy, note}`;
+   nur mitgeschickte Schlüssel ändern sich (geändert 2026-11-16 auf Mikes Frage: Die Zelle **ist** die Einheit, also
+   dieselbe Adresse wie die Bearbeitungsseite; `PATCH` heißt „Teile ändern“, und eine eigene Route je Methode hält die
+   HTML-Seite (GET/POST) und den JSON-Endpunkt getrennt). Antwort JSON mit Zustand, Beschriftung und den Zählungen der
+   betroffenen Teilnahmen, schon übersetzt, damit der Browser nichts selbst rechnet. Fehler: 403 (Token), 400 (kein
+   JSON), 422 (unbekannte Absage, Validator). CSRF: Session-Token **je Kurs** (`csrf_token('lesson-grid-<Kurs-ID>')` im
+   Raster, Header `X-CSRF-Token`, `isCsrfTokenValid()`, `erklaerungen/17-csrf.md`). **„Absage aufheben“** (Frage 8,
+   Punkte 4 und 5) gleich hier: Überschneidet sich etwas mit der wieder aufgenommenen Einheit, antwortet der Server mit
+   409 und einem Text für `confirm()`; erst mit `deleteOverlapping: true` wird gelöscht und für die betroffenen
+   Teilnahmen am Ende aufgefüllt. Verschieben, Dauer und Nachholstunden bleiben auf den bestehenden Seiten.
+   WebTestCases: speichern, nur gesendete Schlüssel, ungültige Absage, Token eines anderen Kurses, Absage aufheben mit
+   Bestätigung; ohne Login über `AdminRoutesRequireLoginTest`.
 4. **C4d Stimulus-Controller `grid`:** Klick oder Enter öffnet die Zelle (Status-Knöpfe und Notizfeld), Enter
    speichert, Escape verwirft (Bedienung laut Frage 3 ohne Kürzel, nur Knöpfe). Während des Speicherns ist die Zelle gesperrt; bei Fehlern bleibt die Eingabe stehen und eine Meldung
    erscheint in der Zelle.
@@ -215,6 +219,18 @@ Antworten von Mike (2026-11-16) stehen je Punkt als **→**.
     ergänzen, der Endpunkt bliebe derselbe.
 11. **Unverändert:** Abrechnung (Pauschale je Teilnahme), Nachholregel (A: Absage durch Sonja → nachholen, durch
     Schüler:in → verfällt), Ferien (löschen auch Doppelstunden).
+
+**Kursname** (2026-11-16, Mikes Frage). Heute gibt es kein Namensfeld: Der Titel entsteht aus Semester und Jahr
+(„Wintersemester 2026/27“, `Term::labelKey()`, `templates/admin/course/_title.html.twig`). Zwei Kurse im selben Semester
+hießen also gleich. Mikes Vorschlag: „Wochentag WS/SS Jahr“. Der Wochentag ist aber keine Eigenschaft des Kurses, sondern
+jeder Teilnahme (`Enrollment::$weekday`); ein Kurs kann Teilnahmen an mehreren Tagen haben. Honorarnote (Leistungstext,
+Dateiname `WiSe_2026`) bleibt in allen Varianten unverändert.
+
+| Option | Pro | Contra |
+|---|---|---|
+| **Abgeleitet (Empfehlung):** Wochentage aus den Teilnahmen anhängen, „Wintersemester 2026/27 (Fr)“, bei mehreren „(Mo, Fr)“ | Keine Migration, stimmt immer, nichts doppelt gespeichert (wie beim Status der Einheit) | Neuer Kurs ohne Teilnahmen zeigt keinen Tag; braucht die Teilnahmen beim Anzeigen (in Listen eine Abfrage mehr oder ein Join) |
+| Freies Feld „Bezeichnung“ (optional), angehängt: „Wintersemester 2026/27 – Freitag“ | Sonja bestimmt den Text, auch Ort oder Schule möglich | Migration; kann veralten, wenn sich die Tage ändern |
+| So lassen | Nichts zu tun | Zwei Kurse im selben Semester nicht unterscheidbar |
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 

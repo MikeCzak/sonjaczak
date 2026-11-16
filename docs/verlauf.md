@@ -362,3 +362,11 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   mit der größten Überschneidung, sonst die eigene Spalte), eine Abfrage mit Fetch Join (`findForGrid()`). Im
   Screenshot (Headless Chrome, Fixtures) waren gehaltene und geplante Einheiten kaum zu unterscheiden → ✓ und fett.
   Lokal fehlte das neue CSS, bis `sass:build` lief. 128 Tests grün, PHPStan ohne Fehler.
+- C4c: `PATCH /admin/einheiten/{id}` (Absage, Notiz, „Absage aufheben“ mit 409 und Bestätigung, danach Auffüllen),
+  Session-Token je Kurs im Raster. `findOverlapping()` filtert die Kandidaten des Tages in PHP, weil DQL Beginn + Dauer
+  nicht addieren kann. Fallstricke: `array_unique()` auf Entities vergleicht Eigenschaften (bei Collections bis zur
+  Rekursion) → Schlüssel per `spl_object_id()`; Testdatum 16.10. liegt inzwischen in der Vergangenheit → `mockTime()`.
+  PHPStan meldete zeitweise 39 Fehler „Type alias ConfigType contains unknown class“ in `config/reference.php`, auch auf
+  dem Stand vor C4c und mit der alten Datei; nacheinander (`--debug`) keine, kurz danach auch parallel keine mehr, ohne
+  Änderung. Ursache nicht gefunden (vermutlich parallele Worker), CI-Lauf beobachten. Frage zum Kursnamen nach „Jetzt“.
+  133 Tests grün.

@@ -4,6 +4,8 @@
 {% block title %}{{ 'grid.title'|trans({'%course%': course_title}, 'admin') }}{% endblock %}
 
 {% block body %}
+    {# Session token for the PATCH endpoint (C4c), read by the grid controller (C4d) #}
+    <div class="course-grid-page" data-grid-token-value="{{ csrf_token('lesson-grid-' ~ course.id) }}">
     <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
         <h1 class="h3 mb-0">{{ 'grid.title'|trans({'%course%': course_title}, 'admin') }}</h1>
         <a href="{{ path('admin_course_edit', {id: course.id}) }}">{{ 'grid.to_course'|trans({}, 'admin') }}</a>
@@ -78,4 +80,5 @@
         </div>
         <p class="small text-body-secondary">{{ 'grid.help'|trans({}, 'admin') }}</p>
     {% endif %}
+    </div>
 {% endblock %}

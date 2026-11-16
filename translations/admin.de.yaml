@@ -236,6 +236,13 @@ grid:
     cancelled: abgesagt
     trials: Schnupperstunden im Kurszeitraum
     minutes: '%minutes% Min.'
+    error:
+        csrf: Die Seite ist abgelaufen. Bitte neu laden und noch einmal versuchen.
+        invalid_json: Die Anfrage war unvollständig. Bitte neu laden.
+        invalid_cancelled_by: Unbekannte Art der Absage.
+        invalid_note: Die Notiz muss Text sein.
+    confirm:
+        delete_overlapping: "Im Zeitfenster dieser Einheit ist inzwischen etwas eingetragen. Es wird gelöscht:\n%lessons%\n\nAm Kursende wird dafür wieder aufgefüllt. Fortfahren?"
     help: Klick auf eine Einheit öffnet sie zum Bearbeiten. Gelbe Wochen enthalten Ferien oder freie Tage, abgesagte Einheiten stehen in der roten Zeile darunter.
 weekday:
     1: Montag
