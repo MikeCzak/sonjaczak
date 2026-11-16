@@ -12,11 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **Einzelne abgesagte Einheit ersatzlos** (2026-11-16, `umsetzung-admin.md` C7, „Korrektur“): Sagt Sonja eine Einheit
-   ab und holt sie nicht nach, reicht das Senken der Anzahl nicht (die Nachholstunde bleibt fällig). Heute: Einheit im
-   Raster löschen, dann Anzahl um 1 senken. Reicht dieser Umweg für den seltenen Fall, oder soll zusätzlich eine
-   Absage-Art „entfällt ersatzlos“ dazukommen (Option A, die Einheit bliebe sichtbar)? Empfehlung: Umweg reicht vorerst.
-   Antwort:
+Keine Frage offen.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -79,8 +75,9 @@ verlinkten Erklärung.
   unbegrenzt gespeichert. Die DSGVO verlangt, Daten nur so lange zu halten wie nötig (Wortlaut noch nicht nachgelesen);
   das kann mit der Aufbewahrung der Honorarnoten konkurrieren. Technisch: Die Honorarnote hat Name und Adresse als
   Kopie, hängt aber über die Teilnahme an der Schüler:in (Fremdschlüssel). Löschen ginge daher nur ohne Teilnahmen;
-  sonst Schüler:in anonymisieren (Kontaktdaten leeren, Zeile bleibt). Mit Sonja zu klären: wie lange sie Kontakt halten
-  will (z. B. für spätere Kurse), ab wann jemand „nicht mehr aktiv“ ist.
+  sonst Schüler:in anonymisieren (Kontaktdaten leeren, Zeile bleibt). **Mike, 2026-11-16:** Für den Kontakt muss
+  nichts in der App bleiben (Sonja hat Mail und Telefon ohnehin selbst, z. B. im Handy). Die Frist richtet sich also
+  nur nach den Honorarnoten; offen ist nur noch, wann gelöscht bzw. anonymisiert wird.
 
 ### Rechtliches
 
@@ -220,6 +217,7 @@ muss).
 | Nachholregel | Mindestzahl = geplante Einheiten des Kurses, kein Schwellwert; Einstellung „Einheiten pro Semester“ belegt neue Kurse vor (2026-11-15) | Absagen durch Schüler:innen werden nie nachgeholt; mehr Einheiten als vereinbart sind möglich, weniger nicht (Mike). `erklaerungen/11` |
 | CSRF im Admin | Stimulus-CSRF-Controller aus dem Rezept entfernt; Formulare weiter über Herkunfts-Header geprüft, Raster mit Session-Token (2026-11-16) | Ein Verfahren für ganze Seite und Tests, kein Ausfall bei fehlendem JavaScript. `erklaerungen/17-csrf.md` |
 | Kursname | Wochentage aus den Teilnahmen angehängt, „Wintersemester 2026/27 (Fr)“, kein eigenes Feld (2026-11-16) | Nichts doppelt speichern, stimmt immer (Mike). `umsetzung-admin.md` „Kursname“ |
+| Einzelne Absage ersatzlos | Kein eigener Absage-Typ; Umweg: Einheit im Raster löschen, dann Anzahl um 1 senken, Grund eintragen (2026-11-16) | Seltener Fall, Umweg reicht vorerst (Mike). `umsetzung-admin.md` C7, „Korrektur“ |
 | Anzahl je Teilnahme | Teilnahme hat eine eigene Anzahl der Einheiten (Kopie aus dem Kurs), Grund Pflicht, nicht unter die begonnenen Einheiten; „Teilnahme beenden“ = diese Untergrenze; Geld nur über Gutschrift (2026-11-16) | Häufigster Fall für weniger Einheiten ist ein vorzeitiges Ende aus persönlichem Grund (Mike). `umsetzung-admin.md` C7 |
 | Ferien nachträglich | Alle Einheiten im Zeitraum löschen nach Popup mit Liste, am Ende auffüllen; Ferien löschen gibt die Einheiten zurück (2026-11-16) | Nachträgliche Ferien heißen: nichts fand statt (Mike). `umsetzung-admin.md` C4 Fragen 6, 7 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |

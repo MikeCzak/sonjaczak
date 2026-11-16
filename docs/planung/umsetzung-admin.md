@@ -291,8 +291,8 @@ ihr abgesagte Einheit stehen und senke die Anzahl um 1. Das geht nicht auf: Der 
 (auch abgesagte, sie behalten ihren Platz, `LessonPlanner::fillUp()`), die Nachholregel nur die nicht von Sonja
 abgesagten. Senken löscht dann eine zukünftige Einheit, und die Nachholstunde bleibt fällig. Welche abgesagte Einheit
 „ersatzlos“ ist, lässt sich aus einer Zahl nicht ablesen; das bräuchte eine Kennzeichnung je Einheit (Option A).
-Heute geht es so: die abgesagte Einheit im Raster löschen (am Ende kommt eine dazu), dann die Anzahl um 1 senken (die
-neue geht wieder), Grund ins Feld „Grund“. Offene Frage im Projektstand.
+So geht es: die abgesagte Einheit im Raster löschen (am Ende kommt eine dazu), dann die Anzahl um 1 senken (die
+neue geht wieder), Grund ins Feld „Grund“. **Entschieden (Mike, 2026-11-16): Der Umweg reicht vorerst**, keine Option A.
 
 Umsetzung:
 
