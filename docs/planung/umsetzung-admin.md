@@ -104,7 +104,8 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 - Raster nach Kalenderwochen, Bearbeiten direkt in der Zelle, Tastatur, Ferien per Zeile, Zählung je Spalte.
 - Design mit Sonjas Rückmeldung nachschärfen, wenn Mike es ihr in Produktion zeigt.
 
-**C4 Detailplan** (Entwurf 2026-11-15; Fragen 1–6 entschieden 2026-11-16, Fragen 7–9 offen, siehe Projektstand „Jetzt“)
+**C4 Detailplan** (Entwurf 2026-11-15; alle Fragen entschieden 2026-11-16. Gerät: MacBook Air; in der Mobilansicht
+(Breakpoints für Tablet und Handy) größere Knöpfe)
 
 Stand heute: Kein Stimulus installiert, das JavaScript der öffentlichen Seiten (`assets/inquiry.js`, `slider.js`) ist
 reines JavaScript in `app.js`. Einheiten werden einzeln auf `/admin/einheiten/{id}` bearbeitet (Status, Notiz, Beginn,
@@ -150,7 +151,8 @@ Schritte (je ein Commit):
 | 5 ✓ | Status der Einheit (Mike 2026-11-16) | **Kein Status mehr für „geplant“ und „gehalten“:** Dass die Einheit existiert, heißt „geplant“. Gespeichert wird nur, wer abgesagt hat: `cancelledBy` als **nullable** Enum (`student`, `teacher`), `NULL` = nicht abgesagt. Angezeigt wird „gehalten“, wenn nicht abgesagt und das Ende (Beginn + Dauer) vorbei ist, sonst „geplant“. Migration: `held`/`planned` → `NULL`, die Absagen werden übernommen. Fallstrick SQL: `NULL` vergleicht man mit `IS NULL`, nie mit `= NULL`. `datenmodell.md` 3.5 wird angepasst. | Nicht-nullbares Enum mit eigenem Wert `none`: vermeidet `NULL`, ist aber ein Wert für „nichts“ |
 | 6 ✓ | Ferien nachträglich eintragen (Mike 2026-11-16) | Alle Einheiten im Zeitraum werden gelöscht, am Ende kommen neue dazu. Gibt es im Zeitraum Einheiten, fragt ein **Popup** (`confirm()`) mit der Liste nach; die Liste holt der Stimulus-Controller vorher vom Server. Gilt für Kursseite, Raster und „Ferien vorschlagen lassen“. Folge: Ferien eintragen braucht dann JavaScript. **Einzelne Tage** gehen schon heute (Feld „Letzter Tag“ leer). | Bestätigungsseite: ohne JavaScript, aber ein Seitenwechsel mehr |
 | 7 ✓ | Ferien **löschen** (Mike 2026-11-16: ok) | Beim Löschen von Ferien wird die Einheit am frei gewordenen Tag wieder angelegt, dafür fällt die letzte noch nicht stattgefundene am Ende weg. | So lassen und von Hand korrigieren |
-| 8 | Absage-Zeile und Doppelstunden (Mikes Vorschlag 2026-11-16) | Siehe „Frage 8: Durchsicht“ unter der Tabelle. | – |
+| 8 ✓ | Absage-Zeile und Doppelstunden (Mikes Vorschlag 2026-11-16) | Siehe „Frage 8: Durchsicht“ unter der Tabelle, Antworten dort je Punkt. | – |
+| 10 ✓ | Was passiert nach dem **Löschen** einer Einheit? (2026-11-16, aus Punkt 3; Mike: ja, auffüllen) | **Am Kursende wird aufgefüllt** (`fillUp()`), wie nach Ferien (Frage 7) und beim Entfernen einer Doppelstunde (Punkt 2). Damit gilt überall eine Regel: Die Teilnahme hat immer `plannedLessons` reguläre Einheiten; eine dazukommende nimmt die letzte zukünftige weg, eine gelöschte kommt am Ende wieder. Vorher ein Popup, weil Inhalte (Notiz) verloren gehen. | Nicht auffüllen: Die Nachholregel zeigt dann „1 Nachholstunde fällig“, Sonja trägt sie selbst ein. Passt, wenn Löschen „die Stunde schulde ich noch“ heißt |
 | 9 ✓ | Doppelstunde (Mike 2026-11-16) | **Zwei Einheiten:** Statt die Dauer zu verlängern, wird eine zweite Einheit derselben Person im frei gewordenen Zeitfenster angelegt. | Dauer verlängern: zählte nur als eine Einheit |
 
 **Frage 8: Durchsicht** (2026-11-16). Mikes Vorschlag: Jede Wochenzeile bekommt darunter eine niedrige, nur bei Bedarf
@@ -162,28 +164,34 @@ gelöscht.
 Machbar, auch ohne Änderung am Datenmodell: „Nach unten wandern“ ist nur Anzeige von `cancelledBy`, die zweite Einheit
 ist eine normale `Lesson`. Was dabei leicht vergessen wird:
 
-1. **Spalten sind heute Teilnahmen, nicht Zeitfenster.** Die zweite Einheit von B gehört zu B, steht aber in der Spalte
+Antworten von Mike (2026-11-16) stehen je Punkt als **→**.
+
+1. **→ Zeitfenster im Spaltenkopf, Name in der Zelle** (Stundenplan-Ansicht). **Spalten sind heute Teilnahmen, nicht Zeitfenster.** Die zweite Einheit von B gehört zu B, steht aber in der Spalte
    von A. Die Spalte muss also als **Zeitfenster** gelten (Wochentag + Uhrzeit der Teilnahme), die Zelle zeigt dann den
    Namen von B und hängt optisch an B an. Die Zählung im Kopf („11 von 15“) bleibt je Teilnahme.
-2. **Gesamtzahl der Einheiten von B.** Zählt die Doppelstunde als zwei Einheiten, hätte B am Ende 16. Vorschlag: Beim
+2. **→ ok.** **Gesamtzahl der Einheiten von B.** Zählt die Doppelstunde als zwei Einheiten, hätte B am Ende 16. Vorschlag: Beim
    Anlegen fällt die letzte noch nicht stattgefundene Einheit von B am Kursende weg (wie bei Frage 7). Liegt keine mehr
    in der Zukunft (Kursende), bleibt es bei 16, mit Hinweis.
-3. **Rückgängig für die zweite Einheit selbst** fehlt im Vorschlag: irrtümlich angelegt → Knopf „Einheit entfernen“ in
-   dieser Zelle; die Einheit am Kursende kommt zurück.
+3. **→ Allgemein: jede Einheit im Raster löschbar** (irrtümlich angelegt, oder Sonja will nicht „abgesagt“ eintragen).
+   Popup vorher; was danach passiert, ist Frage 10. **Rückgängig für die zweite Einheit selbst** fehlte im Vorschlag:
+   irrtümlich angelegt → löschen; die Einheit am Kursende kommt zurück.
 4. **„Absage aufheben“ löscht Einheiten mit Inhalt**, z. B. die Doppelstunde von B mit Notiz. Davor dasselbe Popup wie
    bei den Ferien, und für B kommt die Einheit am Kursende zurück (Punkt 2 umgekehrt).
 5. **„Im Zeitfenster“ heißt überschneidend,** nicht „gleicher Beginn“: gelöscht wird, was sich zeitlich mit der wieder
    aufgenommenen Einheit überschneidet.
-6. **Beginn und Dauer der zweiten Einheit:** Beginn und Dauer des frei gewordenen Zeitfensters (füllt die Lücke genau),
-   nicht die Dauer von B. Bei unterschiedlichen Dauern sonst Überschneidungen.
+6. **→ Dauer von B, nicht des Zeitfensters** (Mike: Schüler:innen zahlen für die vereinbarte Dauer; anders ginge es nur
+   mit Abrechnung nach Minuten). Daher: Die zweite Einheit hat die Dauer der Teilnahme von B und schließt direkt an B an,
+   links endet sie bei Bs Beginn, rechts beginnt sie bei Bs Ende. Ist das frei gewordene Zeitfenster kürzer, meldet der
+   Server eine Überschneidung mit der nächsten nicht abgesagten Einheit und legt nichts an. Angezeigt mit Dauer.
 7. **Nachbarn nur am selben Tag:** links/rechts gilt nur zwischen Zeitfenstern desselben Wochentags. Heute unterrichtet
    Sonja je Kurs an einem Tag, bei mehreren Tagen wäre „rechts“ sonst ein anderer Tag.
-8. **Einheiten außerhalb jedes Zeitfensters:** Nachholstunden oder verschobene Einheiten passen in kein Zeitfenster.
-   Vorschlag: Sie stehen in der Spalte ihrer Teilnahme mit Datum und Uhrzeit (wie heute im Entwurf in Abschnitt 4 des
-   Datenmodells).
-9. **Mehrere Absagen im selben Zeitfenster** (A abgesagt, dann auch die Doppelstunde von B): Die Absage-Zelle zeigt
+8. **→ In der Spalte ihrer Teilnahme.** Gemeint war: Ihre **Uhrzeit** passt zu keinem Spaltenkopf (Nachholstunde z. B.
+   Mittwoch 17:00, alle Spalten sind Freitag). Die Spalte ergibt sich deshalb nicht aus der Zeit, sondern aus der
+   Teilnahme; die Zelle zeigt Datum und Uhrzeit dazu. Liegt in derselben Woche auch die reguläre Einheit dort, stehen
    beide untereinander.
-10. **Bedienung:** Ziehen am Rand ist wie die Tastaturkürzel eher Luxus und am Tablet fummelig. Vorschlag: In der frei
+9. **→ Entfällt:** Findet die Doppelstunde von B doch nicht statt, wird sie gelöscht und verschwindet aus dem Raster.
+   (Ursprünglich: Mehrere Absagen im selben Zeitfenster stünden untereinander.)
+10. **→ Knöpfe am Rand der Zelle.** **Bedienung:** Ziehen am Rand ist wie die Tastaturkürzel eher Luxus und am Tablet fummelig. Vorschlag: In der frei
     gewordenen Zelle stehen Knöpfe „+ Doppelstunde B“ und „+ Doppelstunde C“ (die Nachbarn). Ziehen ließe sich später
     ergänzen, der Endpunkt bliebe derselbe.
 11. **Unverändert:** Abrechnung (Pauschale je Teilnahme), Nachholregel (A: Absage durch Sonja → nachholen, durch

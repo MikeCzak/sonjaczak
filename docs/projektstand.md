@@ -12,15 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **C4: Absage-Zeile und Doppelstunden** (2026-11-16, `umsetzung-admin.md` C4, „Frage 8: Durchsicht“, Punkte 1–11)
-   - (a) Spalten gelten als Zeitfenster: Die Doppelstunde von B steht in der Spalte von A, mit Namen von B (Punkt 1)?
-     Antwort:
-   - (b) Doppelstunde anlegen entfernt die letzte zukünftige Einheit von B am Kursende, Rückgängig/„Absage aufheben“
-     legt sie wieder an (Punkte 2–4)?
-     Antwort:
-   - (c) Knöpfe „+ Doppelstunde B/C“ in der frei gewordenen Zelle statt Ziehen am Rand (Punkt 10)? Und auf welchem
-     Gerät hat Sonja das Raster im Unterricht offen?
-     Antwort:
+Derzeit keine offene Frage.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -42,6 +34,11 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
+- [ ] **Teilnahme beenden** (2026-11-16, aus `umsetzung-admin.md` C4, Frage 10): Hört eine Schülerin mitten im Semester
+  auf, braucht es einen eigenen Ablauf, nicht das Löschen einzelner Einheiten (das füllt am Kursende wieder auf). Zu
+  klären, bevor geplant wird: Was passiert mit den zukünftigen Einheiten (löschen, als abgesagt stehen lassen)? Mit der
+  Honorarnote (bleibt sie voll, Gutschrift für nicht gehaltene Einheiten, Rückzahlung)? Mit fälligen Nachholstunden?
+  Bleibt die Teilnahme sichtbar (z. B. „beendet am …“) und zählt sie im Dashboard und Export mit?
 - [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3): Für entfallene Einheiten kommen am Ende neue dazu (bis zum
   Kursende).
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
