@@ -1,0 +1,70 @@
+// Course grid in the admin area (templates/admin/course/grid.html.twig, umsetzung-admin.md C4b)
+.course-grid {
+    font-size: .875rem;
+
+    .grid-week {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        min-width: 7.5rem;
+        background: var(--bs-body-bg);
+    }
+
+    .grid-slot {
+        min-width: 10rem;
+    }
+
+    .grid-lesson {
+        padding: .125rem .25rem;
+        border-radius: var(--bs-border-radius-sm);
+        color: var(--bs-body-color);
+
+        &:hover,
+        &:focus-visible {
+            background: var(--bs-tertiary-bg);
+        }
+
+        & + .grid-lesson {
+            margin-top: .25rem;
+            border-top: 1px dashed var(--bs-border-color);
+        }
+    }
+
+    // Held = in the past and not cancelled (Lesson::state()): muted with a check mark, planned ones stand out
+    .grid-lesson--held {
+        color: var(--bs-secondary-color);
+
+        .grid-lesson__name::before {
+            content: "✓ ";
+        }
+    }
+
+    .grid-lesson--planned .grid-lesson__name {
+        font-weight: 600;
+    }
+
+    .grid-lesson__note {
+        color: var(--bs-secondary-color);
+        max-width: 14rem;
+    }
+
+    .grid-row--break > * {
+        background: var(--bs-warning-bg-subtle);
+    }
+
+    .grid-row--current > .grid-week {
+        box-shadow: inset 4px 0 0 var(--bs-primary);
+    }
+
+    // Low red row below a week: cancelled lessons, their slot above is free
+    .grid-row--cancelled > * {
+        padding-top: 0;
+        padding-bottom: 0;
+        background: var(--bs-danger-bg-subtle);
+        font-size: .8rem;
+    }
+
+    .grid-row--cancelled .grid-lesson {
+        color: var(--bs-danger-text-emphasis);
+    }
+}

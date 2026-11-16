@@ -38,6 +38,10 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    eine dazu. Die Meldung nennt Konflikte (vergangene oder abgesagte Einheiten in den Ferien).
 3. Neuen Kurs anlegen (z. B. Sommersemester 2027): Die Ferien werden aus der OpenHolidays API vorgeschlagen (braucht
    Internet).
+4. „Raster“ (Knopf auf der Kursseite): Wochen als Zeilen, Zeitfenster als Spalten. Ferienwochen gelb, die Absagen
+   von Sophia Schmied in der roten Zeile unter KW 42 und 43, die aktuelle Woche mit blauem Strich links. Gehaltene
+   Einheiten grau mit ✓, geplante fett. Klick auf eine Einheit öffnet die Bearbeitungsseite. Wer eine Nachholstunde an
+   einem anderen Tag einträgt, findet sie in der Spalte der Teilnahme, mit Wochentag und Uhrzeit.
 
 ## 4. Teilnahme und Einheiten
 

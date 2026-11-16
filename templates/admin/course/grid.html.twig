@@ -1,0 +1,81 @@
+{% extends 'admin/base.html.twig' %}
+
+{% set course_title %}{% include 'admin/course/_title.html.twig' %}{% endset %}
+{% block title %}{{ 'grid.title'|trans({'%course%': course_title}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
+        <h1 class="h3 mb-0">{{ 'grid.title'|trans({'%course%': course_title}, 'admin') }}</h1>
+        <a href="{{ path('admin_course_edit', {id: course.id}) }}">{{ 'grid.to_course'|trans({}, 'admin') }}</a>
+    </div>
+
+    {% if trials is not empty %}
+        <p class="small mb-3">
+            <strong>{{ 'grid.trials'|trans({}, 'admin') }}:</strong>
+            {% for trial in trials %}
+                <a href="{{ path('admin_trial_edit', {id: trial.id}) }}">{{ trial.student.fullName }}, {{ ('weekday_short.' ~ trial.startsAt|date('N'))|trans({}, 'admin') }} {{ trial.startsAt|date('d.m. H:i') }}</a>{{ not loop.last ? ' · ' }}
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    {% if grid.columns is empty %}
+        <p>{{ 'enrollment.empty'|trans({}, 'admin') }}</p>
+    {% else %}
+        <div class="table-responsive grid-wrap">
+            <table class="table table-sm table-bordered align-top course-grid">
+                <thead>
+                    <tr>
+                        <th scope="col" class="grid-week">{{ 'grid.week'|trans({}, 'admin') }}</th>
+                        {% for column in grid.columns %}
+                            <th scope="col" class="grid-slot">
+                                <span class="d-block">{{ ('weekday_short.' ~ column.weekday)|trans({}, 'admin') }} {{ column.startTime }}</span>
+                                {% for enrollment in column.enrollments %}
+                                    <span class="d-block small fw-normal">
+                                        <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}</a>
+                                        · {{ 'enrollment.count'|trans({'%counted%': enrollment.countedLessons, '%planned%': course.plannedLessons}, 'admin') }}
+                                        {% if make_ups_due[enrollment.id] > 0 %}
+                                            <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_ups_due[enrollment.id]}, 'admin') }}</span>
+                                        {% endif %}
+                                    </span>
+                                {% endfor %}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in grid.rows %}
+                        <tr class="{{ row.breaks is not empty ? 'grid-row--break' }} {{ row.current ? 'grid-row--current' }}">
+                            <th scope="row" class="grid-week">
+                                <span class="d-block">{{ 'grid.week_number'|trans({'%week%': row.weekStart|date('W')}, 'admin') }}</span>
+                                <span class="d-block small fw-normal text-body-secondary">{{ row.weekStart|date('d.m.') }}–{{ row.weekEnd|date('d.m.') }}</span>
+                                {% for break in row.breaks %}
+                                    <span class="badge text-bg-secondary text-wrap">{{ break.label }}</span>
+                                {% endfor %}
+                            </th>
+                            {% for column in grid.columns %}
+                                <td>
+                                    {% for lesson in row.cells[column.key] ?? [] %}
+                                        {{ include('admin/course/_grid_lesson.html.twig') }}
+                                    {% endfor %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        {% if row.hasCancelled %}
+                            <tr class="grid-row--cancelled">
+                                <th scope="row" class="grid-week small fw-normal">{{ 'grid.cancelled'|trans({}, 'admin') }}</th>
+                                {% for column in grid.columns %}
+                                    <td>
+                                        {% for lesson in row.cancelled[column.key] ?? [] %}
+                                            {{ include('admin/course/_grid_lesson.html.twig') }}
+                                        {% endfor %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="small text-body-secondary">{{ 'grid.help'|trans({}, 'admin') }}</p>
+    {% endif %}
+{% endblock %}

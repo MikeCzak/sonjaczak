@@ -357,3 +357,8 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   eigener Entrypoint `admin` nur im Admin-Layout, per `curl` geprüft. Beispiel-Controller und CSRF-Controller entfernt
   (Mike), Erklärung `erklaerungen/17-csrf.md`. Ein Test schlug fehl, weil der Test-Cache (ohne Debug) vom Stand vor der
   Installation war; nach `rm -rf var/cache/test` 120 Tests grün.
+- C4b: Raster nur lesend unter `/admin/kurse/{id}/raster` (Links von Kursseite, Kursliste, Dashboard). Service
+  `App\Course\Grid\CourseGrid` (Wochen × Zeitfenster, Spaltenregel: eigenes Zeitfenster, sonst das am selben Tag
+  mit der größten Überschneidung, sonst die eigene Spalte), eine Abfrage mit Fetch Join (`findForGrid()`). Im
+  Screenshot (Headless Chrome, Fixtures) waren gehaltene und geplante Einheiten kaum zu unterscheiden → ✓ und fett.
+  Lokal fehlte das neue CSS, bis `sass:build` lief. 128 Tests grün, PHPStan ohne Fehler.

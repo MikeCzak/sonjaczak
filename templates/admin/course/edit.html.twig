@@ -4,7 +4,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <h1 class="h3 mb-3">{{ title }}</h1>
+    <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-3">
+        <h1 class="h3 mb-0">{{ title }}</h1>
+        <a class="btn btn-primary" href="{{ path('admin_course_grid', {id: course.id}) }}">{{ 'grid.link'|trans({}, 'admin') }}</a>
+    </div>
     <div class="row g-5">
         <div class="col-lg-6">
             {{ include('admin/course/_form.html.twig', {submit_label: 'action.save'}) }}

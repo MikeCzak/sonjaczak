@@ -1,0 +1,23 @@
+{# One lesson in the course grid. Date always; weekday and time only if they differ from the column (moved, make-up). #}
+{% set state = lesson_state(lesson) %}
+{% set moved = lesson.startsAt|date('N') != column.weekday or lesson.startsAt|date('H:i') != column.startTime %}
+<a class="grid-lesson grid-lesson--{{ state.value }} d-block text-decoration-none" href="{{ path('admin_lesson_edit', {id: lesson.id}) }}"
+   title="{{ state.labelKey|trans({}, 'admin') }}{{ lesson.note ? ': ' ~ lesson.note }}">
+    <span class="grid-lesson__name">{{ lesson.enrollment.student.fullName }}</span>
+    <span class="grid-lesson__meta d-block small">
+        {%- if moved %}{{ ('weekday_short.' ~ lesson.startsAt|date('N'))|trans({}, 'admin') }} {% endif -%}
+        {{ lesson.startsAt|date('d.m.') }}
+        {%- if moved %} {{ lesson.startsAt|date('H:i') }}{% endif %}
+        {%- if lesson.durationMinutes != lesson.enrollment.lessonMinutes %} · {{ 'grid.minutes'|trans({'%minutes%': lesson.durationMinutes}, 'admin') }}{% endif %}
+        {%- if lesson.cancelled %} · {{ state.labelKey|trans({}, 'admin') }}{% endif %}
+    </span>
+    {% if lesson.makeUpFor %}
+        <span class="badge text-bg-info">{{ 'lesson.make_up_for'|trans({'%date%': lesson.makeUpFor.startsAt|date('d.m.')}, 'admin') }}</span>
+    {% endif %}
+    {% if lesson.fromTrial %}
+        <span class="badge text-bg-light">{{ 'lesson.from_trial'|trans({}, 'admin') }}</span>
+    {% endif %}
+    {% if lesson.note %}
+        <span class="grid-lesson__note d-block small text-truncate">{{ lesson.note }}</span>
+    {% endif %}
+</a>

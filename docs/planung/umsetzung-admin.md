@@ -117,7 +117,7 @@ Schritte (je ein Commit):
    2026-11-15). Was das Flex-Rezept anlegt (vermutlich `assets/stimulus_bootstrap.js`, `assets/controllers.json`,
    Einträge in `importmap.php`), prüfe ich beim Installieren am Diff und erkläre es. Laden über einen eigenen
    Entrypoint `admin` (Frage 2).
-2. **C4b Raster nur lesend:** Service `CourseGrid` baut aus einem Kurs die Zeilen (Kalenderwochen von Kursbeginn bis
+2. **C4b Raster nur lesend** (erledigt 2026-11-16; Schnupperstunden als Zeile über der Tabelle statt als Tabellenzeile)**:** Service `CourseGrid` baut aus einem Kurs die Zeilen (Kalenderwochen von Kursbeginn bis
    Kursende, Ferienwochen markiert, Schnupperstunden in eigener Zeile oben) und Spalten (Teilnahmen nach Wochentag und
    Uhrzeit). Zelle = Einheiten dieser Teilnahme in dieser Woche (meist eine; eine Nachholstunde kommt dazu, mit
    Verweis auf die ausgefallene Einheit). Kopfzeile: „11 von 15“ und Hinweis aus `MakeUpRule`. Jede Zelle ist ein

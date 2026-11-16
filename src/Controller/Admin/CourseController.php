@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Course\Grid\CourseGrid;
 use App\Course\HolidayImporter;
 use App\Entity\Course;
 use App\Entity\CourseBreak;
@@ -13,7 +14,9 @@ use App\Form\Admin\CourseType;
 use App\Lesson\LessonPlanner;
 use App\Lesson\MakeUpRule;
 use App\Repository\CourseRepository;
+use App\Repository\EnrollmentRepository;
 use App\Repository\SettingsRepository;
+use App\Repository\TrialLessonRepository;
 use App\Security\Voter\CourseVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Clock\ClockInterface;
@@ -84,6 +87,30 @@ final class CourseController extends AbstractController
         }
 
         return $this->renderEdit($course, $form, $this->createBreakForm($course), $makeUpRule);
+    }
+
+    /**
+     * The course grid (step C4b): weeks as rows, weekly time slots as columns. Read-only for now, every lesson links
+     * to its edit page, so it also works without JavaScript.
+     */
+    #[Route('/{id}/raster', name: 'admin_course_grid', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function grid(Course $course, EnrollmentRepository $enrollments, TrialLessonRepository $trials, CourseGrid $courseGrid, MakeUpRule $makeUpRule): Response
+    {
+        $enrollmentList = $enrollments->findForGrid($course);
+        $makeUpsDue = [];
+        foreach ($enrollmentList as $enrollment) {
+            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment);
+        }
+
+        $from = $course->getStartsOn();
+        $until = $course->getEndsOn()?->modify('+1 day');
+
+        return $this->render('admin/course/grid.html.twig', [
+            'course' => $course,
+            'grid' => $courseGrid->build($course, $enrollmentList, $this->clock->now()),
+            'make_ups_due' => $makeUpsDue,
+            'trials' => null !== $from && null !== $until ? $trials->findBetween($from, $until) : [],
+        ]);
     }
 
     #[Route('/{id}/ferien', name: 'admin_course_break_new', requirements: ['id' => '\d+'], methods: ['POST'])]

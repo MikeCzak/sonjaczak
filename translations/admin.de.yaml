@@ -227,6 +227,16 @@ course_break:
         import_none: Keine neuen Ferien oder Feiertage gefunden.
         conflicts: In den neuen Ferien liegen bereits gehaltene oder abgesagte Einheiten. Sie bleiben stehen, bitte prüfen.
         import_failed: Die Ferien konnten nicht abgerufen werden (Dienst nicht erreichbar). Bitte selbst eintragen oder später noch einmal vorschlagen lassen.
+grid:
+    title: 'Raster: %course%'
+    link: Raster
+    to_course: Zum Kurs (Ferien, Teilnahmen)
+    week: Woche
+    week_number: KW %week%
+    cancelled: abgesagt
+    trials: Schnupperstunden im Kurszeitraum
+    minutes: '%minutes% Min.'
+    help: Klick auf eine Einheit öffnet sie zum Bearbeiten. Gelbe Wochen enthalten Ferien oder freie Tage, abgesagte Einheiten stehen in der roten Zeile darunter.
 weekday:
     1: Montag
     2: Dienstag

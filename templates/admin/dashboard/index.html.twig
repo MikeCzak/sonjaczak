@@ -85,7 +85,8 @@
     {% for item in running %}
         {% set course = item.course %}
         <section class="mt-4" aria-labelledby="dashboard-course-{{ course.id }}">
-            <h2 class="h5" id="dashboard-course-{{ course.id }}"><a href="{{ path('admin_course_edit', {id: course.id}) }}">{% include 'admin/course/_title.html.twig' %}</a></h2>
+            <h2 class="h5" id="dashboard-course-{{ course.id }}"><a href="{{ path('admin_course_edit', {id: course.id}) }}">{% include 'admin/course/_title.html.twig' %}</a>
+                <a class="small fw-normal ms-2" href="{{ path('admin_course_grid', {id: course.id}) }}">{{ 'grid.link'|trans({}, 'admin') }}</a></h2>
             <div class="table-responsive">
                 <table class="table table-sm align-middle">
                     <thead>
