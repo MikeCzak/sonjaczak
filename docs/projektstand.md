@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-15. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-16. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -12,7 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Derzeit keine offene Frage.
+Keine Frage offen.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -145,7 +145,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] C1 Schüler:innen und Elternteile (2026-11-13, `erklaerungen/09`)
 - [x] C2 Kurse und Ferien mit OpenHolidays (2026-11-13, `erklaerungen/10`)
 - [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
-- [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; noch nicht gebaut)
+- [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; C4-0 Status umgebaut und C4a Stimulus installiert 2026-11-16, Raster folgt)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
 - [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`; Schwellwert durch „Einheiten pro Semester“ ersetzt 2026-11-15)
 - [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)
@@ -194,6 +194,7 @@ muss).
 | Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
 | Status der Einheit | Nur `cancelledBy` gespeichert (nullable: Schüler:in, ich); „geplant“ = Einheit existiert, „gehalten“ aus der Zeit abgeleitet (2026-11-16) | Ableitbare Fakten nicht doppelt speichern; Sonja trägt nur Absagen ein (Mike). `erklaerungen/11`, `datenmodell.md` 3.5 |
 | Nachholregel | Mindestzahl = geplante Einheiten des Kurses, kein Schwellwert; Einstellung „Einheiten pro Semester“ belegt neue Kurse vor (2026-11-15) | Absagen durch Schüler:innen werden nie nachgeholt; mehr Einheiten als vereinbart sind möglich, weniger nicht (Mike). `erklaerungen/11` |
+| CSRF im Admin | Stimulus-CSRF-Controller aus dem Rezept entfernt; Formulare weiter über Herkunfts-Header geprüft, Raster mit Session-Token (2026-11-16) | Ein Verfahren für ganze Seite und Tests, kein Ausfall bei fehlendem JavaScript. `erklaerungen/17-csrf.md` |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

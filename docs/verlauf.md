@@ -353,3 +353,7 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Twig-Funktion `lesson_state`). Migration `Version20261116110522` von Hand (Diff hätte die Absagen gelöscht), lokal hin
   und zurück geprüft. `applyBreaks()` löscht vorerst nur zukünftige Einheiten. Ein Test hing am heutigen Datum und
   legt die Zeit jetzt fest. Neuer `LessonTest`. 120 Tests grün, PHPStan ohne Fehler, Schema in Sync.
+- C4a: `symfony/stimulus-bundle` 3.7.0 installiert. Das Rezept lud Stimulus in `app.js` (alle Seiten): zurückgesetzt,
+  eigener Entrypoint `admin` nur im Admin-Layout, per `curl` geprüft. Beispiel-Controller und CSRF-Controller entfernt
+  (Mike), Erklärung `erklaerungen/17-csrf.md`. Ein Test schlug fehl, weil der Test-Cache (ohne Debug) vom Stand vor der
+  Installation war; nach `rm -rf var/cache/test` 120 Tests grün.

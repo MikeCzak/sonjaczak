@@ -25,6 +25,9 @@
 return [
     'app' => ['path' => './assets/app.js', 'entrypoint' => true],
     'design' => ['path' => './assets/design.js', 'entrypoint' => true],
+    'admin' => ['path' => './assets/admin.js', 'entrypoint' => true],
     'bootstrap' => ['version' => '5.3.8'],
     '@popperjs/core' => ['version' => '2.11.8'],
+    '@hotwired/stimulus' => ['version' => '3.2.2'],
+    '@symfony/stimulus-bundle' => ['path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js'],
 ];

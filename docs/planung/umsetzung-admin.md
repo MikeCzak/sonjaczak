@@ -113,7 +113,7 @@ Dauer). CSRF ist für Formulare zustandslos (`config/packages/csrf.yaml`, Token-
 
 Schritte (je ein Commit):
 
-1. **C4a Stimulus installieren:** `composer require symfony/stimulus-bundle` (3.7.0, PHP ≥ 8.4, `composer show -a`
+1. **C4a Stimulus installieren** (erledigt 2026-11-16, CSRF-Controller des Rezepts entfernt)**:** `composer require symfony/stimulus-bundle` (3.7.0, PHP ≥ 8.4, `composer show -a`
    2026-11-15). Was das Flex-Rezept anlegt (vermutlich `assets/stimulus_bootstrap.js`, `assets/controllers.json`,
    Einträge in `importmap.php`), prüfe ich beim Installieren am Diff und erkläre es. Laden über einen eigenen
    Entrypoint `admin` (Frage 2).
@@ -137,7 +137,7 @@ Schritte (je ein Commit):
    erscheint in der Zelle.
 5. **C4e Ferien per Zeile:** Knopf in der Wochenzeile legt einen `CourseBreak` für Montag bis Sonntag dieser Woche an
    (bestehende Logik `applyBreaks()`/`fillUp()`), danach lädt die Seite neu. Normales Formular, kein JavaScript nötig.
-6. **C4f Doku:** `erklaerungen/17-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),
+6. **C4f Doku:** `erklaerungen/18-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),
    `rundgang-admin.md`.
 
 **Zu entscheiden:**
@@ -154,6 +154,25 @@ Schritte (je ein Commit):
 | 8 ✓ | Absage-Zeile und Doppelstunden (Mikes Vorschlag 2026-11-16) | Siehe „Frage 8: Durchsicht“ unter der Tabelle, Antworten dort je Punkt. | – |
 | 10 ✓ | Was passiert nach dem **Löschen** einer Einheit? (2026-11-16, aus Punkt 3; Mike: ja, auffüllen) | **Am Kursende wird aufgefüllt** (`fillUp()`), wie nach Ferien (Frage 7) und beim Entfernen einer Doppelstunde (Punkt 2). Damit gilt überall eine Regel: Die Teilnahme hat immer `plannedLessons` reguläre Einheiten; eine dazukommende nimmt die letzte zukünftige weg, eine gelöschte kommt am Ende wieder. Vorher ein Popup, weil Inhalte (Notiz) verloren gehen. | Nicht auffüllen: Die Nachholregel zeigt dann „1 Nachholstunde fällig“, Sonja trägt sie selbst ein. Passt, wenn Löschen „die Stunde schulde ich noch“ heißt |
 | 9 ✓ | Doppelstunde (Mike 2026-11-16) | **Zwei Einheiten:** Statt die Dauer zu verlängern, wird eine zweite Einheit derselben Person im frei gewordenen Zeitfenster angelegt. | Dauer verlängern: zählte nur als eine Einheit |
+
+**C4a: CSRF** (2026-11-16, beim Installieren gefunden). Das Flex-Rezept von `symfony/stimulus-bundle` legt
+`assets/controllers/csrf_protection_controller.js` an. Symfony versieht das CSRF-Feld jedes Formulars standardmäßig mit
+`data-controller="csrf-protection"` (`vendor/symfony/framework-bundle/DependencyInjection/Configuration.php`, Standardwert
+von `field_attr`). Sobald Stimulus im Admin läuft, würde der Controller also bei jedem Admin-Formular geladen und den
+CSRF-Schutz umstellen: Statt nur die Herkunft der Anfrage zu prüfen (Header `Sec-Fetch-Site` bzw. `Origin`, so wie heute),
+erzeugt das JavaScript ein Zufallstoken und schickt es als Formularfeld **und** als Cookie mit („double submit“).
+Laut Kommentar in `vendor/symfony/security-csrf/SameOriginCsrfTokenManager.php` ist das für Browser gedacht, die keinen
+der beiden Header senden. Mit Session merkt sich Symfony außerdem die Methode und lehnt danach einen Rückfall auf die
+Header-Prüfung ab.
+
+| Option | Pro | Contra |
+|---|---|---|
+| **Entfernen (Empfehlung)** | Verhalten bleibt wie heute und wie in den Tests (die laufen ohne JavaScript); überall dieselbe Prüfung, die öffentlichen Seiten haben ohnehin kein Stimulus; aktuelle Browser senden `Sec-Fetch-Site` | Kein zusätzlicher Schutz für sehr alte Browser |
+| Behalten | Zusätzliche Absicherung, Standard des Rezepts | Admin prüft anders als der Rest und als die Tests; lädt das JavaScript einmal nicht, scheitert ein Formular nach erfolgtem Double-Submit in derselben Session |
+
+Der JSON-Endpunkt des Rasters (C4c) ist davon nicht betroffen: Er bekommt ein Token aus der Session.
+
+**→ Entschieden (Mike, 2026-11-16): entfernt.** Erklärung: `erklaerungen/17-csrf.md`.
 
 **Frage 8: Durchsicht** (2026-11-16). Mikes Vorschlag: Jede Wochenzeile bekommt darunter eine niedrige, nur bei Bedarf
 sichtbare Zeile für abgesagte Einheiten (rot). Die abgesagte Einheit wandert dorthin, ihr Zeitfenster oben wird frei, die
