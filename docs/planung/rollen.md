@@ -5,7 +5,7 @@ Abschnitt 6), Nachfragen zu Cookies und Android in Abschnitt 10. Umsetzung: `doc
 
 Grundlage: `anforderungen.md` A (Rollen `super_admin`, `admin`, `student`), `datenmodell.md` (freigegeben 2026-11-13).
 Quellen: Symfony-Doku „Security“ (symfony.com/doc/current/security.html, abgerufen 2026-11-13) und der installierte Code
-in `vendor/`. `symfony/security-bundle` ist noch **nicht** installiert. Schon da sind als Abhängigkeiten
+in `vendor/`. Stand der Planung (inzwischen umgesetzt, B1–B4): `symfony/security-bundle` war noch nicht installiert, da waren als Abhängigkeiten
 `symfony/security-core` 8.1.11, `symfony/security-csrf` 8.1.0, `symfony/password-hasher` 8.1.0 und
 `symfony/rate-limiter` 8.1.11 (laut `composer.lock`).
 
@@ -278,30 +278,17 @@ Für Sonja und Mike genügen meist Rollen. Voter braucht es dort, wo die Antwort
   kennt, enthält sich (`supports()` liefert `false`). **Fallstrick:** Ein zu großzügiges `supports()` (etwa
   `return true`) lässt einen Voter über fremde Attribute abstimmen und kann so Zugriff gewähren.
 
-## 9. Fragen (beantwortet 2026-11-13)
+## 9. Antworten (2026-11-13, Mike)
 
-1. **Mike und die Daten der Schüler:innen:** Soll `ROLE_SUPER_ADMIN` alles sehen, was Sonja sieht (Hierarchie wie oben),
-   oder nur Technik (Benutzer, Einstellungen) ohne Personendaten? Technisch hast du über die Datenbank ohnehin Zugriff;
-   für die DSGVO zählt aber, wer im Alltag zugreift. Vorschlag: volle Sicht, weil du Sonja beim Eintragen hilfst. - ja, volle Sicht
-   → Hierarchie wie in Abschnitt 1.
-2. **Zwei-Faktor-Anmeldung** (TOTP-App, z. B. über `scheb/2fa-totp`): jetzt, später oder gar nicht? Es geht um Daten
-   von Kindern; dagegen steht ein zusätzlicher Schritt bei jedem Login für Sonja. Vorschlag: später, aber vor dem
-   Schüler:innen-Zugang. Bis dahin starke Passwörter und `login_throttling`. - Können wir das mit Passkey über ihren Laptop-Fingerabdruck-Scan lösen? OTP ist mühsam, wäre aber auch möglich, falls Fingerabdruck nicht möglich. Dann aber auf jeden Fall ohne Session-Logout, sodass sie sich an einem Unterrichtstag nur einmal anmelden muss.
-   → Ja, mit Passkeys (Abschnitt 5), TOTP nicht nötig. Sessions siehe Abschnitt 6.
-3. **Prüfung gegen bekannte Passwort-Leaks** (`NotCompromisedPassword`, haveibeenpwned.com): ja oder nein? - nein
-4. **Passwort vergessen:** vorerst nur per Konsolenbefehl durch Mike (Vorschlag), oder gleich ein Mail-Link? - Mail-Link
-5. **Sessions:** in PostgreSQL (Vorschlag)? Abmeldung nach 2 Stunden ohne Aktivität, oder „Angemeldet bleiben“ für
-   Sonja? - Angemeldet bleiben, wenn dann erst nach 8 Stunden abmelden, falls sie während dem Unterrichtstag keine Zeit hat, etwas einzutragen. Erkläre mir, was das mit PostgreSQL zu tun hat. Session und DB sind in meinem Kopf zwei vollkommen getrennte Dinge.
-6. **Sprache des Admin-Bereichs:** Übersetzungsschlüssel in einer eigenen Domain `admin` (Vorschlag), nur Deutsch
-   gepflegt. Einverstanden? - ja
-   → Domain `admin` (`translations/admin.de.yaml`).
-7. **E-Mail-Adressen für die Konten:** Sonja mit `music@sonjaczak.com`, du mit deiner eigenen? Die Erinnerungs-Mails
-   (Honorarnoten) gehen an die Adresse aus den Einstellungen, nicht an das Login. - Ich verstehe die Frage nicht. Die Erinnerungsmail soll NUR an Sonja gehen, nicht an Schüler:innen. Also nur an music@sonjaczak.com.
-   → Gemeint war: Mit welcher Adresse meldet sich wer an? Übernommen in Abschnitt 4: Sonja mit `music@`, du mit
-   deiner eigenen; Erinnerungen nur an `music@`.
-
-Was meinst du damit, dass ich Konten per Konsolenbefehl anlege? Sonja muss in der Lage sein, Schüler (User) in der App anzulegen. Oder sprichst du von etwas anderem?
-→ Ja, von etwas anderem: nur vom allerersten Admin-Konto. Siehe Abschnitt 4.1.
+- `ROLE_SUPER_ADMIN` (Mike) sieht alles, was Sonja sieht (er hilft beim Eintragen); Hierarchie wie in Abschnitt 1.
+- Kein TOTP: Zweiter Faktor über Passkeys (Fingerabdruck am Laptop, Abschnitt 5). Sonja soll sich an einem
+  Unterrichtstag nur einmal anmelden müssen.
+- Keine Prüfung gegen Passwort-Leaks (`NotCompromisedPassword`).
+- Passwort vergessen per Mail-Link.
+- Sessions in PostgreSQL, Abmeldung erst nach 8 Stunden ohne Aktivität (Abschnitt 6).
+- Admin-Texte in der Domain `admin`, nur Deutsch.
+- Login: Sonja mit `music@sonjaczak.com`, Mike mit eigener Adresse; Erinnerungs-Mails nur an `music@`.
+- Per Konsolenbefehl nur das allererste Admin-Konto, alle weiteren über die Benutzerverwaltung (4.1).
 
 ## 10. Nachfragen nach der Freigabe (2026-11-13)
 

@@ -155,7 +155,7 @@ Doctrine-Entities mit Collections bis zur Rekursion. Stattdessen Schlüssel `spl
 | **Stimulus + `fetch` (gewählt, 2026-11-14)** | Durchschaubar; eine Anfrage je Änderung; volle Kontrolle | Eigenes JavaScript, eigene Prüfung im Browser |
 | Turbo Frames | Kaum JavaScript, Symfony-Forms bleiben | Je Zelle zwei Anfragen; Zählungen außerhalb des Frames brauchen Turbo Streams |
 | Live Components | Raster wird nach jeder Änderung neu gerendert | Ganzer Zustand hin und zurück; eigene Konzepte, schwerer zu debuggen |
-| Ziehen statt Knöpfe (Drag and Drop) | Natürlich am Laptop | Am Tablet fummelig; Knöpfe am Zellenrand reichen (Mike, Frage 8 Punkt 10) |
+| Ziehen statt Knöpfe (Drag and Drop) | Natürlich am Laptop | Am Tablet fummelig; Knöpfe am Zellenrand reichen (Mike) |
 | Ferien-Rückfrage als eigene Seite | Ohne JavaScript | Ein Seitenwechsel mehr (Mike: Popup) |
 | Bearbeiten ohne Neuladen (Zellen im Browser umsetzen) | Flüssiger | Logik von `CourseGrid` doppelt in JavaScript |
 

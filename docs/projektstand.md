@@ -14,18 +14,8 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Todos für Mike (keine Frage offen):**
-
-- [x] Sonjas Konto über die Benutzerverwaltung anlegen (`/admin/benutzer`, Einladungslink).
-- [x] Absenderdaten in Produktion unter `/admin/einstellungen` eintragen. Die Daten liegen lokal in
-  `claude_references/absenderdaten-sonja.md` (nicht im Repo, das Repo ist öffentlich).
-- [x] Cronjob für überfällige Honorarnoten eintragen (`deployment.md` S8, freigegeben 2026-11-14).
-- [x] **Backups einrichten** (Repo-Teil fertig und lokal getestet 2026-11-14; eingerichtet und Rücksicherung
-  erfolgreich getestet 2026-11-15, Erklärung `erklaerungen/16-backups.md`), in dieser Reihenfolge:
-  1. Mac: age und Schlüssel, SSH-Key (`entwicklung.md`, „Backups“, Schritte 1–2)
-  2. Server: `deployment.md` S11
-  3. Mac: Skript und LaunchAgent (`entwicklung.md`, „Backups“, Schritt 4)
-  4. Test der Rücksicherung (`deployment.md` S11). **Danach dürfen echte Daten eingetragen werden.**
+**Nächster Schritt:** `umsetzung-admin.md` D2 (PDF der Honorarnote mit dompdf). Danach F: Datenschutz-Information,
+dann dürfen echte Daten eingetragen werden (Backups und Rücksicherung sind fertig).
 
 ## Später zu klären
 
@@ -34,12 +24,19 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
-- [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3; seit 2026-11-16 werden alle Einheiten im Zeitraum gelöscht, nach
-  Rückfrage): Für entfallene Einheiten kommen am Ende neue dazu (bis zum Kursende).
 - [ ] **Ferien löschen gibt auch gelöschte Einheiten zurück** (2026-11-16, `umsetzung-admin.md` C4-0): Wird eine Ferienwoche
   gelöscht, bekommt jede Teilnahme an den frei gewordenen Tagen ihre Einheit wieder, wenn sie in der Woche keine hat.
   Hatte Sonja dort vorher eine Einheit absichtlich gelöscht, kommt auch diese zurück (der Grund wird nicht gespeichert).
   Im Test: Petras gelöschte Einheit kam mit. Selten; sonst im Raster wieder löschen.
+- [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b) beim Zeigen mit Sonja prüfen: Gehaltene Einheiten
+  grau mit ✓, geplante fett; Ferienwochen gelb, abgesagte Einheiten in einer roten Zeile darunter, aktuelle Woche mit
+  blauem Strich. Im Spaltenkopf stehen Zeitfenster, Name und Zählung („14 von 15“). Schnupperstunden im Kurszeitraum
+  stehen als Liste über dem Raster (sie gehören zu keinem Kurs). Einheiten, die zu keinem Zeitfenster passen
+  (Nachholstunde an einem anderen Tag), stehen in der Spalte ihrer Teilnahme mit Wochentag und Uhrzeit.
+- [ ] **Bedienung des Rasters** (2026-11-16, `umsetzung-admin.md` C4d) mit Sonja prüfen: Der Editor macht die Spalte beim
+  Öffnen breiter (die Tabelle ordnet sich neu); nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
+  werden in jeder leeren Zelle angeboten, deren Nachbar am selben Tag eine Einheit hat, auch in Wochen ohne Absage
+  (z. B. bevor eine Teilnahme beginnt); ob sie passt, prüft der Server.
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
   mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
 - [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
@@ -61,7 +58,7 @@ verlinkten Erklärung.
 ### Mit der Steuerberatung
 
 - [ ] **Gutschrift und Zahlung als ein Konto** (2026-11-13, D3, `erklaerungen/13`): zu zahlen = Betrag minus
-  Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (Antwort 8 im Datenmodell)?
+  Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (`datenmodell.md` 3.7)?
   Dazu (2026-11-16): Honorarnoten werden nie gelöscht (die App hat keinen Weg dafür), jede Korrektur ist eine
   Gutschrift, auch eine volle aus Kulanz, wenn eine Schüler:in vor Kursbeginn absagt. Reicht das, oder braucht es
   ein Storno mit eigener Kennzeichnung?
@@ -85,17 +82,6 @@ verlinkten Erklärung.
   **vor den echten Daten**.
 - [ ] **Minderjährige im Unterricht** (2026-11-12, Release-Schritt 6): Der Vertrag kommt mit den Erziehungsberechtigten
   zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
-
-- [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b) beim Zeigen mit Sonja prüfen: Gehaltene Einheiten
-  grau mit ✓, geplante fett; Ferienwochen gelb, abgesagte Einheiten in einer roten Zeile darunter, aktuelle Woche mit
-  blauem Strich. Im Spaltenkopf stehen Zeitfenster, Name und Zählung („14 von 15“). Schnupperstunden im Kurszeitraum
-  stehen als Liste über dem Raster (sie gehören zu keinem Kurs). Einheiten, die zu keinem Zeitfenster passen
-  (Nachholstunde an einem anderen Tag), stehen in der Spalte ihrer Teilnahme mit Wochentag und Uhrzeit.
-
-- [ ] **Bedienung des Rasters** (2026-11-16, `umsetzung-admin.md` C4d) mit Sonja prüfen: Der Editor macht die Spalte beim
-  Öffnen breiter (die Tabelle ordnet sich neu); nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
-  werden in jeder leeren Zelle angeboten, deren Nachbar am selben Tag eine Einheit hat, auch in Wochen ohne Absage
-  (z. B. bevor eine Teilnahme beginnt); ob sie passt, prüft der Server.
 
 ### Technisch (Mike)
 
@@ -146,37 +132,18 @@ Details zu jedem Schritt: `verlauf.md`. Technische Erklärungen: `erklaerungen/`
 **Phase 1** (2026-11-03): Jeder Push auf `main` läuft durch Tests → Build → Deploy und geht auf https://sonjaczak.com
 live. Server eingerichtet und abgesichert, Rollback getestet.
 
-**Erstes Release** (Plan: `planung/seitenstruktur.md`, Abschnitt 10)
+**Erstes Release** (2026-11-11/12, Plan `planung/seitenstruktur.md` 10): Twig, Übersetzungen, AssetMapper, Bootstrap,
+Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailversand. Fertig.
 
-- [x] 1. Twig, Übersetzungen, AssetMapper, Bootstrap (2026-11-11)
-- [x] 2. Layout, Menü, alle Routen (2026-11-11)
-- [x] 3. Design: Themes `classic` (Standard), `modern`, `stage`; Logo als SVG; Slider (2026-11-12)
-- [x] 4. Seiten mit Inhalt, Impressum, Datenschutzerklärung (2026-11-11)
-- [x] 5. Bilder in mehreren Größen, Scroll-Effekte (2026-11-11)
-- [x] 6. Formulare mit Mailversand: Kontakt, Booking, Unterricht (2026-11-12, Plan `planung/formulare.md`)
+**Admin-Bereich** (Plan `planung/umsetzung-admin.md`, Erklärungen in `erklaerungen/08`–`18`):
 
-**Admin-Bereich** (Plan: `planung/umsetzung-admin.md`, freigegeben 2026-11-13)
-
-- [x] A1 Zeitzone, Foundry, Maker, PHPStan mit Entities (2026-11-13)
-- [x] B1/B2 Login, Rollen, Sessions in PostgreSQL (2026-11-13, `erklaerungen/08`)
-- [x] B3 Passwort vergessen, Mein Konto (2026-11-13, `erklaerungen/08`)
-- [x] B4 Benutzerverwaltung mit Einladungslink (2026-11-13, `erklaerungen/08`)
+- [x] A1, B1–B4 Grundlagen, Login, Sessions, Passwort vergessen, Benutzerverwaltung (2026-11-13)
 - [ ] B5 Passkeys (zurückgestellt, siehe „Später zu klären“)
-- [x] C1 Schüler:innen und Elternteile (2026-11-13, `erklaerungen/09`)
-- [x] C2 Kurse und Ferien mit OpenHolidays (2026-11-13, `erklaerungen/10`)
-- [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
-- [x] C4 Kursraster (2026-11-16, `erklaerungen/17-csrf.md`, `erklaerungen/18-kursraster.md`; noch nicht gepusht)
-- [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
-- [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`; Schwellwert durch „Einheiten pro Semester“ ersetzt 2026-11-15)
-- [x] C7 Anzahl der Einheiten je Teilnahme, Teilnahme beenden (2026-11-16, `umsetzung-admin.md` C7; noch nicht gepusht)
-- [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)
-- [ ] D2 PDF (entschieden 2026-11-14: dompdf; noch nicht gebaut)
-- [x] D3 Zahlungen und Gutschriften (2026-11-13, `erklaerungen/13`)
-- [x] D4 Erinnerung bei überschrittener Frist: Befehl fertig, Cronjob freigegeben, Eintrag siehe „Jetzt“ (2026-11-13, `erklaerungen/13`)
-- [x] D5 Einnahmen und CSV-Export (2026-11-13, `erklaerungen/13`)
-- [x] E Dashboard (2026-11-13, `erklaerungen/14`)
-- [ ] F Vor den echten Daten: Backups **fertig** (eingerichtet, Rücksicherung getestet 2026-11-15, `erklaerungen/16`), Datenschutz-Information und Löschregel (siehe „Später“);
-  Aufbewahrungsfrist nachgelesen (2026-11-13)
+- [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
+- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
+- [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
+- [ ] D2 PDF (dompdf, entschieden 2026-11-14) – **nächster Schritt**
+- [ ] F Vor den echten Daten: Backups fertig (2026-11-15); offen: Datenschutz-Information, Löschregel (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).

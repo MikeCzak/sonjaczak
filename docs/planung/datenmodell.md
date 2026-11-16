@@ -1,7 +1,7 @@
 # Phase 2: Datenmodell (Entwurf)
 
-Stand: 2026-11-13, **freigegeben**. Beide Fragenrunden sind eingearbeitet (Abschnitte 7 und 8). Als Nächstes folgen
-Rollenkonzept (`rollen.md`), Entities und Migrationen.
+Stand: 2026-11-13, **freigegeben und umgesetzt** (`umsetzung-admin.md` A–E). Spätere Änderungen sind im Text
+nachgezogen (z. B. Status der Einheit 2026-11-16, Anzahl je Teilnahme C7). Mikes Antworten: Abschnitt 7.
 
 Grundlage: `anforderungen.md` (Abschnitte A–C), Honorarnoten-Muster `claude_references/HN16_GU_WiSe_2026_Springer.pdf`,
 Sonjas bisherige Anwesenheitsliste `claude_references/Anwesenheit_Inhalt_2026_ProRe.numbers`.
@@ -172,7 +172,7 @@ unique), weil die Beziehung vom Student aus entsteht.
 
 - **Geburtsdatum statt Alter:** Das Alter ändert sich, ein gespeichertes „15“ ist nächstes Jahr falsch. Minderjährig
   wird daraus berechnet (`isMinorOn(date)`), etwa als Vorschlag für `billToGuardian` (Abschnitt 3.4).
-- **Guardian als eigene Entity (n:1), eine Person je Schüler:in** (Antwort 4): Geschwister teilen sich einen
+- **Guardian als eigene Entity (n:1), eine Person je Schüler:in** (Abschnitt 7): Geschwister teilen sich einen
   Elternteil, die Adresse steht dann nur einmal in der Datenbank.
 - **Ein Namensfeld statt Vor- und Nachname:** Auf der Muster-Honorarnote stehen beide Eltern („Anna und Peter
   Muster“). Ein freies Feld `name` deckt das ab, ohne einen zweiten Guardian zu brauchen. Es ist genau der Text, der auf
@@ -237,7 +237,7 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
 - **CourseBreak (Ferien, Feiertage):** Zeitraum mit Bezeichnung, gilt für den ganzen Kurs. In Sonjas Liste sind Ferien
   eine ganze Zeile („HERBSTFERIEN“), also für alle gleich. Ein einzelner Feiertag ist ein Zeitraum mit gleichem
   Anfang und Ende. In diesen Zeiträumen erzeugt die App keine Einheiten.
-- **Ferien vorschlagen mit der OpenHolidays API** (Mikes Vorschlag, Runde 2): Beim Anlegen eines Kurses holt die App
+- **Ferien vorschlagen mit der OpenHolidays API** (Abschnitt 7): Beim Anlegen eines Kurses holt die App
   Schulferien und gesetzliche Feiertage für die Steiermark im Kurszeitraum und legt sie als CourseBreaks mit
   `source = imported` an. Sonja kann sie danach ändern, löschen und eigene ergänzen (schulautonome Tage,
   `source = manual`). Geprüft am 2026-11-13:
@@ -266,9 +266,9 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
   abrechnung oder 10er-Block kommen als weitere Werte dazu, wenn Sonja sie braucht. Die Logik wird ein
   Strategy-Service je Wert, das Enum ist nur die Auswahl. Ein Enum-Wert mehr ist keine Schemaänderung, weil die Spalte
   ein `string` ist.
-- **`billToGuardian`** (Antwort 3): Sonja entscheidet je Teilnahme, ob die Honorarnote an den Elternteil geht.
+- **`billToGuardian`** (Abschnitt 7): Sonja entscheidet je Teilnahme, ob die Honorarnote an den Elternteil geht.
   Vorbelegt mit „ja“, wenn ein Guardian eingetragen und die Schülerin bei Kursbeginn minderjährig ist.
-- **Unterricht zu zweit** (Antwort 2): zwei Teilnahmen mit je eigener Einheit zur selben Zeit, Vermerk in der Notiz.
+- **Unterricht zu zweit** (Abschnitt 7): zwei Teilnahmen mit je eigener Einheit zur selben Zeit, Vermerk in der Notiz.
   Kein eigenes Schema.
 
 ### 3.5 Lesson (Einheit)
@@ -276,11 +276,11 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
 - **Gehört immer zu einer Teilnahme** (`enrollment` nicht nullable). Die Schülerin ergibt sich über
   `lesson.enrollment.student`. Damit ist die Redundanz aus dem ersten Entwurf weg, weil Schnupperstunden eine eigene
   Entity bekommen (Abschnitt 3.6).
-- **Einheiten werden erzeugt** (Antwort 5): Beim Anlegen einer Teilnahme erzeugt die App ab `course.startsOn`
+- **Einheiten werden erzeugt** (Abschnitt 7): Beim Anlegen einer Teilnahme erzeugt die App ab `course.startsOn`
   wöchentlich Einheiten im Zeitfenster der Teilnahme, außer in den Ferien, **bis
   `plannedLessons` erreicht ist** (eine übernommene Schnupperstunde zählt mit, Abschnitt 3.6), höchstens bis
   `course.endsOn`. Reicht der Zeitraum nicht für alle Einheiten, zeigt das Raster „14 von 15“. Ein späterer Einstieg
-  ins Semester kommt nicht vor (Runde 2, Frage 5), Enrollment braucht also kein eigenes Startdatum. Trägt Sonja später Ferien ein, entfernt die App die geplanten Einheiten in diesem Zeitraum. Bereits
+  ins Semester kommt nicht vor (Abschnitt 7), Enrollment braucht also kein eigenes Startdatum. Trägt Sonja später Ferien ein, entfernt die App die geplanten Einheiten in diesem Zeitraum. Bereits
   gehaltene oder abgesagte bleiben und werden als Konflikt angezeigt.
 - **`startsAt` + `durationMinutes`:** Verschiebungen und Doppelstunden ändern nur diese eine Einheit, nicht das
   Zeitfenster der Teilnahme.
@@ -312,7 +312,7 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
 Felder: Schüler:in, `startsAt`, `durationMinutes`, `note`. Wer zur Schnupperstunde kommt, wird als Student angelegt
 (mit so wenigen Daten wie nötig). Bleibt die Person nicht, löscht Sonja sie wieder (Abschnitt 5).
 
-**Kostenlos, keine Honorarnote** (Runde 2, Frage 2). Invoice braucht daher keinen Bezug zur Schnupperstunde.
+**Kostenlos, keine Honorarnote** (Abschnitt 7). Invoice braucht daher keinen Bezug zur Schnupperstunde.
 
 **Übernahme in den Kurs:** Wird aus der Schnupperstunde eine Teilnahme, zählt sie als gehaltene Einheit. Beim Anlegen
 der Teilnahme bietet die App die Schnupperstunden dieser Schülerin zur Übernahme an. Übernehmen heißt:
@@ -331,29 +331,29 @@ Liegt die Schnupperstunde vor `course.startsOn`, steht sie im Raster in einer ei
 
 ### 3.7 Invoice (Honorarnote)
 
-- **Eine Honorarnote je Teilnahme und Semester, mit Ratenoption** (Antwort 6, Muster): Betrag, „zahlbar gesamt bis
+- **Eine Honorarnote je Teilnahme und Semester, mit Ratenoption** (Abschnitt 7): Betrag, „zahlbar gesamt bis
   `dueOn`“ oder „zwei Raten, 1. bis `dueOn`, 2. bis `secondInstallmentDueOn`“. Ohne zweites Datum fällt der
   Ratenteil auf dem PDF weg. Die Ratenbeträge werden berechnet (Hälfte, bei ungeraden Cent bekommt die erste Rate
   den Cent mehr), nicht gespeichert.
 - **Nummer je Jahr:** `year` + `number`, Unique-Constraint auf beide. Die nächste Nummer ist `MAX(number) + 1` des
-  Jahres. **Fallstrick:** Legen zwei Anfragen gleichzeitig eine Honorarnote an, bekommen beide dieselbe Nummer. Der
-  Unique-Constraint verhindert das Speichern der zweiten, die App versucht es dann erneut.
-- **Welches Jahr?** (Antwort 7) Das Muster ist am 07.11.2026 ausgestellt und bis 13.11. bzw. 31.12. zahlbar, also
+  Jahres. **Fallstrick:** Legen zwei Anfragen gleichzeitig eine Honorarnote an, bekommen beide dieselbe Nummer.
+  Umgesetzt mit Advisory Lock in PostgreSQL statt Wiederholung (`erklaerungen/13`, `15-sperren.md`); der
+  Unique-Constraint bleibt als Sicherheitsnetz.
+- **Welches Jahr?** (Abschnitt 7) Das Muster ist am 07.11.2026 ausgestellt und bis 13.11. bzw. 31.12. zahlbar, also
   **vor** dem Geldfluss. Es gibt deshalb zwei Daten mit zwei Aufgaben:
   - **Nummer und Datum der Honorarnote** = Ausstellungsdatum (`issuedOn`): „16/2026“, weil am 07.11.2026 ausgestellt.
   - **Einnahmen fürs Finanzamt** = Datum der Zahlung (`Payment.paidOn`). Bei der Einnahmen-Ausgaben-Rechnung zählt,
     wann das Geld eingeht. Zahlt jemand die zweite Rate erst im Jänner 2027, gehört sie zu den Einnahmen 2027, obwohl
     die Honorarnote „/2026“ heißt. Das genaue Prinzip (Zufluss, § 19 EStG) prüfe ich vor dem Export in der Primärquelle.
   - **Jahr im Dateinamen** (`WiSe_2026`) = Kursjahr (`course.year`), wie bisher.
-  Siehe Frage 8.1.
 - **Empfänger als Kopie (Embeddable `Recipient`: Name + Adresse), nicht als Verweis:** Eine Honorarnote ist ein
   Beleg und darf sich nicht ändern, wenn später die Adresse korrigiert wird. Name, Adresse und Betrag werden beim
   Erstellen kopiert („Snapshot“). Der Verweis auf die Teilnahme bleibt für die Zuordnung.
 - **Unveränderlich nach dem Erstellen.** Korrekturen laufen über einen neuen Beleg.
-- **Gutschrift** (Antwort 8): neue Honorarnote mit negativem Betrag und eigener Nummer, Verweis `credits` auf die
+- **Gutschrift** (Abschnitt 7): neue Honorarnote mit negativem Betrag und eigener Nummer, Verweis `credits` auf die
   ursprüngliche. Die Rückzahlung selbst ist eine Zahlung mit negativem Betrag an der Gutschrift; so stimmt die
   Einnahmensumme des Jahres.
-- **PDF einmal erzeugen und ablegen** (Antwort 9). Wo? Vorschlag: **in der Datenbank** (`bytea`, ca. 50 KB je
+- **PDF einmal erzeugen und ablegen** (Abschnitt 7). Wo? Vorschlag: **in der Datenbank** (`bytea`, ca. 50 KB je
   Honorarnote, bei sechs Schüler:innen und zwei Semestern rund 0,6 MB im Jahr). Dann sichert ein Datenbank-Backup
   alles auf einmal, und es gibt keinen Fall „Datensatz da, Datei weg“. Alternative: Datei in einem Docker-Volume
   (`var/invoices/`). Das ist üblicher bei vielen oder großen Dateien, braucht aber ein zweites Backup. Bei dieser Menge
@@ -365,7 +365,7 @@ Liegt die Schnupperstunde vor `course.startsOn`, steht sie im Raster in einer ei
 - **Absenderdaten** (Name, Titel „Bakk.phil.“, Adresse, Bankverbindung, Hinweis zur Umsatzsteuerbefreiung, Ort,
   Unterschrift als Bild) kommen aus den Einstellungen. Ein Snapshot dafür ist nicht nötig, weil das abgelegte PDF sie
   enthält.
-- **Erinnerung bei überschrittener Frist** (Runde 2): Sonja bekommt eine Mail, wenn eine Honorarnote nach Ablauf
+- **Erinnerung bei überschrittener Frist** (Abschnitt 7): Sonja bekommt eine Mail, wenn eine Honorarnote nach Ablauf
   einer Frist nicht ausreichend bezahlt ist. Fällig sind bei Ratenoption zwei Stufen: bis `dueOn` mindestens die
   erste Rate, bis `secondInstallmentDueOn` der ganze Betrag; ohne Ratenoption der ganze Betrag bis `dueOn`.
   `remindedFor` speichert die Frist, für die zuletzt erinnert wurde. So kommt je Frist genau eine Mail, nicht jeden
@@ -398,40 +398,19 @@ Repertoireliste (Song: Titel, Interpret, Kategorie, Tonart) und Preisschätzung 
 
 ## 4. Arbeitsansicht: Kursraster
 
-Antwort 5 ist vor allem eine Anforderung an die Oberfläche. Das Modell oben ist darauf ausgerichtet; die Umsetzung
-plane ich mit dem Admin-Bereich im Detail. Die Idee, angelehnt an Sonjas Liste:
-
-```
-Wintersemester 2026/27          Fr 13:40 Schülerin A  Fr 14:40 Schülerin B  Fr 15:30 Schülerin C  …
-                                11 von 15             12 von 15             12 von 15
-Schnupperstunde                                                             ✓ (Mi 30.09.)
-KW 41 (05.10.–11.10.)           ✓ Runaway             ✓ Flowers             ✓ Animal
-KW 42 (12.10.–18.10.)           ✓ Auf uns             ✗ krank               ○ geplant
-KW 44 (26.10.–01.11.)           HERBSTFERIEN ──────────────────────────────────────────────
-KW 45 (02.11.–08.11.)           ○                     ○                     ○
-```
-
-- Zeilen sind Kalenderwochen mit klein in Klammern der Datumsspanne der Woche (Runde 2, Frage 3). Vorerst
-  unterrichtet Sonja je Kurs an einem Wochentag; Kalenderwochen funktionieren auch, wenn es ab nächstem Jahr mehrere
-  werden. Spalten sind die Teilnahmen sortiert nach Wochentag und Uhrzeit, Zellen die Einheiten.
-- Klick in eine Zelle öffnet ein kleines Eingabefeld direkt dort: Notiz tippen, Status mit einem Klick (gehalten,
-  abgesagt von Schülerin, abgesagt von mir), Enter speichert, Tab springt zur nächsten Zelle. Kein Seitenwechsel.
-- Klick auf eine Zeile: „Ferien/Feiertag“ setzt einen CourseBreak für diese Woche, die geplanten Einheiten
-  verschwinden.
-- Nachholstunden stehen in ihrer Woche in der Zelle der Schülerin, mit Hinweis auf die ausgefallene Einheit.
-- Kopfzeile je Spalte mit Zählung „11 von 15“ und Warnung, wenn die Nachholregel greift.
-
-Technisch: Speichern per JavaScript ohne Neuladen. Ob mit Stimulus + `fetch`, Turbo Frames oder Live Components, ist
-die offene Entscheidung „Symfony UX“ im Projektstand und fällt bei der Planung des Admin-Bereichs.
+Sonjas Wunsch (Abschnitt 7): Stunden, Inhalt und Absagen direkt in einem Stundenplan eintragen, ohne Navigation.
+Gebaut in `umsetzung-admin.md` C4, Erklärung `erklaerungen/18-kursraster.md`. Das Modell brauchte dafür keine
+eigenen Tabellen: Die Spalten sind Zeitfenster der Teilnahmen, die Zellen Einheiten, Ferien sind `CourseBreak`.
 
 ## 5. Löschen und Aufbewahrung
 
 - **Keine Kaskaden beim Löschen.** Eine Schülerin mit Honorarnoten darf nicht gelöscht werden können, sonst wären die
   Belege weg. Die Datenbank verhindert das über den Fremdschlüssel (`ON DELETE RESTRICT`, Doctrines Standard).
-- **Aufbewahrungspflicht für Belege:** Honorarnoten müssen mehrere Jahre aufbewahrt werden. Die genaue Frist prüfe ich
-  vor der Umsetzung in der Primärquelle (BAO). Nach Ablauf: Schüler:innen-Daten löschen bzw. anonymisieren.
+- **Aufbewahrungspflicht für Belege:** 7 Jahre ab Schluss des Kalenderjahres (§ 132 BAO, Zitat in
+  `umsetzung-admin.md` F). Nach Ablauf: Schüler:innen-Daten löschen bzw. anonymisieren; die Regel dafür ist offen
+  (Projektstand). Für den Kontakt muss nichts in der App bleiben (Mike, 2026-11-16).
 - **Schnupperstunden ohne Fortsetzung:** Daten löschen, sobald klar ist, dass die Person nicht bleibt (keine
-  Honorarnote → nichts aufzubewahren, sofern Frage 8.2 nichts anderes ergibt).
+  Honorarnote → nichts aufzubewahren).
 - **DSGVO:** Personenbezogene Daten nur im Admin-Bereich sichtbar, nie in Logs. Backups der Datenbank, **bevor** die
   ersten echten Daten eingetragen werden (Projektstand). Schüler:innen und Eltern müssen außerdem informiert werden,
   welche Daten Sonja wie verarbeitet (Art. 13 DSGVO). Das ist eine eigene Information, z. B. bei der Anmeldung, nicht
@@ -453,82 +432,27 @@ Verworfene Alternativen:
   anderes: verschlüsselt abgelegt, nicht in eine laufende App geladen.)
 - **Schülerdaten als Migration:** Migrationen sind für das Schema. Daten darin würden mit dem Repo versioniert, also
   echte Personendaten auf GitHub.
-- **CSV-Import:** Bei sechs Schüler:innen ohne bestehende Liste (Antwort 1) ist das Eintippen über die Masken
+- **CSV-Import:** Bei sechs Schüler:innen ohne bestehende Liste (Abschnitt 7) ist das Eintippen über die Masken
   schneller, und es testet gleich die Masken.
 
-## 7. Fragen, Runde 1 (beantwortet 2026-11-12)
+## 7. Antworten aus den Fragerunden (2026-11-12/13, Mike)
 
-1. Wie viele Schüler:innen hat Sonja ungefähr, und gibt es eine bestehende Liste (Excel o. Ä.)? - 6, Excelliste gibt es noch keine (ich muss erst nachsehen, wo die Daten der Schüler:innen notiert sind)
-2. Unterricht zu zweit: Zwei Teilnahmen mit je eigener Einheit zur selben Zeit, oder eine Einheit mit zwei
-   Schüler:innen? Das zweite bräuchte eine n:m-Beziehung zwischen Lesson und Student. - Das ist eine Ausnahme (bisher nur Einzelstunden), also nehmen wir hier die Variante, die ohne Schemaänderung auskommt (zwei Teilnahmen mit je eigener Einheit zur selben Zeit, Vermerk im Lesson.summary zB wäre dann ausreichend)
-3. Geht die Honorarnote bei Minderjährigen immer an den Elternteil, oder entscheidet Sonja je Teilnahme? - entscheidet Sonja, auch wenn es voraussichtlich immer der Elternteil sein wird. Aber es ist theoretisch möglich, dass zb eine 16-jährige Schülerin selbst für die Stunde bezahlt.
-4. Braucht es pro Schüler:in mehrere Elternteile (z. B. getrennte Eltern, Rechnung an einen)? - Nein, eine Person reicht
-5. Einheiten erzeugen: Soll die App aus Zeitfenster und Kursbeginn die wöchentlichen Termine vorschlagen, wobei Sonja
-   Ferientage abwählt? Oder trägt sie jede Einheit selbst ein? - Sonja trägt bisher gehaltene Stunden, deren Inhalt (stichwortartig) und Ausfallgrund pro Stunde in eine Excelliste ein (siehe claude_references/Anwesenheit_Inhalt_2026_ProRe.numbers). Wenn sie diesen Workflow in die app übertragen kann, ist das kein Problem, es sollten nur die Stunden einfach zugänglich sein, damit das Eintragen keinen großen Aufwand darstellt. Damit meine ich: Eine Navigation Stundenplan->Stunde->Inhalt eintragen->zweimal zurück->nächste Stunde wäre zu aufwändig. Können wir hier eine view erzeugen, wo Sonja direkt in den Stundenplan klicken kann, der bereits die geplanten Stunden enthält, und per JavaScript dann direkt Inhalt, Ausfall, etc. eintragen und auch den Tag wegen Ferientag abwählen kann? Es geht darum, dass das alles in einem möglichst kompakten und hübsch designten Workflow integriert sein muss und keine mühsame Navigation durch ihren admin-Bereich bedingt.
-   → Ja: Einheiten werden erzeugt (3.5), Ferien als CourseBreak (3.3), Kursraster (Abschnitt 4).
-6. Raten (`installments`): Zwei Honorarnoten (je Rate eine) oder eine Honorarnote mit zwei Zahlungen? - eine HN, siehe Muster HN16_GU_WiSe_2026_Springer
-   → 3.7: Fälligkeiten an der Honorarnote, Raten als Zahlungen.
-7. Jahr in Nummer und Dateiname: Honorarnote 16 „des Jahres 2026“. Ist das das Ausstellungsjahr oder das Kursjahr? Bei
-   einem Wintersemester 2026, das im Februar 2027 abgerechnet wird, fallen beide auseinander. - HN trägt immer das Datum des Geldflusses, also ist das das Datum, wann Sonja die Zahlung einträgt, relevant. Ist das so ausreichend definiert?
-   → Noch nicht ganz, siehe 3.7 „Welches Jahr?“ und Frage 8.1.
-8. Preiskorrektur (Rückerstattung bei Krankheit): neue Honorarnote mit negativem Betrag (Gutschrift), Storno und neue
-   Honorarnote, oder nur eine Zahlung mit negativem Betrag (Rückzahlung)? Ggf. mit Sonjas Steuerberatung klären. - neue HN mit negativem Betrag (Gutschrift)
-9. PDF der Honorarnote: bei jedem Abruf neu erzeugen (immer aus den gespeicherten Daten, kein Speicherplatz) oder
-   einmal erzeugen und ablegen (exakt das, was verschickt wurde)? Mein Vorschlag: einmal erzeugen und ablegen. - einmalig erzeugen und ablegen. sowohl Batch-download aller HN eines Kurses als zip als auch Download einzelner HN für Sonja ermöglichen. Beim Batchdownload sollte Sonja darauf hingewiesen werden, wenn aufgrund fehlender Zahlung noch nicht alle HN im Download enthalten sind. Oder wirkt sich die Zahlung nicht auf die Verfügbarkeit der HN aus?
-   → Die Zahlung wirkt sich nicht aus, siehe 3.7 „Download“.
-10. Zeitzone `Europe/Vienna` für PHP (Abschnitt 2): einverstanden? - ja
-11. Namen der Entities (`Enrollment`, `Lesson`, `Guardian`, `Invoice`): passt das, oder lieber andere? - passt
+Die Antworten sind in die Abschnitte oben eingearbeitet; hier nur, was Mike entschieden hat und warum.
 
-Zusätzliche Fragen von Mike:
-
-- Was ist ein "Embeddable" und wie ist das mit der Adresse genau gemeint? → Abschnitt 3.2.1
-- Mir kommt die Schnupperstunde als eigene kleine Entity sauberer vor - was ist deine Empfehlung? → Abschnitt 3.6,
-  einverstanden
-- Dashboard und Export der Einnahmen → als Todos in Abschnitt 9
-
-## 8. Fragen, Runde 2 (beantwortet 2026-11-13)
-
-1. **Jahr der Honorarnote:** Die Muster-Honorarnote ist am 07.11.2026 ausgestellt und erst danach zahlbar. Mein
-   Vorschlag: Nummer „/2026“ und Datum = Ausstellungsdatum; für die Einnahmen eines Jahres zählt das Zahlungsdatum
-   (3.7). Passt das, oder meinst du, dass Sonja die Honorarnote erst nach Eingang der Zahlung ausstellt (dann wäre
-   „zahlbar bis“ auf dem Muster überflüssig)? - das passt, du hast recht. Das heißt die Zahlung muss mit Datum erfasst werden, damit daraus sinnvoll Daten für die E/A-Rechnung der Steuererklärung extrahiert werden können.
-   → Ja, `Payment.paidOn` ist Pflicht. „Mit einem Klick bezahlt“ setzt heute als Datum, änderbar, falls Sonja die
-   Zahlung erst später einträgt (sonst landet eine Zahlung vom 30.12. im falschen Jahr).
-2. **Schnupperstunden:** Kosten sie etwas, und wenn ja: mit Honorarnote (dann braucht Invoice einen Bezug zur
-   Schnupperstunde statt nur zur Teilnahme) oder bar ohne Beleg? - Nein, Schnupperstunden sind kostenlos. Wenn aus dem Schnuppern eine Kursteilnahme wird, muss die Schnupperstunde allerdings schon als gehaltene Unterrichtseinheit gelten. Können wir diese in diesem Fall dann in eine Lesson konvertieren?
-   → Ja, siehe 3.6 „Übernahme in den Kurs“.
-3. **Unterrichtstage:** Unterrichtet Sonja in einem Kurs nur an einem Wochentag (in der Liste alle am Freitag)? Dann
-   können die Zeilen im Raster Daten statt Kalenderwochen sein. Das Modell ist davon nicht betroffen. - Ja, in einem Kurs vorerst nur ein Wochentag, das kann sich aber ab nächstem Jahr ändern. Kalenderwoche und klein in Klammer die von-bis-Angabe mit den Daten der Woche wären gut.
-   → Übernommen in Abschnitt 4.
-4. **Absenderdaten:** Titel „Bakk.phil.“ wie im Muster, auch mit den neuen Abschlüssen (IGP, Konzertfach)? Kommt
-   die Unterschrift als Bild auf das PDF wie bisher? - Titel bleibt gleich, Unterschrift sollte aufs Bild. Brauchst du dafür die Unterschrift als png, oder kannst du sie aus dem Muster extrahieren?
-   → Bitte als PNG: Sonja unterschreibt auf weißem Papier, Scan mit 300–600 dpi, am besten mit transparentem
-   Hintergrund. Aus dem Muster-PDF wäre sie nur in dessen Auflösung zu holen. Die Unterschrift kommt nicht ins Repo,
-   sondern wird in den Einstellungen hochgeladen und in der Datenbank gespeichert (wie das PDF; Abschnitt 3.9).
-5. **Späterer Einstieg:** Kommt es vor, dass jemand mitten im Semester einsteigt? Dann braucht Enrollment ein
-   eigenes Startdatum, ab dem Einheiten erzeugt werden; sonst löscht Sonja die früheren im Raster. - nein
-   → Kein Startdatum an der Teilnahme (3.5).
-
-Weitere Angaben:
-- Sonja sollte eine Hinweis-Mail erhalten, wenn die Zahlungsfrist einer Honorarnote überschritten und noch nicht bezahlt wurde.
-  → 3.7 „Erinnerung bei überschrittener Frist“ (Feld `remindedFor`, täglicher Cronjob).
-- Für die Vorkonfiguration der Ferientage/-wochen könnten wir https://www.openholidaysapi.org/de/ nutzen. Wegen schulautonomen Tagen und Abweichungen braucht Sonja aber trotzdem nach wie vor die Möglichkeit, eine Einheit/Woche als Ferien zu markieren.
-  → 3.3 „Ferien vorschlagen mit der OpenHolidays API“, mit Fallstrick beim Regionscode.
-
-## 9. Todos für den Admin-Bereich (nach dem Datenmodell)
-
-- **Kursraster** (Abschnitt 4) als Hauptansicht für Sonja.
-- **Dashboard:** Übersicht aller Schüler:innen, nächste Einheiten (inkl. Schnupperstunden) und zuletzt gehaltene Einheit je Schüler:in (wegen dem Inhalt, was die Vorbereitung erleichtert), bisher entfallene und
-  gehaltene Einheiten, offene Honorarnoten, Einnahmen je Kurs und Jahr.
-- **Export der Einnahmen je Jahr** für die Einnahmen-Ausgaben-Rechnung (Basis: `Payment.paidOn`, CSV oder PDF; Format
-  mit Sonja bzw. Steuerberatung klären). - sicher csv, weil Sonja die EA-Rechnung in Excel macht
-  → CSV mit Semikolon als Trennzeichen, Komma als Dezimalzeichen und UTF-8 mit BOM, damit Excel mit deutscher
-  Einstellung Umlaute und Beträge richtig öffnet (beim Bau mit Sonjas Excel prüfen).
-- **PDF der Honorarnote** (Bibliothek wählen: läuft im PHP-Container, kein zusätzlicher Container wegen RAM) und
-  ZIP-Download je Kurs.
-- **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO).
-- **Erinnerungs-Mail** bei überschrittener Zahlungsfrist (Konsolenbefehl + Cronjob am Server, 3.7).
-- **Ferien-Import** aus der OpenHolidays API beim Anlegen eines Kurses (3.3).
-- **Upload der Unterschrift** in den Einstellungen (PNG von Sonja). *2026-11-14: Keine Unterschrift nötig (Mike), siehe
-  Projektstand.*
-- **Backups** der Datenbank vor den ersten echten Daten.
+- **Umfang:** 6 Schüler:innen, keine bestehende Liste.
+- **Unterricht zu zweit** ist eine Ausnahme: zwei Teilnahmen mit je eigener Einheit zur selben Zeit, kein n:m.
+- **Honorarnote an den Elternteil:** entscheidet Sonja je Teilnahme (eine 16-Jährige könnte selbst zahlen). Ein
+  Elternteil je Schüler:in reicht.
+- **Einheiten werden erzeugt** und im Kursraster bearbeitet (Abschnitt 4): Sonja trug bisher Stunden, Inhalt und
+  Ausfallgrund in Numbers ein; das Eintragen darf keine mühsame Navigation brauchen.
+- **Raten:** eine Honorarnote mit zwei Fälligkeiten (wie im Muster), Raten als Zahlungen.
+- **Jahr:** Nummer und Datum = Ausstellung; für die Einnahmen zählt das Zahlungsdatum (`Payment.paidOn` Pflicht).
+- **Preiskorrektur:** Gutschrift = neue Honorarnote mit negativem Betrag. Honorarnoten werden nie gelöscht.
+- **PDF** einmal erzeugen und ablegen; Download einzeln und als ZIP je Kurs (Zahlung beeinflusst den Download nicht).
+- **Schnupperstunden** sind kostenlos; bei Übernahme in einen Kurs zählen sie als gehaltene Einheit (3.6).
+- **Unterrichtstage:** vorerst ein Wochentag je Kurs, kann sich ändern; Raster nach Kalenderwochen mit Datum.
+- **Kein späterer Einstieg** ins Semester, daher kein Startdatum an der Teilnahme.
+- **Absender:** Titel „Bakk.phil.“ bleibt. Keine Unterschrift auf der Honorarnote (2026-11-14).
+- **Erinnerungs-Mail** bei überschrittener Zahlungsfrist; **Ferien** aus der OpenHolidays API vorschlagen, Sonja
+  ergänzt schulautonome Tage selbst; **Export** als CSV für Sonjas Excel.
+- Zeitzone `Europe/Vienna`, Entity-Namen wie oben.
