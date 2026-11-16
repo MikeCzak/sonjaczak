@@ -8,7 +8,7 @@ solltest.
 | Datei | Inhalt |
 |---|---|
 | `src/Entity/Enrollment.php`, `src/Entity/Lesson.php` | Teilnahme (Wochentermin, Preis, Abrechnung) und Einheit |
-| `src/Entity/Enum/Billing.php`, `LessonStatus.php` | `semester`; `planned`, `held`, `cancelled_by_student`, `cancelled_by_teacher` |
+| `src/Entity/Enum/Billing.php`, `CancelledBy.php`, `LessonState.php` | `semester`; `student`, `teacher` (gespeichert, seit 2026-11-16); `planned`, `held`, `cancelled_by_*` (nur angezeigt, abgeleitet) |
 | `src/Migrations/Version20261113092945.php` | Tabellen `enrollment` und `lesson` |
 | `src/Lesson/LessonPlanner.php`, `BreakResult.php` | Einheiten erzeugen, Ferien nachträglich anwenden |
 | `src/Lesson/MakeUpRule.php` | Wann eine Nachholstunde fällig ist |
@@ -56,8 +56,10 @@ Aufruf füllt also nur Lücken.
 der Planer jede Absage durch Sonja hinten wieder auf, und die Nachholregel wäre wirkungslos. Ob für
 Sonjas Absage nachgeholt wird, entscheidet jetzt nur `MakeUpRule`.
 
-`applyBreaks()` (nach neuen Ferien, auch nach „Ferien vorschlagen lassen“): geplante Einheiten in den Ferien werden
-gelöscht, gehaltene oder abgesagte bleiben und erscheinen als Hinweis („bitte prüfen“). Danach `fillUp()`: für jede
+`applyBreaks()` (nach neuen Ferien, auch nach „Ferien vorschlagen lassen“): zukünftige, nicht abgesagte Einheiten in
+den Ferien werden gelöscht, vergangene oder abgesagte bleiben und erscheinen als Hinweis („bitte prüfen“). Seit
+2026-11-16 entscheidet dafür die Zeit (`$now` als Argument), weil „gehalten“ nicht mehr gespeichert ist. Zwischenstand:
+geplant ist, dass alle Einheiten im Zeitraum nach einer Rückfrage gelöscht werden (`umsetzung-admin.md` C4, Frage 6). Danach `fillUp()`: für jede
 gelöschte Einheit kommt eine am Ende dazu, solange das Kursende es zulässt.
 
 Werden Ferien **gelöscht**, passiert nichts: die Teilnahme hat ihre 15 Einheiten schon.
@@ -82,6 +84,34 @@ verschwindet, eine mit gleichem Typ kommt dazu, also hält er das für eine Umbe
 setzt die Migration den Wert danach ausdrücklich auf 15. Allgemein: Den erzeugten Diff immer lesen, bevor er läuft,
 besonders bei Umbenennungen und bei `NOT NULL`-Spalten in Tabellen mit Daten.
 
+## Status: nur die Absage wird gespeichert (2026-11-16)
+
+Bis 2026-11-16 hatte `Lesson` eine Spalte `status` mit `planned`, `held`, `cancelled_by_student`,
+`cancelled_by_teacher`. Mikes Einwand: Dass eine Einheit **existiert**, heißt schon „geplant“, und „gehalten“ folgt aus
+der Zeit. Gespeichert wird seitdem nur, **wer abgesagt hat** (`cancelledBy`, nullable Enum `CancelledBy`).
+
+- **Grundsatz:** Einen Fakt, der sich aus anderen ableiten lässt, nicht zusätzlich speichern. Sonst können beide
+  auseinanderlaufen (eine Stunde „geplant“ im Juli des Vorjahres) und jemand muss sie abgleichen (Sonja per Klick oder
+  ein Cronjob).
+- **Abgeleitet:** `Lesson::state($now)` liefert `LessonState` (`planned`, `held`, `cancelled_by_student`,
+  `cancelled_by_teacher`) nur für die Anzeige. „Gehalten“ heißt: nicht abgesagt und das **Ende** (Beginn + Dauer)
+  vorbei; eine laufende Stunde ist noch nicht gehalten. In Twig: `lesson_state(lesson)` (`App\Twig\LessonStateExtension`,
+  Attribut `#[AsTwigFunction]`, mit `ClockInterface`, damit Tests die Zeit festlegen können).
+- **NULL statt eigenem Wert:** „Nicht abgesagt“ ist das Fehlen einer Absage, also `NULL`. Die Alternative wäre ein
+  Wert `none` in einer nicht-nullbaren Spalte. **Fallstrick:** In SQL und DQL ist `cancelled_by = NULL` nie wahr (ein
+  Vergleich mit `NULL` ergibt „unbekannt“), richtig ist `IS NULL` (`LessonRepository::findPlannedBetween()`).
+- **Migration** (`Version20261116110522`): `doctrine:migrations:diff` schlug `ADD cancelled_by` und `DROP status` vor,
+  weil Name, Typ und Länge verschieden sind. Das hätte alle Absagen gelöscht. Von Hand: neue Spalte, Absagen kopieren,
+  alte löschen. Beim Rückweg wird aus „gehalten“ „geplant“ (nicht mehr unterscheidbar), und die Spalte bekommt zuerst
+  einen `DEFAULT`, weil `ADD … NOT NULL` auf einer Tabelle mit Zeilen scheitert. Lokal hin und zurück geprüft
+  (88 Einheiten: 22 gehalten + 66 geplant → 88 `NULL`, die zwei Absagen blieben).
+- **Vergleich zur Migration davor** (Schwellwert, Abschnitt „Nachholregel“): Dort hielt Doctrine zwei verschiedene
+  Spalten für eine Umbenennung, hier eine Umbenennung für zwei verschiedene Spalten. Der Diff vergleicht nur das Schema,
+  die Bedeutung der Daten kennt er nicht.
+- **Tests, die am Datum hingen:** Ein Test trug Ferien am 16.10.2026 ein und erwartete, dass die Einheit verschwindet.
+  Seit heute liegt der Tag in der Vergangenheit, und vergangene Einheiten bleiben. Der Test legt die Zeit jetzt mit
+  `mockTime()` fest (`ClockSensitiveTrait`).
+
 ## Oberfläche ohne JavaScript
 
 - **Teilnahme anlegen in zwei Schritten:** Erst Schüler:in wählen (GET-Formular, Auswahl landet in der URL), dann das
@@ -103,7 +133,7 @@ Dateien: `src/Entity/TrialLesson.php`, `src/Lesson/TrialTakeover.php`, `src/Cont
 - **Eigene Entity** (`datenmodell.md` 3.6): Schüler:in, Beginn, Dauer, Notiz. Kein Kurs, kein Preis.
 - **Übernahme:** Beim Anlegen einer Teilnahme bietet das Formular die Schnupperstunden dieser Person an (alle
   vorausgewählt, Feld `trials`, nicht gemappt). `TrialTakeover::enroll()` legt je Schnupperstunde eine Einheit mit
-  Status `held` und `fromTrial = true` an, löscht die Schnupperstunde und erzeugt dann die übrigen Einheiten. Die
+  `fromTrial = true` an (seit 2026-11-16 ohne Status: sie liegt in der Vergangenheit und gilt damit als gehalten), löscht die Schnupperstunde und erzeugt dann die übrigen Einheiten. Die
   übernommene zählt mit: 1 + 14.
 - **Transaktion:** `wrapInTransaction()` beginnt eine Transaktion, ruft die Funktion auf, macht ein `flush()` und
   `commit()`; bei einer Exception `rollBack()` und der EntityManager wird geschlossen

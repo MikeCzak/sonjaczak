@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\Enum\LessonStatus;
 use App\Entity\Lesson;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,9 +30,9 @@ class LessonRepository extends ServiceEntityRepository
             ->addSelect('e', 's')
             ->join('l.enrollment', 'e')
             ->join('e.student', 's')
-            ->where('l.status = :planned')
+            // Not cancelled. IS NULL, not "= NULL": a comparison with NULL is never true in SQL
+            ->where('l.cancelledBy IS NULL')
             ->andWhere('l.startsAt >= :from AND l.startsAt < :until')
-            ->setParameter('planned', LessonStatus::Planned)
             ->setParameter('from', $from)
             ->setParameter('until', $until)
             ->orderBy('l.startsAt')

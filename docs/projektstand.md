@@ -12,7 +12,15 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Derzeit keine offene Frage.
+1. **C4: Absage-Zeile und Doppelstunden** (2026-11-16, `umsetzung-admin.md` C4, „Frage 8: Durchsicht“, Punkte 1–11)
+   - (a) Spalten gelten als Zeitfenster: Die Doppelstunde von B steht in der Spalte von A, mit Namen von B (Punkt 1)?
+     Antwort:
+   - (b) Doppelstunde anlegen entfernt die letzte zukünftige Einheit von B am Kursende, Rückgängig/„Absage aufheben“
+     legt sie wieder an (Punkte 2–4)?
+     Antwort:
+   - (c) Knöpfe „+ Doppelstunde B/C“ in der frei gewordenen Zelle statt Ziehen am Rand (Punkt 10)? Und auf welchem
+     Gerät hat Sonja das Raster im Unterricht offen?
+     Antwort:
 
 **Todos für Mike (keine Frage offen):**
 
@@ -96,6 +104,9 @@ verlinkten Erklärung.
   Platte an einem anderen Ort. Auch prüfen: Läuft Time Machine, und ist der private age-Schlüssel ausgedruckt?
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
   noch etwas offen ist).
+- [ ] **Runner-Label `ubuntu-latest`** (2026-11-15): wechselt laut GitHub-Hinweis im CI-Lauf ab 2026-10-19 schrittweise
+  auf Ubuntu 26 (github.com/actions/runner-images/issues/14748). Stört derzeit nicht; ggf. auf `ubuntu-24.04` pinnen,
+  damit der Wechsel bewusst passiert.
 - [ ] Kandidaten aus der Durchsicht des Templates (2026-11-03):
   - Symfony Language Server aus dem Dev-Image entfernen (lädt ungepinnt die neueste Version, wird nicht genutzt)
   - `composer audit` als CI-Schritt
@@ -184,6 +195,7 @@ muss).
 | Backups | Plan `planung/backups.md` mit allen Empfehlungen freigegeben (2026-11-14): age, Verschlüsselung am Server, privater Schlüssel im Passwort-Manager, 14 Tage + 12 Monate, täglich 12:00 per launchd, Rücksicherungstest in temporärer Datenbank am Server, Sessions ohne Inhalt | Begründungen im Plan |
 | Passkeys (B5) | Dürfen nach dem Start des Echtbetriebs kommen, bleiben aber eingeplant (2026-11-14) | Passwort reicht vorerst; Fingerabdruck ist für Sonja einfacher als ein Einmalcode |
 | Absenderdaten | Nur in Produktion unter `/admin/einstellungen`, lokal in `claude_references/` (2026-11-14) | Repo ist öffentlich; IBAN und Unterschrift gehören nicht hinein |
+| Status der Einheit | Nur `cancelledBy` gespeichert (nullable: Schüler:in, ich); „geplant“ = Einheit existiert, „gehalten“ aus der Zeit abgeleitet (2026-11-16) | Ableitbare Fakten nicht doppelt speichern; Sonja trägt nur Absagen ein (Mike). `erklaerungen/11`, `datenmodell.md` 3.5 |
 | Nachholregel | Mindestzahl = geplante Einheiten des Kurses, kein Schwellwert; Einstellung „Einheiten pro Semester“ belegt neue Kurse vor (2026-11-15) | Absagen durch Schüler:innen werden nie nachgeholt; mehr Einheiten als vereinbart sind möglich, weniger nicht (Mike). `erklaerungen/11` |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 

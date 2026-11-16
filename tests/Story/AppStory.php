@@ -6,7 +6,7 @@ namespace App\Tests\Story;
 
 use App\Entity\Embeddable\Address;
 use App\Entity\Embeddable\Recipient;
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Enum\PaymentMethod;
 use App\Entity\Payment;
 use App\Entity\Settings;
@@ -87,13 +87,13 @@ final class AppStory extends Story
                     if ($lesson->getStartsAt() >= $today) {
                         break;
                     }
-                    $lesson->setStatus(LessonStatus::Held)->setNote($songs[($i + $n) % \count($songs)]);
+                    $lesson->setNote($songs[($i + $n) % \count($songs)]);
                 }
             }
             // One cancellation of each kind in the first enrollment
             $lessons = $enrollments[0]->getLessons()->getValues();
-            $lessons[1]->setStatus(LessonStatus::CancelledByStudent)->setNote('krank');
-            $lessons[2]->setStatus(LessonStatus::CancelledByTeacher)->setNote('Konzert');
+            $lessons[1]->setCancelledBy(CancelledBy::Student)->setNote('krank');
+            $lessons[2]->setCancelledBy(CancelledBy::Teacher)->setNote('Konzert');
 
             // Invoices for the first two enrollments, one with instalments and the first one paid; the others still
             // need one

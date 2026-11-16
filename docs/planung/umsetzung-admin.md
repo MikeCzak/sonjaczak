@@ -104,6 +104,91 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 - Raster nach Kalenderwochen, Bearbeiten direkt in der Zelle, Tastatur, Ferien per Zeile, Zählung je Spalte.
 - Design mit Sonjas Rückmeldung nachschärfen, wenn Mike es ihr in Produktion zeigt.
 
+**C4 Detailplan** (Entwurf 2026-11-15; Fragen 1–6 entschieden 2026-11-16, Fragen 7–9 offen, siehe Projektstand „Jetzt“)
+
+Stand heute: Kein Stimulus installiert, das JavaScript der öffentlichen Seiten (`assets/inquiry.js`, `slider.js`) ist
+reines JavaScript in `app.js`. Einheiten werden einzeln auf `/admin/einheiten/{id}` bearbeitet (Status, Notiz, Beginn,
+Dauer). CSRF ist für Formulare zustandslos (`config/packages/csrf.yaml`, Token-ID `submit`); im Admin gibt es eine Session.
+
+Schritte (je ein Commit):
+
+1. **C4a Stimulus installieren:** `composer require symfony/stimulus-bundle` (3.7.0, PHP ≥ 8.4, `composer show -a`
+   2026-11-15). Was das Flex-Rezept anlegt (vermutlich `assets/stimulus_bootstrap.js`, `assets/controllers.json`,
+   Einträge in `importmap.php`), prüfe ich beim Installieren am Diff und erkläre es. Laden über einen eigenen
+   Entrypoint `admin` (Frage 2).
+2. **C4b Raster nur lesend:** Service `CourseGrid` baut aus einem Kurs die Zeilen (Kalenderwochen von Kursbeginn bis
+   Kursende, Ferienwochen markiert, Schnupperstunden in eigener Zeile oben) und Spalten (Teilnahmen nach Wochentag und
+   Uhrzeit). Zelle = Einheiten dieser Teilnahme in dieser Woche (meist eine; eine Nachholstunde kommt dazu, mit
+   Verweis auf die ausgefallene Einheit). Kopfzeile: „11 von 15“ und Hinweis aus `MakeUpRule`. Jede Zelle ist ein
+   Link auf `/admin/einheiten/{id}`, das Raster funktioniert also auch ohne JavaScript. Eine Abfrage mit Fetch Join
+   (Teilnahmen, Schüler:innen, Einheiten). Unit-Test für `CourseGrid`, WebTestCase für die Seite.
+0. **C4-0 Status umbauen** (Frage 5) und **Ferien mit Bestätigung** (Frage 6, 7), vor dem Raster.
+3. **C4c Endpunkt zum Speichern:** `PATCH /admin/einheiten/{id}` mit JSON `{cancelledBy, note}` (geändert 2026-11-16 auf
+   Mikes Frage: Die Zelle **ist** die Einheit, also dieselbe Adresse wie die Bearbeitungsseite; `PATCH` heißt „Teile
+   ändern“, und eine eigene Route je Methode hält die HTML-Seite (GET/POST) und den JSON-Endpunkt getrennt). Antwort JSON mit der
+   neuen Zelle und der neuen Zählung der Spalte, damit der Browser nichts selbst rechnet. Validierung über den
+   Validator der Entity, Fehler als 422 mit Meldung. CSRF: Token aus der Session (`csrf_token('lesson_cell')` im
+   Template, im Header `X-CSRF-Token` mitgeschickt, `isCsrfTokenValid()`). Nur Status und Notiz; Verschieben, Dauer
+   und Nachholstunden bleiben auf den bestehenden Seiten. WebTestCases: speichern, ungültiger Status, falsches Token,
+   fremde Rolle.
+4. **C4d Stimulus-Controller `grid`:** Klick oder Enter öffnet die Zelle (Status-Knöpfe und Notizfeld), Enter
+   speichert, Escape verwirft (Bedienung laut Frage 3 ohne Kürzel, nur Knöpfe). Während des Speicherns ist die Zelle gesperrt; bei Fehlern bleibt die Eingabe stehen und eine Meldung
+   erscheint in der Zelle.
+5. **C4e Ferien per Zeile:** Knopf in der Wochenzeile legt einen `CourseBreak` für Montag bis Sonntag dieser Woche an
+   (bestehende Logik `applyBreaks()`/`fillUp()`), danach lädt die Seite neu. Normales Formular, kein JavaScript nötig.
+6. **C4f Doku:** `erklaerungen/17-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),
+   `rundgang-admin.md`.
+
+**Zu entscheiden:**
+
+| # | Frage | Empfehlung | Alternative |
+|---|---|---|---|
+| 1 ✓ | Wo steht das Raster? | **Eigene Seite** `/admin/kurse/{id}/raster`, verlinkt von Kursseite, Kursliste und Dashboard. Die Kursseite ist mit Formular, Ferien und Teilnahmen schon voll; das Raster braucht die ganze Breite. | Auf der Kursseite unter dem Formular: ein Klick weniger, aber lange Seite und schmale Spalten |
+| 2 ✓ | Wo wird Stimulus geladen? | **Eigener Entrypoint `admin`** nur im Admin-Layout. Die öffentlichen Seiten laden nichts Neues. | In `app.js` für alle Seiten: einfacher, aber zusätzliches JavaScript für alle Besucher:innen |
+| 3 ✓ | Bedienung einer Zelle (Mike 2026-11-16) | **Nur Knöpfe, keine Tastaturkürzel.** In der offenen Zelle: „Abgesagt (Schüler:in)“, „Abgesagt (ich)“ (als Schalter, zweiter Klick nimmt zurück), Notiz, Speichern. | – |
+| 4 ✓ | Wie wird das JavaScript getestet? | **Endpunkt mit PHPUnit, Raster ohne JS ebenfalls; das JavaScript selbst prüfe ich im Browser** (Headless Chrome, Screenshots) und beschreibe die Prüfung in `rundgang-admin.md`. Das eigene JavaScript bleibt klein (ein Controller). | Symfony Panther (echter Browser in den Tests): automatisiert, aber Chrome im CI-Image, langsamere Tests, mehr Pflege |
+| 5 ✓ | Status der Einheit (Mike 2026-11-16) | **Kein Status mehr für „geplant“ und „gehalten“:** Dass die Einheit existiert, heißt „geplant“. Gespeichert wird nur, wer abgesagt hat: `cancelledBy` als **nullable** Enum (`student`, `teacher`), `NULL` = nicht abgesagt. Angezeigt wird „gehalten“, wenn nicht abgesagt und das Ende (Beginn + Dauer) vorbei ist, sonst „geplant“. Migration: `held`/`planned` → `NULL`, die Absagen werden übernommen. Fallstrick SQL: `NULL` vergleicht man mit `IS NULL`, nie mit `= NULL`. `datenmodell.md` 3.5 wird angepasst. | Nicht-nullbares Enum mit eigenem Wert `none`: vermeidet `NULL`, ist aber ein Wert für „nichts“ |
+| 6 ✓ | Ferien nachträglich eintragen (Mike 2026-11-16) | Alle Einheiten im Zeitraum werden gelöscht, am Ende kommen neue dazu. Gibt es im Zeitraum Einheiten, fragt ein **Popup** (`confirm()`) mit der Liste nach; die Liste holt der Stimulus-Controller vorher vom Server. Gilt für Kursseite, Raster und „Ferien vorschlagen lassen“. Folge: Ferien eintragen braucht dann JavaScript. **Einzelne Tage** gehen schon heute (Feld „Letzter Tag“ leer). | Bestätigungsseite: ohne JavaScript, aber ein Seitenwechsel mehr |
+| 7 ✓ | Ferien **löschen** (Mike 2026-11-16: ok) | Beim Löschen von Ferien wird die Einheit am frei gewordenen Tag wieder angelegt, dafür fällt die letzte noch nicht stattgefundene am Ende weg. | So lassen und von Hand korrigieren |
+| 8 | Absage-Zeile und Doppelstunden (Mikes Vorschlag 2026-11-16) | Siehe „Frage 8: Durchsicht“ unter der Tabelle. | – |
+| 9 ✓ | Doppelstunde (Mike 2026-11-16) | **Zwei Einheiten:** Statt die Dauer zu verlängern, wird eine zweite Einheit derselben Person im frei gewordenen Zeitfenster angelegt. | Dauer verlängern: zählte nur als eine Einheit |
+
+**Frage 8: Durchsicht** (2026-11-16). Mikes Vorschlag: Jede Wochenzeile bekommt darunter eine niedrige, nur bei Bedarf
+sichtbare Zeile für abgesagte Einheiten (rot). Die abgesagte Einheit wandert dorthin, ihr Zeitfenster oben wird frei, die
+Einheit links oder rechts davon kann sich hineinziehen (= zweite Einheit derselben Person, Frage 9). In der abgesagten
+Einheit gibt es „Absage aufheben“: Sie kehrt nach oben zurück, was inzwischen in ihrem Zeitfenster eingetragen wurde, wird
+gelöscht.
+
+Machbar, auch ohne Änderung am Datenmodell: „Nach unten wandern“ ist nur Anzeige von `cancelledBy`, die zweite Einheit
+ist eine normale `Lesson`. Was dabei leicht vergessen wird:
+
+1. **Spalten sind heute Teilnahmen, nicht Zeitfenster.** Die zweite Einheit von B gehört zu B, steht aber in der Spalte
+   von A. Die Spalte muss also als **Zeitfenster** gelten (Wochentag + Uhrzeit der Teilnahme), die Zelle zeigt dann den
+   Namen von B und hängt optisch an B an. Die Zählung im Kopf („11 von 15“) bleibt je Teilnahme.
+2. **Gesamtzahl der Einheiten von B.** Zählt die Doppelstunde als zwei Einheiten, hätte B am Ende 16. Vorschlag: Beim
+   Anlegen fällt die letzte noch nicht stattgefundene Einheit von B am Kursende weg (wie bei Frage 7). Liegt keine mehr
+   in der Zukunft (Kursende), bleibt es bei 16, mit Hinweis.
+3. **Rückgängig für die zweite Einheit selbst** fehlt im Vorschlag: irrtümlich angelegt → Knopf „Einheit entfernen“ in
+   dieser Zelle; die Einheit am Kursende kommt zurück.
+4. **„Absage aufheben“ löscht Einheiten mit Inhalt**, z. B. die Doppelstunde von B mit Notiz. Davor dasselbe Popup wie
+   bei den Ferien, und für B kommt die Einheit am Kursende zurück (Punkt 2 umgekehrt).
+5. **„Im Zeitfenster“ heißt überschneidend,** nicht „gleicher Beginn“: gelöscht wird, was sich zeitlich mit der wieder
+   aufgenommenen Einheit überschneidet.
+6. **Beginn und Dauer der zweiten Einheit:** Beginn und Dauer des frei gewordenen Zeitfensters (füllt die Lücke genau),
+   nicht die Dauer von B. Bei unterschiedlichen Dauern sonst Überschneidungen.
+7. **Nachbarn nur am selben Tag:** links/rechts gilt nur zwischen Zeitfenstern desselben Wochentags. Heute unterrichtet
+   Sonja je Kurs an einem Tag, bei mehreren Tagen wäre „rechts“ sonst ein anderer Tag.
+8. **Einheiten außerhalb jedes Zeitfensters:** Nachholstunden oder verschobene Einheiten passen in kein Zeitfenster.
+   Vorschlag: Sie stehen in der Spalte ihrer Teilnahme mit Datum und Uhrzeit (wie heute im Entwurf in Abschnitt 4 des
+   Datenmodells).
+9. **Mehrere Absagen im selben Zeitfenster** (A abgesagt, dann auch die Doppelstunde von B): Die Absage-Zelle zeigt
+   beide untereinander.
+10. **Bedienung:** Ziehen am Rand ist wie die Tastaturkürzel eher Luxus und am Tablet fummelig. Vorschlag: In der frei
+    gewordenen Zelle stehen Knöpfe „+ Doppelstunde B“ und „+ Doppelstunde C“ (die Nachbarn). Ziehen ließe sich später
+    ergänzen, der Endpunkt bliebe derselbe.
+11. **Unverändert:** Abrechnung (Pauschale je Teilnahme), Nachholregel (A: Absage durch Sonja → nachholen, durch
+    Schüler:in → verfällt), Ferien (löschen auch Doppelstunden).
+
 **C5 Schnupperstunden** – erledigt 2026-11-13
 
 - Entity `TrialLesson`, Anlegen und Liste, Übernahme in eine Teilnahme (Transaktion, `fromTrial`).

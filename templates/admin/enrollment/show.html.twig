@@ -27,7 +27,7 @@
                         {% for lesson in enrollment.lessons %}
                             <tr>
                                 <td class="text-nowrap"><a href="{{ path('admin_lesson_edit', {id: lesson.id}) }}">{{ ('weekday_short.' ~ lesson.startsAt|date('N'))|trans({}, 'admin') }} {{ lesson.startsAt|date('d.m.Y H:i') }}</a></td>
-                                <td>{{ lesson.status.labelKey|trans({}, 'admin') }}</td>
+                                <td>{{ lesson_state(lesson).labelKey|trans({}, 'admin') }}</td>
                                 <td>
                                     {{ lesson.note }}
                                     {% if lesson.makeUpFor %}

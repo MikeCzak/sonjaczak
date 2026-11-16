@@ -6,7 +6,7 @@ namespace App\Tests\Lesson;
 
 use App\Entity\Course;
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
 use App\Lesson\MakeUpRule;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -32,10 +32,10 @@ final class MakeUpRuleTest extends TestCase
         $enrollment = new Enrollment(new Course()->setPlannedLessons(15));
         for ($i = 0; $i < 15; ++$i) {
             $lesson = new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30')->modify("+$i weeks"));
-            $lesson->setStatus(match (true) {
-                $i < $bySonja => LessonStatus::CancelledByTeacher,
-                $i < $bySonja + $byStudent => LessonStatus::CancelledByStudent,
-                default => LessonStatus::Held,
+            $lesson->setCancelledBy(match (true) {
+                $i < $bySonja => CancelledBy::Teacher,
+                $i < $bySonja + $byStudent => CancelledBy::Student,
+                default => null,
             });
         }
 
@@ -55,7 +55,7 @@ final class MakeUpRuleTest extends TestCase
     public function testMakeUpLessonCounts(): void
     {
         $enrollment = new Enrollment(new Course()->setPlannedLessons(2));
-        $cancelled = new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30'))->setStatus(LessonStatus::CancelledByTeacher);
+        $cancelled = new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30'))->setCancelledBy(CancelledBy::Teacher);
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-16 15:30'));
         self::assertSame(1, new MakeUpRule()->due($enrollment));
 

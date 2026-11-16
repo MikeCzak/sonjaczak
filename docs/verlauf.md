@@ -340,3 +340,16 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   eine Umbenennung vor, die den alten Wert 0 übernommen hätte; ergänzt um `UPDATE … = 15`. Hin und zurück lokal
   geprüft. Tests: Fall „mehr gehalten als geplant“ neu, Einstellungstest prüft jetzt die Vorbelegung des
   Kursformulars. 114 Tests grün, PHPStan ohne Fehler, Schema in Sync.
+
+## 2026-11-16
+
+- Sicherung um 12:00 erstmals automatisch über launchd (33 784 Byte).
+- C4 geplant, Entscheidungen von Mike: eigene Rasterseite, Stimulus nur im Admin, JavaScript per Headless Chrome
+  prüfen, nur Knöpfe statt Tastaturkürzel, `PATCH /admin/einheiten/{id}`, Popup vor dem Löschen von Einheiten durch
+  Ferien, Ferien löschen legt die Einheit wieder an, Doppelstunde = zweite Einheit.
+- Zweimal beim Einfügen in `umsetzung-admin.md` per Skript den Rest der Datei abgeschnitten (Slicing ohne Rest), beide
+  Male aus dem letzten Commit wiederhergestellt, Diff danach nur mit hinzugefügten Zeilen.
+- Status der Einheit umgebaut: `status` → `cancelledBy` (nullable), „gehalten“ abgeleitet (`Lesson::state()`,
+  Twig-Funktion `lesson_state`). Migration `Version20261116110522` von Hand (Diff hätte die Absagen gelöscht), lokal hin
+  und zurück geprüft. `applyBreaks()` löscht vorerst nur zukünftige Einheiten. Ein Test hing am heutigen Datum und
+  legt die Zeit jetzt fest. Neuer `LessonTest`. 120 Tests grün, PHPStan ohne Fehler, Schema in Sync.

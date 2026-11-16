@@ -6,7 +6,6 @@ namespace App\Lesson;
 
 use App\Entity\Course;
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
 use App\Entity\Lesson;
 
 /**
@@ -52,10 +51,13 @@ final class LessonPlanner
     }
 
     /**
-     * After breaks were added: removes planned lessons that fall into a break and fills up again at the end.
-     * Lessons already held or cancelled in a break stay and are returned as conflicts for Sonja to look at.
+     * After breaks were added: removes lessons in a break that are neither cancelled nor over, and fills up again at
+     * the end. Cancelled or past lessons in a break stay and are returned as conflicts for Sonja to look at.
+     *
+     * Interim rule since 2026-11-16 ("held" is no longer stored, so the time decides). Planned: all lessons in the
+     * break go after a confirmation (umsetzung-admin.md C4, question 6).
      */
-    public function applyBreaks(Course $course): BreakResult
+    public function applyBreaks(Course $course, \DateTimeInterface $now): BreakResult
     {
         $result = new BreakResult();
 
@@ -65,7 +67,8 @@ final class LessonPlanner
                 if (null === $startsAt || !$course->isBreakDay($startsAt)) {
                     continue;
                 }
-                if (LessonStatus::Planned === $lesson->getStatus()) {
+                $endsAt = $lesson->getEndsAt();
+                if (!$lesson->isCancelled() && null !== $endsAt && $endsAt > $now) {
                     // orphanRemoval: removed from the collection, the row is deleted on flush
                     $enrollment->removeLesson($lesson);
                     ++$result->removed;

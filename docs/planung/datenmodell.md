@@ -85,7 +85,7 @@ erDiagram
         int id
         datetime startsAt
         int durationMinutes
-        string status "Enum"
+        string cancelledBy "Enum, NULL = nicht abgesagt"
         text note "Inhalt oder Absagegrund"
         bool fromTrial "war Schnupperstunde"
     }
@@ -277,17 +277,20 @@ Ein Kurs ist das, was bisher „Semester“ hieß, z. B. Wintersemester 2026/27 
   `lesson.enrollment.student`. Damit ist die Redundanz aus dem ersten Entwurf weg, weil Schnupperstunden eine eigene
   Entity bekommen (Abschnitt 3.6).
 - **Einheiten werden erzeugt** (Antwort 5): Beim Anlegen einer Teilnahme erzeugt die App ab `course.startsOn`
-  wöchentlich Einheiten mit Status `planned` im Zeitfenster der Teilnahme, außer in den Ferien, **bis
+  wöchentlich Einheiten im Zeitfenster der Teilnahme, außer in den Ferien, **bis
   `plannedLessons` erreicht ist** (eine übernommene Schnupperstunde zählt mit, Abschnitt 3.6), höchstens bis
   `course.endsOn`. Reicht der Zeitraum nicht für alle Einheiten, zeigt das Raster „14 von 15“. Ein späterer Einstieg
   ins Semester kommt nicht vor (Runde 2, Frage 5), Enrollment braucht also kein eigenes Startdatum. Trägt Sonja später Ferien ein, entfernt die App die geplanten Einheiten in diesem Zeitraum. Bereits
   gehaltene oder abgesagte bleiben und werden als Konflikt angezeigt.
 - **`startsAt` + `durationMinutes`:** Verschiebungen und Doppelstunden ändern nur diese eine Einheit, nicht das
   Zeitfenster der Teilnahme.
-- **`status`** als Enum: `planned`, `held`, `cancelled_by_student` (verfällt), `cancelled_by_teacher` (ggf. nachholen).
-  Wer abgesagt hat, ist eine fachliche Kategorie, kein Login.
+- ~~**`status`** als Enum: `planned`, `held`, `cancelled_by_student`, `cancelled_by_teacher`.~~ **Geändert
+  2026-11-16** (Mike, `umsetzung-admin.md` C4, Frage 5): **`cancelledBy`** als nullable Enum `student` (verfällt) oder
+  `teacher` (ggf. nachholen), `NULL` = nicht abgesagt. Dass eine Einheit existiert, heißt „geplant“; „gehalten“ wird
+  aus der Zeit abgeleitet (nicht abgesagt und Ende vorbei), nicht gespeichert. Wer abgesagt hat, ist eine fachliche
+  Kategorie, kein Login.
 - **`note`** (vorher `summary`): ein Textfeld für den Inhalt („Runaway“, „Tauflieder“) oder den Absagegrund („krank“).
-  Was gemeint ist, sagt der Status. So sieht es auch in Sonjas Liste aus: eine Zelle je Schülerin und Woche.
+  Was gemeint ist, sagt `cancelledBy`. So sieht es auch in Sonjas Liste aus: eine Zelle je Schülerin und Woche.
 - **Nachholstunde als Selbstreferenz** `makeUpFor` (Lesson → Lesson, nullable): Die Nachholstunde zeigt auf die
   ausgefallene Einheit. So bleibt nachvollziehbar, welche Absage nachgeholt wurde.
 - **Nachholregel:** Gezählt werden alle Einheiten der Teilnahme außer `cancelled_by_teacher`. Liegt die Zahl unter
@@ -314,8 +317,8 @@ Felder: Schüler:in, `startsAt`, `durationMinutes`, `note`. Wer zur Schnupperstu
 **Übernahme in den Kurs:** Wird aus der Schnupperstunde eine Teilnahme, zählt sie als gehaltene Einheit. Beim Anlegen
 der Teilnahme bietet die App die Schnupperstunden dieser Schülerin zur Übernahme an. Übernehmen heißt:
 
-1. Eine Lesson mit `startsAt`, `durationMinutes` und `note` der Schnupperstunde, Status `held`, `fromTrial = true`
-   anlegen.
+1. Eine Lesson mit `startsAt`, `durationMinutes` und `note` der Schnupperstunde, `fromTrial = true` anlegen (seit
+   2026-11-16 ohne Status: sie liegt in der Vergangenheit und gilt damit als gehalten).
 2. Die TrialLesson löschen. Eine Spur „war Schnupperstunde“ bleibt über `fromTrial`, das Raster kann sie so
    kennzeichnen.
 3. Erst danach die übrigen Einheiten erzeugen. Die übernommene zählt mit, es entstehen also 14 statt 15.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form\Admin;
 
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -25,11 +25,14 @@ final class LessonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('status', EnumType::class, [
-                'label' => 'lesson.field.status',
-                'class' => LessonStatus::class,
-                'choice_label' => static fn (LessonStatus $status): string => $status->labelKey(),
+            ->add('cancelledBy', EnumType::class, [
+                'label' => 'lesson.field.cancelled_by',
+                'class' => CancelledBy::class,
+                'choice_label' => static fn (CancelledBy $cancelledBy): string => $cancelledBy->labelKey(),
                 'expanded' => true,
+                // Not required: the empty choice stores NULL (not cancelled)
+                'required' => false,
+                'placeholder' => 'lesson.cancelled_by.none',
             ])
             ->add('note', TextareaType::class, [
                 'label' => 'lesson.field.note',

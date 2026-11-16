@@ -16,6 +16,7 @@ use App\Repository\CourseRepository;
 use App\Repository\SettingsRepository;
 use App\Security\Voter\CourseVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Clock\ClockInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -36,6 +37,7 @@ final class CourseController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly LessonPlanner $planner,
         private readonly SettingsRepository $settings,
+        private readonly ClockInterface $clock,
     ) {
     }
 
@@ -180,12 +182,12 @@ final class CourseController extends AbstractController
     }
 
     /**
-     * New breaks: planned lessons in them go, the enrollments are filled up at the end (LessonPlanner).
-     * Held or cancelled lessons in a break stay; Sonja gets a warning to look at them.
+     * New breaks: future lessons in them go, the enrollments are filled up at the end (LessonPlanner).
+     * Past or cancelled lessons in a break stay; Sonja gets a warning to look at them.
      */
     private function applyBreaks(Course $course): void
     {
-        if ([] !== $this->planner->applyBreaks($course)->conflicts) {
+        if ([] !== $this->planner->applyBreaks($course, $this->clock->now())->conflicts) {
             $this->addFlash('warning', 'course_break.flash.conflicts');
         }
     }

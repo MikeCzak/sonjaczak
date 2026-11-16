@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Lesson;
 
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
 use App\Entity\Lesson;
 use App\Entity\TrialLesson;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,8 +40,8 @@ final readonly class TrialTakeover
                     throw new \LogicException('Only trial lessons of the enrolled student can be taken over.');
                 }
 
+                // In the past, so it shows as held without a flag
                 new Lesson($enrollment, $trial->getStartsAt(), $trial->getDurationMinutes())
-                    ->setStatus(LessonStatus::Held)
                     ->setNote($trial->getNote())
                     ->setFromTrial(true);
                 $student->getTrialLessons()->removeElement($trial);

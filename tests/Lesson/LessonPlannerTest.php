@@ -7,7 +7,7 @@ namespace App\Tests\Lesson;
 use App\Entity\Course;
 use App\Entity\CourseBreak;
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
 use App\Lesson\LessonPlanner;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +27,7 @@ final class LessonPlannerTest extends TestCase
         self::assertSame('2026-11-06 15:30', $days[3], 'Herbstferien week is skipped');
         self::assertCount(15, $days);
         foreach ($enrollment->getLessons() as $lesson) {
-            self::assertSame(LessonStatus::Planned, $lesson->getStatus());
+            self::assertFalse($lesson->isCancelled());
             self::assertSame(50, $lesson->getDurationMinutes());
         }
     }
@@ -58,8 +58,8 @@ final class LessonPlannerTest extends TestCase
         $planner->fillUp($enrollment);
 
         $lessons = $enrollment->getLessons()->toArray();
-        $lessons[0]->setStatus(LessonStatus::CancelledByStudent);
-        $lessons[1]->setStatus(LessonStatus::CancelledByTeacher);
+        $lessons[0]->setCancelledBy(CancelledBy::Student);
+        $lessons[1]->setCancelledBy(CancelledBy::Teacher);
 
         // Filling up never replaces a cancellation: whether Sonja's is made up is the make-up rule's business
         self::assertSame(0, $planner->fillUp($enrollment));
@@ -67,18 +67,17 @@ final class LessonPlannerTest extends TestCase
         self::assertSame(14, $enrollment->countedLessons());
     }
 
-    public function testNewBreakRemovesPlannedLessonsKeepsOthersAndFillsUpAtTheEnd(): void
+    public function testNewBreakRemovesFutureLessonsKeepsPastOnesAndFillsUpAtTheEnd(): void
     {
         $planner = new LessonPlanner();
         $course = $this->course('2026-10-05', '2027-06-30');
         $enrollment = $this->enrollment($course);
         $planner->fillUp($enrollment);
         $lessons = $enrollment->getLessons()->toArray();
-        $lessons[0]->setStatus(LessonStatus::Held);
 
-        // A break over the first two Fridays: the held one stays as a conflict, the planned one goes
+        // A break over the first two Fridays, entered on 10 October: 9.10. is over and stays as a conflict, 16.10. goes
         $course->addBreak($this->break('2026-10-09', '2026-10-16'));
-        $result = $planner->applyBreaks($course);
+        $result = $planner->applyBreaks($course, new \DateTimeImmutable('2026-10-10 09:00'));
 
         self::assertSame(1, $result->removed);
         self::assertSame([$lessons[0]], $result->conflicts);

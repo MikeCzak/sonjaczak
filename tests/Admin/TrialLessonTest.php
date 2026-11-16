@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Admin;
 
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
 use App\Entity\Lesson;
 use App\Repository\EnrollmentRepository;
 use App\Tests\Factory\CourseFactory;
@@ -60,7 +59,7 @@ final class TrialLessonTest extends WebTestCase
         $first = $lessons->first();
         self::assertInstanceOf(Lesson::class, $first);
         self::assertTrue($first->isFromTrial());
-        self::assertSame(LessonStatus::Held, $first->getStatus());
+        self::assertFalse($first->isCancelled());
         self::assertSame('2026-09-30 16:00', $first->getStartsAt()?->format('Y-m-d H:i'));
         self::assertSame('Stimmumfang, „Someone Like You“', $first->getNote());
         TrialLessonFactory::assert()->empty();

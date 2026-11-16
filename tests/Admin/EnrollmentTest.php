@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Admin;
 
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
 use App\Repository\EnrollmentRepository;
 use App\Repository\LessonRepository;
@@ -16,6 +16,7 @@ use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Clock\Test\ClockSensitiveTrait;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -24,6 +25,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class EnrollmentTest extends WebTestCase
 {
+    use ClockSensitiveTrait;
     use Factories;
     use ResetDatabase;
 
@@ -82,7 +84,7 @@ final class EnrollmentTest extends WebTestCase
 
         $client->request('GET', '/admin/einheiten/'.$first->getId());
         $client->submitForm('Speichern', [
-            'lesson[status]' => LessonStatus::CancelledByTeacher->value,
+            'lesson[cancelledBy]' => CancelledBy::Teacher->value,
             'lesson[note]' => 'krank',
         ]);
         self::assertResponseRedirects('/admin/teilnahmen/'.$enrollment->getId());
@@ -99,8 +101,10 @@ final class EnrollmentTest extends WebTestCase
         self::assertSelectorNotExists('a:contains("Nachholstunde eintragen")');
     }
 
-    public function testNewBreakRemovesPlannedLessons(): void
+    public function testNewBreakRemovesFutureLessons(): void
     {
+        // Entered before the break: past lessons would stay (LessonPlanner::applyBreaks())
+        self::mockTime(new \DateTimeImmutable('2026-10-01 10:00'));
         $client = $this->loggedInClient();
         $enrollment = EnrollmentFactory::createOne();
         $course = $enrollment->getCourse();
@@ -128,7 +132,7 @@ final class EnrollmentTest extends WebTestCase
         $courseId = $enrollment->getCourse()->getId();
         $lessons = $enrollment->getLessons()->toArray();
         // A make-up lesson points to a cancelled one: deleting both together must work (ON DELETE SET NULL)
-        $lessons[0]->setStatus(LessonStatus::CancelledByTeacher);
+        $lessons[0]->setCancelledBy(CancelledBy::Teacher);
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-13 15:30'))->setMakeUpFor($lessons[0]);
         self::getContainer()->get(EntityManagerInterface::class)->flush();
         self::assertSame(16, self::getContainer()->get(LessonRepository::class)->count([]));

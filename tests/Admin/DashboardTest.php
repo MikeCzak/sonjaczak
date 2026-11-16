@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Admin;
 
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Enum\PaymentMethod;
 use App\Entity\Payment;
 use App\Tests\Factory\EnrollmentFactory;
@@ -39,8 +39,9 @@ final class DashboardTest extends WebTestCase
         $student = StudentFactory::createOne(['firstName' => 'Lena', 'lastName' => 'Muster']);
         $enrollment = EnrollmentFactory::createOne(['student' => $student]);
         $lessons = $enrollment->getLessons()->getValues();
-        $lessons[3]->setStatus(LessonStatus::Held)->setNote('Skyfall');
-        $lessons[4]->setStatus(LessonStatus::CancelledByTeacher);
+        // 30.10. is over at the mocked time, so it counts as held without a flag
+        $lessons[3]->setNote('Skyfall');
+        $lessons[4]->setCancelledBy(CancelledBy::Teacher);
         self::getContainer()->get(EntityManagerInterface::class)->flush();
 
         TrialLessonFactory::createOne(['student' => StudentFactory::new()->create(['firstName' => 'Tom', 'lastName' => 'Probe']), 'startsAt' => new \DateTimeImmutable('2026-11-16 17:00')]);

@@ -283,13 +283,17 @@ enrollment:
         deleted: Gelöscht.
 lesson:
     heading: Einheiten
-    status:
+    state:
         planned: geplant
         held: gehalten
         cancelled_by_student: abgesagt (Schüler:in)
         cancelled_by_teacher: abgesagt (ich)
+    cancelled_by:
+        none: nicht abgesagt
+        student: abgesagt (Schüler:in)
+        teacher: abgesagt (ich)
     field:
-        status: Status
+        cancelled_by: Absage
         note: Notiz
         note_help: Inhalt der Stunde oder Grund der Absage.
         starts_at: Beginn

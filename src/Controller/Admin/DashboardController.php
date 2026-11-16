@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Enum\InvoiceStatus;
-use App\Entity\Enum\LessonStatus;
 use App\Entity\Invoice;
 use App\Entity\User;
 use App\Lesson\MakeUpRule;
@@ -61,12 +60,12 @@ final class DashboardController extends AbstractController
         foreach ($courses->findRunningOn($today) as $course) {
             $rows = [];
             foreach ($course->getEnrollments() as $enrollment) {
-                $held = $enrollment->getLessons()->filter(static fn ($lesson): bool => LessonStatus::Held === $lesson->getStatus());
+                $held = $enrollment->getLessons()->filter(static fn ($lesson): bool => $lesson->isHeld($now));
                 $rows[] = [
                     'enrollment' => $enrollment,
                     'last' => $held->last() ?: null,
                     'held' => $held->count(),
-                    'cancelled' => $enrollment->getLessons()->filter(static fn ($lesson): bool => \in_array($lesson->getStatus(), [LessonStatus::CancelledByStudent, LessonStatus::CancelledByTeacher], true))->count(),
+                    'cancelled' => $enrollment->getLessons()->filter(static fn ($lesson): bool => $lesson->isCancelled())->count(),
                     'make_up_due' => $makeUpRule->due($enrollment),
                 ];
                 if (!$enrollment->getInvoices()->exists(static fn (int $key, Invoice $invoice): bool => !$invoice->isCreditNote())) {

@@ -226,7 +226,7 @@ class Enrollment
      */
     public function countedLessons(): int
     {
-        return $this->lessons->filter(static fn (Lesson $lesson): bool => $lesson->getStatus()->counts())->count();
+        return $this->lessons->filter(static fn (Lesson $lesson): bool => $lesson->counts())->count();
     }
 
     /**

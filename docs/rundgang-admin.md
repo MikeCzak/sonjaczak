@@ -35,7 +35,7 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 
 1. „Kurse“ → Wintersemester 2026/27: Ferien (aus den Fixtures), Teilnahmen mit „x von 15“ und Nachholhinweis.
 2. Einen Ferientag ergänzen, der auf einen Freitag mit geplanter Einheit fällt: Die Einheit verschwindet, am Ende kommt
-   eine dazu. Die Meldung nennt Konflikte (gehaltene Einheiten in den Ferien).
+   eine dazu. Die Meldung nennt Konflikte (vergangene oder abgesagte Einheiten in den Ferien).
 3. Neuen Kurs anlegen (z. B. Sommersemester 2027): Die Ferien werden aus der OpenHolidays API vorgeschlagen (braucht
    Internet).
 
@@ -43,7 +43,8 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 
 1. Im Kurs die erste Teilnahme öffnen: Liste der Einheiten mit Status, „1 Nachholstunde fällig“ (wegen der Absage
    durch Sonja).
-2. Eine Einheit anklicken: Status (gehalten, abgesagt) und Inhalt eintragen. Das ist der Ablauf, den das Kursraster
+2. Eine Einheit anklicken: Absage (Schüler:in, ich oder keine) und Inhalt eintragen. „Gehalten“ wird nicht mehr
+   eingetragen, es ergibt sich aus der Zeit. Das ist der Ablauf, den das Kursraster
    (C4) später ersetzt.
 3. „Nachholstunde eintragen“: Termin wählen und mit der abgesagten Einheit verknüpfen.
 

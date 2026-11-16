@@ -6,7 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Course;
 use App\Entity\Enrollment;
-use App\Entity\Enum\LessonStatus;
+use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
 use App\Entity\Student;
 use App\Entity\TrialLesson;
@@ -152,7 +152,7 @@ final class EnrollmentController extends AbstractController
 
         return array_values(array_filter(
             $enrollment->getLessons()->toArray(),
-            static fn (Lesson $lesson): bool => LessonStatus::CancelledByTeacher === $lesson->getStatus() && !\in_array($lesson, $madeUp, true),
+            static fn (Lesson $lesson): bool => CancelledBy::Teacher === $lesson->getCancelledBy() && !\in_array($lesson, $madeUp, true),
         ));
     }
 }
