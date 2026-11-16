@@ -1,0 +1,5 @@
+{# "14 von 15", with the course's number and the reason when the enrollment has its own number (umsetzung-admin.md C7) #}
+{{- 'enrollment.count'|trans({'%counted%': enrollment.countedLessons, '%planned%': enrollment.plannedLessons}, 'admin') -}}
+{%- if enrollment.hasOwnPlannedLessons %}
+    <span class="text-body-secondary" title="{{ enrollment.plannedLessonsReason }}">{{ 'enrollment.planned.course_number'|trans({'%count%': enrollment.course.plannedLessons}, 'admin') }}</span>
+{%- endif -%}

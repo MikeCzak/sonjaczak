@@ -386,3 +386,12 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   gespeichert, bestätigen → 5 entfernt, 5 angelegt, zurück im Raster; Ferien löschen → Einheiten wieder da, dabei kam
   auch eine vorher gelöschte zurück, siehe Projektstand). 146 Tests grün, PHPStan ohne Fehler.
 - C4f: Erklärung `erklaerungen/18-kursraster.md`. Damit ist C (Kurse, Teilnahmen, Raster) lokal fertig.
+- C7 (Anzahl der Einheiten je Teilnahme, Teilnahme beenden): Beratung zu „Einheit ohne Ersatz löschen“ und „Absage vor
+  Kursbeginn“ → Option C (Mike). `Enrollment.plannedLessons` als Kopie aus dem Kurs; Doctrines Migration hätte
+  `ADD … NOT NULL` ohne Wert vorgeschlagen (scheitert bei bestehenden Zeilen) → erst nullable, aus dem Kurs befüllen,
+  dann `NOT NULL`. Formular mit Bestätigungsschritt ohne JavaScript, Untergrenze = begonnene reguläre Einheiten.
+  Beim Umsetzen gefunden: Der Entwurf für den Einzelfall („abgesagte Einheit stehen lassen, Anzahl −1“) geht nicht auf,
+  weil Planer und Nachholregel verschieden zählen → Korrektur im Plan, Frage nach „Jetzt“. Übersetzungstest fand
+  Schlüssel über eine eigene `trans()`-Hilfsmethode nicht (Extractor sieht die Domain nicht) → direkt
+  `$this->translator->trans(…, 'admin')`. Im Browser geprüft (Formular, Rückfrage mit Liste, nicht bestätigt).
+  154 Tests grün, PHPStan ohne Fehler.

@@ -255,7 +255,7 @@ final class LessonController extends AbstractController
             'id' => $enrollment->getId(),
             'count' => $this->translator->trans('enrollment.count', [
                 '%counted%' => $enrollment->countedLessons(),
-                '%planned%' => $enrollment->getCourse()->getPlannedLessons(),
+                '%planned%' => $enrollment->getPlannedLessons(),
             ], 'admin'),
             'makeUpsDue' => $due,
             'makeUpLabel' => $due > 0 ? $this->translator->trans('enrollment.make_up_due', ['%count%' => $due], 'admin') : null,

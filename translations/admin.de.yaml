@@ -308,7 +308,23 @@ enrollment:
     delete:
         label: Teilnahme löschen
         confirm: Die Teilnahme und alle ihre Einheiten werden endgültig gelöscht.
-        has_invoices: Eine Teilnahme mit Honorarnote kann nicht gelöscht werden.
+        has_invoices: Eine Teilnahme mit Honorarnote kann nicht gelöscht werden. Endet sie vorzeitig, setze die Anzahl der Einheiten herab („Teilnahme beenden“).
+    planned:
+        heading: Anzahl der Einheiten
+        help: 'Vereinbart sind so viele Einheiten, wie hier steht (Kurs: %course%). Weniger, wenn Einheiten ersatzlos entfallen; die Einheiten am Ende werden dann gelöscht. %minimum% Einheiten haben schon begonnen, weniger geht nicht. „Teilnahme beenden“ setzt genau diese Zahl. Geld wird hier nicht verrechnet: Gibt es eine Honorarnote, erstelle dort eine Gutschrift.'
+        course_number: '(Kurs: %count%)'
+        field:
+            count: Einheiten
+            reason: Grund
+            reason_help: Ein Satz reicht, z. B. „Umzug, letzte Stunde 13.11.“
+        save: Anzahl ändern
+        end: Teilnahme beenden
+        confirm: Einheiten löschen und speichern
+        confirm_intro: 'Bei %count% Einheiten werden diese Einheiten gelöscht:'
+        flash:
+            saved: 'Anzahl auf %count% gesetzt. Einheiten: %removed% gelöscht, %added% angelegt.'
+            course_end: 'Bis zum Kursende ist nur Platz für %count% Einheiten. Weitere als Nachholstunde eintragen oder das Kursende verschieben.'
+            invoice_hint: Für diese Teilnahme gibt es eine Honorarnote. Soll weniger verrechnet werden, erstelle auf der Seite der Honorarnote eine Gutschrift.
     flash:
         created: Teilnahme angelegt, Einheiten sind geplant.
         saved: Gespeichert.

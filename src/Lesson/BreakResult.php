@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Lesson;
 
 /**
- * What LessonPlanner::applyBreaks() or restoreBreakDays() changed.
+ * What LessonPlanner::applyBreaks(), restoreBreakDays() or changePlannedLessons() changed.
  */
 final class BreakResult
 {

@@ -104,7 +104,8 @@ stellen Chrome und Safari dabei in der Regel wieder her, nicht geprüft für all
 
 ### Die eine Regel für die Zahl der Einheiten
 
-Jede Teilnahme hat immer `plannedLessons` reguläre Einheiten (alle außer Nachholstunden, abgesagte zählen mit):
+Jede Teilnahme hat immer `plannedLessons` reguläre Einheiten (alle außer Nachholstunden, abgesagte zählen mit). Die
+Zahl gehört seit C7 der Teilnahme (Kopie aus dem Kurs, wie der Preis):
 
 | Aktion | Folge am Kursende |
 |---|---|
@@ -113,6 +114,13 @@ Jede Teilnahme hat immer `plannedLessons` reguläre Einheiten (alle außer Nachh
 | Absage aufheben löscht Überschneidendes | bei der betroffenen Teilnahme kommt eine dazu |
 | Ferien eintragen | alle Einheiten im Zeitraum gehen, am Ende kommen neue dazu |
 | Ferien löschen | die Einheiten an den freien Tagen kommen zurück, am Ende fallen sie weg (`restoreBreakDays()`) |
+| Anzahl senken, „Teilnahme beenden“ (C7) | die letzten zukünftigen gehen, auch abgesagte (`changePlannedLessons()`) |
+| Anzahl erhöhen (C7) | am Ende kommen welche dazu, höchstens bis Kursende |
+
+**Zwei Zählungen:** Der Planer zählt reguläre Einheiten (eine von Sonja abgesagte behält ihren Platz), die
+Nachholregel zählt alle außer Sonjas Absagen (`Lesson::counts()`). Beide vergleichen mit derselben Zahl. Deshalb hebt
+„Anzahl −1“ eine fällige Nachholstunde nicht auf: Der Planer löscht dafür eine zukünftige Einheit, die Nachholregel
+zählt danach eine weniger (`umsetzung-admin.md` C7, „Korrektur“).
 
 **Fallstrick `fillUp()`:** Es füllt Lücken ab Kursbeginn. Nach dem Löschen hätte es die Einheit in dieselbe Woche
 zurückgelegt. `fillUpAtEnd()` beginnt erst nach der letzten regulären Einheit.

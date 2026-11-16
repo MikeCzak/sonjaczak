@@ -12,7 +12,7 @@
     </h1>
 
     <p>
-        {{ 'enrollment.count'|trans({'%counted%': enrollment.countedLessons, '%planned%': course.plannedLessons}, 'admin') }}
+        {{ include('admin/enrollment/_count.html.twig') }}
         {% if make_up_due > 0 %}
             <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_up_due}, 'admin') }}</span>
         {% endif %}
@@ -56,6 +56,38 @@
             {% else %}
                 <p><a class="btn btn-outline-primary btn-sm" href="{{ path('admin_invoice_new', {id: enrollment.id}) }}">{{ 'invoice.new.title'|trans({}, 'admin') }}</a></p>
             {% endfor %}
+
+            {# C7: planned number of lessons; with "surplus" this is the confirmation step #}
+            <h2 class="h5 mt-4" id="anzahl">{{ 'enrollment.planned.heading'|trans({}, 'admin') }}</h2>
+            <p class="small text-body-secondary">{{ 'enrollment.planned.help'|trans({'%minimum%': planned_minimum, '%course%': course.plannedLessons}, 'admin') }}</p>
+            {{ form_start(planned_form) }}
+                {% if surplus is not empty %}
+                    <div class="alert alert-warning" role="alert">
+                        <p class="mb-1">{{ 'enrollment.planned.confirm_intro'|trans({'%count%': planned_form.plannedLessons.vars.value}, 'admin') }}</p>
+                        <ul class="mb-0">
+                            {% for lesson in surplus %}
+                                <li>{{ ('weekday_short.' ~ lesson.startsAt|date('N'))|trans({}, 'admin') }} {{ lesson.startsAt|date('d.m.Y H:i') }}, {{ lesson_state(lesson).labelKey|trans({}, 'admin') }}{{ lesson.note ? ' (' ~ lesson.note ~ ')' }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {{ form_row(planned_form.plannedLessons, {attr: {readonly: true}}) }}
+                    {{ form_row(planned_form.reason) }}
+                    {{ form_widget(planned_form.confirm) }}
+                    <a class="btn btn-link" href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}#anzahl">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+                    {% do planned_form.save.setRendered %}
+                    {% do planned_form.end.setRendered %}
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-4">{{ form_row(planned_form.plannedLessons) }}</div>
+                        <div class="col-md-8">{{ form_row(planned_form.reason) }}</div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        {{ form_widget(planned_form.save, {attr: {class: 'btn-outline-primary'}}) }}
+                        {{ form_widget(planned_form.end) }}
+                    </div>
+                    {% do planned_form.confirm.setRendered %}
+                {% endif %}
+            {{ form_end(planned_form) }}
 
             <h2 class="h5 mt-4">{{ 'enrollment.edit.heading'|trans({}, 'admin') }}</h2>
             <p class="small text-body-secondary">{{ 'enrollment.edit.slot_hint'|trans({}, 'admin') }}</p>

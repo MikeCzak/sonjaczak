@@ -60,6 +60,10 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    eingetragen, es ergibt sich aus der Zeit. Das ist der Ablauf, den das Kursraster
    (C4) später ersetzt.
 3. „Nachholstunde eintragen“: Termin wählen und mit der abgesagten Einheit verknüpfen.
+4. „Anzahl der Einheiten“ (C7): auf 12 senken, Grund eintragen → Liste der drei Einheiten, die gehen; erst „Einheiten
+   löschen und speichern“ löscht sie. Oben steht dann „12 von 12 (Kurs: 15)“, auch im Raster. „Teilnahme beenden“
+   setzt die Zahl auf die schon begonnenen Einheiten; bei einer Teilnahme mit Honorarnote folgt der Hinweis auf die
+   Gutschrift. Weniger als begonnen geht nicht (Fehlermeldung).
 
 ## 5. Schnupperstunde übernehmen
 

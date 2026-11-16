@@ -58,6 +58,22 @@ class Enrollment
     #[Assert\PositiveOrZero]
     private int $priceCents;
 
+    /**
+     * How many lessons Sonja owes (App\Lesson\MakeUpRule) and the planner keeps (App\Lesson\LessonPlanner). Copied
+     * from the course when created, then independent like the price: lowered when lessons are dropped without
+     * replacement or the enrollment ends early (umsetzung-admin.md C7). 0 = ended before the course began.
+     */
+    #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(min: 0, max: 40)]
+    private int $plannedLessons;
+
+    /**
+     * Why plannedLessons differs from the course (C7: required when Sonja changes it).
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $plannedLessonsReason = null;
+
     #[ORM\Column(length: 20, enumType: Billing::class)]
     private Billing $billing = Billing::Semester;
 
@@ -84,7 +100,7 @@ class Enrollment
     private Collection $invoices;
 
     /**
-     * Takes price and lesson length from the course; the invoice goes to the guardian if the student is a minor
+     * Takes price, lesson length and planned number of lessons from the course; the invoice goes to the guardian if the student is a minor
      * at the start of the course (datenmodell.md 3.4), Sonja can change both.
      */
     public function __construct(Course $course, ?Student $student = null)
@@ -92,6 +108,7 @@ class Enrollment
         $this->course = $course;
         $this->lessonMinutes = $course->getLessonMinutes();
         $this->priceCents = $course->getPriceCents();
+        $this->plannedLessons = $course->getPlannedLessons();
         $this->lessons = new ArrayCollection();
         $this->invoices = new ArrayCollection();
         $this->setStudent($student);
@@ -173,6 +190,38 @@ class Enrollment
         return $this;
     }
 
+    public function getPlannedLessons(): int
+    {
+        return $this->plannedLessons;
+    }
+
+    public function setPlannedLessons(int $plannedLessons): static
+    {
+        $this->plannedLessons = $plannedLessons;
+
+        return $this;
+    }
+
+    public function getPlannedLessonsReason(): ?string
+    {
+        return $this->plannedLessonsReason;
+    }
+
+    public function setPlannedLessonsReason(?string $plannedLessonsReason): static
+    {
+        $this->plannedLessonsReason = $plannedLessonsReason;
+
+        return $this;
+    }
+
+    /**
+     * True if the number was changed for this enrollment (or the course's number was changed afterwards).
+     */
+    public function hasOwnPlannedLessons(): bool
+    {
+        return $this->plannedLessons !== $this->course->getPlannedLessons();
+    }
+
     public function getBilling(): Billing
     {
         return $this->billing;
@@ -222,7 +271,7 @@ class Enrollment
     }
 
     /**
-     * Lessons that count towards the course's planned number (all except cancellations by Sonja).
+     * Lessons that count towards the planned number (all except cancellations by Sonja).
      */
     public function countedLessons(): int
     {

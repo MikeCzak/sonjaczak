@@ -12,7 +12,11 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Keine Frage offen.
+1. **Einzelne abgesagte Einheit ersatzlos** (2026-11-16, `umsetzung-admin.md` C7, „Korrektur“): Sagt Sonja eine Einheit
+   ab und holt sie nicht nach, reicht das Senken der Anzahl nicht (die Nachholstunde bleibt fällig). Heute: Einheit im
+   Raster löschen, dann Anzahl um 1 senken. Reicht dieser Umweg für den seltenen Fall, oder soll zusätzlich eine
+   Absage-Art „entfällt ersatzlos“ dazukommen (Option A, die Einheit bliebe sichtbar)? Empfehlung: Umweg reicht vorerst.
+   Antwort:
 
 **Todos für Mike (keine Frage offen):**
 
@@ -34,11 +38,6 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
-- [ ] **Teilnahme beenden** (2026-11-16, aus `umsetzung-admin.md` C4, Frage 10): Hört eine Schülerin mitten im Semester
-  auf, braucht es einen eigenen Ablauf, nicht das Löschen einzelner Einheiten (das füllt am Kursende wieder auf). Zu
-  klären, bevor geplant wird: Was passiert mit den zukünftigen Einheiten (löschen, als abgesagt stehen lassen)? Mit der
-  Honorarnote (bleibt sie voll, Gutschrift für nicht gehaltene Einheiten, Rückzahlung)? Mit fälligen Nachholstunden?
-  Bleibt die Teilnahme sichtbar (z. B. „beendet am …“) und zählt sie im Dashboard und Export mit?
 - [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3; seit 2026-11-16 werden alle Einheiten im Zeitraum gelöscht, nach
   Rückfrage): Für entfallene Einheiten kommen am Ende neue dazu (bis zum Kursende).
 - [ ] **Ferien löschen gibt auch gelöschte Einheiten zurück** (2026-11-16, `umsetzung-admin.md` C4-0): Wird eine Ferienwoche
@@ -67,12 +66,21 @@ verlinkten Erklärung.
 
 - [ ] **Gutschrift und Zahlung als ein Konto** (2026-11-13, D3, `erklaerungen/13`): zu zahlen = Betrag minus
   Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (Antwort 8 im Datenmodell)?
+  Dazu (2026-11-16): Honorarnoten werden nie gelöscht (die App hat keinen Weg dafür), jede Korrektur ist eine
+  Gutschrift, auch eine volle aus Kulanz, wenn eine Schüler:in vor Kursbeginn absagt. Reicht das, oder braucht es
+  ein Storno mit eigener Kennzeichnung?
 - [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
   der Export ordnet streng nach Zahlungsdatum zu.
 - [ ] **Lösch- und Anonymisierungsregel** (2026-11-13, `umsetzung-admin.md` F; **zurückgestellt**, Mike: „für später
   aufheben“). Grundlage: § 132 BAO, 7 Jahre ab Schluss des Kalenderjahres (Zitat in `umsetzung-admin.md` F). Beispiel:
   Honorarnoten ab dem 8. Jahr anonymisieren, Schüler:innen ohne Teilnahmen in Frist löschen. Hängt damit zusammen:
   Schüler:innen mit Teilnahmen sind nicht löschbar (C5).
+  Ergänzt 2026-11-16 (Mike): **Nicht mehr aktive Schüler:innen.** Wer in keinem neuen Kurs mehr ist, bleibt heute
+  unbegrenzt gespeichert. Die DSGVO verlangt, Daten nur so lange zu halten wie nötig (Wortlaut noch nicht nachgelesen);
+  das kann mit der Aufbewahrung der Honorarnoten konkurrieren. Technisch: Die Honorarnote hat Name und Adresse als
+  Kopie, hängt aber über die Teilnahme an der Schüler:in (Fremdschlüssel). Löschen ginge daher nur ohne Teilnahmen;
+  sonst Schüler:in anonymisieren (Kontaktdaten leeren, Zeile bleibt). Mit Sonja zu klären: wie lange sie Kontakt halten
+  will (z. B. für spätere Kurse), ab wann jemand „nicht mehr aktiv“ ist.
 
 ### Rechtliches
 
@@ -163,6 +171,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] C4 Kursraster (2026-11-16, `erklaerungen/17-csrf.md`, `erklaerungen/18-kursraster.md`; noch nicht gepusht)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
 - [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`; Schwellwert durch „Einheiten pro Semester“ ersetzt 2026-11-15)
+- [x] C7 Anzahl der Einheiten je Teilnahme, Teilnahme beenden (2026-11-16, `umsetzung-admin.md` C7; noch nicht gepusht)
 - [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)
 - [ ] D2 PDF (entschieden 2026-11-14: dompdf; noch nicht gebaut)
 - [x] D3 Zahlungen und Gutschriften (2026-11-13, `erklaerungen/13`)
@@ -211,6 +220,7 @@ muss).
 | Nachholregel | Mindestzahl = geplante Einheiten des Kurses, kein Schwellwert; Einstellung „Einheiten pro Semester“ belegt neue Kurse vor (2026-11-15) | Absagen durch Schüler:innen werden nie nachgeholt; mehr Einheiten als vereinbart sind möglich, weniger nicht (Mike). `erklaerungen/11` |
 | CSRF im Admin | Stimulus-CSRF-Controller aus dem Rezept entfernt; Formulare weiter über Herkunfts-Header geprüft, Raster mit Session-Token (2026-11-16) | Ein Verfahren für ganze Seite und Tests, kein Ausfall bei fehlendem JavaScript. `erklaerungen/17-csrf.md` |
 | Kursname | Wochentage aus den Teilnahmen angehängt, „Wintersemester 2026/27 (Fr)“, kein eigenes Feld (2026-11-16) | Nichts doppelt speichern, stimmt immer (Mike). `umsetzung-admin.md` „Kursname“ |
+| Anzahl je Teilnahme | Teilnahme hat eine eigene Anzahl der Einheiten (Kopie aus dem Kurs), Grund Pflicht, nicht unter die begonnenen Einheiten; „Teilnahme beenden“ = diese Untergrenze; Geld nur über Gutschrift (2026-11-16) | Häufigster Fall für weniger Einheiten ist ein vorzeitiges Ende aus persönlichem Grund (Mike). `umsetzung-admin.md` C7 |
 | Ferien nachträglich | Alle Einheiten im Zeitraum löschen nach Popup mit Liste, am Ende auffüllen; Ferien löschen gibt die Einheiten zurück (2026-11-16) | Nachträgliche Ferien heißen: nichts fand statt (Mike). `umsetzung-admin.md` C4 Fragen 6, 7 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 

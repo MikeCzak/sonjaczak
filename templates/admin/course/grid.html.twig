@@ -38,7 +38,7 @@
                                 {% for enrollment in column.enrollments %}
                                     <span class="d-block small fw-normal">
                                         <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}</a>
-                                        · {{ 'enrollment.count'|trans({'%counted%': enrollment.countedLessons, '%planned%': course.plannedLessons}, 'admin') }}
+                                        · {{ include('admin/enrollment/_count.html.twig') }}
                                         {% if make_ups_due[enrollment.id] > 0 %}
                                             <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_ups_due[enrollment.id]}, 'admin') }}</span>
                                         {% endif %}

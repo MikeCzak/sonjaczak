@@ -257,6 +257,62 @@ Dateiname `WiSe_2026`) bleibt in allen Varianten unverändert.
 - Entity `Settings` (eine Zeile): Theme, Standarddauer, Schwellwert, Absenderdaten, Unterschrift (Upload, PNG, in der
   Datenbank). `App\Theme\SiteSettings` liest das Theme dann von hier.
 
+**C7 Anzahl der Einheiten je Teilnahme, Teilnahme beenden** – entschieden und erledigt 2026-11-16 (Option C, Fragen 1–4 laut Empfehlung)
+
+Anlass (Mike, 2026-11-16): Fallen aus einem besonderen persönlichen Grund Einheiten ersatzlos weg (eine einzelne,
+mehrere am Ende, oder die ganze Teilnahme vor Kursbeginn), braucht es einen Weg ohne Nachholstunde. Heute ist die Zahl
+fest: `MakeUpRule` rechnet `Kurs.plannedLessons − gezählte Einheiten`, und Löschen füllt am Ende wieder auf
+(`fillUpAtEnd()`). Bisher offen in `projektstand.md` „Teilnahme beenden“.
+
+Optionen (Beratung im Chat 2026-11-16):
+
+| Option | Wie | Pro | Contra |
+|---|---|---|---|
+| **A: Dritte Absage-Art „entfällt ersatzlos“** | Neuer Wert in `CancelledBy`, zählt wie eine Absage durch die Schüler:in | Grund und Datum bleiben je Einheit sichtbar | Für „ab jetzt fällt alles weg“ müsste Sonja jede Einheit einzeln markieren; die Zahl „15“ stimmt dann nicht mehr mit dem Vereinbarten überein |
+| B: Löschen mit Abfrage „am Ende anhängen?“ | Eigener Dialog mit zwei Antworten | Nah am heutigen Ablauf | Nachholregel meldet danach dauerhaft „fällig“; Grund geht verloren |
+| **C: Anzahl je Teilnahme (empfohlen)** | Teilnahme bekommt eine eigene Anzahl, beim Anlegen aus dem Kurs übernommen | Bildet ab, was vereinbart ist; deckt den Einzelfall und das Beenden mit einem Mechanismus ab; gleiches Muster wie Preis und Dauer, die die Teilnahme auch aus dem Kurs kopiert | Migration; welche Einheit ausfiel, steht nur, wenn Sonja sie als abgesagt stehen lässt (statt löscht) |
+
+Ablauf mit C (so umgesetzt):
+
+1. **Teilnahme endet vorzeitig:** Auf der Seite der Teilnahme, Abschnitt „Anzahl der Einheiten“, „Teilnahme beenden“
+   setzt die Anzahl auf die Einheiten, die schon begonnen haben. Die zukünftigen Einheiten werden gelöscht, vorher
+   zeigt die Seite die Liste und fragt nach (ohne JavaScript, zweiter Schritt mit Knopf „Einheiten löschen und
+   speichern“).
+2. **Einheiten am Ende fallen ersatzlos weg:** Anzahl senken; die letzten Einheiten gehen, auch abgesagte.
+   Nachholstunden bleiben, sie zählen nicht zur Anzahl.
+3. **Absage vor Kursbeginn:** Ohne Honorarnote die Teilnahme löschen. Mit Honorarnote „Teilnahme beenden“ (Anzahl 0);
+   die Teilnahme bleibt mit ihren Honorarnoten erhalten.
+4. **Geld:** Nie automatisch. Gibt es eine Honorarnote, zeigt die Seite nach dem Senken einen Hinweis auf die
+   Gutschrift (D3).
+5. **Anzahl erhöhen:** hängt Einheiten am Ende an, höchstens bis Kursende (sonst Hinweis).
+
+**Korrektur zu Fall „einzelne Einheit“ (beim Umsetzen gefunden, 2026-11-16):** Im Entwurf stand, Sonja lasse eine von
+ihr abgesagte Einheit stehen und senke die Anzahl um 1. Das geht nicht auf: Der Planer zählt alle regulären Einheiten
+(auch abgesagte, sie behalten ihren Platz, `LessonPlanner::fillUp()`), die Nachholregel nur die nicht von Sonja
+abgesagten. Senken löscht dann eine zukünftige Einheit, und die Nachholstunde bleibt fällig. Welche abgesagte Einheit
+„ersatzlos“ ist, lässt sich aus einer Zahl nicht ablesen; das bräuchte eine Kennzeichnung je Einheit (Option A).
+Heute geht es so: die abgesagte Einheit im Raster löschen (am Ende kommt eine dazu), dann die Anzahl um 1 senken (die
+neue geht wieder), Grund ins Feld „Grund“. Offene Frage im Projektstand.
+
+Umsetzung:
+
+- `Enrollment::$plannedLessons` (Kopie aus dem Kurs wie Preis und Dauer, 0–40) und `$plannedLessonsReason`;
+  Migration `Version20261116173612` befüllt bestehende Teilnahmen aus dem Kurs.
+- `MakeUpRule` und `LessonPlanner` lesen die Zahl der Teilnahme. Neu im Planer: `minimumPlannedLessons()` (reguläre
+  Einheiten, die schon begonnen haben), `surplusLessons()` (was beim Senken geht), `changePlannedLessons()`.
+- `EnrollmentController::plannedLessons()` (POST `/admin/teilnahmen/{id}/anzahl`), Formular `PlannedLessonsType`
+  (nicht an die Entity gebunden; Knöpfe „Anzahl ändern“, „Teilnahme beenden“, „Einheiten löschen und speichern“;
+  Validierungsgruppen, damit „beenden“ das Zahlenfeld nicht prüft).
+- Anzeige „12 von 12 (Kurs: 15)“, Grund als Tooltip: `templates/admin/enrollment/_count.html.twig` (Teilnahme, Kurs,
+  Raster).
+
+Fragen (beantwortet 2026-11-16, Mike: „C, 1–3 laut Empfehlung“, „4 laut Empfehlung“):
+
+1. Option C, ersetzt A und B; Löschen bleibt „Irrtum, am Ende auffüllen“.
+2. Kopie aus dem Kurs (wie der Preis). Eine spätere Änderung am Kurs wirkt nicht auf bestehende Teilnahmen.
+3. Grund ist Pflicht, sobald Sonja die Anzahl ändert.
+4. Untergrenze: die regulären Einheiten, die schon begonnen haben (gehalten oder abgesagt).
+
 ## D. Honorarnoten
 
 **D1 Honorarnoten erstellen** – erledigt 2026-11-13 (Nummernvergabe mit Advisory Lock statt Wiederholung, siehe `erklaerungen/13`)

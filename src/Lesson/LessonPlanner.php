@@ -11,7 +11,7 @@ use App\Entity\Lesson;
 
 /**
  * Generates the weekly lessons of an enrollment (docs/planung/datenmodell.md 3.5): from the start of the course on
- * the enrollment's weekday and time, skipping breaks, until the course's planned number is reached, at most until
+ * the enrollment's weekday and time, skipping breaks, until the enrollment's planned number is reached, at most until
  * the end of the course. Nothing is flushed; the caller does that.
  */
 final class LessonPlanner
@@ -58,7 +58,7 @@ final class LessonPlanner
         }
 
         $weeksTaken = $this->weeksWithRegularLesson($enrollment);
-        $missing = $course->getPlannedLessons() - $this->regularCount($enrollment);
+        $missing = $enrollment->getPlannedLessons() - $this->regularCount($enrollment);
         $added = 0;
 
         $from = null !== $from && $from > $startsOn ? $from : $startsOn;
@@ -152,7 +152,7 @@ final class LessonPlanner
                 ++$result->added;
             }
             foreach ($created as $ignored) {
-                if ($this->regularCount($enrollment) > $course->getPlannedLessons() && $this->removeLastFutureLesson($enrollment, $now, $created)) {
+                if ($this->regularCount($enrollment) > $enrollment->getPlannedLessons() && $this->removeLastFutureLesson($enrollment, $now, $created)) {
                     ++$result->removed;
                 }
             }
@@ -185,6 +185,55 @@ final class LessonPlanner
         $enrollment->removeLesson($last);
 
         return true;
+    }
+
+    /**
+     * The lowest planned number Sonja can set (umsetzung-admin.md C7, question 4): the regular lessons that already
+     * started, whatever their state. Setting exactly this ends the enrollment.
+     */
+    public function minimumPlannedLessons(Enrollment $enrollment, \DateTimeInterface $now): int
+    {
+        return \count(array_filter(
+            $enrollment->getLessons()->toArray(),
+            static fn (Lesson $lesson): bool => null === $lesson->getMakeUpFor() && null !== $lesson->getStartsAt() && $lesson->getStartsAt() <= $now,
+        ));
+    }
+
+    /**
+     * The regular lessons that go when the enrollment gets this planned number (C7): the ones furthest in the future,
+     * cancelled or not, until the regular lessons fit the number. Empty when raising. Make-up lessons stay; they are
+     * not part of the planned number. Nothing is removed here, for the confirmation step.
+     *
+     * @return list<Lesson> sorted by time
+     */
+    public function surplusLessons(Enrollment $enrollment, int $plannedLessons, \DateTimeInterface $now): array
+    {
+        $future = array_values(array_filter(
+            $enrollment->getLessons()->toArray(),
+            static fn (Lesson $lesson): bool => null === $lesson->getMakeUpFor() && null !== $lesson->getStartsAt() && $lesson->getStartsAt() > $now,
+        ));
+        usort($future, static fn (Lesson $a, Lesson $b): int => $a->getStartsAt() <=> $b->getStartsAt());
+        $surplus = max(0, $this->regularCount($enrollment) - $plannedLessons);
+
+        return array_slice($future, max(0, \count($future) - $surplus));
+    }
+
+    /**
+     * Sets the planned number and adjusts the lessons (C7): lowering removes surplusLessons(), raising adds lessons
+     * after the last one (fillUpAtEnd()).
+     */
+    public function changePlannedLessons(Enrollment $enrollment, int $plannedLessons, \DateTimeInterface $now): BreakResult
+    {
+        $result = new BreakResult();
+        foreach ($this->surplusLessons($enrollment, $plannedLessons, $now) as $lesson) {
+            // orphanRemoval: removed from the collection, the row is deleted on flush
+            $enrollment->removeLesson($lesson);
+            ++$result->removed;
+        }
+        $enrollment->setPlannedLessons($plannedLessons);
+        $result->added = $this->fillUpAtEnd($enrollment);
+
+        return $result;
     }
 
     /**

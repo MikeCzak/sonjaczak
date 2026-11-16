@@ -11,6 +11,7 @@ use App\Repository\EnrollmentRepository;
 use App\Repository\LessonRepository;
 use App\Tests\Factory\CourseFactory;
 use App\Tests\Factory\EnrollmentFactory;
+use App\Tests\Factory\InvoiceFactory;
 use App\Tests\Factory\StudentFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -156,6 +157,72 @@ final class EnrollmentTest extends WebTestCase
         self::assertResponseRedirects('/admin/kurse/'.$courseId);
         EnrollmentFactory::assert()->empty();
         self::assertSame(0, self::getContainer()->get(LessonRepository::class)->count([]));
+    }
+
+    /**
+     * umsetzung-admin.md C7: lowering lists the lessons that go and deletes them only after confirmation.
+     */
+    public function testLoweringThePlannedNumberAsksFirst(): void
+    {
+        self::mockTime(new \DateTimeImmutable('2026-10-30 10:00'));
+        $client = $this->loggedInClient();
+        $enrollment = EnrollmentFactory::createOne();
+        $lessons = self::getContainer()->get(LessonRepository::class);
+
+        $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId());
+        self::assertSelectorTextContains('#anzahl + p', '3 Einheiten haben schon begonnen');
+        $client->submitForm('Anzahl ändern', [
+            'planned_lessons[plannedLessons]' => '12',
+            'planned_lessons[reason]' => 'Umzug nach Graz',
+        ]);
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.alert-warning', 'Bei 12 Einheiten werden diese Einheiten gelöscht');
+        self::assertSelectorCount(3, '.alert-warning li');
+        self::assertSelectorTextContains('.alert-warning li:first-child', 'Fr 01.01.2027 15:30, geplant');
+        self::assertSame(15, $lessons->count(['enrollment' => $enrollment->getId()]), 'nothing deleted yet');
+
+        $client->submitForm('Einheiten löschen und speichern');
+        self::assertResponseRedirects();
+        $client->followRedirect();
+        self::assertSelectorTextContains('.alert-success', 'Anzahl auf 12 gesetzt. Einheiten: 3 gelöscht, 0 angelegt.');
+        self::assertSelectorTextContains('main', '12 von 12 (Kurs: 15)');
+        self::assertSame(12, $lessons->count(['enrollment' => $enrollment->getId()]));
+        $saved = EnrollmentFactory::repository()->find($enrollment->getId() ?? 0);
+        self::assertSame(12, $saved?->getPlannedLessons());
+        self::assertSame('Umzug nach Graz', $saved->getPlannedLessonsReason());
+    }
+
+    public function testEndingWithInvoicePointsToTheCreditNote(): void
+    {
+        self::mockTime(new \DateTimeImmutable('2026-10-30 10:00'));
+        $client = $this->loggedInClient();
+        $enrollment = InvoiceFactory::createOne()->getEnrollment();
+
+        $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId());
+        // The number field is ignored by "end"
+        $client->submitForm('Teilnahme beenden', ['planned_lessons[plannedLessons]' => '', 'planned_lessons[reason]' => 'Krankheit']);
+        self::assertSelectorCount(12, '.alert-warning li');
+        $client->submitForm('Einheiten löschen und speichern');
+        $client->followRedirect();
+
+        self::assertSelectorTextContains('main', '3 von 3 (Kurs: 15)');
+        self::assertSelectorTextContains('.alert-info', 'erstelle auf der Seite der Honorarnote eine Gutschrift');
+        // Still not deletable: the invoice stays
+        self::assertSelectorNotExists('summary:contains("Teilnahme löschen")');
+    }
+
+    public function testBelowTheMinimumOrWithoutReasonNothingChanges(): void
+    {
+        self::mockTime(new \DateTimeImmutable('2026-10-30 10:00'));
+        $client = $this->loggedInClient();
+        $enrollment = EnrollmentFactory::createOne();
+
+        $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId());
+        $client->submitForm('Anzahl ändern', ['planned_lessons[plannedLessons]' => '2', 'planned_lessons[reason]' => '']);
+        self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('#anzahl ~ form', 'Erlaubt sind 3 bis 40.');
+        self::assertSelectorTextContains('#anzahl ~ form', 'Dieser Wert sollte nicht leer sein.');
+        self::assertSame(15, self::getContainer()->get(LessonRepository::class)->count(['enrollment' => $enrollment->getId()]));
     }
 
     private function loggedInClient(): KernelBrowser

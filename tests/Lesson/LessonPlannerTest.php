@@ -151,6 +151,66 @@ final class LessonPlannerTest extends TestCase
         self::assertSame(0, $planner->restoreBreakDays($course, $break, new \DateTimeImmutable('2026-10-01'))->added);
     }
 
+    public function testMinimumIsTheRegularLessonsThatStarted(): void
+    {
+        $planner = new LessonPlanner();
+        $enrollment = $this->enrollment($this->course('2026-10-05', '2027-02-26'));
+        $planner->fillUp($enrollment);
+        // Fridays 09.10., 16.10., 23.10. have started at 30.10. 10:00, also a cancelled one
+        $enrollment->getLessons()->get(1)?->setCancelledBy(CancelledBy::Teacher);
+
+        self::assertSame(3, $planner->minimumPlannedLessons($enrollment, new \DateTimeImmutable('2026-10-30 10:00')));
+        self::assertSame(0, $planner->minimumPlannedLessons($enrollment, new \DateTimeImmutable('2026-10-01')));
+    }
+
+    public function testLoweringRemovesTheLastLessonsAlsoCancelledOnesButNoMakeUps(): void
+    {
+        $planner = new LessonPlanner();
+        $enrollment = $this->enrollment($this->course('2026-10-05', '2027-02-26'));
+        $planner->fillUp($enrollment);
+        $lessons = $enrollment->getLessons()->toArray();
+        $lessons[14]->setCancelledBy(CancelledBy::Student);
+        $makeUp = new Lesson($enrollment, new \DateTimeImmutable('2027-01-20 15:30'))->setMakeUpFor($lessons[0]);
+        $now = new \DateTimeImmutable('2026-10-30 10:00');
+
+        $surplus = $planner->surplusLessons($enrollment, 12, $now);
+        self::assertSame([$lessons[12], $lessons[13], $lessons[14]], $surplus, 'the three last, sorted by time');
+        self::assertSame([], $planner->surplusLessons($enrollment, 15, $now));
+
+        $result = $planner->changePlannedLessons($enrollment, 12, $now);
+        self::assertSame(3, $result->removed);
+        self::assertSame(0, $result->added);
+        self::assertSame(12, $enrollment->getPlannedLessons());
+        self::assertTrue($enrollment->getLessons()->contains($makeUp));
+        self::assertCount(13, $enrollment->getLessons(), '12 regular + the make-up lesson');
+    }
+
+    public function testEndingRemovesAllFutureLessons(): void
+    {
+        $planner = new LessonPlanner();
+        $enrollment = $this->enrollment($this->course('2026-10-05', '2027-02-26'));
+        $planner->fillUp($enrollment);
+        $now = new \DateTimeImmutable('2026-10-30 10:00');
+
+        $planner->changePlannedLessons($enrollment, $planner->minimumPlannedLessons($enrollment, $now), $now);
+
+        self::assertSame(['2026-10-09 15:30', '2026-10-16 15:30', '2026-10-23 15:30'], $this->days($enrollment));
+        // Later deletions or breaks do not bring lessons back: the enrollment's own number counts
+        self::assertSame(0, $planner->fillUp($enrollment));
+    }
+
+    public function testRaisingAddsLessonsAtTheEnd(): void
+    {
+        $planner = new LessonPlanner();
+        $enrollment = $this->enrollment($this->course('2026-10-05', '2027-02-26'));
+        $planner->fillUp($enrollment);
+
+        $result = $planner->changePlannedLessons($enrollment, 16, new \DateTimeImmutable('2026-10-30 10:00'));
+
+        self::assertSame(1, $result->added);
+        self::assertSame('2027-01-22 15:30', $this->days($enrollment)[15]);
+    }
+
     private function course(string $startsOn, string $endsOn): Course
     {
         return new Course()

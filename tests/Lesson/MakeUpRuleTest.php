@@ -62,4 +62,14 @@ final class MakeUpRuleTest extends TestCase
         new Lesson($enrollment, new \DateTimeImmutable('2026-10-20 15:30'))->setMakeUpFor($cancelled);
         self::assertSame(0, new MakeUpRule()->due($enrollment));
     }
+
+    public function testTheEnrollmentsOwnNumberCounts(): void
+    {
+        $enrollment = new Enrollment(new Course()->setPlannedLessons(3));
+        new Lesson($enrollment, new \DateTimeImmutable('2026-10-09 15:30'));
+        self::assertSame(2, new MakeUpRule()->due($enrollment));
+
+        $enrollment->setPlannedLessons(1);
+        self::assertSame(0, new MakeUpRule()->due($enrollment));
+    }
 }
