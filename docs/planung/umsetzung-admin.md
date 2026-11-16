@@ -155,7 +155,7 @@ Schritte (je ein Commit):
    Wochenzeile öffnet das Ferienformular auf der Kursseite, vorbelegt mit Montag bis Sonntag (`?ferien_von=…&ferien_bis=…`);
    Sonja gibt die Bezeichnung ein oder kürzt auf einen Tag, nach dem Speichern geht es zurück ins Raster
    (`zurueck=raster`). Grund: Die Bezeichnung braucht eine Eingabe, und so gibt es nur ein Formular mit Bestätigung.
-6. **C4f Doku:** `erklaerungen/18-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),
+6. **C4f Doku** (erledigt 2026-11-16; Tastatur entfällt)**:** `erklaerungen/18-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),
    `rundgang-admin.md`.
 
 **Zu entscheiden:**

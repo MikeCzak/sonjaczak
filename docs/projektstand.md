@@ -160,7 +160,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] C1 Schüler:innen und Elternteile (2026-11-13, `erklaerungen/09`)
 - [x] C2 Kurse und Ferien mit OpenHolidays (2026-11-13, `erklaerungen/10`)
 - [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
-- [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; C4-0 Status umgebaut, C4a Stimulus installiert, C4b Raster nur lesend, C4c Endpunkt, C4d Bedienung, C4-0/C4e Ferien mit Bestätigung und per Woche 2026-11-16; Erklärung C4f folgt)
+- [x] C4 Kursraster (2026-11-16, `erklaerungen/17-csrf.md`, `erklaerungen/18-kursraster.md`; noch nicht gepusht)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
 - [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`; Schwellwert durch „Einheiten pro Semester“ ersetzt 2026-11-15)
 - [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)

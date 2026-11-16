@@ -385,3 +385,4 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Screenshot unterhalb des Bildschirms braucht `captureBeyondViewport`. Im Browser geprüft (Popup abbrechen → nichts
   gespeichert, bestätigen → 5 entfernt, 5 angelegt, zurück im Raster; Ferien löschen → Einheiten wieder da, dabei kam
   auch eine vorher gelöschte zurück, siehe Projektstand). 146 Tests grün, PHPStan ohne Fehler.
+- C4f: Erklärung `erklaerungen/18-kursraster.md`. Damit ist C (Kurse, Teilnahmen, Raster) lokal fertig.
