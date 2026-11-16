@@ -82,25 +82,73 @@ final class LessonPlannerTest extends TestCase
         self::assertSame(14, $enrollment->countedLessons());
     }
 
-    public function testNewBreakRemovesFutureLessonsKeepsPastOnesAndFillsUpAtTheEnd(): void
+    public function testNewBreakRemovesAllLessonsInItAndFillsUpAtTheEnd(): void
     {
         $planner = new LessonPlanner();
         $course = $this->course('2026-10-05', '2027-06-30');
         $enrollment = $this->enrollment($course);
         $planner->fillUp($enrollment);
-        $lessons = $enrollment->getLessons()->toArray();
+        $enrollment->getLessons()->get(1)?->setCancelledBy(CancelledBy::Student);
 
-        // A break over the first two Fridays, entered on 10 October: 9.10. is over and stays as a conflict, 16.10. goes
+        // A break over the first two Fridays: a held one and a cancelled one, both go
         $course->addBreak($this->break('2026-10-09', '2026-10-16'));
-        $result = $planner->applyBreaks($course, new \DateTimeImmutable('2026-10-10 09:00'));
+        self::assertCount(2, $planner->lessonsOnBreakDays($course));
+        $result = $planner->applyBreaks($course);
 
-        self::assertSame(1, $result->removed);
-        self::assertSame([$lessons[0]], $result->conflicts);
-        self::assertSame(1, $result->added);
+        self::assertSame(2, $result->removed);
+        self::assertSame(2, $result->added);
         self::assertCount(15, $enrollment->getLessons());
-        self::assertNotContains('2026-10-16 15:30', $this->days($enrollment));
-        // Fridays 2026-10-09 … 2027-01-15 were planned; the replacement comes the week after the last one
+        self::assertNotContains('2026-10-09 15:30', $this->days($enrollment));
+        // Fridays 2026-10-09 … 2027-01-15 were planned; the replacements come after the last one
         self::assertContains('2027-01-22 15:30', $this->days($enrollment));
+        self::assertContains('2027-01-29 15:30', $this->days($enrollment));
+    }
+
+    public function testLessonsBetweenIncludesBothDays(): void
+    {
+        $planner = new LessonPlanner();
+        $course = $this->course('2026-10-05', '2027-02-26');
+        $planner->fillUp($this->enrollment($course));
+
+        self::assertCount(2, $planner->lessonsBetween($course, new \DateTimeImmutable('2026-10-09'), new \DateTimeImmutable('2026-10-16')));
+        self::assertCount(1, $planner->lessonsBetween($course, new \DateTimeImmutable('2026-10-16'), new \DateTimeImmutable('2026-10-16')));
+    }
+
+    /**
+     * Question 7: deleting a break gives the lesson back on the freed day, the last one still to come goes.
+     */
+    public function testDeletedBreakGivesTheLessonBack(): void
+    {
+        $planner = new LessonPlanner();
+        $course = $this->course('2026-10-05', '2027-06-30');
+        $break = $this->break('2026-10-16', '2026-10-16');
+        $course->addBreak($break);
+        $enrollment = $this->enrollment($course);
+        $planner->fillUp($enrollment);
+        self::assertContains('2027-01-22 15:30', $this->days($enrollment));
+
+        $course->removeBreak($break);
+        $result = $planner->restoreBreakDays($course, $break, new \DateTimeImmutable('2026-10-01'));
+
+        self::assertSame(1, $result->added);
+        self::assertSame(1, $result->removed);
+        self::assertCount(15, $enrollment->getLessons());
+        self::assertContains('2026-10-16 15:30', $this->days($enrollment));
+        self::assertNotContains('2027-01-22 15:30', $this->days($enrollment));
+    }
+
+    public function testDeletedBreakStillCoveredByAnotherOneGivesNothingBack(): void
+    {
+        $planner = new LessonPlanner();
+        $course = $this->course('2026-10-05', '2027-06-30');
+        $break = $this->break('2026-10-16', '2026-10-16');
+        $course->addBreak($break);
+        $course->addBreak($this->break('2026-10-12', '2026-10-18'));
+        $planner->fillUp($this->enrollment($course));
+
+        $course->removeBreak($break);
+
+        self::assertSame(0, $planner->restoreBreakDays($course, $break, new \DateTimeImmutable('2026-10-01'))->added);
     }
 
     private function course(string $startsOn, string $endsOn): Course

@@ -101,20 +101,29 @@ final class EnrollmentTest extends WebTestCase
         self::assertSelectorNotExists('a:contains("Nachholstunde eintragen")');
     }
 
-    public function testNewBreakRemovesFutureLessons(): void
+    /**
+     * A break over a lesson: without confirmation nothing is saved, with it the lesson goes (also a past one,
+     * umsetzung-admin.md C4 question 6) and comes again at the end.
+     */
+    public function testNewBreakDeletesLessonsAfterConfirmation(): void
     {
-        // Entered before the break: past lessons would stay (LessonPlanner::applyBreaks())
-        self::mockTime(new \DateTimeImmutable('2026-10-01 10:00'));
+        self::mockTime(new \DateTimeImmutable('2026-11-01 10:00'));
         $client = $this->loggedInClient();
         $enrollment = EnrollmentFactory::createOne();
         $course = $enrollment->getCourse();
+        $form = ['course_break[label]' => 'Schulautonom', 'course_break[firstDay]' => '2026-10-16'];
 
         $client->request('GET', '/admin/kurse/'.$course->getId());
-        $client->submitForm('Eintragen', [
-            'course_break[label]' => 'Schulautonom',
-            'course_break[firstDay]' => '2026-10-16',
-        ]);
-        self::assertResponseRedirects();
+        $client->submitForm('Eintragen', $form);
+        $client->followRedirect();
+        self::assertSelectorTextContains('.alert-warning', 'Nichts gespeichert');
+        self::assertSelectorTextContains('.alert-warning', 'Fr 16.10. 15:30, gehalten');
+        self::assertSame(0, CourseFactory::repository()->find($course->getId() ?? 0)?->getBreaks()->count());
+
+        $client->submitForm('Eintragen', $form + ['confirmed' => '1']);
+        self::assertResponseRedirects('/admin/kurse/'.$course->getId());
+        $client->followRedirect();
+        self::assertSelectorTextContains('.alert-info', 'Einheiten: 1 entfernt, 1 angelegt.');
 
         $days = array_map(
             static fn (Lesson $lesson): string => (string) $lesson->getStartsAt()?->format('Y-m-d'),

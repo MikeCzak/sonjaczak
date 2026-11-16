@@ -126,7 +126,7 @@ final class LessonPatchTest extends WebTestCase
         $answer = $this->patch($annaLesson, ['cancelledBy' => null], $token);
 
         self::assertResponseStatusCodeSame(409);
-        self::assertStringContainsString('Berta Nachbar, 16.10. 15:30 (Vorsingen)', $answer['confirm']);
+        self::assertStringContainsString('Berta Nachbar, Fr 16.10. 15:30, geplant (Vorsingen)', $answer['confirm']);
         self::assertTrue($this->reload($annaLesson)->isCancelled(), 'nothing changed before the confirmation');
 
         $answer = $this->patch($annaLesson, ['cancelledBy' => null, 'deleteOverlapping' => true], $token);
@@ -185,7 +185,7 @@ final class LessonPatchTest extends WebTestCase
 
         $answer = $this->post($url, ['position' => 'after'], $token);
         self::assertResponseStatusCodeSame(409);
-        self::assertStringContainsString('Berta Nachbar, 16.10. 16:20', $answer['error']);
+        self::assertStringContainsString('Berta Nachbar, Fr 16.10. 16:20, geplant', $answer['error']);
 
         $this->patch($this->lessonOn($berta, '2026-10-16'), ['cancelledBy' => 'student'], $token);
         $answer = $this->post($url, ['position' => 'after'], $token);

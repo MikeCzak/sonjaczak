@@ -1,2 +1,4 @@
-{# "Wintersemester 2026/27" from term and start year (App\Entity\Enum\Term) #}
+{# "Wintersemester 2026/27 (Fr)" from term, start year and the weekdays of the enrollments (App\Entity\Enum\Term,
+   Course::getWeekdays()). The weekdays are derived, not stored (Mike 2026-11-16, umsetzung-admin.md "Kursname"). #}
 {{- course.term.labelKey|trans({'%year%': course.yearLabel}, 'admin') -}}
+{%- if course.weekdays is not empty %} ({{ course.weekdays|map(day => ('weekday_short.' ~ day)|trans({}, 'admin'))|join(', ') }}){% endif -%}

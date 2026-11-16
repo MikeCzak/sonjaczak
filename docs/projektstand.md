@@ -12,10 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-1. **Kursname: Wochentag anhängen?** (2026-11-16, `umsetzung-admin.md`, Abschnitt „Kursname“ unter C4) Der Titel
-   entsteht heute automatisch aus Semester und Jahr. Empfehlung: Wochentage aus den Teilnahmen ableiten,
-   „Wintersemester 2026/27 (Fr)“. Alternative: freies Feld „Bezeichnung“.
-   - Antwort:
+Keine Frage offen.
 
 **Todos für Mike (keine Frage offen):**
 
@@ -42,8 +39,12 @@ verlinkten Erklärung.
   klären, bevor geplant wird: Was passiert mit den zukünftigen Einheiten (löschen, als abgesagt stehen lassen)? Mit der
   Honorarnote (bleibt sie voll, Gutschrift für nicht gehaltene Einheiten, Rückzahlung)? Mit fälligen Nachholstunden?
   Bleibt die Teilnahme sichtbar (z. B. „beendet am …“) und zählt sie im Dashboard und Export mit?
-- [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3): Für entfallene Einheiten kommen am Ende neue dazu (bis zum
-  Kursende).
+- [ ] **Auffüllen nach neuen Ferien** (2026-11-13, C3; seit 2026-11-16 werden alle Einheiten im Zeitraum gelöscht, nach
+  Rückfrage): Für entfallene Einheiten kommen am Ende neue dazu (bis zum Kursende).
+- [ ] **Ferien löschen gibt auch gelöschte Einheiten zurück** (2026-11-16, `umsetzung-admin.md` C4-0): Wird eine Ferienwoche
+  gelöscht, bekommt jede Teilnahme an den frei gewordenen Tagen ihre Einheit wieder, wenn sie in der Woche keine hat.
+  Hatte Sonja dort vorher eine Einheit absichtlich gelöscht, kommt auch diese zurück (der Grund wird nicht gespeichert).
+  Im Test: Petras gelöschte Einheit kam mit. Selten; sonst im Raster wieder löschen.
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
   mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
 - [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
@@ -159,7 +160,7 @@ live. Server eingerichtet und abgesichert, Rollback getestet.
 - [x] C1 Schüler:innen und Elternteile (2026-11-13, `erklaerungen/09`)
 - [x] C2 Kurse und Ferien mit OpenHolidays (2026-11-13, `erklaerungen/10`)
 - [x] C3 Teilnahmen, Einheiten, Nachholregel (2026-11-13, `erklaerungen/11`)
-- [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; C4-0 Status umgebaut, C4a Stimulus installiert, C4b Raster nur lesend, C4c Endpunkt, C4d Bedienung im Raster 2026-11-16; Ferien mit Bestätigung und Ferien per Zeile folgen)
+- [ ] C4 Kursraster (entschieden 2026-11-14: Stimulus + `fetch`; C4-0 Status umgebaut, C4a Stimulus installiert, C4b Raster nur lesend, C4c Endpunkt, C4d Bedienung, C4-0/C4e Ferien mit Bestätigung und per Woche 2026-11-16; Erklärung C4f folgt)
 - [x] C5 Schnupperstunden (2026-11-13, `erklaerungen/11`)
 - [x] C6 Einstellungen (2026-11-13, `erklaerungen/12`; Schwellwert durch „Einheiten pro Semester“ ersetzt 2026-11-15)
 - [x] D1 Honorarnoten erstellen (2026-11-13, `erklaerungen/13`; Doppelklick-Lücke geschlossen 2026-11-14)
@@ -209,6 +210,8 @@ muss).
 | Status der Einheit | Nur `cancelledBy` gespeichert (nullable: Schüler:in, ich); „geplant“ = Einheit existiert, „gehalten“ aus der Zeit abgeleitet (2026-11-16) | Ableitbare Fakten nicht doppelt speichern; Sonja trägt nur Absagen ein (Mike). `erklaerungen/11`, `datenmodell.md` 3.5 |
 | Nachholregel | Mindestzahl = geplante Einheiten des Kurses, kein Schwellwert; Einstellung „Einheiten pro Semester“ belegt neue Kurse vor (2026-11-15) | Absagen durch Schüler:innen werden nie nachgeholt; mehr Einheiten als vereinbart sind möglich, weniger nicht (Mike). `erklaerungen/11` |
 | CSRF im Admin | Stimulus-CSRF-Controller aus dem Rezept entfernt; Formulare weiter über Herkunfts-Header geprüft, Raster mit Session-Token (2026-11-16) | Ein Verfahren für ganze Seite und Tests, kein Ausfall bei fehlendem JavaScript. `erklaerungen/17-csrf.md` |
+| Kursname | Wochentage aus den Teilnahmen angehängt, „Wintersemester 2026/27 (Fr)“, kein eigenes Feld (2026-11-16) | Nichts doppelt speichern, stimmt immer (Mike). `umsetzung-admin.md` „Kursname“ |
+| Ferien nachträglich | Alle Einheiten im Zeitraum löschen nach Popup mit Liste, am Ende auffüllen; Ferien löschen gibt die Einheiten zurück (2026-11-16) | Nachträgliche Ferien heißen: nichts fand statt (Mike). `umsetzung-admin.md` C4 Fragen 6, 7 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

@@ -9,6 +9,7 @@ use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
 use App\Entity\User;
 use App\Form\Admin\LessonType;
+use App\Lesson\LessonDescriber;
 use App\Lesson\LessonPlanner;
 use App\Lesson\MakeUpRule;
 use App\Repository\LessonRepository;
@@ -42,6 +43,7 @@ final class LessonController extends AbstractController
         private readonly MakeUpRule $makeUpRule,
         private readonly TranslatorInterface $translator,
         private readonly ClockInterface $clock,
+        private readonly LessonDescriber $describer,
     ) {
     }
 
@@ -113,7 +115,7 @@ final class LessonController extends AbstractController
                 // Nothing is flushed: the lesson stays cancelled until Sonja confirms
                 return $this->json([
                     'confirm' => $this->translator->trans('grid.confirm.delete_overlapping', [
-                        '%lessons%' => $this->describeAll($overlapping),
+                        '%lessons%' => $this->describer->describe($overlapping),
                     ], 'admin'),
                 ], Response::HTTP_CONFLICT);
             }
@@ -200,46 +202,19 @@ final class LessonController extends AbstractController
         $overlapping = $this->lessons->findOverlapping($enrollment->getCourse(), $newStart, $newEnd);
         if ([] !== $overlapping) {
             return $this->json(['error' => $this->translator->trans('grid.error.double_overlaps', [
-                '%lessons%' => $this->describeAll($overlapping),
+                '%lessons%' => $this->describer->describe($overlapping),
             ], 'admin')], Response::HTTP_CONFLICT);
         }
 
         $double = new Lesson($enrollment, $newStart, $minutes);
         $this->entityManager->persist($double);
-        $trimmed = $this->removeLastFutureLesson($enrollment, [$double, $lesson]);
+        $trimmed = $this->planner->removeLastFutureLesson($enrollment, $this->clock->now(), [$double, $lesson]);
         $this->entityManager->flush();
 
         return $this->json([
             'reload' => true,
             'message' => $trimmed ? null : $this->translator->trans('grid.double.not_trimmed', [], 'admin'),
         ]);
-    }
-
-    /**
-     * Removes the last regular lesson that is still to come and not cancelled, except the double lesson and the one
-     * it belongs to. False if there is none (end of the course reached).
-     *
-     * @param list<Lesson> $except
-     */
-    private function removeLastFutureLesson(Enrollment $enrollment, array $except): bool
-    {
-        $now = $this->clock->now();
-        $last = null;
-        foreach ($enrollment->getLessons() as $lesson) {
-            $startsAt = $lesson->getStartsAt();
-            if (\in_array($lesson, $except, true) || null !== $lesson->getMakeUpFor() || $lesson->isCancelled() || null === $startsAt || $startsAt <= $now) {
-                continue;
-            }
-            if (null === $last || $startsAt > $last->getStartsAt()) {
-                $last = $lesson;
-            }
-        }
-        if (null === $last) {
-            return false;
-        }
-        $enrollment->removeLesson($last);
-
-        return true;
     }
 
     /**
@@ -285,20 +260,6 @@ final class LessonController extends AbstractController
             'makeUpsDue' => $due,
             'makeUpLabel' => $due > 0 ? $this->translator->trans('enrollment.make_up_due', ['%count%' => $due], 'admin') : null,
         ];
-    }
-
-    /**
-     * "Berta Nachbar, 16.10. 15:30 (Vorsingen)", one line per lesson, for the popup texts.
-     *
-     * @param list<Lesson> $lessons
-     */
-    private function describeAll(array $lessons): string
-    {
-        return implode("\n", array_map(static fn (Lesson $lesson): string => \sprintf('%s, %s%s',
-            $lesson->getEnrollment()->getStudent()?->getFullName() ?? '?',
-            $lesson->getStartsAt()?->format('d.m. H:i') ?? '',
-            null !== $lesson->getNote() ? ' ('.$lesson->getNote().')' : '',
-        ), $lessons));
     }
 
     private function error(string $key, int $status): JsonResponse

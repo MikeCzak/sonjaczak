@@ -14,7 +14,7 @@
         </div>
 
         <div class="col-lg-6">
-            <h2 class="h5">{{ 'course_break.heading'|trans({}, 'admin') }}</h2>
+            <h2 class="h5" id="ferien">{{ 'course_break.heading'|trans({}, 'admin') }}</h2>
             <p class="small text-body-secondary">{{ 'course_break.intro'|trans({}, 'admin') }}</p>
             {% if course.breaks is empty %}
                 <p>{{ 'course_break.empty'|trans({}, 'admin') }}</p>
@@ -45,17 +45,26 @@
                 </table>
             {% endif %}
 
-            <form method="post" action="{{ path('admin_course_break_import', {id: course.id}) }}" class="mb-4">
+            {# break-confirm (C4-0): asks before lessons in new breaks are deleted, then sends confirmed=1 #}
+            <form method="post" action="{{ path('admin_course_break_import', {id: course.id}) }}" class="mb-4"
+                  data-controller="break-confirm" data-action="break-confirm#check"
+                  data-break-confirm-url-value="{{ path('admin_course_break_import_check', {id: course.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('import-breaks-' ~ course.id) }}">
+                <input type="hidden" name="confirmed" value="" data-break-confirm-target="confirmed">
                 <button class="btn btn-outline-secondary btn-sm">{{ 'course_break.import'|trans({}, 'admin') }}</button>
             </form>
 
             <h3 class="h6">{{ 'course_break.new'|trans({}, 'admin') }}</h3>
-            {{ form_start(break_form) }}
+            {{ form_start(break_form, {attr: {
+                'data-controller': 'break-confirm',
+                'data-action': 'break-confirm#check',
+                'data-break-confirm-url-value': path('admin_course_break_check', {id: course.id}),
+            }}) }}
+                <input type="hidden" name="confirmed" value="" data-break-confirm-target="confirmed">
                 {{ form_row(break_form.label) }}
                 <div class="row">
-                    <div class="col-sm-6">{{ form_row(break_form.firstDay) }}</div>
-                    <div class="col-sm-6">{{ form_row(break_form.lastDay) }}</div>
+                    <div class="col-sm-6">{{ form_row(break_form.firstDay, {attr: {'data-break-confirm-target': 'firstDay'}}) }}</div>
+                    <div class="col-sm-6">{{ form_row(break_form.lastDay, {attr: {'data-break-confirm-target': 'lastDay'}}) }}</div>
                 </div>
                 <button type="submit" class="btn btn-outline-primary">{{ 'course_break.add'|trans({}, 'admin') }}</button>
             {{ form_end(break_form) }}

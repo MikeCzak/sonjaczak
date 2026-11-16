@@ -209,7 +209,7 @@ course:
         deleted: Gelöscht.
 course_break:
     heading: Ferien und freie Tage
-    intro: An diesen Tagen werden keine Einheiten geplant.
+    intro: An diesen Tagen werden keine Einheiten geplant. Einheiten, die schon im Zeitraum liegen, werden nach einer Rückfrage gelöscht und am Kursende ersetzt. Löschst du Ferien, kommen die Einheiten an diesen Tagen wieder.
     empty: Keine eingetragen.
     imported: vorgeschlagen
     import: Ferien und Feiertage vorschlagen lassen
@@ -225,8 +225,12 @@ course_break:
         deleted: Gelöscht.
         imported: Schulferien und Feiertage sind eingetragen. Bitte prüfen und schulautonome Tage ergänzen.
         import_none: Keine neuen Ferien oder Feiertage gefunden.
-        conflicts: In den neuen Ferien liegen bereits gehaltene oder abgesagte Einheiten. Sie bleiben stehen, bitte prüfen.
+        lessons: 'Einheiten: %removed% entfernt, %added% angelegt.'
+        not_confirmed: 'Nichts gespeichert: Im Zeitraum liegen Einheiten, die gelöscht würden (%lessons%). Bitte noch einmal eintragen und die Rückfrage bestätigen.'
         import_failed: Die Ferien konnten nicht abgerufen werden (Dienst nicht erreichbar). Bitte selbst eintragen oder später noch einmal vorschlagen lassen.
+    confirm: "Diese Einheiten liegen im Zeitraum und werden gelöscht (auch gehaltene und abgesagte, mit Notiz):\n%lessons%\n\nAm Kursende kommen dafür neue dazu. Fortfahren?"
+    week_link: Ferien …
+    week_link_title: Ferien oder freie Tage in dieser Woche eintragen
 grid:
     title: 'Raster: %course%'
     link: Raster

@@ -34,8 +34,9 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 ## 3. Kurs und Ferien
 
 1. „Kurse“ → Wintersemester 2026/27: Ferien (aus den Fixtures), Teilnahmen mit „x von 15“ und Nachholhinweis.
-2. Einen Ferientag ergänzen, der auf einen Freitag mit geplanter Einheit fällt: Die Einheit verschwindet, am Ende kommt
-   eine dazu. Die Meldung nennt Konflikte (vergangene oder abgesagte Einheiten in den Ferien).
+2. Einen Ferientag ergänzen, der auf einen Freitag mit Einheiten fällt: Ein Popup listet die Einheiten, die gelöscht
+   werden (auch gehaltene). „Abbrechen“ speichert nichts; „OK“ löscht sie, am Ende kommen neue dazu (Meldung „Einheiten:
+   x entfernt, x angelegt“). Den Ferientag wieder löschen: Die Einheiten an dem Tag kommen zurück, am Ende fallen sie weg.
 3. Neuen Kurs anlegen (z. B. Sommersemester 2027): Die Ferien werden aus der OpenHolidays API vorgeschlagen (braucht
    Internet).
 4. „Raster“ (Knopf auf der Kursseite): Wochen als Zeilen, Zeitfenster als Spalten. Ferienwochen gelb, die Absagen
@@ -48,6 +49,8 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    Kursende fällt weg. Dann die abgesagte Einheit öffnen → „Absage aufheben“: Ein Popup nennt die Doppelstunde, nach
    „OK“ ist sie weg und die Nachbarin hat ihre letzte Einheit wieder. Nur die Notiz ändern: Die Seite lädt nicht neu.
    „Löschen“ fragt nach, danach hängt am Kursende eine Einheit an.
+6. Im Raster „Ferien …“ unter einer Kalenderwoche: Das Ferienformular auf der Kursseite ist mit Montag bis Sonntag
+   vorbelegt; nach dem Speichern (mit Popup) geht es zurück ins Raster, die Woche ist gelb.
 
 ## 4. Teilnahme und Einheiten
 

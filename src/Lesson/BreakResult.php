@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace App\Lesson;
 
-use App\Entity\Lesson;
-
 /**
- * What LessonPlanner::applyBreaks() changed.
+ * What LessonPlanner::applyBreaks() or restoreBreakDays() changed.
  */
 final class BreakResult
 {
+    /**
+     * Lessons deleted (in new breaks) or, after a break was deleted, the ones that went at the end.
+     */
     public int $removed = 0;
 
-    public int $added = 0;
-
     /**
-     * Held or cancelled lessons inside a break: not removed, Sonja decides.
-     *
-     * @var list<Lesson>
+     * Lessons added at the end or, after a break was deleted, on the freed days.
      */
-    public array $conflicts = [];
+    public int $added = 0;
 }

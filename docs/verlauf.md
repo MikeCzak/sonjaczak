@@ -377,3 +377,11 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `data-note`. Im Browser geprüft: Node 20 hat kein WebSocket, daher ein kleiner DevTools-Client in Python (nur
   Standardbibliothek) im Scratchpad; Absage mit Notiz, Doppelstunde, Absage aufheben mit Popup, nur Notiz ohne
   Neuladen, Löschen mit Auffüllen, keine Fehler in der Konsole. 139 Tests grün, PHPStan ohne Fehler.
+- C4-0/C4e: Ferien löschen jetzt alle Einheiten im Zeitraum (vorher nur zukünftige, nicht abgesagte), aufgefüllt
+  am Ende; Rückfrage per Stimulus-Controller `break-confirm` mit Liste vom Server, Server löscht nur mit
+  `confirmed=1`. Ferien löschen legt die Einheiten wieder an (`restoreBreakDays()`), Wochen-Link im Raster öffnet das
+  Ferienformular vorbelegt. Kursname mit abgeleiteten Wochentagen. Fallstricke: `data-action` zu entfernen, um ein
+  zweites `submit` durchzulassen, wirkt zu spät (Stimulus sieht Attribute über einen MutationObserver) → Flag;
+  Screenshot unterhalb des Bildschirms braucht `captureBeyondViewport`. Im Browser geprüft (Popup abbrechen → nichts
+  gespeichert, bestätigen → 5 entfernt, 5 angelegt, zurück im Raster; Ferien löschen → Einheiten wieder da, dabei kam
+  auch eine vorher gelöschte zurück, siehe Projektstand). 146 Tests grün, PHPStan ohne Fehler.

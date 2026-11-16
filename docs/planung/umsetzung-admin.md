@@ -123,7 +123,12 @@ Schritte (je ein Commit):
    Verweis auf die ausgefallene Einheit). Kopfzeile: „11 von 15“ und Hinweis aus `MakeUpRule`. Jede Zelle ist ein
    Link auf `/admin/einheiten/{id}`, das Raster funktioniert also auch ohne JavaScript. Eine Abfrage mit Fetch Join
    (Teilnahmen, Schüler:innen, Einheiten). Unit-Test für `CourseGrid`, WebTestCase für die Seite.
-0. **C4-0 Status umbauen** (Frage 5) und **Ferien mit Bestätigung** (Frage 6, 7), vor dem Raster.
+0. **C4-0 Status umbauen** (Frage 5) und **Ferien mit Bestätigung** (Frage 6, 7) (erledigt 2026-11-16): Neue Ferien
+   löschen alle Einheiten im Zeitraum (auch gehaltene und abgesagte), aufgefüllt wird am Ende (`fillUpAtEnd()`). Vorher
+   fragt der Stimulus-Controller `break-confirm` den Server (`GET …/ferien/pruefen`, `…/ferien/vorschlag-pruefen`) und
+   zeigt die Liste in `confirm()`; gelöscht wird nur mit `confirmed=1`, sonst speichert der Server nichts und nennt die
+   Einheiten (Schutz ohne JavaScript). Ferien löschen legt die Einheiten an den frei gewordenen Tagen wieder an und
+   kürzt am Ende (`restoreBreakDays()`).
 3. **C4c Endpunkt zum Speichern** (erledigt 2026-11-16)**:** `PATCH /admin/einheiten/{id}` mit JSON `{cancelledBy, note}`;
    nur mitgeschickte Schlüssel ändern sich (geändert 2026-11-16 auf Mikes Frage: Die Zelle **ist** die Einheit, also
    dieselbe Adresse wie die Bearbeitungsseite; `PATCH` heißt „Teile ändern“, und eine eigene Route je Methode hält die
@@ -146,8 +151,10 @@ Schritte (je ein Commit):
    Editor. Controller wird nur auf der Rasterseite geladen (`stimulusFetch: 'lazy'`). Neu: `LessonPlanner::fillUpAtEnd()`,
    weil `fillUp()` eine gelöschte Einheit in dieselbe Woche zurücklegen würde. Geprüft mit Headless Chrome über das
    DevTools-Protokoll (Skript im Scratchpad, nicht im Repo).
-5. **C4e Ferien per Zeile:** Knopf in der Wochenzeile legt einen `CourseBreak` für Montag bis Sonntag dieser Woche an
-   (bestehende Logik `applyBreaks()`/`fillUp()`), danach lädt die Seite neu. Normales Formular, kein JavaScript nötig.
+5. **C4e Ferien per Zeile** (erledigt 2026-11-16, geändert: Link statt eigenem Formular)**:** Link „Ferien …“ in jeder
+   Wochenzeile öffnet das Ferienformular auf der Kursseite, vorbelegt mit Montag bis Sonntag (`?ferien_von=…&ferien_bis=…`);
+   Sonja gibt die Bezeichnung ein oder kürzt auf einen Tag, nach dem Speichern geht es zurück ins Raster
+   (`zurueck=raster`). Grund: Die Bezeichnung braucht eine Eingabe, und so gibt es nur ein Formular mit Bestätigung.
 6. **C4f Doku:** `erklaerungen/18-kursraster.md` (Stimulus, `fetch`, JSON-Endpunkt, CSRF ohne Formular, Tastatur),
    `rundgang-admin.md`.
 
@@ -238,6 +245,8 @@ Dateiname `WiSe_2026`) bleibt in allen Varianten unverändert.
 | **Abgeleitet (Empfehlung):** Wochentage aus den Teilnahmen anhängen, „Wintersemester 2026/27 (Fr)“, bei mehreren „(Mo, Fr)“ | Keine Migration, stimmt immer, nichts doppelt gespeichert (wie beim Status der Einheit) | Neuer Kurs ohne Teilnahmen zeigt keinen Tag; braucht die Teilnahmen beim Anzeigen (in Listen eine Abfrage mehr oder ein Join) |
 | Freies Feld „Bezeichnung“ (optional), angehängt: „Wintersemester 2026/27 – Freitag“ | Sonja bestimmt den Text, auch Ort oder Schule möglich | Migration; kann veralten, wenn sich die Tage ändern |
 | So lassen | Nichts zu tun | Zwei Kurse im selben Semester nicht unterscheidbar |
+
+**→ Entschieden (Mike, 2026-11-16): abgeleitet.** `Course::getWeekdays()`, `templates/admin/course/_title.html.twig`.
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 

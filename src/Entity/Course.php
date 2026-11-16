@@ -236,6 +236,20 @@ class Course
     }
 
     /**
+     * ISO weekdays of the enrollments (1 = Monday), sorted, each once: part of the title, "Wintersemester 2026/27 (Fr)".
+     * Derived on purpose, a course has no weekday of its own (umsetzung-admin.md, "Kursname").
+     *
+     * @return list<int>
+     */
+    public function getWeekdays(): array
+    {
+        $days = array_unique($this->enrollments->map(static fn (Enrollment $enrollment): int => $enrollment->getWeekday())->toArray());
+        sort($days);
+
+        return $days;
+    }
+
+    /**
      * Whether a day falls into one of the breaks (used when lessons are generated, step C3).
      */
     public function isBreakDay(\DateTimeImmutable $day): bool

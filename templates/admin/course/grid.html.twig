@@ -57,6 +57,9 @@
                                 {% for break in row.breaks %}
                                     <span class="badge text-bg-secondary text-wrap">{{ break.label }}</span>
                                 {% endfor %}
+                                {# C4e: the break form on the course page, prefilled with this week; back here after saving #}
+                                <a class="d-block small fw-normal" title="{{ 'course_break.week_link_title'|trans({}, 'admin') }}"
+                                   href="{{ path('admin_course_edit', {id: course.id, ferien_von: row.weekStart|date('Y-m-d'), ferien_bis: row.weekEnd|date('Y-m-d'), zurueck: 'raster'}) }}#ferien">{{ 'course_break.week_link'|trans({}, 'admin') }}</a>
                             </th>
                             {% for column in grid.columns %}
                                 <td>
