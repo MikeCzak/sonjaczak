@@ -8,6 +8,10 @@ webauthn:
     # an extra setting; allowed_origins would also add the public route /.well-known/webauthn.
     creation_profiles:
         default:
+            # Without this node the bundle passes null as the name (5.3.13); with it the name defaults to '' and the
+            # browser shows the relying party ID. id ~ = host of the request (see above)
+            rp:
+                id: ~
             authenticator_selection_criteria:
                 # Fingerprint or device PIN every time (Mike, 2026-11-17, question 2)
                 user_verification: required
@@ -16,3 +20,15 @@ webauthn:
     request_profiles:
         default:
             user_verification: required
+
+    # "Passkey hinzufügen" in "Mein Konto" for the logged-in account (B5b). Inside the admin firewall, so only
+    # logged-in admins reach it (access_control ^/admin). The browser gets the account's existing passkeys
+    # (hide_existing_credentials false) and refuses to register the same device twice.
+    controllers:
+        enabled: true
+        creation:
+            account:
+                options_path: /admin/konto/passkeys/optionen
+                result_path: /admin/konto/passkeys
+                user_entity_guesser: Webauthn\Bundle\Security\Guesser\CurrentUserEntityGuesser
+                success_handler: App\Security\PasskeyCreatedHandler

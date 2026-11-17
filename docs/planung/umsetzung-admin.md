@@ -103,6 +103,9 @@ ohne Symfony-Integration). Ich bleibe bei A.
   ohne `allowed_origins`).
 - **B5b Mein Konto:** Abschnitt „Passkeys“: Liste (Name, angelegt, zuletzt genutzt), „Passkey hinzufügen“ (Name
   eingeben, dann Dialog des Geräts), löschen mit Rückfrage. Tests für Liste und Löschen (nur eigene Passkeys).
+  **Erledigt 2026-11-17.** Abweichung: statt `@web-auth/webauthn-stimulus` ein eigener kleiner Stimulus-Controller
+  (`assets/controllers/passkey_register_controller.js`) mit `@simplewebauthn/browser` 14.0.0, weil der fertige
+  Controller keinen Namen mitschicken kann; den Namen setzt `App\Security\PasskeyCreatedHandler` nach dem Speichern.
 - **B5c Login:** Knopf „Mit Passkey anmelden“ über dem Passwortformular; kein E-Mail-Feld nötig (Passkey ist auf dem
   Gerät gespeichert, „discoverable“). Nach Erfolg `lastUsedAt` setzen. Deaktivierte Konten scheitern wie beim
   Passwort (`UserChecker`). Passwort bleibt als Rückweg (`rollen.md` 5).

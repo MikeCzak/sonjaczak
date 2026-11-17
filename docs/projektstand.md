@@ -186,7 +186,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 **Admin-Bereich** (Plan `planung/umsetzung-admin.md`, Erklärungen in `erklaerungen/08`–`18`):
 
 - [x] A1, B1–B4 Grundlagen, Login, Sessions, Passwort vergessen, Benutzerverwaltung (2026-11-13)
-- [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); offen B5b „Mein Konto“, B5c Login, B5d Ausprobieren
+- [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); B5b „Mein Konto“ (2026-11-17); offen B5c Login, B5d Ausprobieren
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)

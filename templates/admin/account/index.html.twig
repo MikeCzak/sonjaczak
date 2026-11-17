@@ -14,5 +14,55 @@
                 <button type="submit" class="btn btn-primary">{{ 'account.password_submit'|trans({}, 'admin') }}</button>
             {{ form_end(form) }}
         </div>
+
+        {# Passkeys (umsetzung-admin.md B5b): list, delete, add through the WebAuthn bundle's endpoints #}
+        <div class="col-md-8 col-lg-6 offset-lg-1" id="passkeys">
+            <h2 class="h5 mt-4">{{ 'account.passkey.heading'|trans({}, 'admin') }}</h2>
+            <p class="small text-body-secondary">{{ 'account.passkey.intro'|trans({}, 'admin') }}</p>
+
+            <ul class="list-group mb-3">
+                {% for passkey in passkeys %}
+                    <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <strong>{{ passkey.name }}</strong><br>
+                            <span class="small text-body-secondary">
+                                {{ 'account.passkey.created'|trans({'%date%': passkey.createdAt|date('d.m.Y')}, 'admin') }} ·
+                                {{ passkey.lastUsedAt ? 'account.passkey.last_used'|trans({'%date%': passkey.lastUsedAt|date('d.m.Y H:i')}, 'admin') : 'account.passkey.never_used'|trans({}, 'admin') }}
+                            </span>
+                        </div>
+                        {# One extra click as confirmation, without JavaScript (like admin/_delete.html.twig) #}
+                        <details class="w-100">
+                            <summary class="small text-danger">{{ 'account.passkey.delete'|trans({}, 'admin') }}</summary>
+                            <form method="post" action="{{ path('admin_passkey_delete', {id: passkey.id}) }}" class="mt-2">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-passkey-' ~ passkey.id) }}">
+                                <p class="small mb-2">{{ 'account.passkey.delete_confirm'|trans({'%name%': passkey.name}, 'admin') }}</p>
+                                <button class="btn btn-danger btn-sm">{{ 'account.passkey.delete'|trans({}, 'admin') }}</button>
+                            </form>
+                        </details>
+                    </li>
+                {% else %}
+                    <li class="list-group-item text-body-secondary">{{ 'account.passkey.empty'|trans({}, 'admin') }}</li>
+                {% endfor %}
+            </ul>
+
+            <form data-controller="passkey-register"
+                  data-action="submit->passkey-register#register"
+                  data-passkey-register-options-url-value="{{ path('webauthn.controller.creation.request.account') }}"
+                  data-passkey-register-result-url-value="{{ path('webauthn.controller.creation.response.account') }}"
+                  data-passkey-register-messages-value="{{ {
+                      unsupported: 'account.passkey.error.unsupported'|trans({}, 'admin'),
+                      cancelled: 'account.passkey.error.cancelled'|trans({}, 'admin'),
+                      exists: 'account.passkey.error.exists'|trans({}, 'admin'),
+                      failed: 'account.passkey.error.failed'|trans({}, 'admin'),
+                  }|json_encode }}">
+                <label class="form-label" for="passkey-name">{{ 'account.passkey.name'|trans({}, 'admin') }}</label>
+                <div class="input-group">
+                    <input type="text" id="passkey-name" class="form-control" required maxlength="{{ constant('App\\Entity\\Passkey::NAME_MAX_LENGTH') }}"
+                           placeholder="{{ 'account.passkey.name_placeholder'|trans({}, 'admin') }}" data-passkey-register-target="name">
+                    <button type="submit" class="btn btn-primary" data-passkey-register-target="button">{{ 'account.passkey.add'|trans({}, 'admin') }}</button>
+                </div>
+                <div class="alert alert-danger mt-2 mb-0" role="alert" hidden data-passkey-register-target="error"></div>
+            </form>
+        </div>
     </div>
 {% endblock %}

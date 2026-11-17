@@ -493,3 +493,12 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   (`CheckAllowedOrigins`). Migration `Version20261117210541`: Tabelle `passkey`, `app_user.webauthn_handle` (bestehende
   Konten per `gen_random_uuid()` befüllt, lokal geprüft: 64 Hex-Zeichen). Noch keine Routen des Bundles aktiv.
   191 Tests grün, PHPStan ohne Fehler.
+- B5b: „Mein Konto“ mit Passkeys (Liste mit Name, angelegt, zuletzt genutzt; Löschen über `<details>` wie sonst; nur
+  eigene, fremde → 404). Hinzufügen über die Endpunkte des Bundles (`controllers.creation.account`,
+  `/admin/konto/passkeys/optionen` und `/admin/konto/passkeys`, `CurrentUserEntityGuesser`). Der fertige
+  Stimulus-Controller des Bundles schickt nur das Ergebnis des Geräts; der Name kommt daher über einen eigenen
+  Controller mit `@simplewebauthn/browser` 14.0.0 (2026-09-02) als Zusatzfeld `passkeyName`, das der Denormalizer
+  der Bibliothek ignoriert (`PublicKeyCredentialDenormalizer` gelesen), und `PasskeyCreatedHandler` setzt ihn
+  (Credential-ID aus dem Request, nur eigener Passkey). Fund: Mit eigenem Profil `default` fehlte der Knoten `rp`, das
+  Bundle übergab `null` als Namen (400 beim Optionen-Abruf); `rp: { id: ~ }` behebt es ohne den veralteten
+  `rp.name`. Ein ungültiges Ergebnis beantwortet das Bundle mit 400. 197 Tests grün, PHPStan ohne Fehler.

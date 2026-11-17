@@ -1,0 +1,5 @@
+# Endpoints of the WebAuthn bundle, generated from config/packages/webauthn.yaml (controllers, firewall), all under
+# /admin (umsetzung-admin.md B5)
+webauthn:
+    resource: .
+    type: webauthn

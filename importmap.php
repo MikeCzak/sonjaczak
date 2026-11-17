@@ -30,4 +30,5 @@ return [
     '@popperjs/core' => ['version' => '2.11.8'],
     '@hotwired/stimulus' => ['version' => '3.2.2'],
     '@symfony/stimulus-bundle' => ['path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js'],
+    '@simplewebauthn/browser' => ['version' => '14.0.0'],
 ];

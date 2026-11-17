@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\Passkey;
 use App\Entity\User;
 use App\Form\Admin\ChangePasswordType;
+use App\Repository\PasskeyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +18,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * "Mein Konto": the own account. Passkeys follow in step B5.
+ * "Mein Konto": the own account, password and passkeys (umsetzung-admin.md B5b). Adding a passkey runs through the
+ * WebAuthn bundle's endpoints (config/packages/webauthn.yaml), listing and deleting here.
  */
 #[IsGranted('ROLE_ADMIN')]
 final class AccountController extends AbstractController
@@ -27,6 +30,7 @@ final class AccountController extends AbstractController
         #[CurrentUser] User $user,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
+        PasskeyRepository $passkeys,
     ): Response {
         $form = $this->createForm(ChangePasswordType::class);
         $form->handleRequest($request);
@@ -44,6 +48,25 @@ final class AccountController extends AbstractController
             return $this->redirectToRoute('admin_account');
         }
 
-        return $this->render('admin/account/index.html.twig', ['form' => $form]);
+        return $this->render('admin/account/index.html.twig', ['form' => $form, 'passkeys' => $passkeys->findForUser($user)]);
+    }
+
+    /**
+     * Only the own passkeys: someone else's is "not found", like one that does not exist.
+     */
+    #[Route('/admin/konto/passkeys/{id}/loeschen', name: 'admin_passkey_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function deletePasskey(Request $request, Passkey $passkey, #[CurrentUser] User $user, EntityManagerInterface $entityManager): Response
+    {
+        if ($passkey->userHandle !== $user->getWebauthnHandle()) {
+            throw $this->createNotFoundException('Not a passkey of this account.');
+        }
+
+        if ($this->isCsrfTokenValid('delete-passkey-'.$passkey->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($passkey);
+            $entityManager->flush();
+            $this->addFlash('success', 'account.passkey.flash.deleted');
+        }
+
+        return $this->redirectToRoute('admin_account');
     }
 }

@@ -55,6 +55,24 @@ account:
     password_submit: Passwort ändern
     passkey:
         default_name: 'Passkey vom %date%'
+        heading: Passkeys
+        intro: Mit einem Passkey meldest du dich per Fingerabdruck oder Geräte-PIN an, ohne Passwort. Richte auf jedem Gerät, das du nutzt, einen eigenen ein (z. B. MacBook und Handy). Das Passwort bleibt als Rückweg.
+        empty: Noch kein Passkey eingerichtet.
+        created: angelegt %date%
+        last_used: zuletzt genutzt %date%
+        never_used: noch nicht genutzt
+        name: Name des Geräts
+        name_placeholder: z. B. MacBook oder Handy
+        add: Passkey hinzufügen
+        delete: Löschen
+        delete_confirm: 'Passkey „%name%“ löschen? Auf dem Gerät bleibt er gespeichert, funktioniert hier aber nicht mehr. Lösche ihn danach auch in den Passwort-Einstellungen des Geräts.'
+        flash:
+            deleted: Passkey gelöscht.
+        error:
+            unsupported: Dieser Browser kann keine Passkeys.
+            cancelled: Abgebrochen. Nichts gespeichert.
+            exists: Auf diesem Gerät gibt es schon einen Passkey für dein Konto.
+            failed: Der Passkey konnte nicht gespeichert werden. Bitte noch einmal versuchen oder Mike Bescheid geben.
 password:
     current: Aktuelles Passwort
     new: Neues Passwort
