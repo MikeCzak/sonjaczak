@@ -429,4 +429,7 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Browser angesehen (Login bräuchte den DevTools-Client); die Tests prüfen Links und Hinweis im HTML.
 - Push von D2 (5 Commits): CI-Lauf 44043324903 Tests → Build → Deploy grün; Migration `Version20261117063716` in
   Produktion in 57 ms ausgeführt. Erklärung `erklaerungen/20-foundry-stories.md` (Stories) ergänzt.
-
+- F, Datenschutz-Information: Entscheidungen (Seite und PDF, Eltern direkt angesprochen; Speicherdauer Option A, übrige
+  Daten bis zum Ende des Folgesemesters, Honorarnoten und Zahlungen 7 Jahre). Konten und Absenderdaten in Produktion
+  laut Mike eingetragen. EUR-Lex für den Wortlaut von Art. 13 DSGVO nicht abrufbar (HTTP 202 mit leerem Inhalt, auch
+  PDF- und ELI-Adresse).

@@ -218,7 +218,18 @@ der Download antwortet ohne PDF mit 404.
 ## F. Vor den echten Daten
 
 - **Backups** – erledigt 2026-11-15 (Rücksicherung getestet): `backups.md`, `erklaerungen/16-backups.md`.
-- **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO), Entwurf zum Prüfen.
+- **Datenschutz-Information** für Schüler:innen und Eltern (Art. 13 DSGVO), Entwurf zum Prüfen. Entschieden
+  2026-11-17 (Mike): eigene Seite **und** PDF, die Eltern werden direkt angesprochen.
+- **Speicherdauer in der Datenschutz-Information** (Art. 13 Abs. 2 lit. a DSGVO: Dauer „oder, falls dies nicht möglich
+  ist, die Kriterien für die Festlegung dieser Dauer“; Wortlaut bisher nur über dsgvo-gesetz.de gelesen, EUR-Lex
+  blockiert automatische Abrufe). Die 7 Jahre der BAO gelten nur für Honorarnoten, Zahlungen und die Zuordnung, nicht
+  für Geburtsdatum, Kontaktdaten, Notizen, Unterrichtsinhalte und Schnupperstunden.
+  - **A: konkrete Frist** – Pro: klar für Eltern, fester Maßstab für die spätere Löschregel. Contra: bindet Sonja,
+    eine verpasste Frist ist ein Verstoß.
+  - **B: nur ein Kriterium** („solange für den Unterricht erforderlich“) – Pro: zulässig, legt sich nicht fest.
+    Contra: vage, kein Anhaltspunkt für die Löschregel.
+  - **Entschieden 2026-11-17 (Mike): A, bis zum Ende des Folgesemesters** nach dem letzten Kurs (bzw. der letzten
+    Schnupperstunde). Honorarnoten und Zahlungen 7 Jahre ab Schluss des Kalenderjahres.
 - **Aufbewahrungsfrist** der Honorarnoten in der BAO nachlesen, Lösch-/Anonymisierungsregel festhalten.
   Nachgelesen 2026-11-13 (RIS, § 132 BAO): Abs. 1 „Bücher und Aufzeichnungen sowie die zu den Büchern und
   Aufzeichnungen gehörigen Belege sind sieben Jahre aufzubewahren“, darüber hinaus so lange, wie sie für anhängige

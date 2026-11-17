@@ -14,8 +14,9 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** `umsetzung-admin.md` F: Datenschutz-Information (D ist seit 2026-11-17 live),
-dann dürfen echte Daten eingetragen werden (Backups und Rücksicherung sind fertig).
+**Nächster Schritt:** `umsetzung-admin.md` F: Datenschutz-Information (D ist seit 2026-11-17 live; Konten für Mike
+und Sonja und Sonjas Absenderdaten sind in Produktion eingetragen), dann dürfen echte Daten eingetragen werden
+(Backups und Rücksicherung sind fertig).
 
 ## Später zu klären
 
@@ -79,24 +80,21 @@ verlinkten Erklärung.
   ein Storno mit eigener Kennzeichnung?
 - [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
   der Export ordnet streng nach Zahlungsdatum zu.
-- [ ] **Lösch- und Anonymisierungsregel** (2026-11-13, `umsetzung-admin.md` F; **zurückgestellt**, Mike: „für später
-  aufheben“). Grundlage: § 132 BAO, 7 Jahre ab Schluss des Kalenderjahres (Zitat in `umsetzung-admin.md` F). Beispiel:
-  Honorarnoten ab dem 8. Jahr anonymisieren, Schüler:innen ohne Teilnahmen in Frist löschen. Hängt damit zusammen:
-  Schüler:innen mit Teilnahmen sind nicht löschbar (C5).
-  Ergänzt 2026-11-16 (Mike): **Nicht mehr aktive Schüler:innen.** Wer in keinem neuen Kurs mehr ist, bleibt heute
-  unbegrenzt gespeichert. Die DSGVO verlangt, Daten nur so lange zu halten wie nötig (Wortlaut noch nicht nachgelesen);
-  das kann mit der Aufbewahrung der Honorarnoten konkurrieren. Technisch: Die Honorarnote hat Name und Adresse als
-  Kopie, hängt aber über die Teilnahme an der Schüler:in (Fremdschlüssel). Löschen ginge daher nur ohne Teilnahmen;
-  sonst Schüler:in anonymisieren (Kontaktdaten leeren, Zeile bleibt). **Mike, 2026-11-16:** Für den Kontakt muss
-  nichts in der App bleiben (Sonja hat Mail und Telefon ohnehin selbst, z. B. im Handy). Die Frist richtet sich also
-  nur nach den Honorarnoten; offen ist nur noch, wann gelöscht bzw. anonymisiert wird.
+- [ ] **Lösch- und Anonymisierungsregel umsetzen** (2026-11-13, `umsetzung-admin.md` F; Technik **zurückgestellt**,
+  Mike: „für später aufheben“). Die Fristen stehen seit 2026-11-17 fest (siehe „Getroffene Entscheidungen“,
+  „Speicherdauer“); offen ist nur, wie die App sie umsetzt. Bis dahin löscht Sonja von Hand. Technisch: Die
+  Honorarnote hat Name und Adresse als Kopie, hängt aber über die Teilnahme an der Schüler:in (Fremdschlüssel).
+  Löschen ginge daher nur ohne Teilnahmen, sonst Schüler:in anonymisieren (Kontaktdaten, Geburtsdatum, Notizen leeren,
+  Zeile bleibt); Unterrichtsinhalte der Einheiten und Schnupperstunden mitlöschen. Hängt damit zusammen: Schüler:innen
+  mit Teilnahmen sind nicht löschbar (C5).
 
 ### Rechtliches
 
 - [ ] **Datenschutz-Information für Schüler:innen und Eltern** (Art. 13 DSGVO, `umsetzung-admin.md` F): Entwurf zum Prüfen,
   **vor den echten Daten**.
 - [ ] **Minderjährige im Unterricht** (2026-11-12, Release-Schritt 6): Der Vertrag kommt mit den Erziehungsberechtigten
-  zustande; ob die Datenschutzerklärung dazu mehr sagen soll, mit der Rechtslage klären.
+  zustande. Die Datenschutz-Information für den Unterricht spricht die Eltern direkt an (Entscheidung 2026-11-17);
+  ob die Datenschutzerklärung der Website dazu mehr sagen soll, mit der Rechtslage klären.
 
 ### Technisch (Mike)
 
@@ -203,6 +201,8 @@ muss).
 | Anzahl je Teilnahme | Teilnahme hat eine eigene Anzahl der Einheiten (Kopie aus dem Kurs), Grund Pflicht, nicht unter die begonnenen Einheiten; „Teilnahme beenden“ = diese Untergrenze; Geld nur über Gutschrift (2026-11-16) | Häufigster Fall für weniger Einheiten ist ein vorzeitiges Ende aus persönlichem Grund (Mike). `umsetzung-admin.md` C7 |
 | Ferien nachträglich | Alle Einheiten im Zeitraum löschen nach Popup mit Liste, am Ende auffüllen; Ferien löschen gibt die Einheiten zurück (2026-11-16) | Nachträgliche Ferien heißen: nichts fand statt (Mike). `umsetzung-admin.md` C4 Fragen 6, 7 |
 | PDF der Honorarnote | Erzeugt in derselben Transaktion wie die Nummer; Gutschrift als `HN17_GU_WiSe_2026_Springer_Gutschrift.pdf` (2026-11-17) | Honorarnote und PDF entstehen nur gemeinsam, ein Fehler verbraucht keine Nummer. `umsetzung-admin.md` D2b, D2d |
+| Datenschutz-Information Unterricht | Eigene Seite und PDF, spricht die Eltern direkt an (2026-11-17) | Eltern bekommen sie in die Hand, die Seite bleibt verlinkbar. `umsetzung-admin.md` F |
+| Speicherdauer | Honorarnoten (PDF und Angaben in der Zeile), Zahlungen und die Zuordnung zur Schüler:in 7 Jahre ab Schluss des Kalenderjahres (§ 132 BAO); alle übrigen Daten bis zum Ende des Folgesemesters nach dem letzten Kurs bzw. der letzten Schnupperstunde (2026-11-17) | Option A, kurze Frist, weil Sonja Kontaktdaten ohnehin selbst hat (Mike). `umsetzung-admin.md` F |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration
