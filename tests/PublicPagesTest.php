@@ -26,6 +26,7 @@ final class PublicPagesTest extends WebTestCase
         yield 'lessons' => ['/unterricht'];
         yield 'contact' => ['/kontakt'];
         yield 'privacy' => ['/datenschutz'];
+        yield 'privacy lessons' => ['/datenschutz/unterricht'];
         yield 'style guide' => ['/_design'];
     }
 
@@ -48,7 +49,28 @@ final class PublicPagesTest extends WebTestCase
         // A missing translation is rendered as its key, e.g. "nav.home"; this also covers the menu labels,
         // which debug:translation cannot see because they are set in PHP (App\Menu\MenuBuilder)
         $text = $crawler->filter('title')->text().' '.$crawler->filter('body')->text();
-        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|error|form|inquiry|mail|image|slider|theme|styleguide)\.[a-z_]+/', $text);
+        self::assertDoesNotMatchRegularExpression('/\b(site|meta|nav|title|action|placeholder|footer|home|about|booking|booking_solo|booking_band|lessons|contact|imprint|privacy|privacy_lessons|error|form|inquiry|mail|image|slider|theme|styleguide)\.[a-z_]+/', $text);
+    }
+
+    /**
+     * Art. 13 GDPR (umsetzung-admin.md F): reachable from the privacy policy and the lessons page, with the storage
+     * periods decided on 2026-11-17 and the rights shared with the privacy policy.
+     */
+    public function testPrivacyNoticeForLessons(): void
+    {
+        $client = self::createClient();
+
+        foreach (['/datenschutz', '/unterricht'] as $url) {
+            $client->request('GET', $url);
+            self::assertSelectorExists('main a[href="/datenschutz/unterricht"]');
+        }
+
+        $client->request('GET', '/datenschutz/unterricht');
+        self::assertSelectorTextContains('h1', 'Datenschutz-Information für den Gesangsunterricht');
+        self::assertSelectorExists('main address');
+        self::assertSelectorTextContains('main', 'sieben Jahre ab dem Ende des Kalenderjahres');
+        self::assertSelectorTextContains('main', 'bis zum Ende des Semesters, das auf den letzten Kurs');
+        self::assertSelectorTextContains('main', 'Datenschutzbehörde');
     }
 
     public function testCurrentPageIsMarkedInMenu(): void

@@ -230,6 +230,13 @@ der Download antwortet ohne PDF mit 404.
     Contra: vage, kein Anhaltspunkt für die Löschregel.
   - **Entschieden 2026-11-17 (Mike): A, bis zum Ende des Folgesemesters** nach dem letzten Kurs (bzw. der letzten
     Schnupperstunde). Honorarnoten und Zahlungen 7 Jahre ab Schluss des Kalenderjahres.
+  - **F1 Seite** `/datenschutz/unterricht` (freigegeben 2026-11-17): Texte in `content.de.yaml` unter
+    `privacy_lessons.*`, Rechte aus `privacy.rights.body` übernommen; verlinkt von `/datenschutz` und `/unterricht`.
+    Ein Text für Eltern und erwachsene Schüler:innen; Mike nicht namentlich, sondern als IT-Dienstleister;
+    Steuerberatung als Empfängerin (Name folgt). Erledigt 2026-11-17.
+  - **F2 PDF** `/datenschutz/unterricht.pdf` aus demselben Template mit dompdf, bei jedem Aufruf neu erzeugt (nicht
+    gespeichert); HTML → PDF in einen gemeinsamen Dienst mit `InvoicePdfRenderer`; Link im Admin bei den
+    Schüler:innen. Alternative: fertiges PDF im Repo (Text doppelt, läuft auseinander).
 - **Aufbewahrungsfrist** der Honorarnoten in der BAO nachlesen, Lösch-/Anonymisierungsregel festhalten.
   Nachgelesen 2026-11-13 (RIS, § 132 BAO): Abs. 1 „Bücher und Aufzeichnungen sowie die zu den Büchern und
   Aufzeichnungen gehörigen Belege sind sieben Jahre aufzubewahren“, darüber hinaus so lange, wie sie für anhängige

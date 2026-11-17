@@ -53,6 +53,16 @@ verlinkten Erklärung.
   es einen Ersatznamen ohne Umlaute (`Muessig`). Das ZIP heißt `Honorarnoten_GU_WiSe_2026.zip` (ohne Wochentage; zwei
   Kurse im selben Semester ergäben denselben Namen). PDF-Link in Liste, Detail und Kursseite, ZIP nur auf der
   Kursseite. Der Download speichert die Datei (kein Öffnen im Browser-Tab).
+- [ ] **Text der Datenschutz-Information für den Unterricht** (2026-11-17, `umsetzung-admin.md` F1,
+  `/datenschutz/unterricht`, Entwurf, keine Rechtsberatung) mit Sonja durchgehen:
+  - Ich-Form (wie die Unterrichtsseite), Ansprache „Sie“ für Eltern und erwachsene Schüler:innen in einem Text.
+  - Als freiwillig genannt: Geburtsdatum, E-Mail, Telefon (in der App nicht Pflicht). Pflicht: Name und Adresse.
+  - **Notizen ohne Gesundheitsdaten:** Angaben wie „heiser, Stimmbandknötchen“ wären Gesundheitsdaten (Art. 9 DSGVO,
+    besonders geschützt, Wortlaut nicht nachgelesen). Der Text nennt nur Unterrichtsinhalte; Sonja sollte sich daran
+    halten.
+  - Sonja gibt Link oder PDF bei der Anmeldung weiter (Art. 13: „zum Zeitpunkt der Erhebung“), auch an die sechs
+    Schüler:innen, deren Daten sie jetzt einträgt.
+  - Bis die Löschregel umgesetzt ist, löscht Sonja nach Ende des Folgesemesters von Hand.
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
   mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
 - [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
@@ -72,6 +82,10 @@ verlinkten Erklärung.
 - [ ] **KI-Bilder durch Fotos ersetzen** (2026-11-12): `hero-wedding.jpg`, `hero-lessons.jpg`, sobald Fotos da sind.
 
 ### Mit der Steuerberatung
+
+- [ ] **Name der Steuerberatung fehlt** (2026-11-17, `umsetzung-admin.md` F1): Sonja gibt Honorarnoten und Zahlungen
+  weiter; Mike bringt den Namen in Erfahrung. Die Datenschutz-Information nennt bis dahin nur „meine Steuerberatung“
+  (Art. 13 erlaubt auch Kategorien von Empfängern); mit Namen ergänzen.
 
 - [ ] **Gutschrift und Zahlung als ein Konto** (2026-11-13, D3, `erklaerungen/13`): zu zahlen = Betrag minus
   Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (`datenmodell.md` 3.7)?
@@ -96,6 +110,13 @@ verlinkten Erklärung.
   zustande. Die Datenschutz-Information für den Unterricht spricht die Eltern direkt an (Entscheidung 2026-11-17);
   ob die Datenschutzerklärung der Website dazu mehr sagen soll, mit der Rechtslage klären.
 
+- [ ] **IT-Dienstleister in der Datenschutz-Information** (2026-11-17, `umsetzung-admin.md` F1): Mike wird nicht
+  namentlich genannt, der Text spricht von „einem IT-Dienstleister, der die Website technisch betreut und die Daten nur
+  in meinem Auftrag verarbeitet“ (Mike hat Zugang als Super-Admin und lädt die Backups). Zu klären: Braucht es dafür
+  eine Vereinbarung zur Auftragsverarbeitung zwischen Sonja und Mike (Art. 28 DSGVO, nicht nachgelesen)?
+- [ ] **Wortlaut von Art. 13 DSGVO gegen EUR-Lex prüfen** (2026-11-17, Mike im Browser): EUR-Lex blockiert
+  automatische Abrufe; die Information folgt dem Wortlaut von dsgvo-gesetz.de.
+
 ### Technisch (Mike)
 
 - [ ] **Passkeys** (`umsetzung-admin.md` B5). Zeitpunkt entschieden 2026-11-14: darf auch erst im Echtbetrieb kommen
@@ -115,9 +136,12 @@ verlinkten Erklärung.
 - [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
   `planung/backups.md`, „Rücksicherung“). Der Test in die temporäre Datenbank deckt das Einspielen ab, nicht den
   ganzen Ablauf.
-- [ ] **Zweite Kopie der Backups außer Haus** (2026-11-15, `erklaerungen/16`, Abschnitt 5): Heute liegen die Sicherungen
-  nur am Mac (und in Time Machine, falls eingerichtet). Möglich: Cloud-Speicher mit Push vom Server oder eine externe
-  Platte an einem anderen Ort. Auch prüfen: Läuft Time Machine, und ist der private age-Schlüssel ausgedruckt?
+- [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
+  `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11), Mike sichert sie
+  auf einer externen Festplatte von Sonja. Später lieber ein Backup-Server, der die Sicherungen holt bzw. empfängt,
+  ohne Mikes Rechner. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
+  age-Schlüssel ausgedruckt? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
+  bei einem Wechsel prüfen, ob das noch stimmt.
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
   noch etwas offen ist).
 - [ ] **Runner-Label `ubuntu-latest`** (2026-11-15): wechselt laut GitHub-Hinweis im CI-Lauf ab 2026-10-19 schrittweise
@@ -156,7 +180,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [ ] F Vor den echten Daten: Backups fertig (2026-11-15); offen: Datenschutz-Information, Löschregel (siehe „Später“)
+- [ ] F Vor den echten Daten: Backups fertig (2026-11-15); Datenschutz-Information als Seite (F1, 2026-11-17); offen: PDF (F2), Löschregel (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).

@@ -13,6 +13,7 @@ meta:
     lessons: Gesangsunterricht bei Sonja Czak am Bundesgymnasium Rein bei Graz – ab 12 Jahren, Pop, Rock, Funk, Soul, Musical und Jazz.
     contact: Kontakt zu Sonja Czak, Sängerin und Gesangslehrerin aus Frohnleiten, und Impressum.
     privacy: Datenschutzerklärung von sonjaczak.com.
+    privacy_lessons: Datenschutz-Information für Schüler:innen im Gesangsunterricht bei Sonja Czak und ihre Eltern.
 
 nav:
     label: Hauptnavigation
@@ -35,6 +36,7 @@ title:
     contact: Kontakt
     imprint: Impressum
     privacy: Datenschutz
+    privacy_lessons: Datenschutz-Information für den Gesangsunterricht
 
 action:
     more: Mehr erfahren

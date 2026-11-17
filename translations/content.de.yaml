@@ -233,4 +233,51 @@ privacy:
             Sie haben das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch gegen die Verarbeitung (Art. 21). Wenden Sie sich dazu an die oben genannte E-Mail-Adresse. Eine automatisierte Entscheidungsfindung einschließlich Profiling findet nicht statt.
 
             Wenn Sie meinen, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstößt, können Sie sich bei der Aufsichtsbehörde beschweren. In Österreich ist das die Datenschutzbehörde, Barichgasse 40–42, 1030 Wien, dsb@dsb.gv.at.
+    lessons_notice: 'Für Schüler:innen im Gesangsunterricht und ihre Eltern gibt es eine eigene Information:'
     updated: 'Stand: November 2026'
+
+# Draft (2026-11-17, umsetzung-admin.md F): information under Art. 13 GDPR for students and parents, not legal advice.
+# The rights section reuses privacy.rights.body.
+privacy_lessons:
+    intro: >-
+        Diese Information richtet sich an Schüler:innen im Gesangsunterricht und, wenn eine Schülerin oder ein Schüler
+        minderjährig ist, an die Eltern, mit denen der Unterrichtsvertrag zustande kommt. Sie erfahren hier, welche
+        Daten ich über Sie bzw. Ihr Kind speichere, wofür, wie lange und welche Rechte Sie haben.
+    website_notice: 'Für den Besuch dieser Website gilt die'
+    data:
+        heading: Welche Daten ich verarbeite
+        body: |-
+            Für Anmeldung und Unterricht: Vor- und Nachname, Geburtsdatum, Adresse, E-Mail-Adresse und Telefonnummer der Schülerin oder des Schülers; bei Minderjährigen außerdem Name, Adresse, E-Mail-Adresse und Telefonnummer eines Elternteils. Das Geburtsdatum brauche ich, um zu wissen, ob der Vertrag mit den Eltern zustande kommt.
+
+            Für die Organisation: Semester, Wochentag und Uhrzeit, die einzelnen Termine, Absagen und Nachholstunden, Schnupperstunden sowie kurze Notizen zu den Unterrichtsinhalten, etwa die Songs, an denen wir arbeiten.
+
+            Für die Abrechnung: Preis, Honorarnoten und Gutschriften mit Name und Adresse der Empfängerin oder des Empfängers sowie die Zahlungseingänge.
+    purpose:
+        heading: Zweck und Rechtsgrundlage
+        body: |-
+            Ich verarbeite die Daten, um den Unterricht zu vereinbaren, durchzuführen und abzurechnen. Rechtsgrundlage ist die Erfüllung des Unterrichtsvertrags (Art. 6 Abs. 1 lit. b DSGVO).
+
+            Honorarnoten, Gutschriften und Zahlungen muss ich außerdem nach § 132 Bundesabgabenordnung (BAO) aufbewahren. Rechtsgrundlage dafür ist diese gesetzliche Pflicht (Art. 6 Abs. 1 lit. c DSGVO).
+    required:
+        heading: Müssen Sie die Daten angeben?
+        body: >-
+            Gesetzlich sind Sie nicht dazu verpflichtet. Ohne Name, Adresse und eine Möglichkeit, Sie zu erreichen, kann
+            ich den Unterricht aber nicht vereinbaren und keine Honorarnote ausstellen; welche Angaben auf einer
+            Honorarnote stehen müssen, schreibt das Steuerrecht vor. Geburtsdatum, E-Mail-Adresse und Telefonnummer
+            sind freiwillig, erleichtern aber die Organisation.
+    recipients:
+        heading: Wer die Daten erhält
+        body: |-
+            Die Daten liegen in einem passwortgeschützten Verwaltungsbereich dieser Website. Zugriff haben nur ich und ein IT-Dienstleister, der die Website technisch betreut und die Daten nur in meinem Auftrag verarbeitet. Server und E-Mail betreibt die IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, Deutschland, als Auftragsverarbeiterin nach Art. 28 DSGVO.
+
+            Honorarnoten, Gutschriften und Zahlungen gebe ich an meine Steuerberatung weiter, auf Verlangen auch an das Finanzamt.
+
+            Die Daten werden nicht in Länder außerhalb der Europäischen Union übermittelt.
+    storage:
+        heading: Wie lange ich die Daten speichere
+        body: |-
+            Honorarnoten, Gutschriften und Zahlungen samt den Angaben darauf bewahre ich sieben Jahre ab dem Ende des Kalenderjahres auf, in dem sie entstanden sind (§ 132 BAO), und darüber hinaus nur, solange sie für ein laufendes Verfahren beim Finanzamt von Bedeutung sind.
+
+            Alle anderen Daten lösche ich bis zum Ende des Semesters, das auf den letzten Kurs oder die letzte Schnupperstunde folgt. Ist dann noch eine Honorarnote aufzubewahren, bleibt nur der Name als Zuordnung zu ihr erhalten.
+
+            Von den Daten wird täglich eine verschlüsselte Sicherungskopie erstellt und außerhalb des Servers aufbewahrt. Gelöschte Daten sind darin noch bis zu 12 Monate enthalten, bis die jeweilige Kopie gelöscht wird.

@@ -11,6 +11,10 @@
             <h1>{{ 'title.privacy'|trans }}</h1>
             <hr class="sc-accent-line">
             <p>{{ 'privacy.intro'|trans({}, 'content') }}</p>
+            <p>
+                {{ 'privacy.lessons_notice'|trans({}, 'content') }}
+                <a href="{{ path('app_privacy_lessons') }}">{{ 'title.privacy_lessons'|trans }}</a>.
+            </p>
 
             <h2 class="h4 mt-5">{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
             {{ include('_partials/controller_address.html.twig') }}

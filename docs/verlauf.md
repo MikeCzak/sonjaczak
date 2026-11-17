@@ -433,3 +433,8 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Daten bis zum Ende des Folgesemesters, Honorarnoten und Zahlungen 7 Jahre). Konten und Absenderdaten in Produktion
   laut Mike eingetragen. EUR-Lex für den Wortlaut von Art. 13 DSGVO nicht abrufbar (HTTP 202 mit leerem Inhalt, auch
   PDF- und ELI-Adresse).
+- F1: Datenschutz-Information für den Unterricht als Seite `/datenschutz/unterricht` (`PageController::privacyLessons()`,
+  `templates/page/privacy_lessons.html.twig`, Texte `privacy_lessons.*` als Entwurf), Links von `/datenschutz` und
+  `/unterricht`, Test `PublicPagesTest::testPrivacyNoticeForLessons()`. Mikes Antworten: ein Text für alle, Steuerberatung
+  als Empfängerin (Name folgt), Mike nicht namentlich; Backups sichert Mike auf Sonjas externer Festplatte, später
+  Backup-Server statt Mac. 167 Tests grün, PHPStan ohne Fehler.

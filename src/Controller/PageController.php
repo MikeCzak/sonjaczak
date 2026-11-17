@@ -30,4 +30,13 @@ final class PageController extends AbstractController
     {
         return $this->render('page/privacy.html.twig');
     }
+
+    /**
+     * Information under Art. 13 GDPR for students and parents (umsetzung-admin.md F).
+     */
+    #[Route('/datenschutz/unterricht', name: 'app_privacy_lessons', methods: ['GET'])]
+    public function privacyLessons(): Response
+    {
+        return $this->render('page/privacy_lessons.html.twig');
+    }
 }
