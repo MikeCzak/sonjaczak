@@ -12,9 +12,11 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Keine Frage offen.
+- **F3c: pushen und Cronjob eintragen** (`deployment.md` S12, Uhrzeit 03:30 freigegeben 2026-11-17). Reihenfolge:
+  Push (F3a, F3b, F3c), Deploy abwarten, `--dry-run` am Server, dann `sudo crontab -e`.
+  Antwort:
 
-**Nächster Schritt:** F3c Cronjob für `app:privacy:purge` am Server (vor dem Echtbetrieb, Mike 2026-11-17; F3a, F3b fertig), danach B5 Passkeys, dann
+**Nächster Schritt:** F3c (oben), danach B5 Passkeys, dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
@@ -257,4 +259,4 @@ bei jeder Entscheidung zu berücksichtigen.
 | Updates | unattended-upgrades, Neustart um 04:00 | /etc/apt/apt.conf.d/52unattended-upgrades-local |
 | Benutzer | mike (sudo); deploy (ohne sudo, Gruppe docker) für GitHub Actions; dbbackup (ohne Docker, nur Backup-Skript per sudo) | `id mike`, `deployment.md` S1, S11 |
 | Backups | Mac holt täglich 12:00 einen mit age verschlüsselten Dump; Skripte in /usr/local/sbin, sudo-Regeln in /etc/sudoers.d/sonjaczak-backup | `deployment.md` S11 |
-| Cronjobs (root) | Token-Erinnerungen (`deployment.md` S6) | `sudo crontab -l` |
+| Cronjobs (root) | Token-Erinnerungen (`deployment.md` S6), überfällige Honorarnoten 07:30 (S8), automatische Löschung 03:30 (S12, sobald eingetragen) | `sudo crontab -l` |

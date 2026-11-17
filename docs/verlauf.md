@@ -473,3 +473,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Teilnahme ohne Person: eigene, schreibgeschützte Seite, „Person gelöscht“ in Kurs, Raster, Honorarnote, Dashboard.
   Twig läuft auch in Produktion mit `strict_variables: true` (`config/packages/twig.yaml`), `null.fullName` wäre ein
   Fehler gewesen. 188 Tests grün, PHPStan ohne Fehler, Probelauf auf den Fixtures: nichts zu löschen.
+- F3c vorbereitet: `deployment.md` S12 (Cronjob `app:privacy:purge` täglich 03:30, Uhrzeit von Mike freigegeben;
+  Reihenfolge Push → Deploy → `--dry-run` → crontab). Server-Tabelle im Projektstand um S8 und S12 ergänzt (S8 fehlte
+  dort, obwohl der Cronjob läuft).

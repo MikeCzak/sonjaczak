@@ -333,6 +333,40 @@ Ende wird `app_restore_test` wieder gelöscht. Lokal mit dem Dev-Stack geprüft 
 **Skripte aktualisieren:** Ändern sich `deploy/backup.sh` oder `deploy/restore-test.sh`, die `scp`- und
 `install`-Zeilen wiederholen.
 
+### S12. Automatische Löschung (auf dem Server)
+
+Der Befehl `app:privacy:purge` (`umsetzung-admin.md` F3) löscht Personendaten und Honorarnoten, deren Frist abgelaufen
+ist (Fristen: `/datenschutz/unterricht`, `App\Privacy\RetentionPolicy`). Eintrag in der crontab von root (wie S6, S8),
+täglich um 03:30 (Mike, 2026-11-17):
+
+```
+# Retention: deletes personal data and invoices past their period (docs/planung/umsetzung-admin.md F3)
+30 3 * * * docker exec sonjaczak-php-1 bin/console app:privacy:purge --no-interaction > /dev/null
+```
+
+Reihenfolge:
+
+1. Erst pushen und den Deploy abwarten (`gh run watch`): Der Befehl und die Migrationen aus F3a/F3b müssen in
+   Produktion sein. Prüfen: `docker exec sonjaczak-php-1 bin/console list app` zeigt `app:privacy:purge`.
+2. Einmal ohne Wirkung: `docker exec sonjaczak-php-1 bin/console app:privacy:purge --dry-run` (zählt nur; vor den
+   echten Daten erwartet: überall 0).
+3. `sudo crontab -e`, Zeile ergänzen, mit `sudo crontab -l` kontrollieren.
+
+Hinweise:
+
+- **Uhrzeit:** cron nimmt die Zeitzone des Servers, ebenso der Neustart nach Updates um 04:00 (Server-Konfiguration
+  im Projektstand). 03:30 liegt also immer eine halbe Stunde davor; ein Lauf dauert bei wenigen Schüler:innen
+  Sekunden. Welcher Tag „heute“ ist, rechnet PHP in `Europe/Vienna` (`frankenphp/conf.d/10-app.ini`); um 03:30 UTC
+  ist in Wien schon derselbe Tag. Das Backup vom Mac (12:00) liegt weit weg.
+- **Ausgabe:** nur Anzahlen, keine Namen. `> /dev/null` verwirft die Erfolgsmeldung; Fehler (stderr) stehen im
+  Journal (`journalctl -u cron`). Schlägt ein Lauf fehl, ist nichts gelöscht (eine Transaktion), der nächste Tag
+  holt es nach.
+- **Abschalten** (z. B. bei einem laufenden Verfahren beim Finanzamt, `umsetzung-admin.md` F3 Frage 5): Zeile mit
+  `#` auskommentieren.
+- **Backups:** Gelöschtes bleibt in den Sicherungen bis zu 12 Monate (S11, so in der Datenschutz-Information).
+- **Rollback:** Gibt es schon Teilnahmen ohne Person, kann eine Version vor F3b sie nicht anzeigen
+  (`enrollment.student` wäre leer). Vor einem Rollback hinter F3b den Cronjob auskommentieren und prüfen.
+
 ## Erster Deploy
 
 Erst wenn S1–S5, S9 und S10 erledigt sind und `dig` die VPS-Adressen zeigt: pushen und den Lauf beobachten
