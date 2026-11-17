@@ -12,11 +12,9 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **F3c: pushen und Cronjob eintragen** (`deployment.md` S12, Uhrzeit 03:30 freigegeben 2026-11-17). Reihenfolge:
-  Push und Deploy erledigt (2026-11-17, CI 44119503604); offen: `--dry-run` am Server, dann `sudo crontab -e`.
-  Antwort:
+Keine Frage offen.
 
-**Nächster Schritt:** F3c (oben), danach B5 Passkeys, dann
+**Nächster Schritt:** B5 Passkeys (Plan folgt), dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
@@ -193,7 +191,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3a Fristen und Anzeige, F3b Befehl `app:privacy:purge` (2026-11-17); offen: F3c Cronjob (vor dem Echtbetrieb)
+- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).
@@ -259,4 +257,4 @@ bei jeder Entscheidung zu berücksichtigen.
 | Updates | unattended-upgrades, Neustart um 04:00 | /etc/apt/apt.conf.d/52unattended-upgrades-local |
 | Benutzer | mike (sudo); deploy (ohne sudo, Gruppe docker) für GitHub Actions; dbbackup (ohne Docker, nur Backup-Skript per sudo) | `id mike`, `deployment.md` S1, S11 |
 | Backups | Mac holt täglich 12:00 einen mit age verschlüsselten Dump; Skripte in /usr/local/sbin, sudo-Regeln in /etc/sudoers.d/sonjaczak-backup | `deployment.md` S11 |
-| Cronjobs (root) | Token-Erinnerungen (`deployment.md` S6), überfällige Honorarnoten 07:30 (S8), automatische Löschung 03:30 (S12, sobald eingetragen) | `sudo crontab -l` |
+| Cronjobs (root) | Token-Erinnerungen (`deployment.md` S6), überfällige Honorarnoten 07:30 (S8), automatische Löschung 03:30 (S12) | `sudo crontab -l` |

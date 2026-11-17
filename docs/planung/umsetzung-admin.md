@@ -280,7 +280,7 @@ Schüler:innen).
   7 Jahre zählen je Teilnahme (Honorarnote und Gutschriften gemeinsam, bis zum Ende des Jahres der letzten); eine
   Teilnahme ohne Person hat eine schreibgeschützte Seite und bekommt keine Einheiten mehr.
 - **F3c Server:** Eintrag in der crontab von root wie S8, täglich um 03:30 (Mike, 2026-11-17), `deployment.md` S12.
-  Mike trägt ihn nach dem Push ein.
+  **Erledigt 2026-11-17** (Mike, `--dry-run` am Server geprüft).
 
 **Fragen:**
 

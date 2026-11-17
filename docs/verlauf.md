@@ -479,3 +479,4 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - Push von F3 (6 Commits): CI-Lauf 44119503604 Tests → Build → Deploy grün; in Produktion 2 Migrationen
   (`Version20261117142646`, `Version20261117152927`) in 21 ms. `/`, `/datenschutz/unterricht`, `/admin/login` liefern
   200. Cronjob (S12) trägt Mike ein.
+- F3c: Cronjob `app:privacy:purge` in der crontab von root eingetragen, `--dry-run` am Server geprüft (Mike). F3 fertig.
