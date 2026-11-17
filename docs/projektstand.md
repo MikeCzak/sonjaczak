@@ -83,10 +83,6 @@ verlinkten Erklärung.
 
 ### Mit der Steuerberatung
 
-- [ ] **Name der Steuerberatung fehlt** (2026-11-17, `umsetzung-admin.md` F1): Sonja gibt Honorarnoten und Zahlungen
-  weiter; Mike bringt den Namen in Erfahrung. Die Datenschutz-Information nennt bis dahin nur „meine Steuerberatung“
-  (Art. 13 erlaubt auch Kategorien von Empfängern); mit Namen ergänzen.
-
 - [ ] **Gutschrift und Zahlung als ein Konto** (2026-11-13, D3, `erklaerungen/13`): zu zahlen = Betrag minus
   Gutschriften, Rückzahlung als negative Zahlung an der Gutschrift. Passt das so (`datenmodell.md` 3.7)?
   Dazu (2026-11-16): Honorarnoten werden nie gelöscht (die App hat keinen Weg dafür), jede Korrektur ist eine
@@ -114,6 +110,12 @@ verlinkten Erklärung.
   namentlich genannt, der Text spricht von „einem IT-Dienstleister, der die Website technisch betreut und die Daten nur
   in meinem Auftrag verarbeitet“ (Mike hat Zugang als Super-Admin und lädt die Backups). Zu klären: Braucht es dafür
   eine Vereinbarung zur Auftragsverarbeitung zwischen Sonja und Mike (Art. 28 DSGVO, nicht nachgelesen)?
+- [ ] **Admin-Cookie nicht in der Datenschutzerklärung** (2026-11-17, Auslegung zu Mikes Entscheidung): § 165 Abs. 3
+  TKG 2021 (RIS, gelesen 2026-11-17) verlangt, „den Nutzer oder Benutzer“ über Daten, Rechtsgrundlage, Zweck und Dauer
+  zu informieren, „in geeigneter Form … spätestens bei Beginn der Rechtsbeziehungen“; eine Einwilligung braucht es
+  nicht, wenn die Speicherung „unbedingt erforderlich ist“ für einen ausdrücklich gewünschten Dienst. Benutzer des
+  Verwaltungsbereichs sind nur Sonja (selbst Verantwortliche) und Mike, die es wissen. Bekommen später Schüler:innen
+  ein Konto (`ROLE_STUDENT`), braucht es den Absatz wieder.
 - [ ] **Wortlaut von Art. 13 DSGVO gegen EUR-Lex prüfen** (2026-11-17, Mike im Browser): EUR-Lex blockiert
   automatische Abrufe; die Information folgt dem Wortlaut von dsgvo-gesetz.de.
 
@@ -227,6 +229,7 @@ muss).
 | PDF der Honorarnote | Erzeugt in derselben Transaktion wie die Nummer; Gutschrift als `HN17_GU_WiSe_2026_Springer_Gutschrift.pdf` (2026-11-17) | Honorarnote und PDF entstehen nur gemeinsam, ein Fehler verbraucht keine Nummer. `umsetzung-admin.md` D2b, D2d |
 | Datenschutz-Information Unterricht | Eigene Seite und PDF, spricht die Eltern direkt an (2026-11-17) | Eltern bekommen sie in die Hand, die Seite bleibt verlinkbar. `umsetzung-admin.md` F |
 | Speicherdauer | Honorarnoten (PDF und Angaben in der Zeile), Zahlungen und die Zuordnung zur Schüler:in 7 Jahre ab Schluss des Kalenderjahres (§ 132 BAO); alle übrigen Daten bis zum Ende des Folgesemesters nach dem letzten Kurs bzw. der letzten Schnupperstunde (2026-11-17) | Option A, kurze Frist, weil Sonja Kontaktdaten ohnehin selbst hat (Mike). `umsetzung-admin.md` F |
+| Datenschutzerklärung der Website | Kein Wort zum Verwaltungsbereich und seinem Session-Cookie; Steuerberaterin Mag.iur. Ulla Kröll namentlich in der Datenschutz-Information Unterricht (2026-11-17) | Betrifft nur Sonja und Mike, keine Besucher:innen; ein Hinweis weniger für Angreifer (Mike). Ersetzt den Textvorschlag in `planung/rollen.md` 10 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

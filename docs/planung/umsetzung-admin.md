@@ -233,7 +233,7 @@ der Download antwortet ohne PDF mit 404.
   - **F1 Seite** `/datenschutz/unterricht` (freigegeben 2026-11-17): Texte in `content.de.yaml` unter
     `privacy_lessons.*`, Rechte aus `privacy.rights.body` übernommen; verlinkt von `/datenschutz` und `/unterricht`.
     Ein Text für Eltern und erwachsene Schüler:innen; Mike nicht namentlich, sondern als IT-Dienstleister;
-    Steuerberatung als Empfängerin (Name folgt). Erledigt 2026-11-17.
+    Steuerberaterin Mag.iur. Ulla Kröll als Empfängerin. Erledigt 2026-11-17.
   - **F2 PDF** `/datenschutz/unterricht.pdf` aus demselben Template mit dompdf, bei jedem Aufruf neu erzeugt (nicht
     gespeichert); HTML → PDF in einen gemeinsamen Dienst mit `InvoicePdfRenderer`; Link im Admin bei den
     Schüler:innen. Alternative: fertiges PDF im Repo (Text doppelt, läuft auseinander).

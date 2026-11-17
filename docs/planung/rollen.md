@@ -318,6 +318,8 @@ von Art. 5 Abs. 3 der ePrivacy-Richtlinie) prüfe ich vor der Textänderung in d
 Datenschutzerklärung muss angepasst werden:** Sie sagt derzeit „Diese Website setzt keine Cookies“. Neu etwa:
 „Die öffentlichen Seiten setzen keine Cookies. Nur der passwortgeschützte Verwaltungsbereich setzt nach der Anmeldung
 ein technisch notwendiges Session-Cookie.“ Das kommt mit dem Login-Schritt.
+**Geändert 2026-11-17 (Mike):** Der Absatz zum Verwaltungsbereich ist wieder entfernt; er betrifft nur Sonja und
+Mike, nicht die Besucher:innen (Projektstand, „Getroffene Entscheidungen“).
 
 ### Passkey und Android-Handy
 

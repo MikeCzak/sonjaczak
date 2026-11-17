@@ -438,3 +438,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `/unterricht`, Test `PublicPagesTest::testPrivacyNoticeForLessons()`. Mikes Antworten: ein Text für alle, Steuerberatung
   als Empfängerin (Name folgt), Mike nicht namentlich; Backups sichert Mike auf Sonjas externer Festplatte, später
   Backup-Server statt Mac. 167 Tests grün, PHPStan ohne Fehler.
+- Datenschutzerklärung: Absatz zum Session-Cookie des Verwaltungsbereichs entfernt (Mike: für keine Besucher:in
+  relevant, ein Hinweis weniger für Angreifer); § 165 Abs. 3 TKG 2021 dazu im RIS gelesen. Steuerberaterin
+  Mag.iur. Ulla Kröll in der Datenschutz-Information Unterricht ergänzt.
