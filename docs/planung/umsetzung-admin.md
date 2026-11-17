@@ -64,6 +64,76 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 - Vor dem Einbau: Konfiguration und Datenmodell im Code des Bundles prüfen (die Doku ist lückenhaft).
 - Am Ende: Sonja richtet Passkeys auf Mac und Samsung-Handy ein (mit Mike).
 
+### B5 Plan (2026-11-17, wartet auf Freigabe)
+
+**Geprüft** (2026-11-17): Packagist: `web-auth/webauthn-symfony-bundle` 5.3.12 (2026-11-03) ist aktuell, verlangt PHP
+≥ 8.2 und `symfony/security-bundle ^6.4|^7.0|^8.0`. `composer require --dry-run` im Container: 15 Pakete (u. a.
+`web-auth/webauthn-lib`, `web-auth/cose-lib`, `spomky-labs/cbor-php`, `symfony/serializer`, `symfony/uid`), kein
+weiterer Dienst, `openssl` ist im Image. Code des Bundles 5.3.12 (GitHub-Tarball, nicht installiert) gelesen:
+
+- **Datenmodell:** Das Bundle bringt `Webauthn\CredentialRecord` als Mapped Superclass (Doctrine-XML im Bundle):
+  Credential-ID, öffentlicher Schlüssel, `userHandle` (Text), Zähler, AAGUID, Transports u. a. Wir leiten eine eigene
+  Entity davon ab und ergänzen Spalten. Gespeichert wird über `DoctrineCredentialSourceRepository`
+  (`persist` + `flush`), gesucht über `userHandle` bzw. Credential-ID.
+- **Benutzer:** Das Bundle fragt ein eigenes Repository nach `findOneByUsername()` und `findOneByUserHandle()` und
+  bekommt ein `PublicKeyCredentialUserEntity` (Name, Anzeigename, Handle). Ohne eigene Klasse nimmt es einen
+  „Dummy“, der nichts findet.
+- **Firewall:** eigener Schlüssel `webauthn` in der Firewall (`WebauthnFactory`), mit eigenen Routen für Optionen und
+  Ergebnis (Standard `/login/options`, `/login`, also bei uns unter `/admin` umzustellen). Hinzufügen eines Passkeys
+  für angemeldete Konten über `webauthn.controllers.creation`.
+- **Zwischenspeicher der Challenge:** Standard `SessionStorage`, d. h. die Login-Seite startet beim Klick eine Session
+  (Cookie nur unter `/admin`, wie beim Passwort-Login nach dem Absenden).
+- **JavaScript:** npm-Paket `@web-auth/webauthn-stimulus` 5.3.12 (Stimulus-Controller, braucht
+  `@simplewebauthn/browser ^13.2`), über AssetMapper eingebunden wie Bootstrap, kein Node.
+- **CSRF:** Die Antworten des Browsers enthalten Herkunft und Challenge und sind vom Gerät unterschrieben; eine fremde
+  Seite kann sie nicht erzeugen. Unsere Formulare (Löschen) bleiben wie gehabt (`erklaerungen/17`).
+
+**Optionen für die Bibliothek** (entschieden in `rollen.md` 5, hier nur zur Erinnerung): A Bundle (empfohlen, bringt
+Authenticator für die Firewall und Endpunkte); B nur `webauthn-lib` mit eigenen Controllern und eigenem Authenticator
+(mehr Code, alles sichtbar, mehr Fehlerquellen bei Kryptografie-Details); C anderes Paket (z. B. `lbuchs/webauthn`,
+ohne Symfony-Integration). Ich bleibe bei A.
+
+**Schritte:**
+
+- **B5a Grundlage** (ohne Oberfläche): Paket, `config/packages/webauthn.yaml` (Name „Sonja Czak“, erlaubte Herkunft
+  aus `DEFAULT_URI`, also lokal `localhost`, in Produktion `sonjaczak.com`), Entity `Passkey` (abgeleitet von
+  `CredentialRecord`) mit `name`, `createdAt`, `lastUsedAt`, Migration; `user.webauthn_handle` (Frage 3);
+  `PasskeyUserRepository` für das Bundle. Tests: Repository findet Konto per Handle, deaktiviertes Konto nicht.
+- **B5b Mein Konto:** Abschnitt „Passkeys“: Liste (Name, angelegt, zuletzt genutzt), „Passkey hinzufügen“ (Name
+  eingeben, dann Dialog des Geräts), löschen mit Rückfrage. Tests für Liste und Löschen (nur eigene Passkeys).
+- **B5c Login:** Knopf „Mit Passkey anmelden“ über dem Passwortformular; kein E-Mail-Feld nötig (Passkey ist auf dem
+  Gerät gespeichert, „discoverable“). Nach Erfolg `lastUsedAt` setzen. Deaktivierte Konten scheitern wie beim
+  Passwort (`UserChecker`). Passwort bleibt als Rückweg (`rollen.md` 5).
+- **B5d Ausprobieren:** lokal mit Touch ID im Browser (localhost gilt als sichere Herkunft) und mit dem virtuellen
+  Authenticator von Chrome (DevTools); die eigentliche Unterschrift testen die automatischen Tests nicht (`rollen.md`
+  5). Danach Push, Sonja richtet in Produktion ihre Passkeys ein (mit Mike).
+- `deploy/restore-test.sh` und die Erklärung (`erklaerungen/21-passkeys.md`) nachziehen.
+
+**Fragen:**
+
+1. **Geräte:** `rollen.md` 5 spricht von Mac und iPhone (iCloud-Schlüsselbund), dieser Plan von einem Samsung-Handy.
+   Mit Android liegt der Passkey im Google-Passwortmanager, nicht in iCloud: Sonja richtet dann **je Gerät** einen
+   Passkey ein (Mac und Handy), oder meldet sich am Mac per QR-Code mit dem Handy an. Am Code ändert das nichts. Was
+   hat Sonja?
+2. **Fingerabdruck immer verlangen?**
+   - **A (empfohlen): ja** (`user_verification: required`). Ohne Fingerabdruck oder Geräte-PIN kein Login; der
+     Passkey ersetzt so Passwort und zweiten Faktor.
+   - B: „preferred“ (Standard des Bundles). Ein Sicherheitsschlüssel ohne Fingerabdruck reicht dann schon zum Login.
+3. **Kennung des Kontos für das Gerät** (`userHandle`, wird auf dem Gerät gespeichert):
+   - **A (empfohlen): Zufallswert** in neuer Spalte `user.webauthn_handle` (32 Zufallsbytes, beim ersten Passkey
+     erzeugt). Die WebAuthn-Spezifikation verlangt, dass er keine persönlichen Daten enthält.
+   - B: die Datenbank-ID des Kontos. Pro: keine Spalte. Contra: verrät die Reihenfolge der Konten, hängt an der ID.
+4. **Name des Passkeys in der Liste:**
+   - **A (empfohlen): Sonja tippt ihn beim Hinzufügen** („MacBook“, „Handy“), vorbelegt mit „Passkey vom
+     17.11.2026“.
+   - B: aus der AAGUID automatisch („iCloud-Schlüsselbund“, „Google-Passwortmanager“), braucht eine Liste der
+     Hersteller-IDs (Metadaten von außen). Contra: zwei Macs heißen gleich.
+5. **Verbindung Passkey → Konto:**
+   - **A (empfohlen): nur über `userHandle`** wie im Bundle vorgesehen. Nichts doppelt gespeichert. Konten werden
+     nicht gelöscht, nur deaktiviert.
+   - B: zusätzlich Fremdschlüssel `user_id` (Löschen kaskadiert, Abfragen per Join). Contra: dieselbe Information
+     zweimal.
+
 ## C. Unterricht
 
 **C1 Schüler:innen und Elternteile** – erledigt 2026-11-13

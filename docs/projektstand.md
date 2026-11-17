@@ -12,9 +12,11 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Keine Frage offen.
+- **B5 Passkeys: Plan freigeben** (`umsetzung-admin.md` B5, „B5 Plan“): Schritte B5a–B5d und fünf Fragen (Geräte
+  von Sonja; Fingerabdruck immer; Zufallskennung; Name selbst eingeben; Verbindung nur über `userHandle`).
+  Antwort:
 
-**Nächster Schritt:** B5 Passkeys (Plan folgt), dann
+**Nächster Schritt:** B5 Passkeys (nach Freigabe), dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
