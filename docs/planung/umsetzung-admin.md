@@ -109,6 +109,9 @@ ohne Symfony-Integration). Ich bleibe bei A.
 - **B5c Login:** Knopf „Mit Passkey anmelden“ über dem Passwortformular; kein E-Mail-Feld nötig (Passkey ist auf dem
   Gerät gespeichert, „discoverable“). Nach Erfolg `lastUsedAt` setzen. Deaktivierte Konten scheitern wie beim
   Passwort (`UserChecker`). Passwort bleibt als Rückweg (`rollen.md` 5).
+  **Erledigt 2026-11-17.** Nach dem Login geht es zur zuvor verlangten Admin-Seite, sonst zur Übersicht
+  (`PasskeyLoginSuccessHandler`). Der Test spielt das Gerät mit einem echten P-256-Schlüssel und läuft durch die
+  ganze Prüfung der Bibliothek.
 - **B5d Ausprobieren:** lokal mit Touch ID im Browser (localhost gilt als sichere Herkunft) und mit dem virtuellen
   Authenticator von Chrome (DevTools); die eigentliche Unterschrift testen die automatischen Tests nicht (`rollen.md`
   5). Danach Push, Sonja richtet in Produktion ihre Passkeys ein (mit Mike).

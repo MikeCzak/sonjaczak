@@ -38,7 +38,18 @@ security:
                 enable_csrf: true
                 username_parameter: email
                 password_parameter: password
-            # 5 failed attempts per minute for each IP + e-mail address, 25 for each IP (Symfony default)
+            # Login with a passkey (umsetzung-admin.md B5c, config/packages/webauthn.yaml): the login page asks
+            # the options endpoint for a challenge, the device signs it, the result endpoint checks it and logs in.
+            # Registration of new accounts through the firewall stays off (bundle default), accounts come from the
+            # user management only
+            webauthn:
+                success_handler: App\Security\PasskeyLoginSuccessHandler
+                authentication:
+                    routes:
+                        options_path: /admin/login/passkey/optionen
+                        result_path: /admin/login/passkey
+            # 5 failed attempts per minute for each IP + e-mail address, 25 for each IP (Symfony default). Also for
+            # passkeys: their passport has a UserBadge (LoginThrottlingListener)
             login_throttling: ~
             logout:
                 path: admin_logout
@@ -48,7 +59,8 @@ security:
 
     # Note: Only the *first* matching rule is applied, so specific paths come first
     access_control:
-        - { path: ^/admin/login$, roles: PUBLIC_ACCESS }
+        # Login page, and the two passkey endpoints of the login (B5c)
+        - { path: ^/admin/login(/passkey(/optionen)?)?$, roles: PUBLIC_ACCESS }
         # "Passwort vergessen" and setting a password from a mailed link (App\Controller\Admin\PasswordController)
         - { path: ^/admin/passwort-(vergessen|setzen), roles: PUBLIC_ACCESS }
         - { path: ^/admin/benutzer, roles: ROLE_SUPER_ADMIN }

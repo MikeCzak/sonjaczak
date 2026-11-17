@@ -12,11 +12,28 @@
                 <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
+            {# Passkey first (umsetzung-admin.md B5c); the password stays as the way back #}
+            <div class="mb-4" id="passkey-login" data-controller="passkey-login"
+                 data-passkey-login-options-url-value="{{ path('webauthn.controller.security.admin.request.options') }}"
+                 data-passkey-login-result-url-value="{{ path('webauthn.controller.security.admin.request.result') }}"
+                 data-passkey-login-messages-value="{{ {
+                     unsupported: 'login.passkey_error.unsupported'|trans({}, 'admin'),
+                     cancelled: 'login.passkey_error.cancelled'|trans({}, 'admin'),
+                     failed: 'login.passkey_error.failed'|trans({}, 'admin'),
+                 }|json_encode }}">
+                <button type="button" class="btn btn-primary w-100" data-action="passkey-login#login" data-passkey-login-target="button">
+                    {{ 'login.passkey'|trans({}, 'admin') }}
+                </button>
+                <p class="small text-body-secondary mt-1 mb-0">{{ 'login.passkey_hint'|trans({}, 'admin') }}</p>
+                <div class="alert alert-danger mt-2 mb-0" role="alert" hidden data-passkey-login-target="error"></div>
+            </div>
+            <p class="text-body-secondary small">{{ 'login.or_password'|trans({}, 'admin') }}</p>
+
             <form method="post" action="{{ path('admin_login') }}">
                 <div class="mb-3">
                     <label for="login-email" class="form-label">{{ 'login.email'|trans({}, 'admin') }}</label>
                     <input type="email" id="login-email" name="email" value="{{ last_email }}" class="form-control"
-                           autocomplete="username webauthn" required autofocus>
+                           autocomplete="username webauthn" required>
                 </div>
                 <div class="mb-3">
                     <label for="login-password" class="form-label">{{ 'login.password'|trans({}, 'admin') }}</label>
@@ -24,7 +41,7 @@
                            autocomplete="current-password" required>
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                <button type="submit" class="btn btn-primary">{{ 'login.submit'|trans({}, 'admin') }}</button>
+                <button type="submit" class="btn btn-outline-primary">{{ 'login.submit'|trans({}, 'admin') }}</button>
             </form>
             <p class="mt-3"><a href="{{ path('admin_password_request') }}">{{ 'login.forgot'|trans({}, 'admin') }}</a></p>
         </div>

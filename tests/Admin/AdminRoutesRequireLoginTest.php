@@ -20,6 +20,9 @@ final class AdminRoutesRequireLoginTest extends WebTestCase
         'admin_password_request',
         'admin_password_check_email',
         'admin_password_reset',
+        // Passkey login (B5c): challenge and result, the login itself (PUBLIC_ACCESS in security.yaml)
+        'webauthn.controller.security.admin.request.options',
+        'webauthn.controller.security.admin.request.result',
     ];
 
     public function testEveryAdminRouteRequiresLogin(): void

@@ -25,6 +25,13 @@ login:
     password: Passwort
     submit: Anmelden
     forgot: Passwort vergessen?
+    passkey: Mit Passkey anmelden
+    passkey_hint: Fingerabdruck oder Geräte-PIN, ohne Passwort.
+    or_password: oder mit Passwort
+    passkey_error:
+        unsupported: Dieser Browser kann keine Passkeys. Bitte mit Passwort anmelden.
+        cancelled: Abgebrochen.
+        failed: Anmeldung mit Passkey nicht möglich. Bitte noch einmal versuchen oder mit Passwort anmelden.
 dashboard:
     title: Übersicht
     upcoming:

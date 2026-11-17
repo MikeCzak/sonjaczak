@@ -502,3 +502,13 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   (Credential-ID aus dem Request, nur eigener Passkey). Fund: Mit eigenem Profil `default` fehlte der Knoten `rp`, das
   Bundle übergab `null` als Namen (400 beim Optionen-Abruf); `rp: { id: ~ }` behebt es ohne den veralteten
   `rp.name`. Ein ungültiges Ergebnis beantwortet das Bundle mit 400. 197 Tests grün, PHPStan ohne Fehler.
+- B5c: Passkey-Login über die Firewall (`webauthn` in der Firewall `admin`, `/admin/login/passkey/optionen` und
+  `/admin/login/passkey`, `PUBLIC_ACCESS`), Registrierung über die Firewall bleibt aus (`enabled: false`, geprüft mit
+  `debug:config`). Knopf „Mit Passkey anmelden“ über dem Passwortformular (eigener Stimulus-Controller), danach
+  Weiterleitung zur zuvor verlangten Seite (`PasskeyLoginSuccessHandler`, JSON). Geprüft im Code: `UserChecker`
+  und Login-Throttling greifen auch hier; das Bundle protokolliert in einen `NullLogger`. `autofocus` auf dem
+  E-Mail-Feld entfernt (Passkey ist jetzt der erste Weg). Test `PasskeyLoginTest` spielt das Gerät mit einem echten
+  P-256-Schlüssel (COSE-Schlüssel per `spomky-labs/cbor-php`, Signatur mit OpenSSL): Login, Weiterleitung, Zähler,
+  „zuletzt genutzt“, falscher Schlüssel und deaktiviertes Konto (Gegenprobe: ohne Deaktivierung schlägt der Test
+  fehl). Fallstrick im Test: Nach einem Request hängt ein Foundry-Objekt an keinem Entity-Manager mehr, `save()`
+  versucht dann ein neues Konto anzulegen. 201 Tests grün, PHPStan ohne Fehler.
