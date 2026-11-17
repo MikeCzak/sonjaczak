@@ -83,6 +83,7 @@
                         <th scope="col">{{ 'enrollment.field.student'|trans({}, 'admin') }}</th>
                         <th scope="col">{{ 'enrollment.field.lessons'|trans({}, 'admin') }}</th>
                         <th scope="col" class="text-end">{{ 'enrollment.field.price'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'invoice.heading'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,11 +98,29 @@
                                 {% endif %}
                             </td>
                             <td class="text-end">{{ (enrollment.priceCents / 100)|number_format(2, ',', '.') }} €</td>
+                            <td class="text-nowrap">
+                                {% set invoice = enrollment.invoices|filter(i => not i.creditNote)|first %}
+                                {% if invoice %}
+                                    <a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ invoice.displayNumber }}</a>
+                                    · <a href="{{ path('admin_invoice_pdf', {id: invoice.id}) }}" download>PDF</a>
+                                {% else %}
+                                    <a href="{{ path('admin_invoice_new', {id: enrollment.id}) }}">{{ 'invoice.pdf.create'|trans({}, 'admin') }}</a>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
+        {# ZIP of all invoices of the course (D2d); the hint counts enrollments without an invoice #}
+        {% set without_invoice = course.enrollments|filter(e => e.invoices|filter(i => not i.creditNote) is empty)|length %}
+        {% if without_invoice < course.enrollments|length %}
+            <p>
+                <a class="btn btn-outline-secondary btn-sm" href="{{ path('admin_course_invoices_zip', {id: course.id}) }}" download>{{ 'invoice.pdf.zip'|trans({}, 'admin') }}</a>
+                {% if without_invoice > 0 %}<span class="ms-2 small text-body-secondary">{{ 'invoice.pdf.missing'|trans({'%count%': without_invoice}, 'admin') }}</span>{% endif %}
+            </p>
+        {% endif %}
     {% endif %}
     <a class="btn btn-outline-primary" href="{{ path('admin_enrollment_new', {id: course.id}) }}">{{ 'enrollment.new.title'|trans({}, 'admin') }}</a>
 

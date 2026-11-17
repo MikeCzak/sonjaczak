@@ -150,7 +150,7 @@ Grund. Daher eine eigene Anzahl je Teilnahme (verworfen: dritte Absage-Art „en
 - Entities `Invoice` (Embeddable `Recipient`, Nummer je Jahr mit Unique-Constraint, vergeben unter Advisory Lock)
   und `Payment`. Erstellen aus einer Teilnahme mit Snapshot, Unveränderlichkeit über fehlende Setter.
 
-**D2 PDF und Download** – entschieden 2026-11-14: dompdf, **noch nicht gebaut (nächster Schritt)**
+**D2 PDF und Download** – entschieden 2026-11-14: dompdf, erledigt 2026-11-17 (`erklaerungen/19`)
 
 - dompdf 3.1.6 (LGPL-2.1, Stand Packagist 2026-11-13): HTML aus Twig mit Übersetzungsschlüsseln, läuft im
   PHP-Container. Verworfen: mPDF (GPL), tc-lib-pdf und FPDF (Layout in PHP-Koordinaten, FPDF ohne UTF-8),

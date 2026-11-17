@@ -36,8 +36,11 @@ final class EnrollmentFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this->afterInstantiate(static function (Enrollment $enrollment): void {
-            // Keep the inverse side in sync, the course page reads it in the same request
-            $enrollment->getCourse()->getEnrollments()->add($enrollment);
+            // Keep the inverse side in sync, the course page reads it in the same request. Foundry may already have
+            // added it (it does when the course comes from a factory), a second add would list it twice
+            if (!$enrollment->getCourse()->getEnrollments()->contains($enrollment)) {
+                $enrollment->getCourse()->getEnrollments()->add($enrollment);
+            }
             new LessonPlanner()->fillUp($enrollment);
         });
     }

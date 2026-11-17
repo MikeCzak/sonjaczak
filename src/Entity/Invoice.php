@@ -118,6 +118,28 @@ class Invoice
         return $this->number.'/'.$this->year;
     }
 
+    /**
+     * File name of the PDF (anforderungen.md): "HN16_GU_WiSe_2026_Springer.pdf" = invoice 16, "GU" for
+     * Gesangsunterricht, term and year of the course, last name of the student (also when the guardian is billed).
+     * Credit notes end in "_Gutschrift" (Mike, 2026-11-17). Umlauts stay; characters other than letters, digits and
+     * hyphens in the name become a hyphen, so "/" or spaces cannot break the file name.
+     */
+    public function getFileName(): string
+    {
+        $course = $this->enrollment->getCourse();
+        $lastName = $this->enrollment->getStudent()?->getLastName() ?? '';
+        $lastName = trim((string) preg_replace('/[^\p{L}\p{N}-]+/u', '-', $lastName), '-');
+
+        return \sprintf(
+            'HN%d_GU_%s_%d_%s%s.pdf',
+            $this->number,
+            $course->getTerm()->abbreviation(),
+            $course->getYear(),
+            $lastName,
+            $this->isCreditNote() ? '_Gutschrift' : '',
+        );
+    }
+
     public function getIssuedOn(): \DateTimeImmutable
     {
         return $this->issuedOn;

@@ -96,10 +96,10 @@ final class AppStory extends Story
             $lessons[2]->setCancelledBy(CancelledBy::Teacher)->setNote('Konzert');
 
             // Invoices for the first two enrollments, one with instalments and the first one paid; the others still
-            // need one
+            // need one. With PDF, so the download works locally (step D2d)
             foreach (array_slice($enrollments, 0, 2) as $n => $enrollment) {
                 $student = $enrollment->getStudent() ?? throw new \LogicException('Enrollment without student');
-                $invoices[] = InvoiceFactory::createOne([
+                $invoices[] = InvoiceFactory::new()->withPdf()->create([
                     'enrollment' => $enrollment,
                     'number' => $n + 1,
                     'amountCents' => $enrollment->getPriceCents(),

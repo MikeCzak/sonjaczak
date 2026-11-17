@@ -31,6 +31,7 @@
                         <th scope="col">{{ 'invoice.field.description'|trans({}, 'admin') }}</th>
                         <th scope="col" class="text-end">{{ 'invoice.field.amount'|trans({}, 'admin') }}</th>
                         <th scope="col">{{ 'invoice.field.status'|trans({}, 'admin') }}</th>
+                        <th scope="col"><span class="visually-hidden">{{ 'invoice.pdf.download'|trans({}, 'admin') }}</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +43,7 @@
                             <td>{% if invoice.creditNote %}<span class="badge text-bg-light">{{ 'credit.badge'|trans({}, 'admin') }}</span> {% endif %}{{ invoice.description }}</td>
                             <td class="text-end text-nowrap">{{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €</td>
                             <td>{% if not invoice.creditNote %}{{ include('admin/invoice/_status.html.twig') }}{% endif %}</td>
+                            <td class="text-end"><a href="{{ path('admin_invoice_pdf', {id: invoice.id}) }}" download>PDF</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

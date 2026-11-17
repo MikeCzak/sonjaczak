@@ -1,7 +1,7 @@
 # Rundgang durch den Admin-Bereich (lokal)
 
 Zum Ausprobieren aller Funktionen mit erfundenen Daten, bevor Mike sie Sonja in Produktion zeigt. Dauer etwa
-30 Minuten. Stand: 2026-11-13 (Schritte C1–C6, D1, D3–D5, E; noch ohne Kursraster C4 und PDF D2).
+30 Minuten. Stand: 2026-11-13 (Schritte C1–C6, D1, D3–D5, E), PDF D2 ergänzt 2026-11-17; noch ohne Kursraster C4.
 
 ## Vorbereitung
 
@@ -88,7 +88,12 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    (Status „teilweise bezahlt“), dann den Rest mit einem Klick („bezahlt“). Eine Zahlung löschen.
 5. „Gutschrift erstellen“ (z. B. 66 €): eigene Nummer, negativer Betrag. Bei bezahlter Honorarnote steht dann
    „Rückzahlung offen“ → Rückzahlung erfassen.
-6. „Honorarnoten“: Liste je Jahr mit Status.
+6. „Honorarnoten“: Liste je Jahr mit Status und Link „PDF“.
+7. PDF (D2, ergänzt 2026-11-17): In der Honorarnote „PDF herunterladen“ und mit dem Muster HN16 vergleichen
+   (Dateiname `HN1_GU_WiSe_2026_<Nachname>.pdf`). Die Gutschrift aus Schritt 5 als PDF ansehen (Name endet auf
+   `_Gutschrift`). Im Kurs: Spalte „Honorarnote“ mit Nummer und PDF oder „erstellen“, darunter „Alle Honorarnoten als
+   ZIP“ und „4 Teilnahmen haben noch keine Honorarnote.“ ZIP öffnen. Die PDFs der Fixtures entstehen beim Laden mit den
+   Absenderdaten „Erika Musterfrau“; Fixtures nach dem Update neu laden, sonst fehlen sie (404).
 
 ## 8. Einnahmen und Erinnerung
 

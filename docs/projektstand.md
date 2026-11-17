@@ -14,7 +14,7 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** `umsetzung-admin.md` D2d (Download einzeln und als ZIP; D2a–D2c sind erledigt, noch nicht gepusht). Danach F: Datenschutz-Information,
+**Nächster Schritt:** D ist lokal fertig (D2 am 2026-11-17), wartet auf den Push. Danach `umsetzung-admin.md` F: Datenschutz-Information,
 dann dürfen echte Daten eingetragen werden (Backups und Rücksicherung sind fertig).
 
 ## Später zu klären
@@ -47,6 +47,11 @@ verlinkten Erklärung.
   - Die Postleitzahl erscheint wie eingetragen; „A-8130“ wie im Muster nur, wenn Sonja „A-8130“ einträgt.
   - Schrift DejaVu Sans (in dompdf enthalten), im Muster vermutlich Verdana; ähnlich, nicht gleich.
   - Die Fehlermeldung, falls das PDF scheitert, sagt „Mike Bescheid geben“.
+- [ ] **Dateinamen und Download** (2026-11-17, `umsetzung-admin.md` D2d): Im Nachnamen wird alles außer Buchstaben,
+  Ziffern und Bindestrich zum Bindestrich („van der Berg“ → `van-der-Berg`), Umlaute bleiben. Für alte Programme gibt
+  es einen Ersatznamen ohne Umlaute (`Muessig`). Das ZIP heißt `Honorarnoten_GU_WiSe_2026.zip` (ohne Wochentage; zwei
+  Kurse im selben Semester ergäben denselben Namen). PDF-Link in Liste, Detail und Kursseite, ZIP nur auf der
+  Kursseite. Der Download speichert die Datei (kein Öffnen im Browser-Tab).
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
   mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
 - [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
@@ -152,8 +157,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
-- [ ] D2 PDF (dompdf, Plan freigegeben 2026-11-17): D2a Ablage, D2b Erzeugen erledigt (2026-11-17), **nächster Schritt D2d**
-  (Download; D2c Inhalt ist mit D2b erledigt). Pushen erst nach Abschluss von D (Mike, 2026-11-17)
+- [x] D2 PDF und Download (dompdf, 2026-11-17, noch nicht gepusht: Push nach Abschluss von D, Mike 2026-11-17)
 - [ ] F Vor den echten Daten: Backups fertig (2026-11-15); offen: Datenschutz-Information, Löschregel (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

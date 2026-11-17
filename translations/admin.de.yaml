@@ -437,7 +437,6 @@ invoice:
         title: Honorarnote %number%
         installments: Raten
         installment: '%n%. Rate: %amount% € bis %date%'
-        later: Das PDF folgt in einem nächsten Schritt.
     index:
         title: Honorarnoten
         years: Jahre
@@ -449,6 +448,10 @@ invoice:
         pdf_failed: Das PDF konnte nicht erstellt werden. Es wurde nichts gespeichert und keine Nummer verbraucht. Bitte noch einmal versuchen; klappt es wieder nicht, Mike Bescheid geben.
     # PDF (templates/admin/invoice/pdf.html.twig); placeholders %date% and %amount% are formatted there, HTML allowed
     pdf:
+        download: PDF herunterladen
+        zip: Alle Honorarnoten als ZIP
+        missing: '{1}1 Teilnahme hat noch keine Honorarnote.|]1,Inf[%count% Teilnahmen haben noch keine Honorarnote.'
+        create: erstellen
         title: Honorarnote %number%
         credit_title: Gutschrift %number%
         credit_reference: zu Honorarnote %number%

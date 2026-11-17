@@ -116,13 +116,14 @@ final class InvoicePdfTest extends WebTestCase
         $client = self::createClient();
         // Keep the kernel between requests, otherwise the replaced service would be gone after the first one
         $client->disableReboot();
-        $client->loginUser(UserFactory::new()->admin()->create(), 'admin');
-        $this->completeSettings();
-        $enrollment = $this->enrollment(49500);
-
+        // Replaced first: once a factory that uses the renderer (InvoiceFactory) exists, the container refuses
         $failing = $this->createStub(InvoicePdfRenderer::class);
         $failing->method('render')->willThrowException(new InvoicePdfException('Test'));
         self::getContainer()->set(InvoicePdfRenderer::class, $failing);
+
+        $client->loginUser(UserFactory::new()->admin()->create(), 'admin');
+        $this->completeSettings();
+        $enrollment = $this->enrollment(49500);
 
         $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId().'/honorarnote');
         $client->submitForm('Honorarnote erstellen', ['invoice[issuedOn]' => '2026-11-07', 'invoice[dueOn]' => '2026-11-13']);

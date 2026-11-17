@@ -1,6 +1,6 @@
 # 19 PDF der Honorarnote (D2)
 
-Stand: 2026-11-17, nach D2a (Paket, Entity, Migration) und D2b/D2c (Erzeugen). Wird mit D2d/D2e ergänzt. Plan:
+Stand: 2026-11-17, D2 vollständig (Paket, Entity, Migration, Erzeugen, Download). Plan:
 `planung/umsetzung-admin.md` D2. Quellen: installierter Code (`vendor/`, `composer.lock`), `php -m` im Container,
 PostgreSQL-Doku 18 (`sql-createtable.html`) und ein Versuch in der lokalen Datenbank.
 
@@ -209,4 +209,46 @@ Xdebug eher schneller. Das Lock für die Nummern ist also nur Sekundenbruchteile
 - Fehlerfall: Der Renderer wird im Container durch einen Stub ersetzt, der wirft. Dafür ist die Klasse nicht `final`
   (PHPUnit kann finale Klassen nicht ersetzen). `$client->disableReboot()` ist nötig: Sonst baut der Test-Client den
   Kernel vor jeder Anfrage neu, und der ersetzte Dienst ist weg.
+
+## 4. Download (D2d)
+
+Dateien: `src/Controller/Admin/InvoicePdfController.php`, `Invoice::getFileName()`,
+`InvoicePdfRepository::findForCourse()`, `templates/admin/course/edit.html.twig`, `tests/Admin/InvoiceDownloadTest.php`.
+
+### Dateiname im Header
+
+Der Name steht im Header `Content-Disposition`. `HeaderUtils::makeDisposition()` (`vendor/symfony/http-foundation/
+HeaderUtils.php`) schreibt zwei Fassungen:
+
+```
+attachment; filename=HN1_GU_WiSe_2026_Muessig.pdf; filename*=utf-8''HN1_GU_WiSe_2026_M%C3%BC%C3%9Fig.pdf
+```
+
+`filename*` (RFC 6266/5987) trägt den echten Namen mit Umlauten, prozentkodiert. `filename` ist der Ersatz für
+Programme, die `filename*` nicht kennen; er muss reines ASCII sein. Den Ersatz erzeugt Symfonys `AsciiSlugger` mit
+Sprache `de` (ü → ue, ß → ss). `attachment` heißt: speichern statt im Tab öffnen.
+
+Im Namen selbst wird alles außer Buchstaben, Ziffern und Bindestrich zum Bindestrich. Grund: Ein `/` im Nachnamen
+würde im ZIP einen Ordner erzeugen.
+
+### ZIP
+
+`ZipArchive` (Extension `zip`) schreibt nur in Dateien. Der Controller legt mit `tempnam()` eine temporäre Datei an,
+füllt sie, liest sie zurück und löscht sie im `finally`, auch wenn etwas schiefgeht. Alternative wäre eine
+`BinaryFileResponse` mit `deleteFileAfterSend()` (streamt die Datei, spart Speicher). Bei sechs PDFs à 25 KB lohnt das
+nicht, und eine normale Response lässt sich im Test direkt auslesen.
+
+`findForCourse()` lädt PDFs, Honorarnoten, Teilnahmen und Schüler:innen in **einer** Abfrage (Fetch Join, siehe
+`14-dashboard.md`); sonst gäbe es für jeden Dateinamen weitere Abfragen.
+
+### Fallstricke aus diesem Schritt
+
+- **Methodenname `file()`:** `AbstractController` hat schon `protected function file()`. Eine eigene `private`
+  Methode gleichen Namens ist ein Fatal Error („Access level … must be protected“), sobald die Klasse geladen wird.
+- **Foundry pflegt die inverse Seite selbst:** Foundry 2.16 trägt ein neues Objekt schon in die Collection der
+  Gegenseite ein (`course.enrollments`; im Versuch beobachtet, im Foundry-Code nicht nachgesehen). Unsere Factory tat es zusätzlich, also stand jede Teilnahme im Test doppelt
+  auf der Kursseite. In Produktion lädt jede Anfrage frisch aus der Datenbank, dort gab es das nie. Jetzt mit
+  `contains()`-Prüfung.
+- **Dienst im Test ersetzen:** `getContainer()->set()` geht nur, solange der Dienst noch nicht erzeugt ist.
+  `InvoiceFactory` braucht den Renderer, also muss der Test ihn vor dem ersten Factory-Aufruf ersetzen.
 

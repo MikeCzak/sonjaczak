@@ -415,3 +415,16 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `develop`, zweiter Durchlauf): **122 ms, +11,1 MB Spitze, PDF 24,4 KB** bei `memory_limit` 128M. PDF im Vergleich
   mit dem Muster angesehen, Zeilenabstand angepasst. Test mit fehlschlagendem Renderer: keine Honorarnote, kein PDF,
   Meldung sichtbar. 159 Tests grün, PHPStan ohne Fehler.
+- D2d: Download einzeln (`/admin/honorarnoten/{id}/pdf`) und als ZIP je Kurs (`/admin/kurse/{id}/honorarnoten.zip`),
+  `Invoice::getFileName()`, Spalte „Honorarnote“ und Hinweis auf fehlende auf der Kursseite. Fehler beim Bauen:
+  eigene Methode `file()` im Controller kollidiert mit `AbstractController::file()` (Fatal Error beim Laden der Klasse,
+  in PHPUnit nur als langer Xdebug-Stacktrace sichtbar) → `attachment()`.
+  Beim Testen gefunden: **`EnrollmentFactory` trug jede Teilnahme doppelt in `course.enrollments` ein**, weil Foundry
+  2.16 die inverse Seite offenbar selbst pflegt (Versuch: 2 statt 1; im Foundry-Code nicht nachgesehen); betraf nur Tests und Fixtures in derselben Anfrage, nicht
+  Produktion. Behoben mit `contains()`-Prüfung, ebenso in `InvoiceFactory`.
+  Eigener Planungsfehler: Ich hatte „Fixtures legen keine Honorarnoten an“ geschrieben (in `src/DataFixtures` gesucht,
+  die Fixtures liegen aber in `tests/Story/AppStory.php`). Die zwei Fixture-Honorarnoten hatten kein PDF →
+  `InvoiceFactory::withPdf()`, Fixtures neu geladen (2 PDFs, je ~23 KB). Ersetzen des Renderers im Test muss jetzt vor
+  dem ersten Factory-Aufruf passieren (Container: „already initialized“). 165 Tests grün, PHPStan ohne Fehler. Nicht im
+  Browser angesehen (Login bräuchte den DevTools-Client); die Tests prüfen Links und Hinweis im HTML.
+

@@ -8,7 +8,10 @@
 
 {% block body %}
     <p class="mb-1"><a href="{{ path('admin_invoice_index', {jahr: invoice.year}) }}">{{ 'invoice.index.title'|trans({}, 'admin') }} {{ invoice.year }}</a></p>
-    <h1 class="h3 mb-4">{{ title_key|trans({'%number%': invoice.displayNumber}, 'admin') }} {{ include('admin/invoice/_status.html.twig') }}</h1>
+    <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-4">
+        <h1 class="h3 mb-0">{{ title_key|trans({'%number%': invoice.displayNumber}, 'admin') }} {{ include('admin/invoice/_status.html.twig') }}</h1>
+        <a class="btn btn-primary" href="{{ path('admin_invoice_pdf', {id: invoice.id}) }}" download>{{ 'invoice.pdf.download'|trans({}, 'admin') }}</a>
+    </div>
 
     <div class="row g-5">
         <div class="col-lg-6">
@@ -53,7 +56,7 @@
             {% if is_granted('INVOICE_CREDIT', invoice) %}
                 <a class="btn btn-outline-secondary btn-sm" href="{{ path('admin_invoice_credit', {id: invoice.id}) }}">{{ 'credit.new.title'|trans({}, 'admin') }}</a>
             {% endif %}
-            <p class="small text-body-secondary mt-3">{{ 'invoice.show.later'|trans({}, 'admin') }}</p>
+
         </div>
 
         <div class="col-lg-6">
