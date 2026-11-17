@@ -12,8 +12,8 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **Automatische Löschung, Plan F3** (`umsetzung-admin.md` F3, „Fragen“ 1–5): Semestergrenzen, Pause von einem
-  Semester, anonymisierte Schüler:innen, Benachrichtigung, laufendes Verfahren. Freigabe des Plans?
+- **Automatische Löschung, Plan F3** (`umsetzung-admin.md` F3): Fragen 1, 2, 4, 5 beantwortet (2026-11-17). Offen
+  Frage 3: Teilnahme ohne Person (A, Schüler:in wird gelöscht) oder geleerte Schüler:in-Zeile (B)? Danach Freigabe.
   Antwort:
 
 **Nächster Schritt:** F3 automatische Löschung (vor dem Echtbetrieb, Mike 2026-11-17), danach B5 Passkeys, dann

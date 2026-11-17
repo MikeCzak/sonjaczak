@@ -258,7 +258,7 @@ Information, `/datenschutz/unterricht`).
 | Wann | Was passiert |
 |---|---|
 | Frist der übrigen Daten abgelaufen, **keine** Honorarnote | Schüler:in mit Teilnahmen, Einheiten, Schnupperstunden löschen |
-| Frist abgelaufen, Honorarnote noch aufzubewahren | **Anonymisieren:** Name bleibt; Geburtsdatum, E-Mail, Telefon, Adresse, Notizen leeren; Einheiten und Schnupperstunden löschen; Teilnahmen bleiben (Honorarnote hängt daran) |
+| Frist abgelaufen, Honorarnote noch aufzubewahren | **Personendaten löschen** (nicht „anonymisieren“: Mike, 2026-11-17, ein Name ist nicht anonym). Es bleibt nur, was die Honorarnote selbst ist (Empfänger:in und Betrag als Kopie in `invoice`, PDF, Zahlungen) und die Teilnahme als Bindeglied ohne Person. Einheiten und Schnupperstunden löschen. Umsetzung siehe Frage 3 |
 | Alle Honorarnoten älter als 7 Jahre ab Schluss des Ausstellungsjahres | Zahlungen, PDFs, Gutschriften, Honorarnoten, Teilnahmen und die Schüler:in löschen |
 | Elternteil ohne Schüler:in (danach) | Elternteil löschen |
 
@@ -281,6 +281,8 @@ Schüler:innen).
 
 **Fragen:**
 
+Antworten Mike, 2026-11-17: **1 feste Grenzen (A), 2 so lassen, 4 keine Mail (A), 5 passt.** Frage 3 neu gestellt.
+
 1. **Wann endet ein Semester?** Der Kurs kennt Beginn und Ende, das Folgesemester gibt es zum Löschzeitpunkt aber oft
    noch nicht in der App.
    - **A (empfohlen): feste Grenzen.** Wintersemester = September bis Februar, Sommersemester = März bis August.
@@ -290,9 +292,18 @@ Schüler:innen).
 2. **Pause von einem Semester:** Wer im Wintersemester war, im Sommer pausiert und im Herbst wiederkommt, ist dann
    schon gelöscht (31. August), Sonja müsste die Person neu eintragen. Soll die Frist ein Semester länger sein („Ende
    des übernächsten Semesters“, Text der Information ändern) oder so bleiben?
-3. **Anonymisierte Schüler:innen** (nur noch Name, wegen einer Honorarnote):
-   - **A (empfohlen):** in Liste, Suche und Auswahl für neue Teilnahmen ausgeblendet; erreichbar über die Honorarnote.
-   - B: grau in der Liste.
+3. **Wie bleibt die Verbindung zur Honorarnote ohne Personendaten?** Die Honorarnote hängt an der Teilnahme, die
+   Teilnahme an der Schüler:in (`enrollment.student_id`, NOT NULL). Was auf der Honorarnote steht, muss 7 Jahre
+   bleiben (BAO), das ist erlaubt; alles andere zur Person kann weg.
+   - **A (empfohlen): Teilnahme ohne Person.** `enrollment.student_id` wird nullable (Migration), die Schüler:in wird
+     gelöscht, die Teilnahme behält Kurs, Preis und Honorarnoten. Pro: keine leere „Geisterzeile“, wirklich nichts mehr
+     zur Person außer dem Beleg. Contra: Templates müssen „Person gelöscht“ zeigen (der PHP-Code behandelt `null`
+     schon, PHPStan erzwingt es); das Formular verlangt weiter eine Person (`Assert\NotNull`).
+   - B: Schüler:in-Zeile bleibt, alle Felder geleert und als gelöscht markiert. Pro: kein Schemaumbau der Beziehung.
+     Contra: leere Zeilen, die Liste, Suche und Auswahl ausblenden müssen; leicht vergessen.
+   - Folge für beide: Der Dateiname der Honorarnote enthält den Nachnamen der Schüler:in (D2d). Danach heißt sie
+     `HN17_GU_WiSe_2026.pdf` (ohne Namen). Die Datenschutz-Information sagt derzeit „bleibt nur der Name als
+     Zuordnung“; wird angepasst auf „bleibt nur die Honorarnote mit den Angaben darauf“.
 4. **Benachrichtigung:**
    - **A (empfohlen):** keine Mail; das Datum steht auf der Schülerseite, das Dashboard nennt, wer in den nächsten
      30 Tagen gelöscht wird (Zeit, eine Teilnahme anzulegen, falls jemand wiederkommt).
