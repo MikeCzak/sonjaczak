@@ -29,7 +29,50 @@ Relying Party, User Handle, Challenge, Attestation/Assertion). Konzept und Entsc
    (`PasskeyUserRepository`), danach wie beim Passwort `UserChecker`, Session, Weiterleitung
    (`PasskeyLoginSuccessHandler`).
 
-## 2. Wo was liegt
+## 2. Woher weiß der Server, welches Konto sich anmeldet?
+
+Beim Login fragt die Seite nach keiner E-Mail-Adresse. Das Konto ergibt sich aus dem Passkey, den das Gerät herausgibt.
+
+**Was beim Einrichten wo gespeichert wird:**
+
+| Auf dem Gerät (bzw. im Passwort-Manager) | Auf dem Server (Tabelle `passkey`) |
+|---|---|
+| Domain (RP-ID, `sonjaczak.com`) | – (gilt nur für diese Seite) |
+| Credential-ID (Kennung des Passkeys) | dieselbe Credential-ID |
+| **privater Schlüssel** (verlässt das Gerät nie) | **öffentlicher Schlüssel** |
+| User Handle = `user.webauthn_handle` (64 Zufallszeichen), E-Mail als Anzeigename | derselbe User Handle |
+
+**Beim Anmelden:**
+
+1. Der Server schickt eine Challenge und **keine Liste erlaubter Passkeys** (`allowCredentials` leer). Er weiß noch
+   nicht, wer kommt.
+2. Der Browser fragt das Gerät: „Welche Passkeys hast du für diese Domain?“ Ist es einer, kommt gleich Touch ID. Sind
+   es mehrere (z. B. Mikes und Sonjas Konto auf demselben Mac), zeigt der Browser eine Liste mit den E-Mail-Adressen.
+3. Nach Fingerabdruck oder PIN unterschreibt das Gerät die Challenge und schickt Credential-ID, User Handle und
+   Unterschrift.
+4. Der Server sucht den Passkey per Credential-ID, prüft die Unterschrift mit dem gespeicherten öffentlichen Schlüssel
+   und findet über den User Handle das Konto (`PasskeyUserRepository`). Danach dieselben Prüfungen wie beim Passwort
+   (`UserChecker`: Konto aktiv).
+
+Möglich wären auch Passkeys, die nicht auf dem Gerät auffindbar sind („non-discoverable“), wie bei älteren
+Sicherheitsschlüsseln: Dann gibt man zuerst die E-Mail ein, der Server schickt die Credential-IDs dieses Kontos mit,
+und das Gerät sucht den passenden. Wir verlangen auffindbare Passkeys (`resident_key: required`), damit Sonja nichts
+eintippen muss.
+
+**Warum ein QR-Code erscheint:** Findet der Browser auf dem Gerät keinen Passkey für die Domain, bietet er
+typischerweise „anderes Gerät verwenden“ an und zeigt einen QR-Code (genaue Darstellung je nach Browser, nicht
+geprüft). Scannt man ihn mit dem Handy, verbinden sich Handy und Computer über Bluetooth (Nähe als Schutz gegen
+Phishing aus der Ferne) und einen Vermittlungsdienst; das **Handy** unterschreibt dann mit einem Passkey, den **es**
+gespeichert hat. Ein Passkey ist also immer an ein Gerät bzw. einen Passwort-Manager und an eine Domain gebunden:
+
+- Erscheint der QR-Code auf dem Mac, obwohl man Touch ID erwartet, hat dieser Mac (in diesem Browser bzw.
+  Passwort-Manager) noch keinen Passkey für diese Domain. Lösung: mit Passwort anmelden und in „Mein Konto“ einen
+  anlegen.
+- Ein Passkey für `localhost` gilt nicht für `sonjaczak.com` und umgekehrt.
+- Deshalb richtet Sonja auf **jedem** Gerät einen eigenen ein (MacBook Air und Handy), am Handy direkt auf
+  `sonjaczak.com`. Der QR-Weg funktioniert zwar, braucht aber jedes Mal das Handy in der Nähe.
+
+## 3. Wo was liegt
 
 | Teil | Datei |
 |---|---|
@@ -41,7 +84,7 @@ Relying Party, User Handle, Challenge, Attestation/Assertion). Konzept und Entsc
 | Speichern, „zuletzt genutzt“ | `App\Repository\PasskeyRepository::saveCredentialRecord()` |
 | Browser | `assets/controllers/passkey_register_controller.js`, `passkey_login_controller.js` |
 
-## 3. Entscheidungen im Code und warum
+## 4. Entscheidungen im Code und warum
 
 - **Kein Fremdschlüssel** `passkey.user_id`: Das Bundle verbindet über `user_handle` (Text). Ein zusätzlicher
   Fremdschlüssel wäre dieselbe Information zweimal (Frage 5). Folge: Die Datenbank verhindert nicht, dass ein Passkey
@@ -61,7 +104,7 @@ Relying Party, User Handle, Challenge, Attestation/Assertion). Konzept und Entsc
   den Browser diesen Wert nicht überschreiben (`client_override_policy.user_verification.enabled` ist standardmäßig
   aus).
 
-## 4. Sicherheit
+## 5. Sicherheit
 
 - **Phishing:** Der Browser unterschreibt nur für die RP-ID der Seite, auf der er gerade ist. Eine nachgemachte Seite
   bekommt keine brauchbare Unterschrift. Der Server prüft zusätzlich Herkunft (HTTPS, Host = RP-ID).
@@ -75,7 +118,7 @@ Relying Party, User Handle, Challenge, Attestation/Assertion). Konzept und Entsc
 - **Logs:** Das Bundle protokolliert in einen `NullLogger` (`webauthn.logger.default`), es landen keine Adressen im
   Log.
 
-## 5. Fallstricke (gefunden beim Einbau)
+## 6. Fallstricke (gefunden beim Einbau)
 
 - **Flex-Rezept übersprungen:** Rezepte aus `recipes-contrib` sind nicht freigeschaltet, das Bundle stand nicht in
   `config/bundles.php`. Von Hand eingetragen.
@@ -90,7 +133,7 @@ Relying Party, User Handle, Challenge, Attestation/Assertion). Konzept und Entsc
 - **Foundry nach einem Request:** Ein Objekt aus der Factory hängt danach an keinem Entity-Manager mehr; `save()`
   würde es neu anlegen (Unique-Fehler). Im Test vor dem ersten Request ändern.
 
-## 6. Wie getestet wird
+## 7. Wie getestet wird
 
 - `tests/Security/PasskeyRepositoryTest.php`: Konto per E-Mail und Handle, deaktiviert nicht, Speichern und
   „zuletzt genutzt“, Binärwerte über die Spaltentypen des Bundles.
@@ -102,7 +145,7 @@ Relying Party, User Handle, Challenge, Attestation/Assertion). Konzept und Entsc
   (`WebAuthn.addVirtualAuthenticator`), Ablauf Hinzufügen → zweites Mal am selben Gerät → Abmelden → Passkey-Login.
   Echte Geräte (Touch ID, Android) erst in Produktion mit Sonja.
 
-## 7. Alternativen
+## 8. Alternativen
 
 - **Nur die Bibliothek** `web-auth/webauthn-lib` mit eigenen Controllern und eigenem Authenticator: alles sichtbar,
   aber Kryptografie-Details (CBOR, COSE, Zähler, Flags) und die Firewall-Anbindung selbst schreiben.
