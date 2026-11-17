@@ -7,6 +7,7 @@ namespace App\Invoice;
 use App\Entity\Embeddable\Recipient;
 use App\Entity\Enrollment;
 use App\Entity\Invoice;
+use App\Entity\InvoicePdf;
 use App\Repository\InvoiceRepository;
 use App\Repository\SettingsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +24,9 @@ use Doctrine\ORM\EntityManagerInterface;
  * The same goes for "one invoice per enrollment" and "credits up to the amount": problems() and the voter look at
  * objects loaded at the start of the request. Both are checked again under the lock, in the database
  * (docs/erklaerungen/15-sperren.md).
+ *
+ * The PDF is rendered inside the same transaction (umsetzung-admin.md D2b, Option A): invoice and PDF are saved
+ * together or not at all. If rendering fails, everything is rolled back and the number is not used up.
  */
 final readonly class InvoiceIssuer
 {
@@ -35,6 +39,7 @@ final readonly class InvoiceIssuer
         private EntityManagerInterface $entityManager,
         private InvoiceRepository $invoices,
         private SettingsRepository $settings,
+        private InvoicePdfRenderer $pdfRenderer,
     ) {
     }
 
@@ -89,6 +94,7 @@ final readonly class InvoiceIssuer
      *
      * @throws \LogicException            if problems() is not empty (the controller checks first)
      * @throws InvoiceConflictException if another request has created the invoice in the meantime
+     * @throws InvoicePdfException      if the PDF cannot be rendered; nothing is saved
      */
     public function issue(Enrollment $enrollment, InvoiceDraft $draft): Invoice
     {
@@ -127,6 +133,7 @@ final readonly class InvoiceIssuer
      *
      * @throws \LogicException            if the amount is not between 1 cent and what can still be credited
      * @throws InvoiceConflictException if another credit note in the meantime leaves less than the amount
+     * @throws InvoicePdfException      if the PDF cannot be rendered; nothing is saved
      */
     public function credit(Invoice $invoice, CreditDraft $draft): Invoice
     {
@@ -162,7 +169,7 @@ final readonly class InvoiceIssuer
 
     /**
      * Runs $create with the next free number of the year inside a transaction that holds the lock for invoice
-     * numbers, persists the result and commits. $create runs after the lock is taken, so its database queries see
+     * numbers, renders the PDF, persists both and commits. $create runs after the lock is taken, so its database queries see
      * everything committed by a request that held the lock before (PostgreSQL's default READ COMMITTED). If it
      * throws, the transaction is rolled back and nothing is saved.
      *
@@ -176,6 +183,8 @@ final readonly class InvoiceIssuer
 
             $invoice = $create($year, $this->invoices->nextNumber($year));
             $this->entityManager->persist($invoice);
+            // Rendered after the number is known; the invoice needs no id for it
+            $this->entityManager->persist(new InvoicePdf($invoice, $this->pdfRenderer->render($invoice)));
 
             return $invoice;
         });

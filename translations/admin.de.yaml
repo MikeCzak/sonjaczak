@@ -446,6 +446,21 @@ invoice:
     flash:
         created: Honorarnote erstellt.
         conflict: Für diese Teilnahme wurde gerade schon eine Honorarnote erstellt (z. B. durch einen Doppelklick). Eine zweite ist nicht entstanden.
+        pdf_failed: Das PDF konnte nicht erstellt werden. Es wurde nichts gespeichert und keine Nummer verbraucht. Bitte noch einmal versuchen; klappt es wieder nicht, Mike Bescheid geben.
+    # PDF (templates/admin/invoice/pdf.html.twig); placeholders %date% and %amount% are formatted there, HTML allowed
+    pdf:
+        title: Honorarnote %number%
+        credit_title: Gutschrift %number%
+        credit_reference: zu Honorarnote %number%
+        place_date: '%place%, %date%'
+        for: Für den %description%
+        pay_total_or: Zahlbar <strong>gesamt bis zum %date%</strong> ODER
+        pay_total: Zahlbar <strong>bis zum %date%</strong>
+        installments: 'aufgeteilt auf zwei Raten:'
+        installment: <strong>%n%. Rate à %amount%</strong> bis zum <strong>%date%</strong>
+        transfer: Mit der Bitte um Überweisung auf untenstehendes Konto
+        iban: 'IBAN: %iban%'
+        bic: 'BIC: %bic%'
 credit:
     badge: Gutschrift
     default_description: Gutschrift zu Honorarnote %number%
@@ -468,6 +483,7 @@ credit:
     flash:
         created: Gutschrift erstellt.
         conflict: Gerade wurde schon eine Gutschrift erstellt (z. B. durch einen Doppelklick), der Betrag ist nicht mehr frei. Eine weitere ist nicht entstanden.
+        pdf_failed: Das PDF der Gutschrift konnte nicht erstellt werden. Es wurde nichts gespeichert und keine Nummer verbraucht. Bitte noch einmal versuchen; klappt es wieder nicht, Mike Bescheid geben.
 payment:
     heading: Zahlungen
     owed: Zu zahlen (nach Gutschriften)

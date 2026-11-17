@@ -14,7 +14,7 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** `umsetzung-admin.md` D2b (PDF der Honorarnote erzeugen; D2a ist erledigt). Danach F: Datenschutz-Information,
+**Nächster Schritt:** `umsetzung-admin.md` D2d (Download einzeln und als ZIP; D2a–D2c sind erledigt, noch nicht gepusht). Danach F: Datenschutz-Information,
 dann dürfen echte Daten eingetragen werden (Backups und Rücksicherung sind fertig).
 
 ## Später zu klären
@@ -37,6 +37,16 @@ verlinkten Erklärung.
   Öffnen breiter (die Tabelle ordnet sich neu); nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
   werden in jeder leeren Zelle angeboten, deren Nachbar am selben Tag eine Einheit hat, auch in Wochen ohne Absage
   (z. B. bevor eine Teilnahme beginnt); ob sie passt, prüft der Server.
+- [ ] **Text der Honorarnote als PDF** (2026-11-17, `umsetzung-admin.md` D2c) beim Zeigen prüfen:
+  - „Für den“ steht fest vor dem Leistungstext („Für den Gesangsunterricht im …“, wie im Muster). Ändert Sonja den
+    Text, muss er dazu passen.
+  - Ohne Raten steht „Zahlbar **bis zum** …“ (im Muster gibt es nur den Fall mit Raten).
+  - Gutschrift: Titel „Gutschrift 17/2026“, darunter „zu Honorarnote 16/2026“, Text, Betrag positiv, ohne Bankdaten
+    und ohne Zahlungsaufforderung. Mit dem Standardtext „Gutschrift zu Honorarnote 16/2026“ steht der Bezug zweimal.
+  - Unter „Mit der Bitte um Überweisung“ steht Sonjas Name rechts, wo im Muster die Unterschrift war.
+  - Die Postleitzahl erscheint wie eingetragen; „A-8130“ wie im Muster nur, wenn Sonja „A-8130“ einträgt.
+  - Schrift DejaVu Sans (in dompdf enthalten), im Muster vermutlich Verdana; ähnlich, nicht gleich.
+  - Die Fehlermeldung, falls das PDF scheitert, sagt „Mike Bescheid geben“.
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
   mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
 - [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
@@ -142,7 +152,8 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
-- [ ] D2 PDF (dompdf, Plan freigegeben 2026-11-17): D2a Ablage erledigt (2026-11-17), **nächster Schritt D2b** (Erzeugen)
+- [ ] D2 PDF (dompdf, Plan freigegeben 2026-11-17): D2a Ablage, D2b Erzeugen erledigt (2026-11-17), **nächster Schritt D2d**
+  (Download; D2c Inhalt ist mit D2b erledigt). Pushen erst nach Abschluss von D (Mike, 2026-11-17)
 - [ ] F Vor den echten Daten: Backups fertig (2026-11-15); offen: Datenschutz-Information, Löschregel (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

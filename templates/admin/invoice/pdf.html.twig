@@ -1,0 +1,79 @@
+{#
+    PDF of an invoice or credit note, rendered by App\Invoice\InvoicePdfRenderer with dompdf (umsetzung-admin.md D2).
+    Model: claude_references/HN16_GU_WiSe_2026_Springer.pdf. dompdf knows no flexbox or grid: plain blocks only.
+    Parameters: invoice (App\Entity\Invoice), settings (App\Entity\Settings, sender data).
+
+    |raw is used only on translations whose placeholders are dates and amounts formatted here, never on entered text.
+#}
+{% macro amount(cents) %}{{ cents % 100 == 0 ? (cents // 100)|number_format(0, ',', '.') ~ ',-' : (cents / 100)|number_format(2, ',', '.') }}{% endmacro %}
+{% macro address(name, address, title = null) %}
+    <strong>{{ name }}{% if title %} {{ title }}{% endif %}</strong><br>
+    {{ address.street }}<br>
+    {{ address.postalCode }} {{ address.city }}
+    {%- if address.country %}<br>{{ address.country }}{% endif %}
+{% endmacro %}
+{% set title_key = invoice.creditNote ? 'invoice.pdf.credit_title' : 'invoice.pdf.title' %}
+{% set sender_address = settings.senderAddress %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title_key|trans({'%number%': invoice.displayNumber}, 'admin') }}</title>
+    <style>
+        @page { margin: 3cm 2.2cm 2.5cm 2.2cm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10.5pt; line-height: 1.25; }
+        p { margin: 0 0 0.9em 0; }
+        .address { margin-bottom: 2.6em; }
+        .place-date { text-align: right; margin: 1em 0 2.5em 0; }
+        h1 { font-size: 13pt; text-align: center; margin: 0 0 3.5em 0; }
+        h1 small { display: block; font-size: 10.5pt; font-weight: normal; margin-top: 0.4em; }
+        .amount { font-weight: bold; text-align: center; margin: 1.5em 0; }
+        .signature { text-align: right; margin: 3.5em 0 4em 0; }
+        .vat { text-align: center; margin-top: 1.5em; }
+    </style>
+</head>
+<body>
+    <div class="address">{{ _self.address(settings.senderName, sender_address, settings.senderTitle) }}</div>
+    <div class="address">{{ _self.address(invoice.recipient.name, invoice.recipient.address) }}</div>
+
+    <p class="place-date">{{ 'invoice.pdf.place_date'|trans({'%place%': settings.invoicePlace ?? sender_address.city, '%date%': invoice.issuedOn|date('d.m.Y')}, 'admin') }}</p>
+
+    <h1>
+        {{ title_key|trans({'%number%': invoice.displayNumber}, 'admin') }}
+        {% if invoice.creditNote %}<small>{{ 'invoice.pdf.credit_reference'|trans({'%number%': invoice.original.displayNumber}, 'admin') }}</small>{% endif %}
+    </h1>
+
+    {% if invoice.creditNote %}
+        <p>{{ invoice.description }}</p>
+        <p class="amount">€ {{ _self.amount(-invoice.amountCents) }}</p>
+    {% else %}
+        <p>{{ 'invoice.pdf.for'|trans({'%description%': invoice.description}, 'admin') }}</p>
+        <p class="amount">€ {{ _self.amount(invoice.amountCents) }}</p>
+
+        {% if invoice.hasInstallments %}
+            <p>{{ 'invoice.pdf.pay_total_or'|trans({'%date%': invoice.dueOn|date('d.m.Y')}, 'admin')|raw }}</p>
+            <p>
+                {{ 'invoice.pdf.installments'|trans({}, 'admin') }}<br>
+                {{ 'invoice.pdf.installment'|trans({'%n%': 1, '%amount%': _self.amount(invoice.firstInstallmentCents), '%date%': invoice.dueOn|date('d.m.Y')}, 'admin')|raw }}<br>
+                {{ 'invoice.pdf.installment'|trans({'%n%': 2, '%amount%': _self.amount(invoice.secondInstallmentCents), '%date%': invoice.secondInstallmentDueOn|date('d.m.Y')}, 'admin')|raw }}
+            </p>
+        {% else %}
+            <p>{{ 'invoice.pdf.pay_total'|trans({'%date%': invoice.dueOn|date('d.m.Y')}, 'admin')|raw }}</p>
+        {% endif %}
+
+        <p>{{ 'invoice.pdf.transfer'|trans({}, 'admin') }}</p>
+    {% endif %}
+
+    <p class="signature">{{ settings.senderName }}</p>
+
+    {% if not invoice.creditNote %}
+        <p>
+            {% if settings.bankName %}{{ settings.bankName }}<br>{% endif %}
+            {{ 'invoice.pdf.iban'|trans({'%iban%': settings.iban|split('', 4)|join(' ')}, 'admin') }}
+            {%- if settings.bic %}<br>{{ 'invoice.pdf.bic'|trans({'%bic%': settings.bic}, 'admin') }}{% endif %}
+        </p>
+    {% endif %}
+
+    {% if settings.vatNote %}<p class="vat">{{ settings.vatNote }}</p>{% endif %}
+</body>
+</html>

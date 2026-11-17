@@ -15,10 +15,12 @@ use App\Invoice\CreditDraft;
 use App\Invoice\InvoiceConflictException;
 use App\Invoice\InvoiceDraft;
 use App\Invoice\InvoiceIssuer;
+use App\Invoice\InvoicePdfException;
 use App\Invoice\PaymentDraft;
 use App\Repository\InvoiceRepository;
 use App\Security\Voter\InvoiceVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -82,7 +84,7 @@ final class InvoiceController extends AbstractController
 
     #[Route('/admin/honorarnoten/{id}/gutschrift', name: 'admin_invoice_credit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted(InvoiceVoter::CREDIT, 'invoice')]
-    public function credit(Request $request, Invoice $invoice, InvoiceIssuer $issuer, TranslatorInterface $translator): Response
+    public function credit(Request $request, Invoice $invoice, InvoiceIssuer $issuer, TranslatorInterface $translator, LoggerInterface $logger): Response
     {
         $draft = new CreditDraft(
             $translator->trans('credit.default_description', ['%number%' => $invoice->getDisplayNumber()], 'admin'),
@@ -99,6 +101,8 @@ final class InvoiceController extends AbstractController
                 $this->addFlash('warning', 'credit.flash.conflict');
 
                 return $this->redirectToRoute('admin_invoice_show', ['id' => $invoice->getOriginal()->getId()]);
+            } catch (InvoicePdfException $exception) {
+                return $this->pdfFailed($exception, $logger, 'credit.flash.pdf_failed', 'admin_invoice_credit', $invoice->getId());
             }
             $this->addFlash('success', 'credit.flash.created');
 
@@ -123,7 +127,7 @@ final class InvoiceController extends AbstractController
     }
 
     #[Route('/admin/teilnahmen/{id}/honorarnote', name: 'admin_invoice_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function new(Request $request, Enrollment $enrollment, InvoiceIssuer $issuer, TranslatorInterface $translator): Response
+    public function new(Request $request, Enrollment $enrollment, InvoiceIssuer $issuer, TranslatorInterface $translator, LoggerInterface $logger): Response
     {
         $problems = $issuer->problems($enrollment);
         $course = $enrollment->getCourse();
@@ -143,6 +147,8 @@ final class InvoiceController extends AbstractController
                 $this->addFlash('warning', 'invoice.flash.conflict');
 
                 return $this->redirectToRoute('admin_enrollment_show', ['id' => $enrollment->getId()]);
+            } catch (InvoicePdfException $exception) {
+                return $this->pdfFailed($exception, $logger, 'invoice.flash.pdf_failed', 'admin_invoice_new', $enrollment->getId());
             }
             $this->addFlash('success', 'invoice.flash.created');
 
@@ -155,6 +161,19 @@ final class InvoiceController extends AbstractController
             'problems' => $problems,
             'recipient' => $issuer->recipientFor($enrollment),
         ]);
+    }
+
+    /**
+     * The PDF failed, the transaction was rolled back and nothing is saved (umsetzung-admin.md D2b). Back to the form
+     * with a new request: the entity manager was closed by the rollback and cannot be used in this one any more.
+     * Logged without personal data: the exception and its cause (Twig or dompdf), not the invoice.
+     */
+    private function pdfFailed(InvoicePdfException $exception, LoggerInterface $logger, string $message, string $route, ?int $id): Response
+    {
+        $logger->error('Invoice PDF could not be rendered, nothing was saved.', ['exception' => $exception]);
+        $this->addFlash('danger', $message);
+
+        return $this->redirectToRoute($route, ['id' => $id]);
     }
 
     /**

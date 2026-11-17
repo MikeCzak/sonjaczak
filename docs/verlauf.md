@@ -405,3 +405,13 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   unidirektional, `invoice_id` unique, `content bytea`), Migration `Version20261117063716`. PHPStan bemängelte
   `is_resource()` als Typprüfung (ein geschlossener Stream ist keine „resource“ mehr) → Prüfung `!is_string()`.
   154 Tests grün, PHPStan ohne Fehler, Schema validiert.
+- Erklärungen: `erklaerungen/19-honorarnoten-pdf.md` neu (PHP-Extensions, Migration Zeile für Zeile), `04-composer.md`
+  um „Wenn es kein Rezept gibt“ ergänzt. Versuch in der lokalen Datenbank: Identity-Spalte verliert den Wert bei
+  Rollback (1, 3 statt 1, 2).
+- D2b/D2c: `InvoicePdfRenderer` (Twig `admin/invoice/pdf.html.twig` → dompdf, A4, DejaVu Sans, Remote/PHP/JavaScript
+  aus), Aufruf in `InvoiceIssuer::withNextNumber()` in der Transaktion, `InvoicePdfException` → Meldung und zurück
+  aufs Formular (`InvoiceController::pdfFailed()`). Fallstrick gefunden: `new Options([...])` ignoriert unbekannte
+  Schlüssel stillschweigend (`Options::set()` mit `method_exists`) → Setter. Messung (lokal, Dev mit Xdebug im Modus
+  `develop`, zweiter Durchlauf): **122 ms, +11,1 MB Spitze, PDF 24,4 KB** bei `memory_limit` 128M. PDF im Vergleich
+  mit dem Muster angesehen, Zeilenabstand angepasst. Test mit fehlschlagendem Renderer: keine Honorarnote, kein PDF,
+  Meldung sichtbar. 159 Tests grün, PHPStan ohne Fehler.

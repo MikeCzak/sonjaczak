@@ -1,6 +1,6 @@
 # 19 PDF der Honorarnote (D2)
 
-Stand: 2026-11-17, nach D2a (Paket, Entity, Migration). Wird mit D2b–D2e ergänzt. Plan:
+Stand: 2026-11-17, nach D2a (Paket, Entity, Migration) und D2b/D2c (Erzeugen). Wird mit D2d/D2e ergänzt. Plan:
 `planung/umsetzung-admin.md` D2. Quellen: installierter Code (`vendor/`, `composer.lock`), `php -m` im Container,
 PostgreSQL-Doku 18 (`sql-createtable.html`) und ein Versuch in der lokalen Datenbank.
 
@@ -150,3 +150,63 @@ schreibt das ins SQL. Für uns passt das: Doctrine sortiert die Inserts beim Flu
 
 Ohne `ON DELETE`: Löschen einer Honorarnote mit PDF verweigert die Datenbank (`NO ACTION`, wie überall im Projekt,
 `09-datenbank-schueler.md`). Honorarnoten werden ohnehin nie gelöscht.
+
+## 3. Erzeugen (D2b)
+
+Dateien: `src/Invoice/InvoicePdfRenderer.php`, `templates/admin/invoice/pdf.html.twig`,
+`src/Invoice/InvoiceIssuer.php` (`withNextNumber()`), `src/Controller/Admin/InvoiceController.php` (`pdfFailed()`),
+`tests/Admin/InvoicePdfTest.php`.
+
+### Ablauf
+
+1. `InvoiceIssuer` nimmt das Lock, vergibt die Nummer und baut die `Invoice` (wie bisher).
+2. Neu: `InvoicePdfRenderer::render()` rendert das Twig-Template zu HTML und übergibt es dompdf. Die Honorarnote
+   braucht dafür keine `id`, nur Nummer, Daten und Beträge, die schon im Objekt stehen.
+3. `InvoicePdf` wird persistiert, dann Flush und Commit für beides.
+
+Scheitert Schritt 2, wirft der Renderer `InvoicePdfException` (die eigentliche Ursache von Twig oder dompdf hängt als
+`previous` daran). `wrapInTransaction()` rollt zurück und schließt den EntityManager. Der Controller schreibt den Fehler
+ins Log, zeigt eine Meldung und **leitet um**, statt das Formular direkt neu anzuzeigen: Das Formular-Template lädt
+Teilnahme und Kurs nach. Ob das mit einem geschlossenen EntityManager noch geht, ist nicht geprüft; die Umleitung
+umgeht die Frage, denn die neue Anfrage bekommt einen frischen. Sonja muss die Daten im Formular dann neu eingeben (drei Felder).
+
+### dompdf-Optionen
+
+Standardwerte stehen in `vendor/dompdf/dompdf/src/Options.php`. Gesetzt werden nur:
+
+| Option | Standard | Bei uns | Warum |
+|---|---|---|---|
+| `defaultPaperSize` | `letter` | `a4` | US-Format wäre falsch |
+| `defaultFont` | `serif` | `DejaVu Sans` | Die eingebauten PDF-Schriften kennen nur Windows ANSI; DejaVu liegt dompdf bei (README) |
+| `isRemoteEnabled` | `false` | `false` | Keine URLs aus dem HTML laden. Ausdrücklich gesetzt, weil sicherheitsrelevant |
+| `isPhpEnabled` | `false` | `false` | Kein PHP im HTML ausführen. Ebenso |
+| `isJavascriptEnabled` | `true` | `false` | Würde `<script>` als JavaScript ins PDF übernehmen; brauchen wir nicht |
+
+**Fallstrick:** `new Options(['defaultPaperSize' => 'a4'])` wäre kürzer, aber `Options::set()` ruft den passenden
+Setter nur auf, `if (method_exists(...))`. Ein Tippfehler im Schlüssel wird stillschweigend ignoriert, und das PDF kommt
+plötzlich im US-Format. Mit Settern meldet PHPStan einen Tippfehler sofort.
+
+### Template
+
+- Layout nur mit Blöcken und `text-align`; dompdf kann laut README kein Flexbox/Grid.
+- Betrag „€ 495,-“ bei ganzen Euro, sonst „€ 247,50“ (Makro `amount`, rechnet in Cent: `cents % 100`).
+- IBAN in Vierergruppen mit Twigs `split('', 4)` (leeres Trennzeichen + Zahl = Stücke dieser Länge).
+- Texte mit Fettdruck stehen als HTML in der Übersetzung und werden mit `|raw` ausgegeben. **Regel:** `|raw` nur, wenn
+  alle Platzhalter von uns formatierte Daten oder Beträge sind. Eingegebener Text (Leistungstext, Namen) läuft immer
+  durch das normale Escaping, sonst könnte eingegebenes HTML im PDF landen.
+
+### Messung
+
+Lokal, zweiter Durchlauf (der erste füllt Twig-Cache und Schriftdaten), Dev-Image mit Xdebug im Modus `develop`:
+**122 ms, Spitze +11,1 MB, PDF 24,4 KB**. Bei `memory_limit` 128M und ~850 MiB am Server unkritisch. In Produktion ohne
+Xdebug eher schneller. Das Lock für die Nummern ist also nur Sekundenbruchteile länger gehalten.
+
+### Tests
+
+- Inhalt wird am **HTML** geprüft (`renderHtml()`), nicht am PDF: dompdf komprimiert den Text im PDF, ein
+  `assertStringContainsString` auf das PDF fände nichts. Am PDF wird nur geprüft, dass es mit `%PDF-` beginnt und nach
+  dem Laden aus der Datenbank (Stream!) zweimal lesbar ist.
+- Fehlerfall: Der Renderer wird im Container durch einen Stub ersetzt, der wirft. Dafür ist die Klasse nicht `final`
+  (PHPUnit kann finale Klassen nicht ersetzen). `$client->disableReboot()` ist nötig: Sonst baut der Test-Client den
+  Kernel vor jeder Anfrage neu, und der ersetzte Dienst ist weg.
+
