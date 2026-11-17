@@ -236,7 +236,9 @@ der Download antwortet ohne PDF mit 404.
     Steuerberaterin Mag.iur. Ulla Kröll als Empfängerin. Erledigt 2026-11-17.
   - **F2 PDF** `/datenschutz/unterricht.pdf` aus demselben Template mit dompdf, bei jedem Aufruf neu erzeugt (nicht
     gespeichert); HTML → PDF in einen gemeinsamen Dienst mit `InvoicePdfRenderer`; Link im Admin bei den
-    Schüler:innen. Alternative: fertiges PDF im Repo (Text doppelt, läuft auseinander).
+    Schüler:innen. Alternative: fertiges PDF im Repo (Text doppelt, läuft auseinander). Erledigt 2026-11-17; abweichend
+    vom Plan einmal erzeugt und im App-Cache gehalten bis zum nächsten Deploy (öffentliche Adresse, dompdf ~0,1 s und
+    11 MB je Aufruf), im Debug-Modus jedes Mal neu. Text in `page/_privacy_lessons_sections.html.twig` für Seite und PDF.
 - **Aufbewahrungsfrist** der Honorarnoten in der BAO nachlesen, Lösch-/Anonymisierungsregel festhalten.
   Nachgelesen 2026-11-13 (RIS, § 132 BAO): Abs. 1 „Bücher und Aufzeichnungen sowie die zu den Büchern und
   Aufzeichnungen gehörigen Belege sind sieben Jahre aufzubewahren“, darüber hinaus so lange, wie sie für anhängige

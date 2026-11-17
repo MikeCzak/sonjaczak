@@ -14,9 +14,8 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** `umsetzung-admin.md` F: Datenschutz-Information (D ist seit 2026-11-17 live; Konten für Mike
-und Sonja und Sonjas Absenderdaten sind in Produktion eingetragen), dann dürfen echte Daten eingetragen werden
-(Backups und Rücksicherung sind fertig).
+**Nächster Schritt:** F1/F2 pushen, dann Text der Datenschutz-Information mit Sonja durchgehen (siehe „Später zu
+klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
 ## Später zu klären
 
@@ -63,6 +62,9 @@ verlinkten Erklärung.
   - Sonja gibt Link oder PDF bei der Anmeldung weiter (Art. 13: „zum Zeitpunkt der Erhebung“), auch an die sechs
     Schüler:innen, deren Daten sie jetzt einträgt.
   - Bis die Löschregel umgesetzt ist, löscht Sonja nach Ende des Folgesemesters von Hand.
+  - PDF (F2, `/datenschutz/unterricht.pdf`): öffnet sich im Browser (`inline`), Speichern unter
+    `Datenschutz-Information_Gesangsunterricht.pdf`. Link im Admin oben in „Schüler:innen“. Der Link „Datenschutzerklärung“
+    ist im Ausdruck nur unterstrichen, ohne sichtbare Adresse; unten steht die Adresse der Seite.
 - [ ] **Wochentermin fest** (2026-11-13, C3): Nach dem Anlegen lassen sich Wochentag und Uhrzeit einer Teilnahme nicht
   mehr ändern, nur einzelne Einheiten verschieben. Ein Umzug aller geplanten Einheiten wäre machbar.
 - [ ] **Fälligkeit ohne Vorschlag** (2026-11-13, D1, `erklaerungen/13`): „Zahlbar bis“ muss eingetragen werden. Eine
@@ -182,7 +184,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [ ] F Vor den echten Daten: Backups fertig (2026-11-15); Datenschutz-Information als Seite (F1, 2026-11-17); offen: PDF (F2), Löschregel (siehe „Später“)
+- [x] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17). Löschregel zurückgestellt (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).

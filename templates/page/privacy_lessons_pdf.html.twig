@@ -1,0 +1,27 @@
+{#
+    PDF of the privacy notice for lessons, converted by App\Pdf\HtmlToPdf (umsetzung-admin.md F2). Text from
+    _privacy_lessons_sections.html.twig like the web page. dompdf knows no flexbox or grid: plain blocks only.
+#}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'title.privacy_lessons'|trans }}</title>
+    <style>
+        @page { margin: 2.2cm 2.2cm 2cm 2.2cm; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9.5pt; line-height: 1.35; }
+        h1 { font-size: 14pt; margin: 0 0 1em 0; }
+        h2 { font-size: 10.5pt; margin: 1.4em 0 0.4em 0; page-break-after: avoid; }
+        p, address { margin: 0 0 0.6em 0; font-style: normal; }
+        a { color: inherit; }
+        .footer { margin-top: 2em; color: #555; }
+    </style>
+</head>
+<body>
+    <h1>{{ 'title.privacy_lessons'|trans }}</h1>
+
+    {{ include('page/_privacy_lessons_sections.html.twig') }}
+
+    <p class="footer">{{ 'privacy.updated'|trans({}, 'content') }} · {{ url('app_privacy_lessons') }}</p>
+</body>
+</html>

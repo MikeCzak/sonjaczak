@@ -71,6 +71,27 @@ final class PublicPagesTest extends WebTestCase
         self::assertSelectorTextContains('main', 'sieben Jahre ab dem Ende des Kalenderjahres');
         self::assertSelectorTextContains('main', 'bis zum Ende des Semesters, das auf den letzten Kurs');
         self::assertSelectorTextContains('main', 'Datenschutzbehörde');
+        self::assertSelectorExists('main a[href="/datenschutz/unterricht.pdf"]');
+    }
+
+    /**
+     * umsetzung-admin.md F2: the same text as a PDF, public and without a cookie like the page.
+     */
+    public function testPrivacyNoticeForLessonsAsPdf(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/datenschutz/unterricht.pdf');
+
+        self::assertResponseIsSuccessful();
+        self::assertResponseNotHasHeader('Set-Cookie');
+        self::assertResponseHeaderSame('Content-Type', 'application/pdf');
+        self::assertResponseHeaderSame('Content-Disposition', 'inline; filename=Datenschutz-Information_Gesangsunterricht.pdf');
+        self::assertStringStartsWith('%PDF-', (string) $client->getResponse()->getContent());
+
+        // The PDF template contains the shared text
+        $html = self::getContainer()->get('twig')->render('page/privacy_lessons_pdf.html.twig');
+        self::assertStringContainsString('Mag.iur. Ulla Kröll', $html);
+        self::assertStringContainsString('http://localhost/datenschutz/unterricht', $html);
     }
 
     public function testCurrentPageIsMarkedInMenu(): void

@@ -441,3 +441,9 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - Datenschutzerklärung: Absatz zum Session-Cookie des Verwaltungsbereichs entfernt (Mike: für keine Besucher:in
   relevant, ein Hinweis weniger für Angreifer); § 165 Abs. 3 TKG 2021 dazu im RIS gelesen. Steuerberaterin
   Mag.iur. Ulla Kröll in der Datenschutz-Information Unterricht ergänzt.
+- F2: PDF der Datenschutz-Information `/datenschutz/unterricht.pdf` (inline, 28 KB, 2 Seiten), Text gemeinsam mit
+  der Seite aus `page/_privacy_lessons_sections.html.twig`. Aufruf und Optionen von dompdf aus `InvoicePdfRenderer`
+  nach `App\Pdf\HtmlToPdf` verschoben. Im App-Cache bis zum nächsten Deploy (Abweichung vom Plan, öffentliche
+  Adresse). Link oben in „Schüler:innen“ im Admin. 169 Tests grün, PHPStan ohne Fehler. Beim vollen Testlauf mit
+  Xdebug (`develop`) hängt Xdebug an jede erwartete 403/404-Logzeile einen langen Stacktrace; das sah zuerst wie ein
+  Fehler aus, war aber keiner (mit `XDEBUG_MODE=off` und erneut mit Xdebug: alles grün).

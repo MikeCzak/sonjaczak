@@ -85,7 +85,7 @@ Datei unter `config/`, kein Eintrag in `config/bundles.php` oder `symfony.lock`,
 kein Fehler: Rezepte gibt es vor allem für **Bundles**, also Pakete, die sich in Symfonys Container einklinken.
 dompdf ist eine reine PHP-Bibliothek ohne Symfony-Bezug. Folgen:
 
-- **Wir verdrahten selbst:** Symfony kennt keinen Dienst „dompdf“. Unser eigener Dienst (`InvoicePdfRenderer`, D2b)
+- **Wir verdrahten selbst:** Symfony kennt keinen Dienst „dompdf“. Unser eigener Dienst (`HtmlToPdf`, seit F2; vorher `InvoicePdfRenderer`, D2b)
   erzeugt `new Dompdf($options)` und setzt die Optionen in PHP. Autowiring betrifft nur unsere eigene Klasse.
 - **Keine Docker-Teile:** Ein Rezept kann Extensions ins Dockerfile schreiben (wie `pdo_pgsql` bei Doctrine). Ohne
   Rezept prüfen wir selbst, welche Extensions das Paket braucht (`erklaerungen/19`, Abschnitt 1).

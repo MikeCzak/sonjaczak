@@ -136,6 +136,7 @@ student:
         new: Neue:r Schüler:in
         search: Name oder Elternteil
         search_submit: Suchen
+        privacy_pdf: Datenschutz-Information (PDF)
         empty: Noch keine Schüler:innen eingetragen.
         no_match: Niemand gefunden.
     new:

@@ -172,6 +172,9 @@ umgeht die Frage, denn die neue Anfrage bekommt einen frischen. Sonja muss die D
 
 ### dompdf-Optionen
 
+Seit F2 (2026-11-17) stehen Aufruf und Optionen in `src/Pdf/HtmlToPdf.php`, den auch das PDF der
+Datenschutz-Information nutzt; `InvoicePdfRenderer` rendert nur noch das Template und gibt das HTML weiter.
+
 Standardwerte stehen in `vendor/dompdf/dompdf/src/Options.php`. Gesetzt werden nur:
 
 | Option | Standard | Bei uns | Warum |

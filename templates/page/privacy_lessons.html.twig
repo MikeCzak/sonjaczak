@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_macros/text.html.twig' as text %}
 
 {% block title %}{{ 'title.privacy_lessons'|trans }}{% endblock %}
 {% block meta_description %}{{ 'meta.privacy_lessons'|trans }}{% endblock %}
@@ -10,23 +9,9 @@
             <div class="sc-prose">
             <h1>{{ 'title.privacy_lessons'|trans }}</h1>
             <hr class="sc-accent-line">
-            <p>{{ 'privacy_lessons.intro'|trans({}, 'content') }}</p>
-            <p>
-                {{ 'privacy_lessons.website_notice'|trans({}, 'content') }}
-                <a href="{{ path('app_privacy') }}">{{ 'inquiry.privacy_link'|trans }}</a>.
-            </p>
+            <p><a href="{{ path('app_privacy_lessons_pdf') }}">{{ 'action.open_pdf'|trans }}</a></p>
 
-            <h2 class="h4 mt-5">{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
-            {{ include('_partials/controller_address.html.twig') }}
-
-            {% for section in ['data', 'purpose', 'required', 'recipients', 'storage'] %}
-                <h2 class="h4 mt-5">{{ ('privacy_lessons.' ~ section ~ '.heading')|trans({}, 'content') }}</h2>
-                {{ text.paragraphs(('privacy_lessons.' ~ section ~ '.body')|trans({}, 'content')) }}
-            {% endfor %}
-
-            {# Same rights as on the website, one text for both #}
-            <h2 class="h4 mt-5">{{ 'privacy.rights.heading'|trans({}, 'content') }}</h2>
-            {{ text.paragraphs('privacy.rights.body'|trans({}, 'content')) }}
+            {{ include('page/_privacy_lessons_sections.html.twig') }}
 
             <p class="text-body-secondary mt-5 mb-0">{{ 'privacy.updated'|trans({}, 'content') }}</p>
             </div>

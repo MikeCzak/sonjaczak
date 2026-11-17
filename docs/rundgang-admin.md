@@ -95,6 +95,10 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    ZIP“ und „4 Teilnahmen haben noch keine Honorarnote.“ ZIP öffnen. Die PDFs der Fixtures entstehen beim Laden mit den
    Absenderdaten „Erika Musterfrau“; Fixtures nach dem Update neu laden, sonst fehlen sie (404).
 
+8. Datenschutz-Information (F, 2026-11-17): https://localhost/datenschutz/unterricht lesen, „Als PDF öffnen“. Im Admin
+   unter „Schüler:innen“ oben „Datenschutz-Information (PDF)“. In der Website-Datenschutzerklärung steht der Link
+   darauf, der Verwaltungsbereich wird dort nicht erwähnt.
+
 ## 8. Einnahmen und Erinnerung
 
 1. „Einnahmen“: Zahlungen nach Zahlungsdatum, „Als CSV herunterladen“ und in Excel oder Numbers öffnen.
@@ -122,4 +126,5 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 3. **Achtung, Produktion ist echt:** Honorarnoten lassen sich nicht löschen und verbrauchen Nummern (1/2026, 2/2026 …).
    Beim Zeigen also keine Honorarnote zum Ausprobieren erstellen. Schüler:innen, Kurse und Teilnahmen lassen sich
    wieder löschen.
-4. **Echte Daten** (Sonjas Schüler:innen) erst nach `umsetzung-admin.md` F (Backups, Datenschutz-Information).
+4. **Echte Daten** (Sonjas Schüler:innen) erst nach `umsetzung-admin.md` F (Backups, Datenschutz-Information) und
+   nachdem Sonja den Text der Datenschutz-Information gelesen hat; sie gibt ihn bei der Anmeldung weiter.

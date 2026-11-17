@@ -59,6 +59,17 @@ final class StudentTest extends WebTestCase
         self::assertSelectorCount(2, '.invalid-feedback');
     }
 
+    /**
+     * Sonja hands out the privacy notice at registration (umsetzung-admin.md F2).
+     */
+    public function testListLinksToThePrivacyNotice(): void
+    {
+        $client = $this->loggedInClient();
+        $client->request('GET', '/admin/schueler');
+
+        self::assertSelectorTextContains('a[href="/datenschutz/unterricht.pdf"]', 'Datenschutz-Information (PDF)');
+    }
+
     public function testSearchFindsByNameAndGuardian(): void
     {
         $client = $this->loggedInClient();
