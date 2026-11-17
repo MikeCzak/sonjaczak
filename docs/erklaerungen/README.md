@@ -27,6 +27,7 @@ Nachschlagewerk zu allem, was in Phase 1 aufgebaut wurde. Jede Datei folgt demse
 | [16-backups.md](16-backups.md) | Backups: RPO/RTO, 3-2-1, logisch vs. physisch, age, Pull statt Push, erzwungener SSH-Befehl, sudo ohne Argumente, visudo, launchd, Rücksicherungstest; Alternativen und Praxis in Firmen |
 | [17-csrf.md](17-csrf.md) | CSRF: der Angriff, Session-Token vs. Herkunfts-Header vs. Double Submit, zwei Token-Manager nebeneinander, warum der Stimulus-CSRF-Controller entfernt wurde, Token fürs Raster |
 | [18-kursraster.md](18-kursraster.md) | Kursraster: Stimulus (Controller, Actions, Targets, Values, Parameter), Laden bei Bedarf, `fetch` mit PATCH/DELETE, Statuscodes, Rückfrage über 409, neu laden statt nachbauen, die Regel für die Zahl der Einheiten |
+| [19-honorarnoten-pdf.md](19-honorarnoten-pdf.md) | PDF der Honorarnote: PHP-Extensions (allgemein, Composer-Prüfung, Bedarf von dompdf), Migration Zeile für Zeile (Identity-Spalte, Lücken, `bytea`, 1:1 ohne inverse Seite, `NOT DEFERRABLE`) |
 
 Ergänzend: [../begriffe.md](../begriffe.md) (Glossar), [../entwicklung.md](../entwicklung.md) (lokaler Workflow),
 [../deployment.md](../deployment.md) (Server-Einrichtung, Rollback).

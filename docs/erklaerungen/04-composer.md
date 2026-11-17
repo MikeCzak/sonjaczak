@@ -76,7 +76,27 @@ freigegeben, sondern die PHPStan-Erweiterungen manuell eingebunden haben: ein Pl
 
 **`symfony.lock`** merkt sich, welche Recipe-Version für welches Paket angewendet wurde. Damit kann
 `composer recipes` zeigen, ob es neuere Rezepte gibt, und `composer recipes:update` sie einspielen (als Diff, den man
-prüft). Gehört committet.
+prüft). Gehört committet. Pakete ohne Rezept stehen dort nicht (z. B. `doctrine/orm` oder `dompdf/dompdf`).
+
+**Wenn es kein Rezept gibt** (ergänzt 2026-11-17, Anlass `dompdf/dompdf` in `umsetzung-admin.md` D2a): Dann macht
+Flex nichts, und `composer require` verhält sich wie in jedem PHP-Projekt ohne Symfony: Composer lädt das Paket nach
+`vendor/`, trägt es in `composer.json` und `composer.lock` ein und erzeugt den Autoloader neu. Es entsteht keine
+Datei unter `config/`, kein Eintrag in `config/bundles.php` oder `symfony.lock`, keine Umgebungsvariable. Das ist
+kein Fehler: Rezepte gibt es vor allem für **Bundles**, also Pakete, die sich in Symfonys Container einklinken.
+dompdf ist eine reine PHP-Bibliothek ohne Symfony-Bezug. Folgen:
+
+- **Wir verdrahten selbst:** Symfony kennt keinen Dienst „dompdf“. Unser eigener Dienst (`InvoicePdfRenderer`, D2b)
+  erzeugt `new Dompdf($options)` und setzt die Optionen in PHP. Autowiring betrifft nur unsere eigene Klasse.
+- **Keine Docker-Teile:** Ein Rezept kann Extensions ins Dockerfile schreiben (wie `pdo_pgsql` bei Doctrine). Ohne
+  Rezept prüfen wir selbst, welche Extensions das Paket braucht (`erklaerungen/19`, Abschnitt 1).
+- **Kein `composer recipes:update`**, also auch keine Hinweise auf geänderte Standardkonfiguration. Updates kommen nur
+  über die Paketversion (Dependabot, `composer update`).
+
+Die Meldung „Skipping recipe for symfony/security-csrf: all versions of the recipe conflict with your package versions“
+beim selben `composer require` betrifft ein anderes, schon installiertes Paket (in `composer.lock` unverändert). Flex
+gibt sie aus, wenn laut Rezept-Index jede Version des Rezepts mit den installierten Paketversionen in Konflikt steht,
+und wendet dann keines an (`vendor/symfony/flex/src/Flex.php`, Zeile 620). Es ändert sich also nichts. Warum Flex das
+Paket bei diesem Aufruf überhaupt betrachtet hat, ist nicht geprüft. Mit dompdf hat die Meldung nichts zu tun.
 
 **Packs** (wie `symfony/orm-pack`, `symfony/test-pack`) sind leere Pakete, die nur mehrere andere Pakete als
 Abhängigkeiten mitbringen. Flex ersetzt sie bei der Installation durch die einzelnen Pakete – deshalb steht in unserer
