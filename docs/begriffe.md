@@ -314,6 +314,10 @@ Wird beim Laden immer als Objekt angelegt, nie `null`.
 **Fixtures / Foundry** – Erfundene Testdaten. Zenstruck Foundry erzeugt sie über Factories mit Faker, für die lokale
 Datenbank (`foundry:load-fixtures main`) und in Tests. Nur `require-dev`, nie echte Personendaten.
 
+**Story (Foundry)** – Klasse mit `build()`, die mit mehreren Factories ein zusammenhängendes Szenario anlegt (Kurs mit
+Teilnahmen, Absagen, Honorarnoten). Bei uns `tests/Story/AppStory.php`, geladen mit `foundry:load-fixtures main`.
+Erklärung: `erklaerungen/20-foundry-stories.md`.
+
 ## Login und Rollen
 
 **Session** – Server-seitiger Datensatz zu einer Browser-Sitzung (z. B. „angemeldet als Sonja“). Im Browser liegt nur
