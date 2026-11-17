@@ -13,7 +13,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
 - **F3c: pushen und Cronjob eintragen** (`deployment.md` S12, Uhrzeit 03:30 freigegeben 2026-11-17). Reihenfolge:
-  Push (F3a, F3b, F3c), Deploy abwarten, `--dry-run` am Server, dann `sudo crontab -e`.
+  Push und Deploy erledigt (2026-11-17, CI 44119503604); offen: `--dry-run` am Server, dann `sudo crontab -e`.
   Antwort:
 
 **Nächster Schritt:** F3c (oben), danach B5 Passkeys, dann

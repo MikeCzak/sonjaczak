@@ -476,3 +476,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - F3c vorbereitet: `deployment.md` S12 (Cronjob `app:privacy:purge` täglich 03:30, Uhrzeit von Mike freigegeben;
   Reihenfolge Push → Deploy → `--dry-run` → crontab). Server-Tabelle im Projektstand um S8 und S12 ergänzt (S8 fehlte
   dort, obwohl der Cronjob läuft).
+- Push von F3 (6 Commits): CI-Lauf 44119503604 Tests → Build → Deploy grün; in Produktion 2 Migrationen
+  (`Version20261117142646`, `Version20261117152927`) in 21 ms. `/`, `/datenschutz/unterricht`, `/admin/login` liefern
+  200. Cronjob (S12) trägt Mike ein.
