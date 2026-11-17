@@ -111,7 +111,7 @@
                     <tbody>
                         {% for row in item.rows %}
                             <tr>
-                                <td><a href="{{ path('admin_enrollment_show', {id: row.enrollment.id}) }}">{{ row.enrollment.student.fullName }}</a></td>
+                                <td><a href="{{ path('admin_enrollment_show', {id: row.enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig', {enrollment: row.enrollment}) }}</a></td>
                                 <td>
                                     {% if row.last %}
                                         <span class="text-nowrap">{{ row.last.startsAt|date('d.m.') }}</span> {{ row.last.note }}

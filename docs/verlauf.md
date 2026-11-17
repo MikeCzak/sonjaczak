@@ -461,3 +461,15 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Migration; neu über `Symfony\Component\Clock\now()`, damit `mockTime()` in Tests greift). Datenschutz-Information:
   Semestergrenzen ergänzt, „bleibt nur der Name“ → „bleibt nur die Honorarnote selbst“. 182 Tests grün, PHPStan ohne
   Fehler, Fixtures neu geladen.
+- F3b: Befehl `app:privacy:purge` (`--dry-run`), Logik in `App\Privacy\PersonalDataPurger`, Ergebnis nur als
+  Anzahlen (`PurgeResult`). Ein `flush()`, den Doctrine in einer Transaktion ausführt (`UnitOfWork::commit()`);
+  Löschreihenfolge sortiert ORM 3.7.6 je Objekt (`computeDeleteExecutionOrder()`), Gutschrift vor Honorarnote klappt
+  im Test ohne Zwischen-Flush. Honorarnoten zählen je Teilnahme (mit Gutschriften gemeinsam). Migration
+  `Version20261117152927`: `enrollment.student_id` nullable; `Enrollment::detachStudent()` lässt `billToGuardian`
+  unverändert. Beim Durchsehen gefunden und behoben: Einnahmen-CSV, Honorarnotenliste und ZIP hätten Zahlungen und
+  PDFs ohne Person per Inner Join verschluckt (jetzt Left Join); `StudentRepository::notEnrolledIn()` mit `NOT IN`
+  hätte bei einer einzigen NULL-Zeile niemanden mehr geliefert (`IS NOT NULL` ergänzt; Test schlug ohne die Korrektur
+  fehl); der Planer hätte beim Ändern der Ferien eines alten Kurses Teilnahmen ohne Person wieder Einheiten angehängt.
+  Teilnahme ohne Person: eigene, schreibgeschützte Seite, „Person gelöscht“ in Kurs, Raster, Honorarnote, Dashboard.
+  Twig läuft auch in Produktion mit `strict_variables: true` (`config/packages/twig.yaml`), `null.fullName` wäre ein
+  Fehler gewesen. 188 Tests grün, PHPStan ohne Fehler, Probelauf auf den Fixtures: nichts zu löschen.

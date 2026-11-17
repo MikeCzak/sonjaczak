@@ -276,7 +276,9 @@ Schüler:innen).
   `student.created_at` und `invoice_pdf.file_name`. Tests für die Fristen. **Erledigt 2026-11-17.**
 - **F3b Befehl** `app:privacy:purge` (`--dry-run` zählt nur), alles in einer Transaktion, Ausgabe nur Anzahlen, keine
   Namen. Migration: `enrollment.student_id` nullable; Templates zeigen „Person gelöscht“. Tests für Löschen,
-  Personendaten löschen bei aufzubewahrender Honorarnote, 7 Jahre, Elternteile.
+  Personendaten löschen bei aufzubewahrender Honorarnote, 7 Jahre, Elternteile. **Erledigt 2026-11-17.** Dazu: Die
+  7 Jahre zählen je Teilnahme (Honorarnote und Gutschriften gemeinsam, bis zum Ende des Jahres der letzten); eine
+  Teilnahme ohne Person hat eine schreibgeschützte Seite und bekommt keine Einheiten mehr.
 - **F3c Server:** Eintrag in der crontab von root wie S8, täglich (`deployment.md`, neuer Abschnitt). **Vorher fragen**
   (Server).
 

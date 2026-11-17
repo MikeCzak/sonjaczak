@@ -41,7 +41,7 @@
                 {% endif %}
                 <dt class="col-sm-5">{{ 'invoice.field.enrollment'|trans({}, 'admin') }}</dt>
                 <dd class="col-sm-7">
-                    <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}, {% with {course: enrollment.course} %}{% include 'admin/course/_title.html.twig' %}{% endwith %}</a>
+                    <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}, {% with {course: enrollment.course} %}{% include 'admin/course/_title.html.twig' %}{% endwith %}</a>
                 </dd>
             </dl>
 

@@ -90,7 +90,7 @@
                     {% for enrollment in course.enrollments %}
                         <tr>
                             <td class="text-nowrap">{{ ('weekday_short.' ~ enrollment.weekday)|trans({}, 'admin') }} {{ enrollment.startTime|date('H:i') }}</td>
-                            <td><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ enrollment.student.fullName }}</a></td>
+                            <td><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}</a></td>
                             <td>
                                 {{ include('admin/enrollment/_count.html.twig') }}
                                 {% if make_ups_due[enrollment.id] > 0 %}

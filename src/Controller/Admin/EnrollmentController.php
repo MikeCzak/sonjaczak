@@ -17,6 +17,7 @@ use App\Form\Admin\PlannedLessonsType;
 use App\Lesson\LessonPlanner;
 use App\Lesson\MakeUpRule;
 use App\Lesson\TrialTakeover;
+use App\Privacy\RetentionPolicy;
 use App\Repository\StudentRepository;
 use App\Security\Voter\EnrollmentVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,8 +87,16 @@ final class EnrollmentController extends AbstractController
     }
 
     #[Route('/admin/teilnahmen/{id}', name: 'admin_enrollment_show', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function show(Request $request, Enrollment $enrollment): Response
+    public function show(Request $request, Enrollment $enrollment, RetentionPolicy $retention): Response
     {
+        // Personal data deleted, only the invoices are kept (F3): nothing left to edit
+        if ($enrollment->isPersonDeleted()) {
+            return $this->render('admin/enrollment/show_person_deleted.html.twig', [
+                'enrollment' => $enrollment,
+                'invoices_until' => $retention->enrollmentInvoicesUntil($enrollment),
+            ]);
+        }
+
         $form = $this->createForm(EnrollmentType::class, $enrollment);
         $form->handleRequest($request);
 
@@ -110,6 +119,9 @@ final class EnrollmentController extends AbstractController
     #[Route('/admin/teilnahmen/{id}/anzahl', name: 'admin_enrollment_planned', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function plannedLessons(Request $request, Enrollment $enrollment): Response
     {
+        if ($enrollment->isPersonDeleted()) {
+            throw $this->createNotFoundException('The personal data of this enrollment was deleted.');
+        }
         $now = $this->clock->now();
         $minimum = $this->planner->minimumPlannedLessons($enrollment, $now);
         $plannedForm = $this->plannedForm($enrollment, $minimum);

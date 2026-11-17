@@ -286,6 +286,8 @@ weekday_short:
 enrollment:
     heading: Teilnahmen
     empty: Noch niemand eingetragen.
+    person_deleted: Person gelöscht
+    person_deleted_hint: Die Daten der Person sind gelöscht (Löschfrist abgelaufen). Die Honorarnoten bleiben bis %date% aufbewahrt (§ 132 BAO), danach wird auch die Teilnahme gelöscht.
     count: '%counted% von %planned%'
     make_up_due: '{1}1 Nachholstunde fällig|]1,Inf[%count% Nachholstunden fällig'
     billing:

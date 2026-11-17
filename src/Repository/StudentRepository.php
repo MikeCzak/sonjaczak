@@ -56,7 +56,8 @@ class StudentRepository extends ServiceEntityRepository
         $enrolled = $this->getEntityManager()->createQueryBuilder()
             ->select('IDENTITY(e.student)')
             ->from(Enrollment::class, 'e')
-            ->where('e.course = :course');
+            // Without IS NOT NULL a single enrollment without a person (F3) would make NOT IN match nobody (SQL NULL)
+            ->where('e.course = :course AND e.student IS NOT NULL');
 
         /** @var list<Student> */
         return $this->createQueryBuilder('s')

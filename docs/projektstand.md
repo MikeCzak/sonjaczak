@@ -14,7 +14,7 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** F3b Befehl zum Löschen, F3c Cronjob (vor dem Echtbetrieb, Mike 2026-11-17; F3a fertig), danach B5 Passkeys, dann
+**Nächster Schritt:** F3c Cronjob für `app:privacy:purge` am Server (vor dem Echtbetrieb, Mike 2026-11-17; F3a, F3b fertig), danach B5 Passkeys, dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
@@ -96,8 +96,11 @@ verlinkten Erklärung.
   ablegt; passt das für die Steuerberaterin?
 - [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
   der Export ordnet streng nach Zahlungsdatum zu.
-- [ ] **Lösch- und Anonymisierungsregel umsetzen**: jetzt als nächster Schritt geplant, `umsetzung-admin.md` F3
-  (2026-11-17). Bis dahin noch keine echten Daten.
+
+- [ ] **Honorarnoten je Teilnahme gelöscht** (2026-11-17, `umsetzung-admin.md` F3b, Auslegung): Die 7 Jahre zählen je
+  Teilnahme ab dem Ende des Jahres der letzten Honorarnote oder Gutschrift dazu; beide bleiben gemeinsam, weil die
+  Gutschrift auf die Honorarnote verweist. Auch bei einer Schüler:in, die noch Unterricht hat, werden Honorarnoten,
+  PDFs und Zahlungen danach gelöscht (die Teilnahme selbst bleibt, solange die Person bleibt). Passt das?
 
 ### Rechtliches
 
@@ -121,6 +124,11 @@ verlinkten Erklärung.
   automatische Abrufe; die Information folgt dem Wortlaut von dsgvo-gesetz.de.
 
 ### Technisch (Mike)
+
+- [ ] **Elternteile ohne Kind bleiben** (2026-11-17, `umsetzung-admin.md` F3b, Annahme): Der Löschlauf löscht einen
+  Elternteil nur, wenn im selben Lauf alle seine Kinder gelöscht werden. Wer von Hand ein Kind löscht oder einen
+  Elternteil ohne Kind anlegt, hinterlässt einen Elternteil, den kein Lauf erfasst (es gibt kein Anlegedatum). Selten;
+  Abhilfe wäre `guardian.created_at` und dieselbe Frist.
 
 - [ ] **Passkeys** (`umsetzung-admin.md` B5). Zeitpunkt entschieden 2026-11-14: darf auch erst im Echtbetrieb kommen
   (ein gutes Passwort ist nicht per se unsicher), aber **nicht vergessen**: Für Sonja ist der Fingerabdruck viel
@@ -183,7 +191,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3a Fristen und Anzeige (2026-11-17); offen: F3b Befehl, F3c Cronjob (vor dem Echtbetrieb)
+- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3a Fristen und Anzeige, F3b Befehl `app:privacy:purge` (2026-11-17); offen: F3c Cronjob (vor dem Echtbetrieb)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).

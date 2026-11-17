@@ -1,0 +1,20 @@
+{% extends 'admin/base.html.twig' %}
+
+{# An enrollment whose student was deleted, kept only for its invoices (umsetzung-admin.md F3): read-only #}
+{% set course = enrollment.course %}
+{% set course_title %}{% include 'admin/course/_title.html.twig' %}{% endset %}
+{% block title %}{{ 'enrollment.person_deleted'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_course_edit', {id: course.id}) }}">{{ course_title }}</a></p>
+    <h1 class="h3 mb-3">{{ include('admin/enrollment/_student_name.html.twig') }}</h1>
+
+    <p id="enrollment-person-deleted">{{ 'enrollment.person_deleted_hint'|trans({'%date%': invoices_until ? invoices_until|date('d.m.Y') : '–'}, 'admin') }}</p>
+
+    <h2 class="h5">{{ 'invoice.heading'|trans({}, 'admin') }}</h2>
+    {% for invoice in enrollment.invoices %}
+        <p><a href="{{ path('admin_invoice_show', {id: invoice.id}) }}">{{ (invoice.creditNote ? 'credit.show.title' : 'invoice.show.title')|trans({'%number%': invoice.displayNumber}, 'admin') }}</a>,
+            {{ invoice.issuedOn|date('d.m.Y') }}, {{ (invoice.amountCents / 100)|number_format(2, ',', '.') }} €
+            {% if not invoice.creditNote %}{{ include('admin/invoice/_status.html.twig') }}{% endif %}</p>
+    {% endfor %}
+{% endblock %}

@@ -9,6 +9,7 @@ use App\Entity\CourseBreak;
 use App\Entity\Enrollment;
 use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
+use App\Entity\Student;
 use App\Lesson\LessonPlanner;
 use PHPUnit\Framework\TestCase;
 
@@ -226,7 +227,8 @@ final class LessonPlannerTest extends TestCase
 
     private function enrollment(Course $course): Enrollment
     {
-        $enrollment = new Enrollment($course)->setWeekday(5)->setStartTime(new \DateTimeImmutable('15:30'));
+        // With a student: the planner leaves enrollments without one alone (personal data deleted, F3)
+        $enrollment = new Enrollment($course, new Student())->setWeekday(5)->setStartTime(new \DateTimeImmutable('15:30'));
         $course->getEnrollments()->add($enrollment);
 
         return $enrollment;

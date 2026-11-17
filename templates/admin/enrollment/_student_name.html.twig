@@ -1,0 +1,6 @@
+{# The student's name, or "Person gelöscht" for an enrollment kept only for its invoices (umsetzung-admin.md F3) #}
+{%- if enrollment.student -%}
+    {{ enrollment.student.fullName }}
+{%- else -%}
+    <span class="fst-italic text-body-secondary">{{ 'enrollment.person_deleted'|trans({}, 'admin') }}</span>
+{%- endif -%}

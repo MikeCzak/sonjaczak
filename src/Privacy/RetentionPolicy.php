@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Privacy;
 
+use App\Entity\Enrollment;
 use App\Entity\Student;
 
 /**
@@ -44,15 +45,30 @@ final readonly class RetentionPolicy
     }
 
     /**
-     * 31 December of the seventh year after the latest invoice or credit note; null without any.
+     * 31 December of the seventh year after the latest invoice or credit note of all enrollments; null without any.
      */
     public function invoicesUntil(Student $student): ?\DateTimeImmutable
     {
-        $year = null;
+        $until = null;
         foreach ($student->getEnrollments() as $enrollment) {
-            foreach ($enrollment->getInvoices() as $invoice) {
-                $year = max($year ?? 0, (int) $invoice->getIssuedOn()->format('Y'));
+            $enrollmentUntil = $this->enrollmentInvoicesUntil($enrollment);
+            if (null !== $enrollmentUntil && (null === $until || $enrollmentUntil > $until)) {
+                $until = $enrollmentUntil;
             }
+        }
+
+        return $until;
+    }
+
+    /**
+     * The same for one enrollment. Invoices and credit notes of an enrollment are kept and deleted together: a credit
+     * note refers to its invoice, so both stay until the later one may go.
+     */
+    public function enrollmentInvoicesUntil(Enrollment $enrollment): ?\DateTimeImmutable
+    {
+        $year = null;
+        foreach ($enrollment->getInvoices() as $invoice) {
+            $year = max($year ?? 0, (int) $invoice->getIssuedOn()->format('Y'));
         }
 
         return null === $year ? null : new \DateTimeImmutable(\sprintf('%d-12-31', $year + self::INVOICE_YEARS));

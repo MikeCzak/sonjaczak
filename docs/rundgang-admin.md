@@ -104,7 +104,17 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 Eine Schüler:in öffnen: Unten steht „Gespeichert bis …“ (Ende des Semesters nach der letzten Einheit, also bei einem
 Kurs im Wintersemester 2026/27 der 31.08.2027), bei einer Person mit Honorarnote auch „Honorarnoten und Zahlungen
 bleiben bis 31.12.2033“. Das Dashboard zeigt „Löschung in den nächsten 30 Tagen“ erst, wenn jemand dran ist (mit
-den Fixtures nicht der Fall). Gelöscht wird noch nichts (kommt mit F3b und F3c).
+den Fixtures nicht der Fall).
+
+Löschen (F3b, am Server später täglich per Cron, F3c):
+
+```bash
+docker compose exec php bin/console app:privacy:purge --dry-run   # nur zählen
+```
+
+Mit den Fixtures ist nichts dran. Was nach Ablauf passiert (Person gelöscht, Teilnahme mit Honorarnote bleibt als
+„Person gelöscht“ schreibgeschützt), zeigen `tests/Privacy/PersonalDataPurgerTest.php` und
+`tests/Admin/PersonDeletedTest.php`. Ohne `--dry-run` löscht der Befehl wirklich, auch lokal.
 
 ## 8. Einnahmen und Erinnerung
 

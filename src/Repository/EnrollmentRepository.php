@@ -30,6 +30,7 @@ class EnrollmentRepository extends ServiceEntityRepository
         /** @var list<Enrollment> */
         return $this->createQueryBuilder('e')
             ->addSelect('s', 'l')
+            // Inner join on purpose: an enrollment without a person (F3) has no lessons, nothing to show in the grid
             ->join('e.student', 's')
             ->leftJoin('e.lessons', 'l')
             ->where('e.course = :course')
@@ -37,6 +38,22 @@ class EnrollmentRepository extends ServiceEntityRepository
             ->orderBy('e.weekday')
             ->addOrderBy('e.startTime')
             ->addOrderBy('l.startsAt')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Enrollments that have invoices or credit notes, with all of them (inner join: every invoice has an enrollment,
+     * so the collections are complete), for App\Privacy\PersonalDataPurger.
+     *
+     * @return list<Enrollment>
+     */
+    public function findWithInvoices(): array
+    {
+        /** @var list<Enrollment> */
+        return $this->createQueryBuilder('e')
+            ->join('e.invoices', 'i')
+            ->addSelect('i')
             ->getQuery()
             ->getResult();
     }

@@ -53,7 +53,8 @@ final class LessonPlanner
         $startsOn = $course->getStartsOn();
         $endsOn = $course->getEndsOn();
         $time = $enrollment->getStartTime();
-        if (null === $startsOn || null === $endsOn || null === $time) {
+        // Without a person only the invoices are kept (F3): no new lessons, e.g. when breaks of an old course change
+        if (null === $startsOn || null === $endsOn || null === $time || $enrollment->isPersonDeleted()) {
             return 0;
         }
 
@@ -139,7 +140,7 @@ final class LessonPlanner
 
         foreach ($course->getEnrollments() as $enrollment) {
             $time = $enrollment->getStartTime();
-            if (null === $time) {
+            if (null === $time || $enrollment->isPersonDeleted()) {
                 continue;
             }
             $weeksTaken = $this->weeksWithRegularLesson($enrollment);

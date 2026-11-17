@@ -31,8 +31,13 @@ class Enrollment
     #[ORM\JoinColumn(nullable: false)]
     private Course $course;
 
+    /**
+     * Null only after the student's personal data was deleted while an invoice must still be kept
+     * (App\Privacy\PersonalDataPurger, umsetzung-admin.md F3): the enrollment then only links course and invoices.
+     * The form still requires a student. PostgreSQL treats NULLs as distinct, so the unique constraint allows several.
+     */
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotNull]
     private ?Student $student = null;
 
@@ -127,6 +132,24 @@ class Enrollment
     public function getStudent(): ?Student
     {
         return $this->student;
+    }
+
+    /**
+     * True once the student was deleted and only the invoices are kept: read-only, no new lessons (F3).
+     */
+    public function isPersonDeleted(): bool
+    {
+        return null === $this->student;
+    }
+
+    /**
+     * Unlinks the student before their personal data is deleted. Unlike setStudent(null), billToGuardian stays as it
+     * was when the invoice was issued.
+     */
+    public function detachStudent(): void
+    {
+        $this->student?->getEnrollments()->removeElement($this);
+        $this->student = null;
     }
 
     /**
