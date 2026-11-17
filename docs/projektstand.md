@@ -12,9 +12,12 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Keine Frage offen.
+- **Automatische Löschung, Plan F3** (`umsetzung-admin.md` F3, „Fragen“ 1–5): Semestergrenzen, Pause von einem
+  Semester, anonymisierte Schüler:innen, Benachrichtigung, laufendes Verfahren. Freigabe des Plans?
+  Antwort:
 
-**Nächster Schritt:** Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
+**Nächster Schritt:** F3 automatische Löschung (vor dem Echtbetrieb, Mike 2026-11-17), danach B5 Passkeys, dann
+Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
 ## Später zu klären
@@ -61,7 +64,6 @@ verlinkten Erklärung.
     halten.
   - Sonja gibt Link oder PDF bei der Anmeldung weiter (Art. 13: „zum Zeitpunkt der Erhebung“), auch an die sechs
     Schüler:innen, deren Daten sie jetzt einträgt.
-  - Bis die Löschregel umgesetzt ist, löscht Sonja nach Ende des Folgesemesters von Hand.
   - PDF (F2, `/datenschutz/unterricht.pdf`): öffnet sich im Browser (`inline`), Speichern unter
     `Datenschutz-Information_Gesangsunterricht.pdf`. Link im Admin oben in „Schüler:innen“. Der Link „Datenschutzerklärung“
     ist im Ausdruck nur unterstrichen, ohne sichtbare Adresse; unten steht die Adresse der Seite.
@@ -92,13 +94,8 @@ verlinkten Erklärung.
   ein Storno mit eigener Kennzeichnung?
 - [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
   der Export ordnet streng nach Zahlungsdatum zu.
-- [ ] **Lösch- und Anonymisierungsregel umsetzen** (2026-11-13, `umsetzung-admin.md` F; Technik **zurückgestellt**,
-  Mike: „für später aufheben“). Die Fristen stehen seit 2026-11-17 fest (siehe „Getroffene Entscheidungen“,
-  „Speicherdauer“); offen ist nur, wie die App sie umsetzt. Bis dahin löscht Sonja von Hand. Technisch: Die
-  Honorarnote hat Name und Adresse als Kopie, hängt aber über die Teilnahme an der Schüler:in (Fremdschlüssel).
-  Löschen ginge daher nur ohne Teilnahmen, sonst Schüler:in anonymisieren (Kontaktdaten, Geburtsdatum, Notizen leeren,
-  Zeile bleibt); Unterrichtsinhalte der Einheiten und Schnupperstunden mitlöschen. Hängt damit zusammen: Schüler:innen
-  mit Teilnahmen sind nicht löschbar (C5).
+- [ ] **Lösch- und Anonymisierungsregel umsetzen**: jetzt als nächster Schritt geplant, `umsetzung-admin.md` F3
+  (2026-11-17). Bis dahin noch keine echten Daten.
 
 ### Rechtliches
 
@@ -184,7 +181,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [x] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). Löschregel zurückgestellt (siehe „Später“)
+- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). offen: F3 automatische Löschung (vor dem Echtbetrieb)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).
