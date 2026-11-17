@@ -79,6 +79,17 @@
                     </tr>
                 </tfoot>
             </table>
+
+            {% if deletion is not empty %}
+                <h2 class="h5 mt-4" id="dashboard-deletion">{{ 'dashboard.deletion.heading'|trans({'%days%': deletion_days}, 'admin') }}</h2>
+                <ul class="list-unstyled mb-1">
+                    {% for item in deletion %}
+                        <li><a href="{{ path('admin_student_edit', {id: item.student.id}) }}">{{ item.student.fullName }}</a>
+                            <span class="text-body-secondary">{{ 'dashboard.deletion.until'|trans({'%date%': item.until|date('d.m.Y')}, 'admin') }}</span></li>
+                    {% endfor %}
+                </ul>
+                <p class="small text-body-secondary">{{ 'dashboard.deletion.hint'|trans({}, 'admin') }}</p>
+            {% endif %}
         </section>
     </div>
 

@@ -78,4 +78,27 @@ final class DashboardTest extends WebTestCase
         self::assertSelectorTextContains('main', 'Keine Einheiten geplant.');
         self::assertSelectorTextContains('main', 'Gerade läuft kein Kurs.');
     }
+
+    /**
+     * umsetzung-admin.md F3a: who will be deleted within 30 days, so Sonja can add an enrollment if someone returns.
+     */
+    public function testUpcomingDeletion(): void
+    {
+        $client = self::createClient();
+        // Last activity in the summer semester 2026 → kept until 28.02.2027
+        self::mockTime(new \DateTimeImmutable('2026-06-10 10:00'));
+        StudentFactory::createOne(['firstName' => 'Anna', 'lastName' => 'Alt']);
+        // Winter semester → kept until 31.08.2027
+        self::mockTime(new \DateTimeImmutable('2026-10-10 10:00'));
+        StudentFactory::createOne(['firstName' => 'Nina', 'lastName' => 'Neu']);
+
+        self::mockTime(new \DateTimeImmutable('2027-02-10 10:00'));
+        $client->loginUser(UserFactory::new()->admin()->create(), 'admin');
+        $client->request('GET', '/admin');
+
+        self::assertSelectorTextContains('#dashboard-deletion', 'Löschung in den nächsten 30 Tagen');
+        $items = $client->getCrawler()->filter('#dashboard-deletion + ul li')->each(static fn ($li): string => preg_replace('/\s+/', ' ', trim($li->text())) ?? '');
+        self::assertSame(['Anna Alt gespeichert bis 28.02.2027'], $items);
+    }
+
 }

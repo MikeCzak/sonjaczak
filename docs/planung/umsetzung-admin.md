@@ -247,7 +247,7 @@ der Download antwortet ohne PDF mit 404.
   Ende der Frist jederzeit gewährleistet ist (spricht für Backups der Datenbank samt PDFs, Abschnitt F).
   Die Lösch- und Anonymisierungsregel daraus steht als offener Punkt im Projektstand.
 
-### F3 Automatische Löschung (Plan 2026-11-17, wartet auf Freigabe)
+### F3 Automatische Löschung (Plan freigegeben 2026-11-17)
 
 Mike, 2026-11-17: Die App soll Sonja Arbeit abnehmen, daher wird schon **vor dem Echtbetrieb** automatisch gelöscht,
 nicht von Hand. Danach B5 (Passkeys), dann Backups ohne Mikes Mac. Grundlage sind die Fristen aus F (Datenschutz-
@@ -272,16 +272,19 @@ Schüler:innen).
 **Schritte:**
 
 - **F3a Regel und Anzeige:** Dienst `RetentionPolicy` berechnet je Schüler:in „Daten bis“ und „Honorarnoten bis“.
-  Die Schülerseite zeigt beides („Wird am 31.08.2027 gelöscht“ bzw. „anonymisiert“). Migration `created_at`. Tests
-  für die Fristen.
+  Die Schülerseite zeigt beides, das Dashboard nennt, wer in den nächsten 30 Tagen gelöscht wird. Migration
+  `student.created_at` und `invoice_pdf.file_name`. Tests für die Fristen. **Erledigt 2026-11-17.**
 - **F3b Befehl** `app:privacy:purge` (`--dry-run` zählt nur), alles in einer Transaktion, Ausgabe nur Anzahlen, keine
-  Namen. Tests für Löschen, Anonymisieren, 7 Jahre, Elternteile.
+  Namen. Migration: `enrollment.student_id` nullable; Templates zeigen „Person gelöscht“. Tests für Löschen,
+  Personendaten löschen bei aufzubewahrender Honorarnote, 7 Jahre, Elternteile.
 - **F3c Server:** Eintrag in der crontab von root wie S8, täglich (`deployment.md`, neuer Abschnitt). **Vorher fragen**
   (Server).
 
 **Fragen:**
 
-Antworten Mike, 2026-11-17: **1 feste Grenzen (A), 2 so lassen, 4 keine Mail (A), 5 passt.** Frage 3 neu gestellt.
+Antworten Mike, 2026-11-17: **1 feste Grenzen (A), 2 so lassen, 3 Teilnahme ohne Person (A), 4 keine Mail (A), 5 passt.**
+Dazu: Der Dateiname der Honorarnote wird beim Erstellen mit dem PDF gespeichert (`invoice_pdf.file_name`), statt beim
+Download aus dem aktuellen Nachnamen gebildet zu werden; so bleibt er nach dem Löschen der Personendaten gleich.
 
 1. **Wann endet ein Semester?** Der Kurs kennt Beginn und Ende, das Folgesemester gibt es zum Löschzeitpunkt aber oft
    noch nicht in der App.

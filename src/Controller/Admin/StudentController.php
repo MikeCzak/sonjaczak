@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Student;
 use App\Entity\User;
 use App\Form\Admin\StudentType;
+use App\Privacy\RetentionPolicy;
 use App\Repository\StudentRepository;
 use App\Security\Voter\StudentVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,7 +57,7 @@ final class StudentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'admin_student_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Student $student): Response
+    public function edit(Request $request, Student $student, RetentionPolicy $retention): Response
     {
         $form = $this->createForm(StudentType::class, $student);
         $form->handleRequest($request);
@@ -68,7 +69,12 @@ final class StudentController extends AbstractController
             return $this->redirectToRoute('admin_student_index');
         }
 
-        return $this->render('admin/student/form.html.twig', ['form' => $form, 'student' => $student]);
+        return $this->render('admin/student/form.html.twig', [
+            'form' => $form,
+            'student' => $student,
+            'data_until' => $retention->personalDataUntil($student),
+            'invoices_until' => $retention->invoicesUntil($student),
+        ]);
     }
 
     #[Route('/{id}/loeschen', name: 'admin_student_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

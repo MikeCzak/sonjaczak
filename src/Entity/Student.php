@@ -12,6 +12,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use function Symfony\Component\Clock\now;
+
 /**
  * A student of Sonja (docs/planung/datenmodell.md 3.2). Personal data under the GDPR: only visible in the admin area.
  */
@@ -89,11 +91,24 @@ class Student
     #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'student')]
     private Collection $enrollments;
 
+    /**
+     * Counts as activity for students without lessons or trial lessons, so they are deleted too
+     * (App\Privacy\RetentionPolicy, umsetzung-admin.md F3). From the clock, so tests can set it with mockTime().
+     */
+    #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
     public function __construct()
     {
+        $this->createdAt = now();
         $this->address = new Address();
         $this->trialLessons = new ArrayCollection();
         $this->enrollments = new ArrayCollection();
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function __toString(): string

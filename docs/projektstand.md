@@ -12,11 +12,9 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **Automatische Löschung, Plan F3** (`umsetzung-admin.md` F3): Fragen 1, 2, 4, 5 beantwortet (2026-11-17). Offen
-  Frage 3: Teilnahme ohne Person (A, Schüler:in wird gelöscht) oder geleerte Schüler:in-Zeile (B)? Danach Freigabe.
-  Antwort:
+Keine Frage offen.
 
-**Nächster Schritt:** F3 automatische Löschung (vor dem Echtbetrieb, Mike 2026-11-17), danach B5 Passkeys, dann
+**Nächster Schritt:** F3b Befehl zum Löschen, F3c Cronjob (vor dem Echtbetrieb, Mike 2026-11-17; F3a fertig), danach B5 Passkeys, dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
@@ -92,6 +90,10 @@ verlinkten Erklärung.
   Dazu (2026-11-16): Honorarnoten werden nie gelöscht (die App hat keinen Weg dafür), jede Korrektur ist eine
   Gutschrift, auch eine volle aus Kulanz, wenn eine Schüler:in vor Kursbeginn absagt. Reicht das, oder braucht es
   ein Storno mit eigener Kennzeichnung?
+- [ ] **Name der Schüler:in im Dateinamen** (2026-11-17, `umsetzung-admin.md` F3a): Der Dateiname der Honorarnote
+  (`HN17_GU_WiSe_2026_Springer.pdf`) wird mit dem PDF 7 Jahre aufbewahrt. Geht die Honorarnote an einen Elternteil,
+  steht der Name der Schüler:in nur im Dateinamen, nicht im PDF. Mit Mike vertretbar, weil Sonja ihre Belege so
+  ablegt; passt das für die Steuerberaterin?
 - [ ] **§ 19 Abs. 1 Z 1 EStG** (2026-11-13, D5): Ausnahme für regelmäßig wiederkehrende Einnahmen um den Jahreswechsel;
   der Export ordnet streng nach Zahlungsdatum zu.
 - [ ] **Lösch- und Anonymisierungsregel umsetzen**: jetzt als nächster Schritt geplant, `umsetzung-admin.md` F3
@@ -181,7 +183,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). offen: F3 automatische Löschung (vor dem Echtbetrieb)
+- [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3a Fristen und Anzeige (2026-11-17); offen: F3b Befehl, F3c Cronjob (vor dem Echtbetrieb)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
 muss).
@@ -229,6 +231,7 @@ muss).
 | Datenschutz-Information Unterricht | Eigene Seite und PDF, spricht die Eltern direkt an (2026-11-17) | Eltern bekommen sie in die Hand, die Seite bleibt verlinkbar. `umsetzung-admin.md` F |
 | Speicherdauer | Honorarnoten (PDF und Angaben in der Zeile), Zahlungen und die Zuordnung zur Schüler:in 7 Jahre ab Schluss des Kalenderjahres (§ 132 BAO); alle übrigen Daten bis zum Ende des Folgesemesters nach dem letzten Kurs bzw. der letzten Schnupperstunde (2026-11-17) | Option A, kurze Frist, weil Sonja Kontaktdaten ohnehin selbst hat (Mike). `umsetzung-admin.md` F |
 | Datenschutzerklärung der Website | Kein Wort zum Verwaltungsbereich und seinem Session-Cookie; Steuerberaterin Mag.iur. Ulla Kröll namentlich in der Datenschutz-Information Unterricht (2026-11-17) | Betrifft nur Sonja und Mike, keine Besucher:innen; ein Hinweis weniger für Angreifer (Mike). Ersetzt den Textvorschlag in `planung/rollen.md` 10 |
+| Automatische Löschung | Vor dem Echtbetrieb, täglich per Befehl; Semester fest September–Februar und März–August; übrige Daten bis Ende des Folgesemesters (auch bei einem Semester Pause); bei aufzubewahrender Honorarnote wird die Schüler:in gelöscht, die Teilnahme bleibt ohne Person; Dateiname der Honorarnote mit dem PDF gespeichert; keine Mail, Hinweis im Dashboard 30 Tage vorher; laufendes Verfahren beim Finanzamt nicht abgebildet (2026-11-17) | App soll Sonja Arbeit abnehmen (Mike); ein Name ist nicht anonym. `umsetzung-admin.md` F3 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

@@ -33,7 +33,7 @@ final class InvoiceFactory extends PersistentObjectFactory
     public function withPdf(): static
     {
         return $this->afterPersist(function (Invoice $invoice): void {
-            persist(InvoicePdf::class, ['invoice' => $invoice, 'content' => $this->pdfRenderer->render($invoice)]);
+            persist(InvoicePdf::class, ['invoice' => $invoice, 'content' => $this->pdfRenderer->render($invoice), 'fileName' => $invoice->getFileName()]);
         });
     }
     #[\Override]

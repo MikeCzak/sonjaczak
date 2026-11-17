@@ -99,6 +99,13 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    unter „Schüler:innen“ oben „Datenschutz-Information (PDF)“. In der Website-Datenschutzerklärung steht der Link
    darauf, der Verwaltungsbereich wird dort nicht erwähnt.
 
+## 7a. Löschfristen (F3a)
+
+Eine Schüler:in öffnen: Unten steht „Gespeichert bis …“ (Ende des Semesters nach der letzten Einheit, also bei einem
+Kurs im Wintersemester 2026/27 der 31.08.2027), bei einer Person mit Honorarnote auch „Honorarnoten und Zahlungen
+bleiben bis 31.12.2033“. Das Dashboard zeigt „Löschung in den nächsten 30 Tagen“ erst, wenn jemand dran ist (mit
+den Fixtures nicht der Fall). Gelöscht wird noch nichts (kommt mit F3b und F3c).
+
 ## 8. Einnahmen und Erinnerung
 
 1. „Einnahmen“: Zahlungen nach Zahlungsdatum, „Als CSV herunterladen“ und in Excel oder Numbers öffnen.

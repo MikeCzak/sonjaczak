@@ -59,6 +59,21 @@ final class InvoiceDownloadTest extends WebTestCase
         self::assertSame('HN2_GU_WiSe_2027_van-der-Berg-O-Neil_Gutschrift.pdf', $note->getFileName());
     }
 
+    /**
+     * umsetzung-admin.md F3a: the file name is fixed when the invoice is issued, like the PDF. A later change of the
+     * name (or its deletion with the personal data) does not change it.
+     */
+    public function testFileNameIsStoredWithThePdf(): void
+    {
+        $client = $this->loggedInClient();
+        $invoice = $this->issue($this->enrollment(CourseFactory::createOne(), 'Springer'));
+        $invoice->getEnrollment()->getStudent()?->setLastName('Sprenger');
+        self::getContainer()->get('doctrine')->getManager()->flush();
+
+        $client->request('GET', '/admin/honorarnoten/'.$invoice->getId().'/pdf');
+        self::assertStringContainsString('filename=HN1_GU_WiSe_2026_Springer.pdf', (string) $client->getResponse()->headers->get('Content-Disposition'));
+    }
+
     public function testInvoiceWithoutPdfIsNotFound(): void
     {
         $client = $this->loggedInClient();

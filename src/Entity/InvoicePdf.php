@@ -38,6 +38,12 @@ class InvoicePdf
         #[ORM\JoinColumn(nullable: false)]
         private Invoice $invoice,
         string $content,
+        /**
+         * Fixed when the invoice is issued, like the content (umsetzung-admin.md F3): it contains the student's last
+         * name, which may be changed later or deleted with the student's personal data.
+         */
+        #[ORM\Column(length: 255)]
+        private string $fileName,
     ) {
         $this->content = $content;
     }
@@ -50,6 +56,11 @@ class InvoicePdf
     public function getInvoice(): Invoice
     {
         return $this->invoice;
+    }
+
+    public function getFileName(): string
+    {
+        return $this->fileName;
     }
 
     /**

@@ -8,10 +8,12 @@ use App\Entity\Enum\InvoiceStatus;
 use App\Entity\Invoice;
 use App\Entity\User;
 use App\Lesson\MakeUpRule;
+use App\Privacy\RetentionPolicy;
 use App\Repository\CourseRepository;
 use App\Repository\InvoiceRepository;
 use App\Repository\LessonRepository;
 use App\Repository\PaymentRepository;
+use App\Repository\StudentRepository;
 use App\Repository\TrialLessonRepository;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,6 +31,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class DashboardController extends AbstractController
 {
     private const int UPCOMING_DAYS = 7;
+    private const int DELETION_NOTICE_DAYS = 30;
 
     #[Route('/admin', name: 'admin_dashboard', methods: ['GET'])]
     public function index(
@@ -39,6 +42,8 @@ final class DashboardController extends AbstractController
         InvoiceRepository $invoices,
         PaymentRepository $payments,
         MakeUpRule $makeUpRule,
+        StudentRepository $students,
+        RetentionPolicy $retention,
     ): Response {
         $now = \DateTimeImmutable::createFromInterface($clock->now());
         $today = $now->setTime(0, 0);
@@ -92,7 +97,20 @@ final class DashboardController extends AbstractController
             $incomeTotal += $payment->getAmountCents();
         }
 
+        // Students whose personal data will be deleted soon: time to add an enrollment if someone comes back
+        $deletionLimit = $today->modify(\sprintf('+%d days', self::DELETION_NOTICE_DAYS));
+        $deletion = [];
+        foreach ($students->findAllWithActivity() as $student) {
+            $until = $retention->personalDataUntil($student);
+            if ($until < $deletionLimit) {
+                $deletion[] = ['student' => $student, 'until' => $until];
+            }
+        }
+        usort($deletion, static fn (array $a, array $b): int => $a['until'] <=> $b['until']);
+
         return $this->render('admin/dashboard/index.html.twig', [
+            'deletion' => $deletion,
+            'deletion_days' => self::DELETION_NOTICE_DAYS,
             'upcoming' => $upcoming,
             'upcoming_days' => self::UPCOMING_DAYS,
             'running' => $running,

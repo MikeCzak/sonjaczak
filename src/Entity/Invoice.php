@@ -123,6 +123,8 @@ class Invoice
      * Gesangsunterricht, term and year of the course, last name of the student (also when the guardian is billed).
      * Credit notes end in "_Gutschrift" (Mike, 2026-11-17). Umlauts stay; characters other than letters, digits and
      * hyphens in the name become a hyphen, so "/" or spaces cannot break the file name.
+     *
+     * Used once, when the invoice is issued: the name is then stored with the PDF (InvoicePdf::getFileName()).
      */
     public function getFileName(): string
     {

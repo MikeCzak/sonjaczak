@@ -184,7 +184,7 @@ final readonly class InvoiceIssuer
             $invoice = $create($year, $this->invoices->nextNumber($year));
             $this->entityManager->persist($invoice);
             // Rendered after the number is known; the invoice needs no id for it
-            $this->entityManager->persist(new InvoicePdf($invoice, $this->pdfRenderer->render($invoice)));
+            $this->entityManager->persist(new InvoicePdf($invoice, $this->pdfRenderer->render($invoice), $invoice->getFileName()));
 
             return $invoice;
         });

@@ -67,4 +67,33 @@ class StudentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * All students with what counts as activity for the retention period (App\Privacy\RetentionPolicy): lessons in one
+     * query, trial lessons in a second one. Two queries instead of joining both collections, which would multiply
+     * the rows (every lesson times every trial lesson).
+     *
+     * @return list<Student>
+     */
+    public function findAllWithActivity(): array
+    {
+        /** @var list<Student> $students */
+        $students = $this->createQueryBuilder('s')
+            ->leftJoin('s.enrollments', 'e')
+            ->leftJoin('e.lessons', 'l')
+            ->addSelect('e', 'l')
+            ->orderBy('s.lastName')
+            ->addOrderBy('s.firstName')
+            ->getQuery()
+            ->getResult();
+
+        // Fills the trial lessons of the students already loaded (same objects, identity map)
+        $this->createQueryBuilder('s')
+            ->leftJoin('s.trialLessons', 't')
+            ->addSelect('t')
+            ->getQuery()
+            ->getResult();
+
+        return $students;
+    }
 }

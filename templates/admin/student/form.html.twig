@@ -36,6 +36,14 @@
                 {% if not student.enrollments is empty %}
                     <p class="small text-body-secondary mt-4">{{ 'student.delete.has_enrollments'|trans({}, 'admin') }}</p>
                 {% endif %}
+
+                {# Retention periods (umsetzung-admin.md F3) #}
+                <p class="small text-body-secondary mt-4" id="student-retention">
+                    {{ 'student.retention.until'|trans({'%date%': data_until|date('d.m.Y')}, 'admin') }}
+                    {% if invoices_until %}
+                        {{ 'student.retention.invoices'|trans({'%date%': invoices_until|date('d.m.Y')}, 'admin') }}
+                    {% endif %}
+                </p>
             {% endif %}
 
             {% if student and is_granted('STUDENT_DELETE', student) %}

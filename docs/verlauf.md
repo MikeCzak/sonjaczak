@@ -449,3 +449,15 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Fehler aus, war aber keiner (mit `XDEBUG_MODE=off` und erneut mit Xdebug: alles grün).
 - Push von F (6 Commits, mit den Doku-Commits von D2): CI-Lauf 44069313057 Tests → Build → Deploy grün. Produktion:
   `/datenschutz/unterricht` und `.pdf` liefern 200 ohne Cookie, `/datenschutz` erwähnt den Verwaltungsbereich nicht mehr.
+- F3 geplant und freigegeben (automatische Löschung vor dem Echtbetrieb; Reihenfolge danach B5, dann Backups ohne
+  Mac). Mikes Einwand: Ein Name ist nicht anonym → bei aufzubewahrender Honorarnote wird die Schüler:in gelöscht,
+  die Teilnahme bleibt ohne Person. Dateiname der Honorarnote wird mit dem PDF gespeichert (vorher beim Download aus
+  dem aktuellen Nachnamen gebildet).
+- F3a: `App\Privacy\RetentionPolicy` (letzte Aktivität = späteste Einheit, Schnupperstunde oder Anlegen; feste
+  Semester; Honorarnoten bis 31.12. des 7. Jahres), Anzeige auf der Schülerseite und im Dashboard (30 Tage),
+  `StudentRepository::findAllWithActivity()` (zwei Abfragen statt eines Joins über beide Collections). Migration
+  `Version20261117142646`: `invoice_pdf.file_name` (bestehende Zeilen per SQL aus Kurs und Nachname befüllt,
+  `[[:alnum:]]` erkennt Umlaute bei ctype `en_US.utf8`, lokal geprüft), `student.created_at` (Bestand: Zeitpunkt der
+  Migration; neu über `Symfony\Component\Clock\now()`, damit `mockTime()` in Tests greift). Datenschutz-Information:
+  Semestergrenzen ergänzt, „bleibt nur der Name“ → „bleibt nur die Honorarnote selbst“. 182 Tests grün, PHPStan ohne
+  Fehler, Fixtures neu geladen.

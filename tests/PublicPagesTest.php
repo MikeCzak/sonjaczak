@@ -70,6 +70,7 @@ final class PublicPagesTest extends WebTestCase
         self::assertSelectorExists('main address');
         self::assertSelectorTextContains('main', 'sieben Jahre ab dem Ende des Kalenderjahres');
         self::assertSelectorTextContains('main', 'bis zum Ende des Semesters, das auf den letzten Kurs');
+        self::assertSelectorTextContains('main', 'September bis Februar und März bis August');
         self::assertSelectorTextContains('main', 'Datenschutzbehörde');
         self::assertSelectorExists('main a[href="/datenschutz/unterricht.pdf"]');
     }

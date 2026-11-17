@@ -33,7 +33,7 @@ final class InvoicePdfController extends AbstractController
         // Only invoices from before step D2 could lack a PDF; production has none
         $pdf = $this->pdfs->findForInvoice($invoice) ?? throw $this->createNotFoundException('The invoice has no PDF.');
 
-        return $this->attachment($pdf->getContent(), $invoice->getFileName(), 'application/pdf');
+        return $this->attachment($pdf->getContent(), $pdf->getFileName(), 'application/pdf');
     }
 
     /**
@@ -60,7 +60,7 @@ final class InvoicePdfController extends AbstractController
                 throw new \RuntimeException('Could not create the ZIP file.');
             }
             foreach ($pdfs as $pdf) {
-                $zip->addFromString($pdf->getInvoice()->getFileName(), $pdf->getContent());
+                $zip->addFromString($pdf->getFileName(), $pdf->getContent());
             }
             $zip->close();
             $content = (string) file_get_contents($path);

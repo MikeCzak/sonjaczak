@@ -11,6 +11,7 @@ use App\Tests\Factory\StudentFactory;
 use App\Tests\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Clock\Test\ClockSensitiveTrait;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -19,6 +20,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
  */
 final class StudentTest extends WebTestCase
 {
+    use ClockSensitiveTrait;
     use Factories;
     use ResetDatabase;
 
@@ -68,6 +70,21 @@ final class StudentTest extends WebTestCase
         $client->request('GET', '/admin/schueler');
 
         self::assertSelectorTextContains('a[href="/datenschutz/unterricht.pdf"]', 'Datenschutz-Information (PDF)');
+    }
+
+    /**
+     * umsetzung-admin.md F3a: the student page shows until when the data is kept.
+     */
+    public function testShowsRetentionPeriod(): void
+    {
+        self::mockTime(new \DateTimeImmutable('2026-10-10 10:00'));
+        $client = $this->loggedInClient();
+        $student = StudentFactory::createOne();
+
+        $client->request('GET', '/admin/schueler/'.$student->getId());
+
+        self::assertSelectorTextContains('#student-retention', 'Gespeichert bis 31.08.2027');
+        self::assertSelectorTextNotContains('#student-retention', 'Honorarnoten');
     }
 
     public function testSearchFindsByNameAndGuardian(): void

@@ -44,6 +44,10 @@ dashboard:
         held: gehalten
         cancelled: ausgefallen
         none: Gerade läuft kein Kurs.
+    deletion:
+        heading: Löschung in den nächsten %days% Tagen
+        until: gespeichert bis %date%
+        hint: Kommt jemand wieder, verschiebt eine neue Teilnahme oder Schnupperstunde die Frist.
 account:
     title: Mein Konto
     email: Angemeldet als
@@ -144,6 +148,9 @@ student:
     edit:
         title: Schüler:in
         lessons: Kurse und Schnupperstunden
+    retention:
+        until: Gespeichert bis %date% (Ende des Semesters nach der letzten Einheit oder Schnupperstunde), danach werden die Daten gelöscht.
+        invoices: Honorarnoten und Zahlungen bleiben bis %date% (§ 132 BAO), bis dahin die Teilnahmen ohne Personendaten.
     delete:
         label: Schüler:in löschen
         confirm: Alle Daten dieser Person werden endgültig gelöscht, auch ihre Schnupperstunden.
