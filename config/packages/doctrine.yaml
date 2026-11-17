@@ -19,6 +19,13 @@ doctrine:
                 is_bundle: false
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
+            # Mapped superclass Webauthn\CredentialRecord, parent of App\Entity\Passkey (umsetzung-admin.md B5). The bundle
+            # ships the XML but does not register it; the folder also holds two superclasses we do not use
+            Webauthn:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/vendor/web-auth/webauthn-symfony-bundle/src/Resources/config/doctrine-mapping'
+                prefix: 'Webauthn'
 
 when@test:
     doctrine:

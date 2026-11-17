@@ -12,4 +12,6 @@ return [
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
     SymfonyCasts\Bundle\ResetPassword\SymfonyCastsResetPasswordBundle::class => ['all' => true],
     Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
+    // Registered by hand: Flex ignores recipes from recipes-contrib here (umsetzung-admin.md B5)
+    Webauthn\Bundle\WebauthnBundle::class => ['all' => true],
 ];

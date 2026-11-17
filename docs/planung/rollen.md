@@ -173,8 +173,9 @@ Es geht nie ein Geheimnis über die Leitung, das man abfangen könnte.
   und für Sonja nur ein Fingertipp.
 - Schutz vor Phishing: Ein Passkey gilt nur für `sonjaczak.com`. Auf einer nachgemachten Seite funktioniert er nicht,
   ein Passwort würde man dort eintippen.
-- Mit dem iCloud-Schlüsselbund ist der Passkey auch auf Sonjas iPhone verfügbar. Ein verlorener Laptop sperrt sie also
-  nicht aus.
+- Ein Konto kann mehrere Passkeys haben: Sonja richtet je einen auf dem MacBook Air und dem Android-Handy ein
+  (Abschnitt 10, „Passkey und Android-Handy“; korrigiert 2026-11-17, Sonja hat kein iPhone). Ein verlorener Laptop
+  sperrt sie also nicht aus.
 
 **Umsetzung:** Symfony selbst bringt keine Passkey-Anmeldung mit (Security-Doku, abgerufen 2026-11-13). Üblich ist
 `web-auth/webauthn-symfony-bundle` (Spomky-Labs). Laut Packagist ist 5.3.12 vom 2026-11-03 aktuell und verlangt

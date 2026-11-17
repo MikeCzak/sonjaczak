@@ -64,7 +64,7 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 - Vor dem Einbau: Konfiguration und Datenmodell im Code des Bundles prüfen (die Doku ist lückenhaft).
 - Am Ende: Sonja richtet Passkeys auf Mac und Samsung-Handy ein (mit Mike).
 
-### B5 Plan (2026-11-17, wartet auf Freigabe)
+### B5 Plan (freigegeben 2026-11-17)
 
 **Geprüft** (2026-11-17): Packagist: `web-auth/webauthn-symfony-bundle` 5.3.12 (2026-11-03) ist aktuell, verlangt PHP
 ≥ 8.2 und `symfony/security-bundle ^6.4|^7.0|^8.0`. `composer require --dry-run` im Container: 15 Pakete (u. a.
@@ -99,6 +99,8 @@ ohne Symfony-Integration). Ich bleibe bei A.
   aus `DEFAULT_URI`, also lokal `localhost`, in Produktion `sonjaczak.com`), Entity `Passkey` (abgeleitet von
   `CredentialRecord`) mit `name`, `createdAt`, `lastUsedAt`, Migration; `user.webauthn_handle` (Frage 3);
   `PasskeyUserRepository` für das Bundle. Tests: Repository findet Konto per Handle, deaktiviertes Konto nicht.
+  **Erledigt 2026-11-17** (Bundle 5.3.13 statt 5.3.12: Sicherheits-Release vom selben Tag; RP-ID = Host der Anfrage,
+  ohne `allowed_origins`).
 - **B5b Mein Konto:** Abschnitt „Passkeys“: Liste (Name, angelegt, zuletzt genutzt), „Passkey hinzufügen“ (Name
   eingeben, dann Dialog des Geräts), löschen mit Rückfrage. Tests für Liste und Löschen (nur eigene Passkeys).
 - **B5c Login:** Knopf „Mit Passkey anmelden“ über dem Passwortformular; kein E-Mail-Feld nötig (Passkey ist auf dem
@@ -110,6 +112,8 @@ ohne Symfony-Integration). Ich bleibe bei A.
 - `deploy/restore-test.sh` und die Erklärung (`erklaerungen/21-passkeys.md`) nachziehen.
 
 **Fragen:**
+
+Antworten Mike, 2026-11-17: **1 MacBook Air und Android (Samsung A52s), kein iPhone; 2–5 wie empfohlen (A).**
 
 1. **Geräte:** `rollen.md` 5 spricht von Mac und iPhone (iCloud-Schlüsselbund), dieser Plan von einem Samsung-Handy.
    Mit Android liegt der Passkey im Google-Passwortmanager, nicht in iCloud: Sonja richtet dann **je Gerät** einen

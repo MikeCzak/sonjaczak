@@ -335,7 +335,20 @@ Bedingungen prüft (`App\Security\UserChecker`: Konto aktiv, Passwort gesetzt).
 
 **Passkey / WebAuthn** – Anmeldung mit einem Schlüsselpaar statt Passwort: Das Gerät hält den privaten Schlüssel und
 entsperrt ihn per Fingerabdruck, der Server kennt nur den öffentlichen. Gilt nur für die eigene Domain, daher
-phishingsicher.
+phishingsicher. Bei uns: Tabelle `passkey` (`App\Entity\Passkey`), Bundle `web-auth/webauthn-symfony-bundle`.
+
+**Relying Party (RP), RP-ID** – In WebAuthn die Website, bei der man sich anmeldet; die RP-ID ist ihr Domainname
+(`sonjaczak.com`, lokal `localhost`). Ein Passkey gilt nur für diese RP-ID.
+
+**User Handle** – Kennung des Kontos, die das Gerät zusammen mit dem Passkey speichert und beim Login mitschickt. Darf
+keine persönlichen Daten enthalten; bei uns 64 Zufalls-Hexzeichen in `app_user.webauthn_handle`.
+
+**Challenge** – Zufallszahl, die der Server für jede Anmeldung neu erzeugt und das Gerät unterschreibt. So lässt sich
+eine abgefangene Antwort nicht wiederverwenden. Liegt bis zur Antwort in der Session.
+
+**Attestation / Assertion** – Die zwei Abläufe von WebAuthn: *Attestation* beim Einrichten (Gerät erzeugt das
+Schlüsselpaar, Server speichert den öffentlichen Schlüssel), *Assertion* beim Anmelden (Gerät unterschreibt die
+Challenge, Server prüft).
 
 **Advisory Lock** – Sperre in PostgreSQL, die nur eine frei gewählte Zahl sperrt, keine Zeile oder Tabelle. Wer
 dieselbe Zahl sperren will, wartet. `pg_advisory_xact_lock` gibt sie am Ende der Transaktion von selbst frei. Bei uns

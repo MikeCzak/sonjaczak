@@ -35,7 +35,8 @@
         "symfony/yaml": "8.1.*",
         "symfonycasts/reset-password-bundle": "^1.26",
         "symfonycasts/sass-bundle": "^0.10.0",
-        "twbs/bootstrap": "^5.3"
+        "twbs/bootstrap": "^5.3",
+        "web-auth/webauthn-symfony-bundle": "^5.3"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.3",

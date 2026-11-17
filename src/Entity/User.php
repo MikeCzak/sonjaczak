@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 // "user" is a reserved word in PostgreSQL and would have to be quoted in every query, so the table gets a prefix
 #[ORM\Table(name: 'app_user')]
 #[ORM\UniqueConstraint(name: 'uniq_app_user_email', fields: ['email'])]
+#[ORM\UniqueConstraint(name: 'uniq_app_user_webauthn_handle', fields: ['webauthnHandle'])]
 #[UniqueEntity(fields: ['email'], message: 'user.email.taken')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -58,14 +59,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options: ['default' => true])]
     private bool $active = true;
 
+    /**
+     * Identifies the account to the devices that hold its passkeys (WebAuthn "user handle", umsetzung-admin.md B5):
+     * random, so it reveals nothing about the person or the order of accounts (the WebAuthn specification forbids
+     * personal data in it). 32 random bytes as 64 hex characters, ASCII so it fits a text column; the specification
+     * allows up to 64 bytes. Never changes.
+     */
+    #[ORM\Column(length: 64)]
+    private string $webauthnHandle;
+
     public function __construct(string $email)
     {
         $this->setEmail($email);
+        $this->webauthnHandle = bin2hex(random_bytes(32));
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getWebauthnHandle(): string
+    {
+        return $this->webauthnHandle;
     }
 
     public function getEmail(): string

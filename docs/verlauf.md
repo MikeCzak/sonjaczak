@@ -480,3 +480,16 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   (`Version20261117142646`, `Version20261117152927`) in 21 ms. `/`, `/datenschutz/unterricht`, `/admin/login` liefern
   200. Cronjob (S12) trägt Mike ein.
 - F3c: Cronjob `app:privacy:purge` in der crontab von root eingetragen, `--dry-run` am Server geprüft (Mike). F3 fertig.
+- B5 Plan freigegeben (Mike): Fingerabdruck immer, Zufallskennung, Name selbst eingeben, Verbindung nur über
+  `userHandle`; Sonja hat ein MacBook Air und ein Android-Handy (Samsung A52s), kein iPhone (`rollen.md` 5 korrigiert).
+- B5a: `web-auth/webauthn-symfony-bundle` installiert. Composer nahm **5.3.13** (erschienen 2026-11-17 19:20 UTC,
+  wenige Stunden vor dem Einbau) statt der im Plan geprüften 5.3.12; laut Release-Notes ein Sicherheits-Release mit
+  zehn Advisories (u. a. GHSA-3chw-82qh-p72w: Registrierungsoptionen für ein fremdes Konto), daher behalten. Das Flex-
+  Rezept liegt in recipes-contrib und wurde übersprungen: Bundle in `config/bundles.php` von Hand eingetragen, Mapping
+  der Superklasse `Webauthn\CredentialRecord` (XML im Bundle) in `doctrine.yaml` registriert. Im Code gelesen: Das
+  Bundle übergibt nach dem Einrichten ein einfaches `CredentialRecord` (nicht unsere Entity), nach dem Login das
+  gefundene Objekt mit neuem Zähler → `PasskeyRepository::saveCredentialRecord()` wandelt bzw. setzt „zuletzt
+  genutzt“. Ohne `allowed_origins` prüft die Bibliothek Herkunft = RP-ID = Host und verlangt HTTPS
+  (`CheckAllowedOrigins`). Migration `Version20261117210541`: Tabelle `passkey`, `app_user.webauthn_handle` (bestehende
+  Konten per `gen_random_uuid()` befüllt, lokal geprüft: 64 Hex-Zeichen). Noch keine Routen des Bundles aktiv.
+  191 Tests grün, PHPStan ohne Fehler.

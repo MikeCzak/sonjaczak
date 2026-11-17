@@ -53,6 +53,8 @@ account:
     email: Angemeldet als
     password_heading: Passwort ändern
     password_submit: Passwort ändern
+    passkey:
+        default_name: 'Passkey vom %date%'
 password:
     current: Aktuelles Passwort
     new: Neues Passwort
