@@ -3,15 +3,15 @@
 webauthn:
     credential_repository: App\Repository\PasskeyRepository
     user_repository: App\Repository\PasskeyUserRepository
-    # No allowed_origins: the response's origin must then be https and its host the relying party ID, which is the
-    # host of the request (lib CheckAllowedOrigins). That is localhost here and sonjaczak.com in production, without
-    # an extra setting; allowed_origins would also add the public route /.well-known/webauthn.
+    # No allowed_origins: the response's origin must then be https and its host the relying party ID (lib
+    # CheckAllowedOrigins); allowed_origins would also add the public route /.well-known/webauthn.
     creation_profiles:
         default:
-            # Without this node the bundle passes null as the name (5.3.13); with it the name defaults to '' and the
-            # browser shows the relying party ID. id ~ = host of the request (see above)
+            # Relying party ID = host of DEFAULT_URI (compose.yaml): localhost here, sonjaczak.com in production. Must be
+            # set: without an ID the library leaves "rp" out of the options and the browser refuses (seen in Chrome,
+            # B5d). The name is left out (deprecated), the library then sends the ID as name
             rp:
-                id: ~
+                id: '%env(string:key:host:url:DEFAULT_URI)%'
             authenticator_selection_criteria:
                 # Fingerprint or device PIN every time (Mike, 2026-11-17, question 2)
                 user_verification: required
@@ -19,6 +19,7 @@ webauthn:
                 resident_key: required
     request_profiles:
         default:
+            rp_id: '%env(string:key:host:url:DEFAULT_URI)%'
             user_verification: required
 
     # "Passkey hinzufügen" in "Mein Konto" for the logged-in account (B5b). Inside the admin firewall, so only

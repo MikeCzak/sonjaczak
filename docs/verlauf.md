@@ -512,3 +512,13 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   „zuletzt genutzt“, falscher Schlüssel und deaktiviertes Konto (Gegenprobe: ohne Deaktivierung schlägt der Test
   fehl). Fallstrick im Test: Nach einem Request hängt ein Foundry-Objekt an keinem Entity-Manager mehr, `save()`
   versucht dann ein neues Konto anzulegen. 201 Tests grün, PHPStan ohne Fehler.
+- B5d (lokal): Headless-Chrome mit virtuellem Authenticator (DevTools-Protokoll `WebAuthn.addVirtualAuthenticator`,
+  eigener Python-Client): **Fehler gefunden** – „Passkey hinzufügen“ scheiterte, Chrome meldete „Failed to read the
+  'rp' property … Required member is undefined“. Ursache: Ohne RP-ID (`id: ~`) lässt die Bibliothek `rp` in den
+  Optionen ganz weg (`PublicKeyCredentialRpEntityDenormalizer` gibt `null` zurück). Die PHP-Tests prüften `rp` nicht.
+  Lösung: RP-ID für Hinzufügen und Login aus `%env(string:key:host:url:DEFAULT_URI)%` (lokal `localhost`, in
+  Produktion `sonjaczak.com` über `SERVER_NAME`); ohne `string:` lehnt der Konfigurationsbaum den Wert ab. Tests
+  prüfen jetzt `rp` und `rpId`. Danach im Browser: Hinzufügen, zweites Mal am selben Gerät abgelehnt („Auf diesem
+  Gerät gibt es schon …“), Abmelden, `/admin/kurse` → Passkey-Login → `/admin/kurse`, „zuletzt genutzt“ gesetzt.
+  `restore-test.sh` braucht keine Änderung (Tabellen dynamisch). Erklärung `erklaerungen/21-passkeys.md`, Rundgang
+  9.4. 201 Tests grün, PHPStan ohne Fehler.

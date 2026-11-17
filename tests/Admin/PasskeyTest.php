@@ -76,9 +76,11 @@ final class PasskeyTest extends WebTestCase
 
         $client->jsonRequest('POST', '/admin/konto/passkeys/optionen', []);
         self::assertResponseIsSuccessful();
-        /** @var array{user: array{id: string, name: string}, authenticatorSelection: array{userVerification: string, residentKey: string}, excludeCredentials: list<array{id: string}>, challenge: string} $options */
+        /** @var array{rp: array{id: string, name: string}, user: array{id: string, name: string}, authenticatorSelection: array{userVerification: string, residentKey: string}, excludeCredentials: list<array{id: string}>, challenge: string} $options */
         $options = json_decode((string) $client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
 
+        // Browsers refuse options without rp (found in Chrome, B5d)
+        self::assertSame(['id' => 'localhost', 'name' => 'localhost'], $options['rp']);
         self::assertSame($this->base64Url($user->getWebauthnHandle()), $options['user']['id']);
         self::assertSame($user->getEmail(), $options['user']['name']);
         self::assertSame('required', $options['authenticatorSelection']['userVerification']);

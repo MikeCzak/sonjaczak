@@ -57,6 +57,7 @@ final class PasskeyLoginTest extends WebTestCase
         self::assertResponseRedirects('https://localhost/admin/login');
 
         $options = $this->options($client);
+        self::assertSame('localhost', $options['rpId']);
         self::assertSame('required', $options['userVerification']);
         self::assertSame([], $options['allowCredentials'] ?? []);
 
@@ -103,14 +104,14 @@ final class PasskeyLoginTest extends WebTestCase
     }
 
     /**
-     * @return array{challenge: string, userVerification: string, allowCredentials?: list<mixed>}
+     * @return array{challenge: string, rpId: string, userVerification: string, allowCredentials?: list<mixed>}
      */
     private function options(KernelBrowser $client): array
     {
         $client->jsonRequest('POST', 'https://localhost/admin/login/passkey/optionen', []);
         self::assertResponseIsSuccessful();
 
-        /** @var array{challenge: string, userVerification: string, allowCredentials?: list<mixed>} */
+        /** @var array{challenge: string, rpId: string, userVerification: string, allowCredentials?: list<mixed>} */
         return json_decode((string) $client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
     }
 

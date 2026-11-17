@@ -134,6 +134,12 @@ Mit den Fixtures ist nichts dran. Was nach Ablauf passiert (Person gelöscht, Te
    nicht mehr möglich). Das eigene Konto lässt sich nicht ändern.
 2. Abmelden → „Passwort vergessen“ → Link in Mailpit. „Mein Konto“: Passwort ändern.
 3. Mit `sonja@example.com` ist „Benutzer“ nicht sichtbar, `/admin/benutzer` ergibt 403.
+4. **Passkey** (Chrome oder Safari auf dem Mac, `https://localhost`): „Mein Konto“ → Name eingeben → „Passkey
+   hinzufügen“ → Touch ID. Ein zweites Mal am selben Gerät lehnt der Browser ab. Abmelden, `/admin/kurse` aufrufen →
+   „Mit Passkey anmelden“ → Touch ID → man landet auf „Kurse“, in „Mein Konto“ steht „zuletzt genutzt“. Ohne Touch ID:
+   Chrome-DevTools → ⋮ → More tools → WebAuthn → „Enable virtual authenticator environment“, Authenticator mit
+   „Supports resident keys“ und „Supports user verification“ anlegen. Lokale Passkeys gelten nur für `localhost` und
+   können danach in den Passwort-Einstellungen von macOS bzw. Chrome gelöscht werden.
 
 ## In Produktion zeigen: was vorher passieren muss
 
@@ -143,5 +149,7 @@ Mit den Fixtures ist nichts dran. Was nach Ablauf passiert (Person gelöscht, Te
 3. **Achtung, Produktion ist echt:** Honorarnoten lassen sich nicht löschen und verbrauchen Nummern (1/2026, 2/2026 …).
    Beim Zeigen also keine Honorarnote zum Ausprobieren erstellen. Schüler:innen, Kurse und Teilnahmen lassen sich
    wieder löschen.
-4. **Echte Daten** (Sonjas Schüler:innen) erst nach `umsetzung-admin.md` F (Backups, Datenschutz-Information) und
+4. **Passkeys:** Sonja richtet je einen auf dem MacBook Air und dem Android-Handy ein (mit Mike, `umsetzung-admin.md`
+   B5d). Auf dem Handy direkt auf `sonjaczak.com` anmelden, nicht per QR-Code vom MacBook.
+5. **Echte Daten** (Sonjas Schüler:innen) erst nach `umsetzung-admin.md` F (Backups, Datenschutz-Information) und
    nachdem Sonja den Text der Datenschutz-Information gelesen hat; sie gibt ihn bei der Anmeldung weiter.

@@ -115,7 +115,11 @@ ohne Symfony-Integration). Ich bleibe bei A.
 - **B5d Ausprobieren:** lokal mit Touch ID im Browser (localhost gilt als sichere Herkunft) und mit dem virtuellen
   Authenticator von Chrome (DevTools); die eigentliche Unterschrift testen die automatischen Tests nicht (`rollen.md`
   5). Danach Push, Sonja richtet in Produktion ihre Passkeys ein (mit Mike).
-- `deploy/restore-test.sh` und die Erklärung (`erklaerungen/21-passkeys.md`) nachziehen.
+  **Lokal erledigt 2026-11-17** mit dem virtuellen Authenticator (Headless-Chrome): Hinzufügen, zweites Mal am selben
+  Gerät abgelehnt, Login mit Weiterleitung, „zuletzt genutzt“. Dabei gefunden: RP-ID muss gesetzt sein, sonst fehlt
+  `rp` in den Optionen (jetzt aus `DEFAULT_URI`). Offen: Touch ID von Mike, Push, Einrichten mit Sonja.
+- `deploy/restore-test.sh`: keine Änderung nötig, es liest die Tabellen aus der Datenbank (`passkey` ist dabei).
+  Erklärung: `erklaerungen/21-passkeys.md`.
 
 **Fragen:**
 
