@@ -14,7 +14,7 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** D ist lokal fertig (D2 am 2026-11-17), wartet auf den Push. Danach `umsetzung-admin.md` F: Datenschutz-Information,
+**Nächster Schritt:** `umsetzung-admin.md` F: Datenschutz-Information (D ist seit 2026-11-17 live),
 dann dürfen echte Daten eingetragen werden (Backups und Rücksicherung sind fertig).
 
 ## Später zu klären
@@ -157,7 +157,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
-- [x] D2 PDF und Download (dompdf, 2026-11-17, noch nicht gepusht: Push nach Abschluss von D, Mike 2026-11-17)
+- [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
 - [ ] F Vor den echten Daten: Backups fertig (2026-11-15); offen: Datenschutz-Information, Löschregel (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

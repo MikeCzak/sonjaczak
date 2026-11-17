@@ -427,4 +427,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `InvoiceFactory::withPdf()`, Fixtures neu geladen (2 PDFs, je ~23 KB). Ersetzen des Renderers im Test muss jetzt vor
   dem ersten Factory-Aufruf passieren (Container: „already initialized“). 165 Tests grün, PHPStan ohne Fehler. Nicht im
   Browser angesehen (Login bräuchte den DevTools-Client); die Tests prüfen Links und Hinweis im HTML.
+- Push von D2 (5 Commits): CI-Lauf 44043324903 Tests → Build → Deploy grün; Migration `Version20261117063716` in
+  Produktion in 57 ms ausgeführt. Erklärung `erklaerungen/20-foundry-stories.md` (Stories) ergänzt.
 
