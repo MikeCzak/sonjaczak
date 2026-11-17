@@ -447,3 +447,5 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Adresse). Link oben in „Schüler:innen“ im Admin. 169 Tests grün, PHPStan ohne Fehler. Beim vollen Testlauf mit
   Xdebug (`develop`) hängt Xdebug an jede erwartete 403/404-Logzeile einen langen Stacktrace; das sah zuerst wie ein
   Fehler aus, war aber keiner (mit `XDEBUG_MODE=off` und erneut mit Xdebug: alles grün).
+- Push von F (6 Commits, mit den Doku-Commits von D2): CI-Lauf 44069313057 Tests → Build → Deploy grün. Produktion:
+  `/datenschutz/unterricht` und `.pdf` liefern 200 ohne Cookie, `/datenschutz` erwähnt den Verwaltungsbereich nicht mehr.
