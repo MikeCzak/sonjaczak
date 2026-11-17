@@ -395,3 +395,13 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Schlüssel über eine eigene `trans()`-Hilfsmethode nicht (Extractor sieht die Domain nicht) → direkt
   `$this->translator->trans(…, 'admin')`. Im Browser geprüft (Formular, Rückfrage mit Liste, nicht bestätigt).
   154 Tests grün, PHPStan ohne Fehler.
+
+## 2026-11-17
+
+- D2 geplant und freigegeben (Option A: PDF in der Transaktion der Nummernvergabe; Gutschrift-Dateiname mit
+  `_Gutschrift`). Geprüft: Rollback in `wrapInTransaction()` schließt den EntityManager, Nummer `MAX + 1` → keine Lücke.
+- D2a: `dompdf/dompdf` 3.1.6 installiert (mit `dompdf/php-font-lib` 1.0.2, `dompdf/php-svg-lib` 1.0.2,
+  `masterminds/html5` 2.12.0, `sabberworm/php-css-parser` 9.5.0). Entity `InvoicePdf` (eigene Tabelle `invoice_pdf`,
+  unidirektional, `invoice_id` unique, `content bytea`), Migration `Version20261117063716`. PHPStan bemängelte
+  `is_resource()` als Typprüfung (ein geschlossener Stream ist keine „resource“ mehr) → Prüfung `!is_string()`.
+  154 Tests grün, PHPStan ohne Fehler, Schema validiert.

@@ -340,6 +340,14 @@ für die Nummernvergabe der Honorarnoten und (durch Symfony) für Sessions.
 **Constructor Property Promotion** – PHP-Schreibweise, bei der Konstruktor-Parameter mit `private` zugleich
 Eigenschaften sind. Doctrine-Attribute können direkt daran stehen (`Invoice`, `Payment`).
 
+**BLOB / `bytea`** – Spalte für beliebige Bytes (Binary Large Object). Doctrines Typ `blob` wird in PostgreSQL zu
+`bytea`. Fallstrick: Beim Laden kommt kein String, sondern ein PHP-Stream zurück, der erst gelesen werden muss
+(`stream_get_contents()`). Bei uns: `InvoicePdf::$content`.
+
+**Inverse Seite einer 1:1-Beziehung** – Bei einer bidirektionalen OneToOne-Beziehung lädt Doctrine die Seite ohne
+Fremdschlüssel immer sofort mit (kein Lazy Loading). Deshalb kennt `Invoice` sein PDF nicht, nur `InvoicePdf` die
+Honorarnote.
+
 **N+1-Problem** – Eine Abfrage lädt N Objekte, danach löst jeder Zugriff auf eine Beziehung eine weitere Abfrage aus:
 N+1 Abfragen statt einer. Abhilfe in Doctrine: Fetch Join (`join` + `addSelect`).
 

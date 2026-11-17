@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-16. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-17. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -14,7 +14,7 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 Keine Frage offen.
 
-**Nächster Schritt:** `umsetzung-admin.md` D2 (PDF der Honorarnote mit dompdf). Danach F: Datenschutz-Information,
+**Nächster Schritt:** `umsetzung-admin.md` D2b (PDF der Honorarnote erzeugen; D2a ist erledigt). Danach F: Datenschutz-Information,
 dann dürfen echte Daten eingetragen werden (Backups und Rücksicherung sind fertig).
 
 ## Später zu klären
@@ -142,7 +142,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
-- [ ] D2 PDF (dompdf, entschieden 2026-11-14) – **nächster Schritt**
+- [ ] D2 PDF (dompdf, Plan freigegeben 2026-11-17): D2a Ablage erledigt (2026-11-17), **nächster Schritt D2b** (Erzeugen)
 - [ ] F Vor den echten Daten: Backups fertig (2026-11-15); offen: Datenschutz-Information, Löschregel (siehe „Später“)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -171,7 +171,7 @@ muss).
 | Mail-Versand | IONOS-SMTP (`smtp.ionos.de:465`), synchron, Absender `anfrage@sonjaczak.com`, Empfänger `music@sonjaczak.com` (2026-11-11) | Postfach ist bereits bei IONOS, kein weiterer Dienst; kein Messenger-Worker nötig (RAM). Details: `docs/planung/formulare.md` |
 | Admin-Planung | Datenmodell, Rollen und Umsetzungsplan freigegeben (2026-11-13) | `planung/datenmodell.md`, `planung/rollen.md`, `planung/umsetzung-admin.md` |
 | Vorführung | Kein eigener Demo-Termin: Mike sieht sich die Funktionen lokal an (`rundgang-admin.md`) und zeigt sie Sonja in Produktion (2026-11-13) | Spart eine eigene Demo-Umgebung; Honorarnoten in Produktion verbrauchen aber Nummern |
-| PDF-Bibliothek | dompdf (2026-11-14) | HTML aus Twig mit Übersetzungsschlüsseln, LGPL-2.1, läuft im PHP-Container; braucht GD. Optionen: `planung/umsetzung-admin.md` D2 |
+| PDF-Bibliothek | dompdf (2026-11-14) | HTML aus Twig mit Übersetzungsschlüsseln, LGPL-2.1, läuft im PHP-Container; GD nur für Bilder nötig, die Honorarnote hat keine (2026-11-17). Optionen: `planung/umsetzung-admin.md` D2 |
 | Kursraster | Stimulus + `fetch` (2026-11-14) | Tastaturlastig, viele kleine Änderungen; durchschaubar. Live Components ggf. später fürs Booking-Formular. Optionen: `planung/umsetzung-admin.md` C4 |
 | Konten in Produktion | Super-Admin (Mike) per Befehl angelegt; Sonjas Konto über die Benutzerverwaltung mit Einladungslink (2026-11-14) | Sonja setzt ihr Passwort selbst |
 | Cronjob überfällige Honorarnoten | Freigegeben, täglich 07:30, ohne Prüfung der Zeitzone (2026-11-14) | Es geht um Tage, nicht Stunden; eine Stunde früher oder später ist egal |
@@ -187,6 +187,7 @@ muss).
 | Einzelne Absage ersatzlos | Kein eigener Absage-Typ; Umweg: Einheit im Raster löschen, dann Anzahl um 1 senken, Grund eintragen (2026-11-16) | Seltener Fall, Umweg reicht vorerst (Mike). `umsetzung-admin.md` C7, „Korrektur“ |
 | Anzahl je Teilnahme | Teilnahme hat eine eigene Anzahl der Einheiten (Kopie aus dem Kurs), Grund Pflicht, nicht unter die begonnenen Einheiten; „Teilnahme beenden“ = diese Untergrenze; Geld nur über Gutschrift (2026-11-16) | Häufigster Fall für weniger Einheiten ist ein vorzeitiges Ende aus persönlichem Grund (Mike). `umsetzung-admin.md` C7 |
 | Ferien nachträglich | Alle Einheiten im Zeitraum löschen nach Popup mit Liste, am Ende auffüllen; Ferien löschen gibt die Einheiten zurück (2026-11-16) | Nachträgliche Ferien heißen: nichts fand statt (Mike). `umsetzung-admin.md` C4 Fragen 6, 7 |
+| PDF der Honorarnote | Erzeugt in derselben Transaktion wie die Nummer; Gutschrift als `HN17_GU_WiSe_2026_Springer_Gutschrift.pdf` (2026-11-17) | Honorarnote und PDF entstehen nur gemeinsam, ein Fehler verbraucht keine Nummer. `umsetzung-admin.md` D2b, D2d |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

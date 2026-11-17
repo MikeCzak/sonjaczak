@@ -160,6 +160,42 @@ Grund. Daher eine eigene Anzahl je Teilnahme (verworfen: dritte Absage-Art „en
 - Maßstab ist das Muster `HN16_…` (`claude_references/`). PDF beim Erstellen erzeugen und in `invoice_pdf` ablegen,
   Dateiname nach Schema, Download einzeln und als ZIP je Kurs mit Hinweis auf fehlende Honorarnoten.
 
+Plan (2026-11-17, freigegeben 2026-11-17). Geprüft: dompdf 3.1.6 ist weiterhin die neueste Version (Packagist,
+veröffentlicht 2026-07-20), braucht laut `composer.json` `ext-dom` und `ext-mbstring`, beide im Image vorhanden.
+`ext-zip` für das ZIP ist ebenfalls vorhanden. GD wird nur für Bilder gebraucht; die Honorarnote hat keine.
+
+- **D2a Ablage:** Entity `InvoicePdf` (Tabelle `invoice_pdf`, 1:1 zu `Invoice`, Fremdschlüssel unique, Spalte
+  `content` vom Typ `blob` = `bytea`). Eine Migration. Fallstrick: Doctrine liefert `blob` als PHP-Stream, nicht als
+  String (`vendor/doctrine/dbal/src/Types/BlobType.php`), beim Lesen also `stream_get_contents()`.
+- **D2b Erzeugen:** Dienst `InvoicePdfRenderer` (Twig `admin/invoice/pdf.html.twig` → dompdf, Tabellenlayout, Schrift
+  DejaVu Sans aus dompdf für €, ß, Umlaute; Remote-Zugriff aus). Aufgerufen in `InvoiceIssuer` **innerhalb der
+  Transaktion**, nachdem die Nummer vergeben ist.
+  - Option A (empfohlen): in der Transaktion. Honorarnote und PDF entstehen gemeinsam oder gar nicht. Contra: Das
+    Lock hält so lange, wie das Rendern dauert (geschätzt unter 1 s, wird gemessen); bei einer Benutzerin egal.
+  - Option B: nach dem Commit. Lock kürzer, aber scheitert das Rendern, gibt es eine Honorarnote ohne PDF.
+  - **Entschieden 2026-11-17: Option A.** Scheitert das Rendern, rollt `wrapInTransaction()` alles zurück
+    (`vendor/doctrine/orm/src/EntityManager.php`, ORM 3.7.6): keine Honorarnote, kein PDF, keine verbrauchte Nummer
+    (die Nummer ist `MAX + 1`, keine Sequenz, also keine Lücke). Der `EntityManager` ist danach geschlossen. Der
+    Controller fängt eine eigene `InvoicePdfException`, schreibt den Fehler ins Log (ohne Personendaten), zeigt eine
+    Meldung und leitet zurück aufs Formular. Neu auslösen = Formular erneut absenden. Liegt der Fehler im Code,
+    hilft das erst nach einem Fix; verloren geht nichts. Gleiches gilt für Gutschriften.
+- **D2c Inhalt wie im Muster:** Absender (Name, Titel, Adresse), Empfänger, „Ort, Datum“, „Honorarnote 16/2026“,
+  Leistungstext, Betrag („€ 495,-“ bei ganzen Euro, sonst „€ 247,50“), Zahlbar gesamt bzw. mit zwei Raten,
+  Überweisungsbitte, Name, Bank, IBAN, BIC, Hinweis zur Umsatzsteuer. Keine Unterschrift. Gutschrift: Titel
+  „Gutschrift 17/2026“, Bezug „zu Honorarnote 16/2026“, Betrag, kein Zahlungsteil. Alle Texte als Schlüssel in `admin`.
+- **D2d Download:** `/admin/honorarnoten/{id}/pdf` als Anhang (Datei wird gespeichert, Name nach Schema)
+  und `/admin/kurse/{id}/honorarnoten.zip` mit allen Honorarnoten und Gutschriften des Kurses. Knöpfe in Detail und
+  Liste der Honorarnoten und im Kurs; beim ZIP der Hinweis „3 Teilnahmen haben noch keine Honorarnote“.
+  Dateiname `HN16_GU_WiSe_2026_Springer.pdf` (Nachname der Schüler:in, auch wenn die Honorarnote an den Elternteil
+  geht; `anforderungen.md`). Gutschrift: `HN17_GU_WiSe_2026_Springer_Gutschrift.pdf` (Mike, 2026-11-17). Umlaute bleiben,
+  dazu ein ASCII-Ersatzname für alte Programme (`HeaderUtils::makeDisposition`).
+- **D2e Tests und Messung:** Erstellen legt ein PDF an (beginnt mit `%PDF`), Text enthält Nummer und Betrag, Zugriff
+  (anonym, falsche Rolle, Admin) für beide Downloads, ZIP-Inhalt und Dateinamen. RAM-Spitze und Dauer beim Rendern
+  messen und in `verlauf.md` festhalten.
+
+Bestehende Honorarnoten ohne PDF: In Produktion gibt es keine, Fixtures legen keine an. Daher kein Nachholbefehl;
+der Download antwortet ohne PDF mit 404.
+
 **D3 Zahlungen und Gutschriften** – erledigt 2026-11-13
 
 - Zahlung erfassen (ein Klick für den Rest, Datum änderbar), Status berechnet, Gutschrift mit `credits` und
