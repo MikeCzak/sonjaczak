@@ -371,6 +371,8 @@ Antworten Mike, 2026-11-18: **1–4 wie empfohlen, die Zeile für Abgesagte aber
 `GridAxis`, `GridItem` (neu), `GridRow` mit Boxen und Spuren, `GridColumn` entfällt; Partials `_grid_track` und
 `_grid_item` statt `_grid_lesson`. Die Box in der Absage-Zeile ist eine Textzeile hoch und zeigt nur Uhrzeit, Name und
 Art der Absage (mit Zählung passte der Name nicht hinein).
+Nachtrag (Mike, 2026-11-18): Jedes Abzeichen „Nachholstunde fällig“ (Raster, Teilnahme, Kursseite, Dashboard) führt
+zu „Nachholstunde eintragen“ (`_make_up_due.html.twig`).
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 

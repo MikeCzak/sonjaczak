@@ -93,6 +93,8 @@ final class EnrollmentTest extends WebTestCase
         $client->followRedirect();
         self::assertSelectorTextContains('main', '14 von 15');
         self::assertSelectorTextContains('.badge', '1 Nachholstunde fällig');
+        // The badge leads to the make-up form, like the button (Mike 2026-11-18)
+        self::assertSelectorExists('a.badge[href="/admin/teilnahmen/'.$enrollment->getId().'/nachholen"]');
 
         $client->clickLink('Nachholstunde eintragen');
         $client->submitForm('Speichern', ['make_up_lesson[startsAt]' => '2026-10-13T15:30']);
@@ -101,6 +103,24 @@ final class EnrollmentTest extends WebTestCase
         self::assertSelectorTextContains('main', '15 von 15');
         self::assertSelectorTextContains('main', 'Nachholstunde für 09.10.2026');
         self::assertSelectorNotExists('a:contains("Nachholstunde eintragen")');
+    }
+
+    /**
+     * Due without a cancellation to make up (more lessons than fit until the course end): the badge's link leads back
+     * to the enrollment with the reason.
+     */
+    public function testMakeUpDueWithoutCancellationExplains(): void
+    {
+        $client = $this->loggedInClient();
+        $enrollment = EnrollmentFactory::createOne();
+        $enrollment->setPlannedLessons(16);
+        self::getContainer()->get(EntityManagerInterface::class)->flush();
+
+        $client->request('GET', '/admin/teilnahmen/'.$enrollment->getId().'/nachholen');
+
+        self::assertResponseRedirects('/admin/teilnahmen/'.$enrollment->getId());
+        $client->followRedirect();
+        self::assertSelectorTextContains('.alert-info', 'bis zum Kursende Platz');
     }
 
     /**

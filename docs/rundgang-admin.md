@@ -53,7 +53,8 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    Überschneidung prüfen: eine Schnupperstunde zur Zeit einer Einheit anlegen → beide Boxen untereinander, rot umrandet.
 5. Im Raster bearbeiten (braucht JavaScript): Klick auf eine zukünftige Einheit (nicht auf den Namen) → der Editor
    erscheint unter der Box, Escape oder Klick daneben schließt ihn. „abgesagt (ich)“, Notiz, Speichern.
-   Die Einheit wandert in die rote Zeile, „1 Nachholstunde fällig“ erscheint bei der nächsten Einheit. Im Platzhalter
+   Die Einheit wandert in die rote Zeile, „1 Nachholstunde fällig“ erscheint bei der nächsten Einheit (Klick darauf:
+   „Nachholstunde eintragen“). Im Platzhalter
    „frei“ „← + Doppelstunde …“ klicken: Die Nachbarin bekommt eine zweite Einheit, ihre letzte am
    Kursende fällt weg. Dann die abgesagte Einheit öffnen → „Absage aufheben“: Ein Popup nennt die Doppelstunde, nach
    „OK“ ist sie weg und die Nachbarin hat ihre letzte Einheit wieder. Nur die Notiz ändern: Die Seite lädt nicht neu.

@@ -549,3 +549,9 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   600 px, Editor, Escape, Absage-Zeile); dabei gefunden: In der niedrigen Zeile verdrängte die Zählung den Namen, sie
   zeigt jetzt nur Uhrzeit, Name, Art der Absage. PHPStan fand zwei mögliche `null`-Schlüssel. 205 Tests grün wie in
   der CI (mit Xdebug), PHPStan ohne Fehler.
+- 2026-11-18: Abzeichen „Nachholstunde fällig“ an allen vier Stellen als Link auf „Nachholstunde eintragen“ (Partial
+  `_make_up_due.html.twig`). Im Raster liegt der Link wie der Name über dem Box-Link (`z-index`, im Browser geprüft).
+  Ohne offene Absage leitet die Seite mit einem Hinweis zur Teilnahme zurück. Klargestellt: Eine Doppelstunde hebt
+  „fällig“ nicht auf, weil am Ende eine Einheit wegfällt. Mein Verdacht, der Terminvorschlag für die Nachholstunde
+  nehme die zuletzt angelegte statt der zeitlich letzten Einheit, war falsch: `Enrollment::$lessons` ist per
+  `OrderBy(startsAt)` sortiert und auf der Seite frisch geladen. 206 Tests grün wie in der CI, PHPStan ohne Fehler.

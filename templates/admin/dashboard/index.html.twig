@@ -122,9 +122,7 @@
                                 <td class="text-end">{{ row.held }}</td>
                                 <td class="text-end">
                                     {{ row.cancelled }}
-                                    {% if row.make_up_due > 0 %}
-                                        <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': row.make_up_due}, 'admin') }}</span>
-                                    {% endif %}
+                                    {{ include('admin/enrollment/_make_up_due.html.twig', {enrollment: row.enrollment, count: row.make_up_due}) }}
                                 </td>
                             </tr>
                         {% else %}

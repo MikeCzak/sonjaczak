@@ -93,9 +93,7 @@
                             <td><a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}</a></td>
                             <td>
                                 {{ include('admin/enrollment/_count.html.twig') }}
-                                {% if make_ups_due[enrollment.id] > 0 %}
-                                    <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_ups_due[enrollment.id]}, 'admin') }}</span>
-                                {% endif %}
+                                {{ include('admin/enrollment/_make_up_due.html.twig', {count: make_ups_due[enrollment.id]}) }}
                             </td>
                             <td class="text-end">{{ (enrollment.priceCents / 100)|number_format(2, ',', '.') }} €</td>
                             <td class="text-nowrap">

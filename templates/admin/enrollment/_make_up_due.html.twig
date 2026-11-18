@@ -1,0 +1,5 @@
+{# "1 Nachholstunde fällig" as a link to the form for the make-up lesson (Mike 2026-11-18). enrollment, count #}
+{%- if count > 0 -%}
+    <a class="badge text-bg-warning text-decoration-none {{ class ?? '' }}" href="{{ path('admin_enrollment_make_up', {id: enrollment.id}) }}"
+       title="{{ 'enrollment.make_up_due_link'|trans({}, 'admin') }}">{{ 'enrollment.make_up_due'|trans({'%count%': count}, 'admin') }}</a>
+{%- endif -%}

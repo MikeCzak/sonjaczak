@@ -23,7 +23,7 @@
             <span class="grid-item__line">{{ meta|join(' · ') }}</span>
             <a class="grid-item__name grid-item__line" href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}</a>
             <span class="grid-item__line">
-                {%- if item.makeUpsDue > 0 %}<span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': item.makeUpsDue}, 'admin') }}</span> {% endif -%}
+                {%- if item.makeUpsDue > 0 %}{{ include('admin/enrollment/_make_up_due.html.twig', {count: item.makeUpsDue, class: 'grid-item__link'}) }} {% endif -%}
                 {%- if lesson.makeUpFor %}<span class="badge text-bg-info">{{ 'lesson.make_up_for'|trans({'%date%': lesson.makeUpFor.startsAt|date('d.m.')}, 'admin') }}</span> {% endif -%}
                 {%- if lesson.fromTrial %}<span class="badge text-bg-light">{{ 'lesson.from_trial'|trans({}, 'admin') }}</span> {% endif -%}
                 <span class="grid-item__note" data-note-text>{{ lesson.note }}</span>

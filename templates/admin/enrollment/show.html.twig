@@ -13,9 +13,7 @@
 
     <p>
         {{ include('admin/enrollment/_count.html.twig') }}
-        {% if make_up_due > 0 %}
-            <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_up_due}, 'admin') }}</span>
-        {% endif %}
+        {{ include('admin/enrollment/_make_up_due.html.twig', {count: make_up_due}) }}
     </p>
 
     <div class="row g-5">

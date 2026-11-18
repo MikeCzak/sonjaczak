@@ -140,8 +140,10 @@
         text-overflow: ellipsis;
     }
 
-    // Above the box-wide edit link (.stretched-link::after, z-index 1)
-    .grid-item__name {
+    // Above the box-wide edit link (.stretched-link::after, z-index 1): the name and the make-up badge are links of
+    // their own
+    .grid-item__name,
+    .grid-item__link {
         position: relative;
         z-index: 2;
         color: inherit;

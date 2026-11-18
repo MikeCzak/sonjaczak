@@ -323,6 +323,7 @@ enrollment:
     person_deleted_hint: Die Daten der Person sind gelöscht (Löschfrist abgelaufen). Die Honorarnoten bleiben bis %date% aufbewahrt (§ 132 BAO), danach wird auch die Teilnahme gelöscht.
     count: '%counted% von %planned%'
     make_up_due: '{1}1 Nachholstunde fällig|]1,Inf[%count% Nachholstunden fällig'
+    make_up_due_link: Nachholstunde eintragen
     billing:
         semester: Semesterpreis (gesamt oder in zwei Raten)
     field:
@@ -398,6 +399,7 @@ lesson:
     flash:
         saved: Gespeichert.
         make_up_created: Nachholstunde eingetragen.
+        make_up_nothing_cancelled: Es gibt keine Absage durch dich, für die noch keine Nachholstunde eingetragen ist. Fällig ist sie trotzdem, wenn nicht alle Einheiten bis zum Kursende Platz haben; dann Kursende oder Anzahl der Einheiten prüfen.
         break_day: 'Hinweis: Der %date% ist ein Ferientag (%break%). Die Einheit bleibt trotzdem dort.'
 trial:
     label: Schnupperstunde %date%

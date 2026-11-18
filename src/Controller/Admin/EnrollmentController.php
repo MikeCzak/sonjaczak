@@ -171,6 +171,11 @@ final class EnrollmentController extends AbstractController
     {
         $cancelled = $this->cancelledWithoutMakeUp($enrollment);
         if ([] === $cancelled) {
+            // Reached from a "Nachholstunde fällig" badge although no cancellation is left to make up: say why
+            if ($this->makeUpRule->due($enrollment) > 0) {
+                $this->addFlash('info', 'lesson.flash.make_up_nothing_cancelled');
+            }
+
             return $this->redirectToRoute('admin_enrollment_show', ['id' => $enrollment->getId()]);
         }
 

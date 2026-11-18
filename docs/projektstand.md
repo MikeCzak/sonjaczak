@@ -49,6 +49,9 @@ verlinkten Erklärung.
   - Als Überschneidung gelten nur stattfindende Termine (Einheiten ohne Absage, Schnupperstunden), nicht abgesagte.
   - Die Achse reicht über alle Einheiten des Kurses; eine späte Nachholstunde macht jede Zeile breiter.
   - Schnupperstunden erscheinen, wenn sie im Kurszeitraum liegen, auch an Tagen ohne Unterricht (eigene Zeile).
+- [ ] **„Nachholstunde fällig“ als Link** (2026-11-18, Mike): Jedes Abzeichen führt zu „Nachholstunde eintragen“.
+  Ist keine Absage durch Sonja mehr offen (fällig, weil nicht alle Einheiten bis zum Kursende passen), geht es zurück
+  zur Teilnahme mit einem Hinweis, warum (Auslegung).
 - [ ] **Bedienung des Rasters** (2026-11-16, `umsetzung-admin.md` C4d, Editor seit C4g schwebend unter der Box) mit
   Sonja prüfen: Klick auf die Box öffnet den Editor, Klick auf den Namen die Teilnahme; nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
   werden in jeder leeren Zelle angeboten, deren Nachbar am selben Tag eine Einheit hat, auch in Wochen ohne Absage
@@ -148,6 +151,11 @@ verlinkten Erklärung.
 - [ ] **Passkeys** (`umsetzung-admin.md` B5). Zeitpunkt entschieden 2026-11-14: darf auch erst im Echtbetrieb kommen
   (ein gutes Passwort ist nicht per se unsicher), aber **nicht vergessen**: Für Sonja ist der Fingerabdruck viel
   einfacher als z. B. ein Einmalcode (OTP).
+- [ ] **Nachholstunde wird zur regulären Einheit** (2026-11-18, `umsetzung-admin.md` C3/C4, im Code gefolgert, nicht
+  getestet): Wird die abgesagte Einheit gelöscht (im Raster oder durch nachträgliche Ferien), setzt die Datenbank den
+  Verweis der Nachholstunde auf `NULL` (`Lesson.php`, `onDelete: 'SET NULL'`). Danach zählt der Planer sie als reguläre
+  Einheit: Eine Doppelstunde oder „Anzahl senken“ könnte sie wegnehmen, und beim Auffüllen fehlt dann eine. Selten;
+  Abhilfe wäre, die Nachholstunde mitzulöschen oder sie als Nachholstunde zu markieren, auch ohne Verweis.
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.

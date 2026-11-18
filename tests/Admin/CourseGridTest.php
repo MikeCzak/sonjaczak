@@ -46,6 +46,7 @@ final class CourseGridTest extends WebTestCase
         self::assertSelectorTextContains('thead', '15:00');
         self::assertSelectorTextContains('tbody', '15:30 · 1/15');
         self::assertSelectorTextContains('tbody', '1 Nachholstunde fällig');
+        self::assertCount(1, $crawler->filter('.grid-lesson a.badge.grid-item__link[href="/admin/teilnahmen/'.$enrollment->getId().'/nachholen"]'));
         // 15 lessons, each with a link to its edit page and the name to the enrollment; the cancelled one in the low red row
         self::assertCount(15, $crawler->filter('.grid-lesson a.stretched-link[href^="/admin/einheiten/"]'));
         self::assertCount(15, $crawler->filter('.grid-lesson a.grid-item__name[href="/admin/teilnahmen/'.$enrollment->getId().'"]'));
