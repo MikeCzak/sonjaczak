@@ -527,3 +527,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   exhausted“ ab. Die CI läuft mit Xdebug (Dev-Image), lokal hatte ich mit `XDEBUG_MODE=off` getestet. Lokal wie in
   der CI nachgestellt: Spitze 145 MB, über PHPs Standard 128M. Lösung: `memory_limit` 512M nur für PHPUnit
   (`phpunit.dist.xml`); Produktion unverändert.
+- 2026-11-18: CI-Lauf 44269704195 grün (Tests, Build, Deploy), Migration `Version20261117210541` in Produktion in
+  50 ms (`passkey`, `webauthn_handle`). Live geprüft: Login-Seite zeigt den Passkey-Knopf, Login-Optionen liefern
+  `rpId: sonjaczak.com`, `userVerification: required`, leere `allowCredentials`.
