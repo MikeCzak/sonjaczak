@@ -172,11 +172,17 @@ verlinkten Erklärung.
   `planung/backups.md`, „Rücksicherung“). Der Test in die temporäre Datenbank deckt das Einspielen ab, nicht den
   ganzen Ablauf.
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
-  `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11), Mike sichert sie
-  auf einer externen Festplatte von Sonja. Später lieber ein Backup-Server, der die Sicherungen holt bzw. empfängt,
+  `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11). Kopie auf eine
+  externe Festplatte von Sonja geplant, aber noch nicht gemacht (Stand 2026-11-18): Die Sicherungen liegen derzeit nur
+  am Mac. Später lieber ein Backup-Server, der die Sicherungen holt bzw. empfängt,
   ohne Mikes Rechner. Plan dazu freigegeben (2026-11-18), Umsetzung später, wenn Mike will: `planung/backups-ohne-mac.md`. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
   age-Schlüssel ausgedruckt? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
   bei einem Wechsel prüfen, ob das noch stimmt.
+- [ ] **Notfallzettel und Zugang ohne Mike** (2026-11-18, Mike): Entwurf `claude_references/notfallzettel.html` (lokal,
+  nicht im Repo) mit age-Schlüssel, Ort der Sicherungen, Verweis auf die Anleitung im Repo. Das IONOS-Konto (Domain,
+  VPS, Postfächer) läuft auf Mike; fällt Mike aus, kommt Sonja weder an Server noch Domain, und die Sicherungen liegen
+  nur auf Mikes Mac. Zu klären: wie Sonja im Notfall an Konto bzw. Sicherungen kommt (Notfallzugang im Passwort-Manager,
+  Vertrag auf Sonja übertragen, Kopie bei ihr). Erst laminieren, wenn das steht, sonst veraltet der Zettel.
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
   noch etwas offen ist).
 - [ ] **Runner-Label `ubuntu-latest`** (2026-11-15): wechselt laut GitHub-Hinweis im CI-Lauf ab 2026-10-19 schrittweise
