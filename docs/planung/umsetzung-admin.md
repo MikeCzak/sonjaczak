@@ -117,7 +117,7 @@ ohne Symfony-Integration). Ich bleibe bei A.
   5). Danach Push, Sonja richtet in Produktion ihre Passkeys ein (mit Mike).
   **Lokal erledigt 2026-11-17** mit dem virtuellen Authenticator (Headless-Chrome): Hinzufügen, zweites Mal am selben
   Gerät abgelehnt, Login mit Weiterleitung, „zuletzt genutzt“. Dabei gefunden: RP-ID muss gesetzt sein, sonst fehlt
-  `rp` in den Optionen (jetzt aus `DEFAULT_URI`). Offen: Touch ID von Mike, Push, Einrichten mit Sonja.
+  `rp` in den Optionen (jetzt aus `DEFAULT_URI`). Touch ID von Mike lokal geprüft und gepusht 2026-11-18. Offen: Einrichten mit Sonja.
 - `deploy/restore-test.sh`: keine Änderung nötig, es liest die Tabellen aus der Datenbank (`passkey` ist dabei).
   Erklärung: `erklaerungen/21-passkeys.md`.
 

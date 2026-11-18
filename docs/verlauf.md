@@ -522,3 +522,4 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Gerät gibt es schon …“), Abmelden, `/admin/kurse` → Passkey-Login → `/admin/kurse`, „zuletzt genutzt“ gesetzt.
   `restore-test.sh` braucht keine Änderung (Tabellen dynamisch). Erklärung `erklaerungen/21-passkeys.md`, Rundgang
   9.4. 201 Tests grün, PHPStan ohne Fehler.
+- 2026-11-18: Mike hat den Passkey lokal mit Touch ID eingerichtet und sich damit angemeldet. B5 gepusht.
