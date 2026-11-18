@@ -67,11 +67,12 @@
     }
 
     .grid-week--current {
-        box-shadow: inset 4px 0 0 var(--bs-primary);
+        box-shadow: inset 4px 0 0 var(--sc-accent);
+        background-color: rgba(var(--sc-accent-text-rgb), .3);
     }
 
     .grid-row--today > .grid-day {
-        box-shadow: inset 4px 0 0 var(--bs-primary);
+        box-shadow: inset 4px 0 0 var(--sc-accent);
         font-weight: 600;
     }
 
