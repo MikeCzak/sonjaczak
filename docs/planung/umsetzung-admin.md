@@ -246,7 +246,7 @@ einen Ferientag.** Umgesetzt: `GridWeek` (neu), `GridRow` je Tag, Hinweis als ge
    steht sie sichtbar in einer gelben Zeile; Sonja kann in den Ferien bewusst eine Stunde ausmachen), Hinweis beim
    Speichern oder Sperre?
 
-**C4g Raster als Zeitachse, mit Schnupperstunden** (Wunsch Mike, 2026-11-18, Plan 2026-11-18). Ersetzt den ersten
+**C4g Raster als Zeitachse, mit Schnupperstunden** – erledigt 2026-11-18 (Wunsch Mike, Plan 2026-11-18). Ersetzt den ersten
 Entwurf (Schnupperstunden als eigene Spalte A oder im Zeitfenster B).
 
 Anlass:
@@ -366,6 +366,11 @@ geschrieben. Ein Schritt, zwei Commits (Modell mit Unit-Tests, dann Darstellung 
 3. Platzhalter „frei“ in Zeitfenstern ohne stattfindende Einheit, mit dem Angebot für die Doppelstunde (Empfehlung: ja)?
 4. Abgesagte Einheiten weiter in der roten Zeile unter dem Tag (Empfehlung) oder blass in der Tageszeile? Blass bräuchten
    sie eigene Spuren und machten Zeilen höher.
+
+Antworten Mike, 2026-11-18: **1–4 wie empfohlen, die Zeile für Abgesagte aber mit reduzierter Höhe.** Umgesetzt:
+`GridAxis`, `GridItem` (neu), `GridRow` mit Boxen und Spuren, `GridColumn` entfällt; Partials `_grid_track` und
+`_grid_item` statt `_grid_lesson`. Die Box in der Absage-Zeile ist eine Textzeile hoch und zeigt nur Uhrzeit, Name und
+Art der Absage (mit Zählung passte der Name nicht hinein).
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 

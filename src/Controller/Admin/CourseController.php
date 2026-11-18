@@ -97,26 +97,19 @@ final class CourseController extends AbstractController
     }
 
     /**
-     * The course grid (step C4b): weeks as rows, weekly time slots as columns. Read-only for now, every lesson links
-     * to its edit page, so it also works without JavaScript.
+     * The course grid (step C4b; a time axis per teaching day since C4g), with the trial lessons in the course's time
+     * span. Every lesson links to its edit page, so it also works without JavaScript.
      */
     #[Route('/{id}/raster', name: 'admin_course_grid', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function grid(Course $course, EnrollmentRepository $enrollments, TrialLessonRepository $trials, CourseGrid $courseGrid, MakeUpRule $makeUpRule): Response
+    public function grid(Course $course, EnrollmentRepository $enrollments, TrialLessonRepository $trials, CourseGrid $courseGrid): Response
     {
-        $enrollmentList = $enrollments->findForGrid($course);
-        $makeUpsDue = [];
-        foreach ($enrollmentList as $enrollment) {
-            $makeUpsDue[(int) $enrollment->getId()] = $makeUpRule->due($enrollment);
-        }
-
         $from = $course->getStartsOn();
         $until = $course->getEndsOn()?->modify('+1 day');
+        $trialList = null !== $from && null !== $until ? $trials->findBetween($from, $until) : [];
 
         return $this->render('admin/course/grid.html.twig', [
             'course' => $course,
-            'grid' => $courseGrid->build($course, $enrollmentList, $this->clock->now()),
-            'make_ups_due' => $makeUpsDue,
-            'trials' => null !== $from && null !== $until ? $trials->findBetween($from, $until) : [],
+            'grid' => $courseGrid->build($course, $enrollments->findForGrid($course), $trialList, $this->clock->now()),
         ]);
     }
 

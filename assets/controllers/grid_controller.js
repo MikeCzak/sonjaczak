@@ -3,8 +3,9 @@ import { Controller } from '@hotwired/stimulus';
 /* stimulusFetch: 'lazy' */
 
 /*
- * Course grid (templates/admin/course/grid.html.twig, umsetzung-admin.md C4d). Opens a small editor in the cell of a
- * lesson (cancellation, note) and talks to the JSON endpoints of App\Controller\Admin\LessonController.
+ * Course grid (templates/admin/course/grid.html.twig, umsetzung-admin.md C4d). Opens a small editor for a lesson
+ * (cancellation, note) and talks to the JSON endpoints of App\Controller\Admin\LessonController. Since C4g the editor
+ * floats below the box, so the boxes on the time axis stay where they are.
  *
  * The server decides and counts; this controller only sends what Sonja clicked and shows the answer. Whenever a
  * change moves lessons around (cancellation, deletion, double lesson), the page is reloaded instead of rebuilding
@@ -21,20 +22,61 @@ export default class extends Controller {
         this.close();
 
         this.link = link;
+        this.box = link.closest('.grid-item');
         this.cancelledBy = link.dataset.cancelledBy || null;
         this.editor = this.editorTarget.content.firstElementChild.cloneNode(true);
         this.editor.querySelector('[data-note-input]').value = link.dataset.note || '';
         this.editor.querySelector('[data-edit-link]').href = link.href;
         this.editor.querySelector('[data-uncancel]').hidden = null === this.cancelledBy;
         this.showPressed();
-        link.after(this.editor);
+        this.place();
         this.editor.querySelector('[data-note-input]').focus();
     }
 
+    /**
+     * Into the day's axis (positioned), below the box; above it if there is no room below the table (the last
+     * rows), and moved left so it does not stick out on the right.
+     */
+    place() {
+        const track = this.box.closest('.grid-track');
+        track.append(this.editor);
+        const gap = 4;
+        const left = Math.max(0, Math.min(this.box.offsetLeft, track.offsetWidth - this.editor.offsetWidth));
+        let top = this.box.offsetTop + this.box.offsetHeight + gap;
+        const table = track.closest('table').getBoundingClientRect();
+        if (this.box.getBoundingClientRect().bottom + gap + this.editor.offsetHeight > table.bottom) {
+            top = this.box.offsetTop - this.editor.offsetHeight - gap;
+        }
+        this.editor.style.left = `${left}px`;
+        this.editor.style.top = `${top}px`;
+    }
+
     close() {
+        const link = this.link;
         this.editor?.remove();
         this.editor = null;
         this.link = null;
+        this.box = null;
+
+        return link;
+    }
+
+    // "Abbrechen" and Escape: back to the box, so the keyboard continues there
+    cancel() {
+        this.close()?.focus();
+    }
+
+    escape() {
+        if (this.editor) {
+            this.cancel();
+        }
+    }
+
+    // A click outside the editor and outside any lesson closes it (a click on another lesson opens that one)
+    outside(event) {
+        if (this.editor && !this.editor.contains(event.target) && !event.target.closest('.grid-lesson')) {
+            this.close();
+        }
     }
 
     // Toggle: a second click on the pressed button withdraws the choice (Mike, question 3)
@@ -55,11 +97,11 @@ export default class extends Controller {
             window.location.reload();
             return;
         }
-        // Only the note changed: update the cell, no reload
+        // Only the note changed: update the box, no reload (the overlap hint in the title goes until the next load)
         this.link.dataset.note = data.lesson.note ?? '';
-        this.link.querySelector('[data-note-text]').textContent = data.lesson.note ?? '';
-        this.link.title = data.lesson.stateLabel + (data.lesson.note ? ': ' + data.lesson.note : '');
-        this.close();
+        this.box.querySelector('[data-note-text]')?.replaceChildren(data.lesson.note ?? '');
+        this.box.title = data.lesson.stateLabel + (data.lesson.note ? ': ' + data.lesson.note : '');
+        this.cancel();
     }
 
     // "Absage aufheben" in the red row: back into the slot, whatever was put there in the meantime goes after a popup

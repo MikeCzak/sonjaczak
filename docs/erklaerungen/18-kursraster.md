@@ -1,6 +1,6 @@
 # Kursraster: Stimulus, `fetch` und JSON-Endpunkte
 
-Stand 2026-11-16 (`umsetzung-admin.md` C4). Geprüft gegen den installierten Code: `symfony/stimulus-bundle` 3.7.0,
+Stand 2026-11-16 (`umsetzung-admin.md` C4), Zeitachse 2026-11-18 (C4g). Geprüft gegen den installierten Code: `symfony/stimulus-bundle` 3.7.0,
 `@hotwired/stimulus` 3.2.2 (`assets/vendor/@hotwired/stimulus/stimulus.index.js`), Symfony 8.1. Begründungen und
 Einschätzungen sind als solche formuliert.
 
@@ -12,9 +12,9 @@ Das Raster ist eine normale Twig-Seite. JavaScript macht sie nur bequemer:
 
 | Teil | Aufgabe | Datei |
 |---|---|---|
-| `CourseGrid` | Baut Wochen × Zeitfenster und ordnet jede Einheit einer Zelle zu | `src/Course/Grid/CourseGrid.php` |
-| Twig | Zeichnet die Tabelle; jede Einheit ist ein Link auf ihre Bearbeitungsseite | `templates/admin/course/grid.html.twig`, `_grid_lesson.html.twig` |
-| Stimulus-Controller `grid` | Öffnet den Editor in der Zelle, schickt Änderungen per `fetch` | `assets/controllers/grid_controller.js` |
+| `CourseGrid` | Baut Wochen und Tage; legt je Tag Boxen auf eine Zeitachse (Position, Spur, Überschneidung, Nummer) | `src/Course/Grid/CourseGrid.php`, `GridRow`, `GridItem`, `GridAxis` |
+| Twig | Zeichnet die Tabelle; jede Einheit ist ein Link auf ihre Bearbeitungsseite | `templates/admin/course/grid.html.twig`, `_grid_track.html.twig`, `_grid_item.html.twig` |
+| Stimulus-Controller `grid` | Öffnet den Editor schwebend unter der Box, schickt Änderungen per `fetch` | `assets/controllers/grid_controller.js` |
 | Stimulus-Controller `break-confirm` | Fragt vor dem Speichern von Ferien nach | `assets/controllers/break_confirm_controller.js` |
 | JSON-Endpunkte | Prüfen, ändern, zählen | `LessonController`, `CourseController` |
 
@@ -127,12 +127,33 @@ zurückgelegt. `fillUpAtEnd()` beginnt erst nach der letzten regulären Einheit.
 
 ## 2. Zeile für Zeile (Auszüge)
 
-**Zuordnung zu einer Spalte** (`CourseGrid::columnFor()`):
+**Zeitachse** (seit C4g, 2026-11-18, `umsetzung-admin.md` C4g). Bis dahin hatte das Raster eine Spalte je
+Zeitfenster, und `columnFor()` entschied, in welche Spalte eine Einheit kommt. Jetzt steht jede Box an ihrer Uhrzeit:
 
-1. Überschneidet die Einheit das Zeitfenster ihrer eigenen Teilnahme → dort (auch eine leicht verschobene).
-2. Sonst das Zeitfenster am selben Tag mit der größten Überschneidung (Doppelstunde von B im Zeitfenster von A).
-3. Sonst die eigene Spalte (Nachholstunde an einem anderen Tag); seit C4f (2026-11-18) in einer eigenen Zeile für
-   diesen Tag, die Zelle zeigt die Uhrzeit.
+- **Achse** (`GridAxis::around()`): von der frühesten Beginnzeit bis zum spätesten Ende aller Boxen im Kurs, auf volle
+  Stunden gerundet. Sie ist für alle Zeilen gleich, sonst stünde 15:00 nicht untereinander.
+- **Position:** Twig schreibt Minuten ab Achsenbeginn als CSS-Variablen in die Box, `style="--start: 40; --length: 50;
+  --lane: 0"`. Die SCSS rechnet daraus mit `calc()` und `--grid-minute: 3px` die Lage aus (`left`, `width`, `top`).
+  Eine Content-Security-Policy, die Inline-Styles verbieten würde, gibt es nicht (geprüft 2026-11-18). Käme eine,
+  bräuchte es `style-src 'unsafe-inline'` oder Klassen statt Werten.
+- **Spuren** (`GridRow::stack()`): Die Boxen eines Tages sind nach Beginn sortiert. Jede kommt auf die erste Spur, deren
+  letzte Box schon geendet hat. Überschneiden sich zwei Boxen, liegen sie untereinander, und die Zeile wird höher
+  (`--lanes`). Endet die eine um 15:50 und beginnt die andere um 15:50, gilt das nicht als Überschneidung.
+- **Überschneidung:** Stattfindende Termine (Einheit ohne Absage, Schnupperstunde) am selben Tag, die sich zeitlich
+  überschneiden, kennen einander (`GridItem::$overlaps`). Sie bekommen einen roten Rahmen und den Hinweis im Tooltip.
+- **Frei** (`CourseGrid::addFreeSlots()`): An einem Unterrichtstag ohne Ferien bekommt das Zeitfenster einer Teilnahme
+  eine gestrichelte Box, wenn dort nichts stattfindet. Das gilt nur zwischen der ersten und letzten regulären Einheit
+  der Teilnahme. Die Box bietet den Nachbarn die Doppelstunde an, deren zweite Einheit in das Fenster fiele
+  (`GridRow::offerDoubles()`).
+- **Zählung „7/15“:** die wievielte zählende Einheit (`Lesson::counts()`) der Teilnahme in zeitlicher Reihenfolge.
+  „Nachholstunde fällig“ steht bei der nächsten stattfindenden Einheit der Teilnahme (nach der letzten bei der letzten).
+- **Zwei Links in einer Box:** HTML erlaubt kein `<a>` in einem `<a>`. Der Link zur Einheit ist leer und deckt mit
+  Bootstrap `.stretched-link` (ein `::after` über dem nächsten positionierten Vorfahren, `z-index: 1`) die ganze Box ab.
+  Der Name liegt mit `position: relative; z-index: 2` darüber und führt zur Teilnahme. Für Screenreader trägt der leere
+  Link ein `aria-label`.
+- **Editor:** Er wird in die Achse des Tages eingefügt (`position: absolute`) und unter die Box gesetzt. In den letzten
+  Zeilen kommt er über die Box, damit er nicht unten aus der Tabelle ragt. Schließen mit Abbrechen, Escape
+  (`keydown.esc@window`, Tastenfilter von Stimulus 3.2) oder Klick daneben (`click@window`).
 
 **Zeilen** (seit C4f, `CourseGrid::rows()`, `GridWeek`): je Tag eine Zeile, an jedem Wochentag mit Zeitfenster und an
 jedem Tag mit Einheit, vom Kursbeginn (bzw. der frühesten Einheit) bis zum Ende (bzw. der letzten Einheit). Die
@@ -141,8 +162,8 @@ Woche Ferientage sind (`GridWeek::isWholeBreak()`); sonst steht die Ferienbezeic
 in der ersten Zeile der Woche steht, färbt das CSS nicht mehr mit `.grid-row--break > *`, sondern Tag und Zellen
 einzeln. Doppelstunden werden nur in Zeitfenstern des eigenen Wochentags angeboten.
 
-Zeiten rechnet `GridColumn` in Minuten nach Mitternacht; Überschneidung ist dann
-`min(Ende1, Ende2) − max(Beginn1, Beginn2) > 0`.
+Zeiten rechnet `GridItem` in Minuten nach Mitternacht; zwei Zeiträume überschneiden sich, wenn
+`Beginn1 < Ende2` und `Beginn2 < Ende1` (`GridItem::overlapsTime()`).
 
 **Überschneidungen in der Datenbank** (`LessonRepository::findOverlapping()`): Zwei Zeiträume überschneiden sich, wenn
 der eine beginnt, bevor der andere endet, und endet, nachdem der andere beginnt. Das Ende ist Beginn + Dauer; DQL kann
@@ -166,6 +187,10 @@ Doctrine-Entities mit Collections bis zur Rekursion. Stattdessen Schlüssel `spl
 | Ziehen statt Knöpfe (Drag and Drop) | Natürlich am Laptop | Am Tablet fummelig; Knöpfe am Zellenrand reichen (Mike) |
 | Ferien-Rückfrage als eigene Seite | Ohne JavaScript | Ein Seitenwechsel mehr (Mike: Popup) |
 | Bearbeiten ohne Neuladen (Zellen im Browser umsetzen) | Flüssiger | Logik von `CourseGrid` doppelt in JavaScript |
+| Spalten je Zeitfenster (bis C4g) | Einfaches HTML, kein Scrollen | Unterschiedliche Uhrzeiten an verschiedenen Tagen stehen ungenau untereinander; Regeln, welche Einheit in welche Spalte kommt |
+| Zeitachse mit CSS-Grid (eine Spalte je Minute) | Das Grid könnte die Spuren selbst setzen | Verhalten bei Überlappung hätte ich erst gegen die Spezifikation prüfen müssen; schwer zu testen |
+| Zeitachse mit Flexbox | Einfach | Abstände bräuchten Leer-Elemente; Überschneidungen gehen nicht |
+| Bootstrap-Popover für den Editor | Fertig | Reinigt HTML nach einer Liste erlaubter Elemente (für Buttons und Textfeld nicht nachgelesen) |
 
 ## 4. Sicherheit und Fallstricke
 

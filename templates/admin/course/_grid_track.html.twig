@@ -1,0 +1,10 @@
+{# The time axis of one day (umsetzung-admin.md C4g): dashed hour lines behind the boxes, one lane per overlap.
+   items: the boxes; lanes: how many lanes high; compact: the low row of cancelled lessons #}
+<div class="grid-track {{ compact ? 'grid-track--compact' }}" style="--length: {{ axis.length }}; --lanes: {{ lanes }}">
+    {% for hour in axis.hours %}
+        <span class="grid-hour" style="--at: {{ hour - axis.startMinute }}" aria-hidden="true"></span>
+    {% endfor %}
+    {% for item in items %}
+        {{ include('admin/course/_grid_item.html.twig') }}
+    {% endfor %}
+</div>

@@ -6,7 +6,7 @@
 {% block body %}
     {# Grid controller (assets/controllers/grid_controller.js, C4d) with the session token for the endpoints (C4c)
        and the texts it shows, already translated #}
-    <div class="course-grid-page" data-controller="grid"
+    <div class="course-grid-page" data-controller="grid" data-action="keydown.esc@window->grid#escape click@window->grid#outside"
          data-grid-token-value="{{ csrf_token('lesson-grid-' ~ course.id) }}"
          data-grid-confirm-delete-value="{{ 'grid.confirm.delete'|trans({}, 'admin') }}"
          data-grid-error-value="{{ 'grid.error.request'|trans({}, 'admin') }}">
@@ -15,16 +15,7 @@
         <a href="{{ path('admin_course_edit', {id: course.id}) }}">{{ 'grid.to_course'|trans({}, 'admin') }}</a>
     </div>
 
-    {% if trials is not empty %}
-        <p class="small mb-3">
-            <strong>{{ 'grid.trials'|trans({}, 'admin') }}:</strong>
-            {% for trial in trials %}
-                <a href="{{ path('admin_trial_edit', {id: trial.id}) }}">{{ trial.student.fullName }}, {{ ('weekday_short.' ~ trial.startsAt|date('N'))|trans({}, 'admin') }} {{ trial.startsAt|date('d.m. H:i') }}</a>{{ not loop.last ? ' · ' }}
-            {% endfor %}
-        </p>
-    {% endif %}
-
-    {% if grid.columns is empty %}
+    {% if grid.empty %}
         <p>{{ 'enrollment.empty'|trans({}, 'admin') }}</p>
     {% else %}
         <div class="table-responsive grid-wrap">
@@ -33,26 +24,20 @@
                     <tr>
                         <th scope="col" class="grid-week">{{ 'grid.week'|trans({}, 'admin') }}</th>
                         <th scope="col" class="grid-day">{{ 'grid.day'|trans({}, 'admin') }}</th>
-                        {% for column in grid.columns %}
-                            <th scope="col" class="grid-slot">
-                                <span class="d-block">{{ ('weekday_short.' ~ column.weekday)|trans({}, 'admin') }} {{ column.startTime }}</span>
-                                {% for enrollment in column.enrollments %}
-                                    <span class="d-block small fw-normal">
-                                        <a href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}</a>
-                                        · {{ include('admin/enrollment/_count.html.twig') }}
-                                        {% if make_ups_due[enrollment.id] > 0 %}
-                                            <span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': make_ups_due[enrollment.id]}, 'admin') }}</span>
-                                        {% endif %}
-                                    </span>
+                        <th scope="col" class="grid-timeline">
+                            {# Hour labels on the same axis as the days below #}
+                            <div class="grid-track grid-track--hours" style="--length: {{ grid.axis.length }}">
+                                {% for hour in grid.axis.hours %}
+                                    <span class="grid-hour-label {{ loop.first ? 'grid-hour-label--first' }} {{ loop.last ? 'grid-hour-label--last' }}" style="--at: {{ hour - grid.axis.startMinute }}">{{ '%02d:00'|format(hour // 60) }}</span>
                                 {% endfor %}
-                            </th>
-                        {% endfor %}
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {# One row per teaching day, grouped by calendar week (C4f). The week cell spans the days and their
                        rows of cancelled lessons. A break on every teaching day of the week is named there, once;
-                       otherwise on the day it falls on #}
+                       otherwise on the day it falls on. Each day is a time axis with boxes (C4g) #}
                     {% for week in grid.weeks %}
                         {% set whole_break = week.wholeBreak %}
                         {% for row in week.rows %}
@@ -79,39 +64,16 @@
                                         {% endfor %}
                                     {% endif %}
                                 </th>
-                                {% for column in grid.columns %}
-                                    {% set lessons = row.cells[column.key] ?? [] %}
-                                    {# Slot of another weekday: no lesson there unless one was moved in #}
-                                    <td class="{{ column.weekday != row.weekday and lessons is empty ? 'grid-cell--off' }}">
-                                        {% for lesson in lessons %}
-                                            {{ include('admin/course/_grid_lesson.html.twig') }}
-                                        {% endfor %}
-                                        {% if row.doubleOffers[column.key] is defined %}
-                                            <div class="grid-doubles d-flex justify-content-between gap-1">
-                                                {% for offer in row.doubleOffers[column.key] %}
-                                                    <button type="button" class="btn btn-sm btn-outline-secondary grid-double grid-double--{{ offer.position }}"
-                                                            data-action="grid#double"
-                                                            data-grid-url-param="{{ path('admin_lesson_double', {id: offer.lesson.id}) }}"
-                                                            data-grid-position-param="{{ offer.position }}"
-                                                            title="{{ 'grid.double.title'|trans({'%name%': offer.lesson.enrollment.student.fullName}, 'admin') }}">
-                                                        {{- ('grid.double.' ~ offer.position)|trans({'%name%': offer.lesson.enrollment.student.firstName}, 'admin') -}}
-                                                    </button>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
+                                <td class="grid-timeline">
+                                    {{ include('admin/course/_grid_track.html.twig', {axis: grid.axis, items: row.items, lanes: row.lanes, compact: false}) }}
+                                </td>
                             </tr>
                             {% if row.hasCancelled %}
                                 <tr class="grid-row--cancelled">
                                     <th scope="row" class="grid-day small fw-normal">{{ 'grid.cancelled'|trans({}, 'admin') }}</th>
-                                    {% for column in grid.columns %}
-                                        <td>
-                                            {% for lesson in row.cancelled[column.key] ?? [] %}
-                                                {{ include('admin/course/_grid_lesson.html.twig') }}
-                                            {% endfor %}
-                                        </td>
-                                    {% endfor %}
+                                    <td class="grid-timeline">
+                                        {{ include('admin/course/_grid_track.html.twig', {axis: grid.axis, items: row.cancelled, lanes: row.cancelledLanes, compact: true}) }}
+                                    </td>
                                 </tr>
                             {% endif %}
                         {% endfor %}
@@ -121,9 +83,9 @@
         </div>
         <p class="small text-body-secondary">{{ 'grid.help'|trans({}, 'admin') }}</p>
 
-        {# Editor for one lesson, cloned into the cell by the grid controller #}
+        {# Editor for one lesson, cloned by the grid controller and shown floating below the box (C4g) #}
         <template data-grid-target="editor">
-            <div class="grid-editor mt-1 p-2 border rounded bg-body">
+            <div class="grid-editor p-2 border rounded bg-body shadow-sm">
                 <div class="d-flex flex-wrap gap-1 mb-2" role="group" aria-label="{{ 'lesson.field.cancelled_by'|trans({}, 'admin') }}">
                     {% for value in ['student', 'teacher'] %}
                         <button type="button" class="btn btn-sm btn-outline-danger" aria-pressed="false"
@@ -137,7 +99,7 @@
                 <div class="d-flex flex-wrap align-items-center gap-1">
                     <button type="button" class="btn btn-sm btn-primary" data-action="grid#save">{{ 'action.save'|trans({}, 'admin') }}</button>
                     <button type="button" class="btn btn-sm btn-outline-success" data-uncancel data-action="grid#uncancel" hidden>{{ 'grid.uncancel'|trans({}, 'admin') }}</button>
-                    <button type="button" class="btn btn-sm btn-link" data-action="grid#close">{{ 'action.cancel'|trans({}, 'admin') }}</button>
+                    <button type="button" class="btn btn-sm btn-link" data-action="grid#cancel">{{ 'action.cancel'|trans({}, 'admin') }}</button>
                     <a class="btn btn-sm btn-link" data-edit-link>{{ 'grid.more'|trans({}, 'admin') }}</a>
                     <button type="button" class="btn btn-sm btn-link text-danger ms-auto" data-action="grid#remove">{{ 'action.delete'|trans({}, 'admin') }}</button>
                 </div>

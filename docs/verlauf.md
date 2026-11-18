@@ -540,3 +540,12 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Fixtures geprüft (KW 43 mit Absagen, KW 44 Herbstferien, KW 52/53 gelb, KW 01 weiß). Fallstrick beim Einfügen der
   Methode: Sie landete zwischen dem Docblock von `readJson()` und der Methode, PHPStan bemerkte den fehlenden
   Rückgabetyp. 202 Tests grün wie in der CI (mit Xdebug), PHPStan ohne Fehler.
+- 2026-11-18, C4g: Raster als Zeitachse (Vorschlag Mike), Schnupperstunden im Raster, Inhalte des Spaltenkopfs in der
+  Box. Neu `GridAxis` (Achse auf volle Stunden), `GridItem` (Einheit, Schnupperstunde, frei; Spur, Überschneidungen,
+  Nummer, fällige Nachholstunde), `GridRow` mit `finish()` (sortieren, Spuren, Überschneidungen, Doppelstunden);
+  `GridColumn` und `columnFor()` entfallen. Position per CSS-Variablen und `calc()` (keine CSP, geprüft). Editor
+  schwebend in der Achse, schließt mit Escape (Stimulus-Tastenfilter `esc`, in `stimulus.index.js` 3.2.2 vorhanden)
+  und Klick daneben. Zwei Links je Box über Bootstrap `.stretched-link`. Im Browser mit Fixtures geprüft (1400 und
+  600 px, Editor, Escape, Absage-Zeile); dabei gefunden: In der niedrigen Zeile verdrängte die Zählung den Namen, sie
+  zeigt jetzt nur Uhrzeit, Name, Art der Absage. PHPStan fand zwei mögliche `null`-Schlüssel. 205 Tests grün wie in
+  der CI (mit Xdebug), PHPStan ohne Fehler.

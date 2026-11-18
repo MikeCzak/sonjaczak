@@ -1,61 +1,37 @@
-// Course grid in the admin area (templates/admin/course/grid.html.twig, umsetzung-admin.md C4b)
+// Course grid in the admin area (templates/admin/course/grid.html.twig, umsetzung-admin.md C4b). Since C4g every day
+// is a time axis: boxes are placed by minutes from the start of the axis (--start, --length, set inline by the
+// template) and stacked by lane (--lane) when they overlap.
 .course-grid {
+    --grid-minute: 3px;
+    --grid-lane-height: 3.75rem;
+    --grid-lane-gap: .25rem;
+    --grid-week-width: 7.5rem;
+
+    width: auto;
     font-size: .875rem;
 
-    .grid-week {
+    // Week and day stay at the left while the axis scrolls sideways
+    .grid-week,
+    .grid-day {
         position: sticky;
+        z-index: 3;
+    }
+
+    .grid-week {
         left: 0;
-        z-index: 1;
-        min-width: 7.5rem;
-        background: var(--bs-body-bg);
+        width: var(--grid-week-width);
+        min-width: var(--grid-week-width);
+        max-width: var(--grid-week-width);
     }
 
     .grid-day {
+        left: var(--grid-week-width);
         min-width: 5.5rem;
         white-space: nowrap;
     }
 
-    .grid-slot {
-        min-width: 10rem;
-    }
-
-    // Slot of another weekday in this day's row (C4f): nothing can take place there
-    .grid-cell--off {
-        background: var(--bs-tertiary-bg);
-    }
-
-    .grid-lesson {
-        padding: .125rem .25rem;
-        border-radius: var(--bs-border-radius-sm);
-        color: var(--bs-body-color);
-
-        &:hover,
-        &:focus-visible {
-            background: var(--bs-tertiary-bg);
-        }
-
-        & + .grid-lesson {
-            margin-top: .25rem;
-            border-top: 1px dashed var(--bs-border-color);
-        }
-    }
-
-    // Held = in the past and not cancelled (Lesson::state()): muted with a check mark, planned ones stand out
-    .grid-lesson--held {
-        color: var(--bs-secondary-color);
-
-        .grid-lesson__name::before {
-            content: "✓ ";
-        }
-    }
-
-    .grid-lesson--planned .grid-lesson__name {
-        font-weight: 600;
-    }
-
-    .grid-lesson__note {
-        color: var(--bs-secondary-color);
-        max-width: 14rem;
+    .grid-timeline {
+        padding: 0;
     }
 
     // Break days and weeks: the day's own cells, and the week cell if every teaching day of the week is a break day.
@@ -76,29 +52,180 @@
         font-weight: 600;
     }
 
-    // Low red row below a day: cancelled lessons, their slot above is free
+    // Low red row below a day: cancelled lessons at their time, their slot above is free
     .grid-row--cancelled > * {
         padding-top: 0;
         padding-bottom: 0;
         background: var(--bs-danger-bg-subtle);
-        font-size: .8rem;
+        font-size: .75rem;
+    }
+}
+
+// The axis of one day
+.course-grid {
+    .grid-track {
+        position: relative;
+        width: calc(var(--length) * var(--grid-minute));
+        height: calc(var(--lanes) * (var(--grid-lane-height) + var(--grid-lane-gap)) + var(--grid-lane-gap));
+    }
+
+    .grid-track--compact {
+        --grid-lane-height: 1.25rem;
+        --grid-lane-gap: .125rem;
+    }
+
+    .grid-track--hours {
+        height: 1.25rem;
+    }
+
+    // Like the grid lines of a chart's x axis
+    .grid-hour {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: calc(var(--at) * var(--grid-minute));
+        border-left: 1px dashed var(--bs-border-color);
+    }
+
+    .grid-hour-label {
+        position: absolute;
+        left: calc(var(--at) * var(--grid-minute));
+        transform: translateX(-50%);
+        font-weight: 400;
+        font-size: .75rem;
+        color: var(--bs-secondary-color);
+    }
+
+    .grid-hour-label--first {
+        transform: none;
+    }
+
+    .grid-hour-label--last {
+        transform: translateX(-100%);
+    }
+}
+
+// Boxes
+.course-grid {
+    .grid-item {
+        position: absolute;
+        z-index: 1;
+        top: calc(var(--grid-lane-gap) + var(--lane) * (var(--grid-lane-height) + var(--grid-lane-gap)));
+        left: calc(var(--start) * var(--grid-minute) + 1px);
+        width: calc(var(--length) * var(--grid-minute) - 2px);
+        height: var(--grid-lane-height);
+        overflow: hidden;
+        padding: .125rem .375rem;
+        border: 1px solid var(--bs-border-color);
+        border-radius: var(--bs-border-radius-sm);
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        font-size: .8125rem;
+        line-height: 1.2;
+        text-decoration: none;
+    }
+
+    .grid-track--compact .grid-item {
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: .75rem;
+        line-height: calc(var(--grid-lane-height) - 2px);
+    }
+
+    // Cut off what does not fit; the full text is in the box's title
+    .grid-item__line {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    // Above the box-wide edit link (.stretched-link::after, z-index 1)
+    .grid-item__name {
+        position: relative;
+        z-index: 2;
+        color: inherit;
+    }
+
+    .grid-item__note {
+        color: var(--bs-secondary-color);
+    }
+
+    .grid-item .badge {
+        font-size: .6875rem;
+    }
+
+    .grid-lesson:hover,
+    .grid-trial:hover {
+        background: var(--bs-tertiary-bg);
+    }
+
+    .grid-lesson .stretched-link:focus-visible {
+        outline: none;
+
+        &::after {
+            outline: 2px solid var(--sc-accent);
+            outline-offset: -2px;
+        }
+    }
+
+    // Held = in the past and not cancelled (Lesson::state()): muted with a check mark, planned ones stand out
+    .grid-lesson--held {
+        color: var(--bs-secondary-color);
+
+        .grid-item__name::before {
+            content: "✓ ";
+        }
+    }
+
+    .grid-lesson--planned .grid-item__name {
+        font-weight: 600;
     }
 
     .grid-row--cancelled .grid-lesson {
         color: var(--bs-danger-text-emphasis);
     }
+
+    .grid-trial {
+        border-style: dashed;
+        border-color: var(--bs-info-border-subtle);
+        background: var(--bs-info-bg-subtle);
+        color: var(--bs-info-text-emphasis);
+
+        .grid-item__name {
+            font-weight: 600;
+        }
+    }
+
+    .grid-free {
+        border-style: dashed;
+        background: transparent;
+        color: var(--bs-secondary-color);
+    }
+
+    .grid-item--overlap {
+        border: 2px solid var(--bs-danger);
+    }
 }
 
-// Editor and double lesson buttons (C4d)
+// Editor and double lesson buttons (C4d). The editor floats below the box (C4g), placed by the grid controller
 .course-grid {
     .grid-editor {
-        min-width: 14rem;
+        position: absolute;
+        z-index: 4;
+        width: 16rem;
     }
 
     .grid-double {
+        display: block;
+        max-width: 100%;
+        margin-top: .125rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         --bs-btn-padding-y: 0;
         --bs-btn-padding-x: .25rem;
-        --bs-btn-font-size: .75rem;
+        --bs-btn-font-size: .6875rem;
     }
 
     .grid-double--before {
@@ -108,8 +235,7 @@
 
 // Tablet and phone: bigger buttons for fingers (Mike: fine below the laptop breakpoint)
 @include media-breakpoint-down(lg) {
-    .course-grid .grid-editor .btn,
-    .course-grid .grid-double {
+    .course-grid .grid-editor .btn {
         --bs-btn-padding-y: .5rem;
         --bs-btn-padding-x: .75rem;
         --bs-btn-font-size: 1rem;

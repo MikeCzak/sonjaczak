@@ -12,12 +12,6 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **Raster als Zeitachse mit Schnupperstunden** (`umsetzung-admin.md` C4g): Plan freigeben? Dazu 1. Maßstab fest 3 px/min
-  mit Scrollen (Empfehlung) oder gestaucht; 2. „Nachholstunde fällig“ bei der nächsten Einheit (A, Empfehlung), jeder (B)
-  oder letzten (C); 3. Platzhalter „frei“ mit Doppelstunden-Angebot (Empfehlung ja); 4. Abgesagte weiter in roter Zeile
-  (Empfehlung) oder blass in der Tageszeile?
-  Antwort:
-
 **Nächster Schritt:** Passkeys mit Sonja einrichten (MacBook Air und Android-Handy, `umsetzung-admin.md` B5d), dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
@@ -33,19 +27,30 @@ verlinkten Erklärung.
   gelöscht, bekommt jede Teilnahme an den frei gewordenen Tagen ihre Einheit wieder, wenn sie in der Woche keine hat.
   Hatte Sonja dort vorher eine Einheit absichtlich gelöscht, kommt auch diese zurück (der Grund wird nicht gespeichert).
   Im Test: Petras gelöschte Einheit kam mit. Selten; sonst im Raster wieder löschen.
-- [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b, seit 2026-11-18 je Tag, C4f) beim Zeigen
-  mit Sonja prüfen: Eine Zeile je Unterrichtstag, links die KW über alle Tage der Woche. Gehaltene Einheiten grau mit
-  ✓, geplante fett; Ferientage gelb, sind alle Unterrichtstage einer Woche frei, auch die KW mit dem Namen der Ferien.
-  Abgesagte Einheiten in einer roten Zeile darunter, aktuelle Woche und heutiger Tag mit blauem Strich. Im Spaltenkopf
-  Zeitfenster, Name und Zählung („14 von 15“). Schnupperstunden im Kurszeitraum als Liste über dem Raster. Nachholstunden
-  an einem anderen Tag bekommen eine eigene Zeile.
+- [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b, seit 2026-11-18 je Tag, C4f, als Zeitachse,
+  C4g) beim Zeigen mit Sonja prüfen: Eine Zeile je Unterrichtstag, links die KW über alle Tage der Woche. Jede Zeile
+  ist eine Zeitachse (3 px pro Minute, am Laptop mit sechs Einheiten etwas breiter als der Bildschirm, waagrecht
+  scrollen). In der Box „13:40 · 5/15“, Name (Link zur Teilnahme), Abzeichen, Notiz; was nicht passt, wird
+  abgeschnitten und steht im Tooltip. Gehaltene grau mit ✓, geplante fett; Schnupperstunden gestrichelt und blau,
+  Überschneidungen rot umrandet und untereinander. Ferientage gelb, ganze Ferienwochen auch bei der KW. Abgesagte in
+  einer niedrigen roten Zeile darunter, oben an ihrer Stelle „frei“ mit Doppelstunden-Angebot.
 - [ ] **Ferien an Tagen ohne Unterricht unsichtbar** (2026-11-18, `umsetzung-admin.md` C4f, Auslegung): Feiertage oder
   Ferientage, auf die kein Unterrichtstag fällt (Mariä Empfängnis am Dienstag, Weihnachtsferien 4.–6.1.), erscheinen im
   Raster nicht; nur auf der Kursseite.
 - [ ] **Ein freier Freitag gilt als freie Woche** (2026-11-18, C4f, Auslegung): Mit nur einem Unterrichtstag steht auch
   ein einzelner Feiertag oder schulautonomer Tag am Freitag bei der KW (die Woche hat dann keinen Unterricht).
-- [ ] **Bedienung des Rasters** (2026-11-16, `umsetzung-admin.md` C4d) mit Sonja prüfen: Der Editor macht die Spalte beim
-  Öffnen breiter (die Tabelle ordnet sich neu); nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
+- [ ] **Annahmen beim Raster als Zeitachse** (2026-11-18, `umsetzung-admin.md` C4g):
+  - „Nachholstunde fällig“ steht bei der nächsten stattfindenden Einheit; liegen alle in der Vergangenheit, bei der
+    letzten.
+  - „frei“ erscheint nur zwischen der ersten und letzten regulären Einheit einer Teilnahme, nicht an Ferientagen, und
+    nicht, wenn dort eine Schnupperstunde liegt. Teilen sich zwei Teilnahmen ein Zeitfenster, gibt es eine Box.
+  - Doppelstunde angeboten wird der Einheit davor bzw. danach, deren zweite Einheit in das freie Fenster fiele (bisher:
+    die Nachbarspalte).
+  - Als Überschneidung gelten nur stattfindende Termine (Einheiten ohne Absage, Schnupperstunden), nicht abgesagte.
+  - Die Achse reicht über alle Einheiten des Kurses; eine späte Nachholstunde macht jede Zeile breiter.
+  - Schnupperstunden erscheinen, wenn sie im Kurszeitraum liegen, auch an Tagen ohne Unterricht (eigene Zeile).
+- [ ] **Bedienung des Rasters** (2026-11-16, `umsetzung-admin.md` C4d, Editor seit C4g schwebend unter der Box) mit
+  Sonja prüfen: Klick auf die Box öffnet den Editor, Klick auf den Namen die Teilnahme; nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
   werden in jeder leeren Zelle angeboten, deren Nachbar am selben Tag eine Einheit hat, auch in Wochen ohne Absage
   (z. B. bevor eine Teilnahme beginnt); ob sie passt, prüft der Server.
 - [ ] **Text der Honorarnote als PDF** (2026-11-17, `umsetzung-admin.md` D2c) beim Zeigen prüfen:
@@ -198,7 +203,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] A1, B1–B4 Grundlagen, Login, Sessions, Passwort vergessen, Benutzerverwaltung (2026-11-13)
 - [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); B5b „Mein Konto“, B5c Login (2026-11-17); B5d lokal geprüft (virtueller Authenticator, Touch ID von Mike, 2026-11-18), gepusht und live 2026-11-18 (CI 44269704195); offen Einrichten mit Sonja
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
-- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18)
+- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18); C4g Raster als Zeitachse mit Schnupperstunden (2026-11-18, nicht gepusht)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
@@ -252,6 +257,7 @@ muss).
 | Datenschutzerklärung der Website | Kein Wort zum Verwaltungsbereich und seinem Session-Cookie; Steuerberaterin Mag.iur. Ulla Kröll namentlich in der Datenschutz-Information Unterricht (2026-11-17) | Betrifft nur Sonja und Mike, keine Besucher:innen; ein Hinweis weniger für Angreifer (Mike). Ersetzt den Textvorschlag in `planung/rollen.md` 10 |
 | Automatische Löschung | Vor dem Echtbetrieb, täglich per Befehl; Semester fest September–Februar und März–August; übrige Daten bis Ende des Folgesemesters (auch bei einem Semester Pause); bei aufzubewahrender Honorarnote wird die Schüler:in gelöscht, die Teilnahme bleibt ohne Person; Dateiname der Honorarnote mit dem PDF gespeichert; keine Mail, Hinweis im Dashboard 30 Tage vorher; laufendes Verfahren beim Finanzamt nicht abgebildet (2026-11-17) | App soll Sonja Arbeit abnehmen (Mike); ein Name ist nicht anonym. `umsetzung-admin.md` F3 |
 | Raster je Unterrichtstag | Eine Zeile je Unterrichtstag, KW-Spalte mit `rowspan`; ganze Ferienwoche als gelbe Tageszeilen mit Namen bei der KW; Einheit auf Ferientag verschieben erlaubt, mit Hinweis (2026-11-18) | Ferien betreffen einen Tag oder nicht, unmissverständlich (Mike). `umsetzung-admin.md` C4f |
+| Raster als Zeitachse | Je Tag eine Zeitachse statt Spalten je Zeitfenster, fest 3 px pro Minute mit waagrechtem Scrollen; Schnupperstunden an ihrer Zeit, Überschneidungen rot und untereinander; Zählung, Name (Link zur Teilnahme) und „Nachholstunde fällig“ (bei der nächsten Einheit) in der Box; Platzhalter „frei“ mit Doppelstunde; Abgesagte in niedriger roter Zeile (2026-11-18) | Uhrzeiten verschiedener Tage stehen minutengenau untereinander, Schnupperstunden werden nicht übersehen (Mike). `umsetzung-admin.md` C4g |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

@@ -275,8 +275,12 @@ grid:
     day: Tag
     week_number: KW %week%
     cancelled: abgesagt
-    trials: Schnupperstunden im Kurszeitraum
+    trial: Schnupperstunde
+    free: frei
+    number: '%number%/%planned%'
     minutes: '%minutes% Min.'
+    overlaps: 'Überschneidet sich mit %items%'
+    edit_lesson: 'Einheit %date%, %time% bearbeiten'
     error:
         csrf: Die Seite ist abgelaufen. Bitte neu laden und noch einmal versuchen.
         invalid_json: Die Anfrage war unvollständig. Bitte neu laden.
@@ -295,7 +299,7 @@ grid:
         before: '+ Doppelstunde %name% →'
         title: 'Zweite Einheit von %name% in diesem Zeitfenster anlegen (zählt als eigene Einheit, die letzte am Kursende fällt dafür weg)'
         not_trimmed: Am Kursende war keine Einheit mehr zum Weglassen. Die Teilnahme hat jetzt eine Einheit mehr als geplant.
-    help: Klick auf eine Einheit öffnet Absage und Notiz. Gelbe Tage sind Ferien oder freie Tage; sind alle Unterrichtstage einer Woche frei, steht der Grund bei der Woche. Abgesagte Einheiten stehen in der roten Zeile darunter. In einem frei gewordenen Zeitfenster kann die Nachbarin oder der Nachbar eine Doppelstunde bekommen.
+    help: Jede Zeile ist ein Tag, die Einheiten stehen an ihrer Uhrzeit. Klick auf eine Einheit öffnet Absage und Notiz, der Name führt zur Teilnahme. „7/15“ heißt siebente von 15 Einheiten. Schnupperstunden sind gestrichelt und blau, rot umrandet ist, was sich zeitlich überschneidet. Gelbe Tage sind Ferien oder freie Tage; sind alle Unterrichtstage einer Woche frei, steht der Grund bei der Woche. Abgesagte Einheiten stehen in der roten Zeile darunter. In einem freien Zeitfenster kann die Nachbarin oder der Nachbar eine Doppelstunde bekommen.
 weekday:
     1: Montag
     2: Dienstag

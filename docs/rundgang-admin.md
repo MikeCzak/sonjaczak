@@ -40,15 +40,21 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 3. Neuen Kurs anlegen (z. B. Sommersemester 2027): Die Ferien werden aus der OpenHolidays API vorgeschlagen (braucht
    Internet).
 4. „Raster“ (Knopf auf der Kursseite): eine Zeile je Unterrichtstag (Freitag), links die Kalenderwoche über alle
-   Tage der Woche, Zeitfenster als Spalten (C4f). Ferientage gelb; sind alle Unterrichtstage einer Woche frei
+   Tage der Woche (C4f). Seit C4g ist jede Zeile eine Zeitachse: oben die Stunden, gestrichelte Stundenlinien, die
+   Einheiten stehen minutengenau an ihrer Uhrzeit (am schmalen Bildschirm waagrecht scrollen, KW und Tag bleiben stehen).
+   In der Box Uhrzeit und Zählung („13:40 · 5/15“), der Name (Link zur Teilnahme) und Abzeichen; „1 Nachholstunde
+   fällig“ steht bei Valentins nächster Einheit. Die Schnupperstunde am Mittwoch, 18.11., 17:00 steht gestrichelt und
+   blau in einer eigenen Zeile (Link zur Schnupperstunde). Ferientage gelb; sind alle Unterrichtstage einer Woche frei
    (Herbstferien, KW 52 und 53), ist auch die KW gelb und nennt die Ferien. KW 01 ist nicht gelb: Die Ferien enden am
-   Mittwoch, 6.1., am Freitag ist Unterricht. Absagen in der roten Zeile unter dem Tag, aktuelle Woche mit blauem
-   Strich links, der heutige Tag ebenso. Gehaltene Einheiten grau mit ✓, geplante fett. Klick auf eine Einheit öffnet
-   die Bearbeitungsseite. Eine Nachholstunde an einem anderen Tag bekommt eine eigene Zeile mit ihrem Datum.
-   Verschiebt man eine Einheit dort auf einen Ferientag, erscheint ein gelber Hinweis; sie bleibt trotzdem dort.
-5. Im Raster bearbeiten (braucht JavaScript): Klick auf eine zukünftige Einheit → „abgesagt (ich)“, Notiz, Speichern.
-   Die Einheit wandert in die rote Zeile, die Zählung im Kopf sinkt, „1 Nachholstunde fällig“ erscheint. In der frei
-   gewordenen Zelle „← + Doppelstunde …“ klicken: Die Nachbarin bekommt eine zweite Einheit (mit Uhrzeit), ihre letzte am
+   Mittwoch, 6.1., am Freitag ist Unterricht. Absagen stehen in der niedrigen roten Zeile unter dem Tag, an ihrer Stelle
+   oben ein gestrichelter Platzhalter „frei“. Aktuelle Woche und heutiger Tag mit Strich links. Gehaltene Einheiten grau
+   mit ✓, geplante fett. Eine Nachholstunde an einem anderen Tag bekommt eine eigene Zeile mit ihrem Datum.
+   Verschiebt man eine Einheit auf einen Ferientag, erscheint ein gelber Hinweis; sie bleibt trotzdem dort.
+   Überschneidung prüfen: eine Schnupperstunde zur Zeit einer Einheit anlegen → beide Boxen untereinander, rot umrandet.
+5. Im Raster bearbeiten (braucht JavaScript): Klick auf eine zukünftige Einheit (nicht auf den Namen) → der Editor
+   erscheint unter der Box, Escape oder Klick daneben schließt ihn. „abgesagt (ich)“, Notiz, Speichern.
+   Die Einheit wandert in die rote Zeile, „1 Nachholstunde fällig“ erscheint bei der nächsten Einheit. Im Platzhalter
+   „frei“ „← + Doppelstunde …“ klicken: Die Nachbarin bekommt eine zweite Einheit, ihre letzte am
    Kursende fällt weg. Dann die abgesagte Einheit öffnen → „Absage aufheben“: Ein Popup nennt die Doppelstunde, nach
    „OK“ ist sie weg und die Nachbarin hat ihre letzte Einheit wieder. Nur die Notiz ändern: Die Seite lädt nicht neu.
    „Löschen“ fragt nach, danach hängt am Kursende eine Einheit an.

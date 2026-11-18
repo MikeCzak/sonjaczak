@@ -1,0 +1,54 @@
+{# One box on a day's time axis (umsetzung-admin.md C4g): placed by minutes from the start of the axis and its lane.
+   A lesson: the whole box opens the editor (C4d; without JavaScript the edit page), the name leads to the enrollment.
+   A trial lesson: the whole box leads to its page. A free slot: offers a double lesson to its neighbours. #}
+{% set position = '--start: ' ~ (item.startMinute - axis.startMinute) ~ '; --length: ' ~ (item.endMinute - item.startMinute) ~ '; --lane: ' ~ item.lane %}
+{% set overlap_hint = item.overlaps is empty ? '' : 'grid.overlaps'|trans({'%items%': item.overlaps|map(o => o.startTime ~ ' ' ~ o.name)|join(', ')}, 'admin') %}
+{% if item.kind == 'lesson' %}
+    {% set lesson = item.lesson %}
+    {% set enrollment = lesson.enrollment %}
+    {% set state = lesson_state(lesson) %}
+    {% set meta = [item.startTime] %}
+    {% if item.number %}{% set meta = meta|merge(['grid.number'|trans({'%number%': item.number, '%planned%': enrollment.plannedLessons}, 'admin')]) %}{% endif %}
+    {% if lesson.durationMinutes != enrollment.lessonMinutes %}{% set meta = meta|merge(['grid.minutes'|trans({'%minutes%': lesson.durationMinutes}, 'admin')]) %}{% endif %}
+    {% if lesson.cancelled %}{% set meta = meta|merge([state.labelKey|trans({}, 'admin')]) %}{% endif %}
+    <div class="grid-item grid-lesson grid-lesson--{{ state.value }} {{ overlap_hint ? 'grid-item--overlap' }}" style="{{ position }}"
+         title="{{ [state.labelKey|trans({}, 'admin') ~ (lesson.note ? ': ' ~ lesson.note), overlap_hint]|filter(t => t)|join(' · ') }}">
+        <a class="stretched-link" href="{{ path('admin_lesson_edit', {id: lesson.id}) }}"
+           aria-label="{{ 'grid.edit_lesson'|trans({'%time%': item.startTime, '%date%': lesson.startsAt|date('d.m.')}, 'admin') }}"
+           data-action="grid#open:prevent" data-cancelled-by="{{ lesson.cancelledBy.value ?? '' }}" data-note="{{ lesson.note }}"></a>
+        {% if compact %}
+            {# Low row: only time, name and who cancelled, so the name fits #}
+            <span class="grid-item__line">{{ item.startTime }} <a class="grid-item__name" href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}</a> · {{ state.labelKey|trans({}, 'admin') }}</span>
+        {% else %}
+            <span class="grid-item__line">{{ meta|join(' · ') }}</span>
+            <a class="grid-item__name grid-item__line" href="{{ path('admin_enrollment_show', {id: enrollment.id}) }}">{{ include('admin/enrollment/_student_name.html.twig') }}</a>
+            <span class="grid-item__line">
+                {%- if item.makeUpsDue > 0 %}<span class="badge text-bg-warning">{{ 'enrollment.make_up_due'|trans({'%count%': item.makeUpsDue}, 'admin') }}</span> {% endif -%}
+                {%- if lesson.makeUpFor %}<span class="badge text-bg-info">{{ 'lesson.make_up_for'|trans({'%date%': lesson.makeUpFor.startsAt|date('d.m.')}, 'admin') }}</span> {% endif -%}
+                {%- if lesson.fromTrial %}<span class="badge text-bg-light">{{ 'lesson.from_trial'|trans({}, 'admin') }}</span> {% endif -%}
+                <span class="grid-item__note" data-note-text>{{ lesson.note }}</span>
+            </span>
+        {% endif %}
+    </div>
+{% elseif item.kind == 'trial' %}
+    {% set trial = item.trial %}
+    <a class="grid-item grid-trial {{ overlap_hint ? 'grid-item--overlap' }}" style="{{ position }}" href="{{ path('admin_trial_edit', {id: trial.id}) }}"
+       title="{{ ['grid.trial'|trans({}, 'admin') ~ (trial.note ? ': ' ~ trial.note), overlap_hint]|filter(t => t)|join(' · ') }}">
+        <span class="grid-item__line">{{ item.startTime }} · {{ 'grid.trial'|trans({}, 'admin') }}</span>
+        <span class="grid-item__name grid-item__line">{{ trial.student ? trial.student.fullName }}</span>
+        <span class="grid-item__line grid-item__note">{{ trial.note }}</span>
+    </a>
+{% else %}
+    <div class="grid-item grid-free" style="{{ position }}">
+        <span class="grid-item__line">{{ item.startTime }} · {{ 'grid.free'|trans({}, 'admin') }}</span>
+        {% for offer in item.doubleOffers %}
+            <button type="button" class="btn btn-sm btn-outline-secondary grid-double grid-double--{{ offer.position }}"
+                    data-action="grid#double"
+                    data-grid-url-param="{{ path('admin_lesson_double', {id: offer.lesson.id}) }}"
+                    data-grid-position-param="{{ offer.position }}"
+                    title="{{ 'grid.double.title'|trans({'%name%': offer.lesson.enrollment.student.fullName ?? ''}, 'admin') }}">
+                {{- ('grid.double.' ~ offer.position)|trans({'%name%': offer.lesson.enrollment.student.firstName ?? ''}, 'admin') -}}
+            </button>
+        {% endfor %}
+    </div>
+{% endif %}
