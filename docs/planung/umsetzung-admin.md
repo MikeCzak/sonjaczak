@@ -203,16 +203,44 @@ Entscheidungen (Mike, 2026-11-14 bis 2026-11-16):
 **C4f Ferienwochen im Raster** (Frage von Mike, 2026-11-18): Eine Zeile ist gelb, sobald Ferien die Woche auch nur
 an einem Tag berühren (`CourseGrid::breaksIn`). Fixtures: Weihnachtsferien 24.12.–6.1. (Do–Mi) → drei gelbe Wochen,
 in der dritten (4.–10.1.) stehen die Freitagseinheiten vom 8.1., der kein Ferientag ist. Richtig geplant, aber
-missverständlich. Optionen:
+missverständlich.
 
-- **A (Empfehlung):** Gelb nur, wenn ein Ferientag auf einen Wochentag fällt, an dem der Kurs Teilnahmen hat (hier
-  Freitag); sonst bleibt nur das Abzeichen, mit Zeitraum („Weihnachtsferien bis 6.1.“). Pro: zeigt, was für den
-  Unterricht zählt. Contra: Bei Kursen an mehreren Tagen ist eine Woche gelb, obwohl ein Tag Unterricht hat.
-- **B:** Gelb wie bisher, Abzeichen mit Zeitraum. Pro: kleinste Änderung. Contra: gelbe Zeile mit Einheiten bleibt.
-- **C:** Ferientage je Zelle färben statt je Zeile. Pro: genau. Contra: größerer Umbau des Rasters.
+Erste Optionen (überholt durch Mikes Vorschlag D): A gelb nur, wenn ein Unterrichtstag betroffen ist; B Abzeichen mit
+Zeitraum; C Ferientage je Zelle.
 
-Dazu (Frage, keine Option): Eine einzelne Einheit lässt sich im Formular „Einheit bearbeiten“ ohne Hinweis auf einen
-Ferientag verschieben; die Planung selbst legt nie Einheiten in Ferien. Hinweis beim Speichern, Sperre oder so lassen?
+**Vorschlag D (Mike): eine Zeile je Unterrichtstag statt je Woche**
+
+- **Zeilen:** je Woche eine Zeile für jeden Wochentag, an dem der Kurs Zeitfenster hat (heute nur Freitag, also gleich
+  viele Zeilen wie bisher). Dazu eine Zeile für jeden anderen Tag, an dem eine Einheit liegt (Nachholstunde an einem
+  Mittwoch); das ersetzt die heutige Sonderanzeige „mit Wochentag und Uhrzeit“.
+- **Erste Spalte „KW“** mit `rowspan` über die Tage der Woche: ISO-Kalenderwoche und Zeitraum (KW 53, 28.12.–3.1.).
+  Zweite Spalte: Datum mit Wochentag.
+- **Ferien:** Sind **alle Unterrichtstage der Woche** Ferientage (nicht Mo–So: die Herbstferien 27.–31.10. sind
+  Di–Sa), steht der Name in der KW-Zelle und die ganze Woche ist gelb. Sonst steht er beim einzelnen Tag (Feiertag,
+  schulautonomer Tag, erster oder letzter Ferientag), nur diese Zeile ist gelb. Die Zeilen bleiben sichtbar, damit die
+  Lücke im Datum erkennbar ist.
+- **Mehrere Unterrichtstage:** Zellen von Zeitfenstern eines anderen Wochentags bleiben leer und grau (kein Unterricht
+  an diesem Tag), Doppelstunden werden nur dort angeboten, wo das Zeitfenster zum Tag passt (wie heute).
+- **Abgesagte Einheiten:** niedrige rote Zeile unter dem jeweiligen Tag statt unter der Woche.
+- **Aktuelle Woche:** blauer Strich wie bisher an der KW-Zelle; zusätzlich der heutige Tag hervorgehoben.
+- **Nicht betroffen:** Planung (eine Einheit je Woche und Teilnahme), Zählung, Editor, Endpunkte. Geändert werden
+  `CourseGrid`, `GridRow` (Tag statt Woche), `grid.html.twig`, `_course-grid.scss`, die beiden Raster-Tests.
+- **Fallstrick `rowspan`:** Ab der zweiten Zeile einer Woche fehlt die erste Zelle. Geprüft 2026-11-18: Weder
+  `grid_controller.js` noch `_course-grid.scss` wählen Zellen nach Position, beides arbeitet mit Klassen und
+  `data-`Attributen.
+
+Pro: Ferien sind eindeutig, weil sie einen Tag betreffen oder nicht; Nachholstunden an anderen Tagen bekommen ihre
+eigene Zeile. Contra: bei mehreren Unterrichtstagen viele graue Zellen (bei zwei Tagen die Hälfte); etwas mehr Umbau
+als A.
+
+**Fragen:**
+
+1. Vorschlag D so umsetzen?
+2. Ganze Ferienwoche: alle Tageszeilen gelb anzeigen (Empfehlung, Datum bleibt sichtbar) oder zu einer Zeile
+   zusammenfassen?
+3. Einheit von Hand auf einen Ferientag verschieben (Formular „Einheit bearbeiten“): so lassen (Empfehlung, mit D
+   steht sie sichtbar in einer gelben Zeile; Sonja kann in den Ferien bewusst eine Stunde ausmachen), Hinweis beim
+   Speichern oder Sperre?
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 

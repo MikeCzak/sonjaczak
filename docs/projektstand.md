@@ -12,9 +12,9 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **Ferienwochen im Raster** (`umsetzung-admin.md` C4f): Gelb nur, wenn ein Ferientag auf einen Unterrichtstag fällt
-  (A, Empfehlung), Abzeichen mit Zeitraum (B) oder Ferientage je Zelle (C)? Und: Einheit von Hand in die Ferien
-  verschieben – Hinweis, Sperre oder so lassen?
+- **Raster mit einer Zeile je Unterrichtstag** (`umsetzung-admin.md` C4f, Vorschlag D von Mike): so umsetzen? Ganze
+  Ferienwoche als gelbe Tageszeilen (Empfehlung) oder eine Zeile? Einheit von Hand in die Ferien verschieben: so lassen
+  (Empfehlung), Hinweis oder Sperre?
   Antwort:
 
 **Nächster Schritt:** Passkeys mit Sonja einrichten (MacBook Air und Android-Handy, `umsetzung-admin.md` B5d), dann
