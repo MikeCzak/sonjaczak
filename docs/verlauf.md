@@ -523,3 +523,7 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `restore-test.sh` braucht keine Änderung (Tabellen dynamisch). Erklärung `erklaerungen/21-passkeys.md`, Rundgang
   9.4. 201 Tests grün, PHPStan ohne Fehler.
 - 2026-11-18: Mike hat den Passkey lokal mit Touch ID eingerichtet und sich damit angemeldet. B5 gepusht.
+- 2026-11-18: Erster CI-Lauf nach dem Push (44268914166) rot: PHPUnit brach mit „Allowed memory size of 134217728 bytes
+  exhausted“ ab. Die CI läuft mit Xdebug (Dev-Image), lokal hatte ich mit `XDEBUG_MODE=off` getestet. Lokal wie in
+  der CI nachgestellt: Spitze 145 MB, über PHPs Standard 128M. Lösung: `memory_limit` 512M nur für PHPUnit
+  (`phpunit.dist.xml`); Produktion unverändert.
