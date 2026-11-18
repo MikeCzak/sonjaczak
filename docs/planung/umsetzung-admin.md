@@ -200,6 +200,20 @@ Entscheidungen (Mike, 2026-11-14 bis 2026-11-16):
   - Ferien per Woche: Link „Ferien …“ in jeder Wochenzeile öffnet das Ferienformular vorbelegt, danach zurück ins Raster.
 - **Kursname:** abgeleitet, Wochentage aus den Teilnahmen angehängt („Wintersemester 2026/27 (Fr)“), kein Feld.
 
+**C4f Ferienwochen im Raster** (Frage von Mike, 2026-11-18): Eine Zeile ist gelb, sobald Ferien die Woche auch nur
+an einem Tag berühren (`CourseGrid::breaksIn`). Fixtures: Weihnachtsferien 24.12.–6.1. (Do–Mi) → drei gelbe Wochen,
+in der dritten (4.–10.1.) stehen die Freitagseinheiten vom 8.1., der kein Ferientag ist. Richtig geplant, aber
+missverständlich. Optionen:
+
+- **A (Empfehlung):** Gelb nur, wenn ein Ferientag auf einen Wochentag fällt, an dem der Kurs Teilnahmen hat (hier
+  Freitag); sonst bleibt nur das Abzeichen, mit Zeitraum („Weihnachtsferien bis 6.1.“). Pro: zeigt, was für den
+  Unterricht zählt. Contra: Bei Kursen an mehreren Tagen ist eine Woche gelb, obwohl ein Tag Unterricht hat.
+- **B:** Gelb wie bisher, Abzeichen mit Zeitraum. Pro: kleinste Änderung. Contra: gelbe Zeile mit Einheiten bleibt.
+- **C:** Ferientage je Zelle färben statt je Zeile. Pro: genau. Contra: größerer Umbau des Rasters.
+
+Dazu (Frage, keine Option): Eine einzelne Einheit lässt sich im Formular „Einheit bearbeiten“ ohne Hinweis auf einen
+Ferientag verschieben; die Planung selbst legt nie Einheiten in Ferien. Hinweis beim Speichern, Sperre oder so lassen?
+
 **C5 Schnupperstunden** – erledigt 2026-11-13
 
 - Entity `TrialLesson`, Anlegen und Liste, Übernahme in eine Teilnahme (Transaktion, `fromTrial`).

@@ -12,7 +12,10 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-Keine Frage offen.
+- **Ferienwochen im Raster** (`umsetzung-admin.md` C4f): Gelb nur, wenn ein Ferientag auf einen Unterrichtstag fällt
+  (A, Empfehlung), Abzeichen mit Zeitraum (B) oder Ferientage je Zelle (C)? Und: Einheit von Hand in die Ferien
+  verschieben – Hinweis, Sperre oder so lassen?
+  Antwort:
 
 **Nächster Schritt:** Passkeys mit Sonja einrichten (MacBook Air und Android-Handy, `umsetzung-admin.md` B5d), dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
