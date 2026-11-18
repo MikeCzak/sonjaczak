@@ -12,8 +12,10 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **Schnupperstunden im Raster** (`umsetzung-admin.md` C4g): eigene Spalte rechts (A, Empfehlung) oder im
-  überschnittenen Zeitfenster (B)? Überschneidungen mit regulären Einheiten markieren (Empfehlung: vorerst nicht)?
+- **Raster als Zeitachse mit Schnupperstunden** (`umsetzung-admin.md` C4g): Plan freigeben? Dazu 1. Maßstab fest 3 px/min
+  mit Scrollen (Empfehlung) oder gestaucht; 2. „Nachholstunde fällig“ bei der nächsten Einheit (A, Empfehlung), jeder (B)
+  oder letzten (C); 3. Platzhalter „frei“ mit Doppelstunden-Angebot (Empfehlung ja); 4. Abgesagte weiter in roter Zeile
+  (Empfehlung) oder blass in der Tageszeile?
   Antwort:
 
 **Nächster Schritt:** Passkeys mit Sonja einrichten (MacBook Air und Android-Handy, `umsetzung-admin.md` B5d), dann

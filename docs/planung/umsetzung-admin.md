@@ -246,28 +246,126 @@ einen Ferientag.** Umgesetzt: `GridWeek` (neu), `GridRow` je Tag, Hinweis als ge
    steht sie sichtbar in einer gelben Zeile; Sonja kann in den Ferien bewusst eine Stunde ausmachen), Hinweis beim
    Speichern oder Sperre?
 
-**C4g Schnupperstunden im Raster** (Wunsch Mike, 2026-11-18): Heute stehen die Schnupperstunden im Kurszeitraum als
-Liste über dem Raster und werden leicht übersehen; für Sonja sind sie gleich viel Arbeit wie reguläre Einheiten. Sie
-gehören zu keinem Kurs und keiner Teilnahme (nur Schüler:in, Beginn, Dauer); übernommene werden zur Einheit mit
-„Schnupperstunde“ und gelöscht (`TrialTakeover`), erscheinen also nie doppelt. Bearbeiten wie bisher nur über den Link
-zur Seite der Schnupperstunde, kein Editor im Raster.
+**C4g Raster als Zeitachse, mit Schnupperstunden** (Wunsch Mike, 2026-11-18, Plan 2026-11-18). Ersetzt den ersten
+Entwurf (Schnupperstunden als eigene Spalte A oder im Zeitfenster B).
 
-Optionen, wo sie stehen:
+Anlass:
 
-- **A (Empfehlung): eigene Spalte „Schnupperstunden“ ganz rechts**, nur wenn es im Kurszeitraum welche gibt. Jede
-  steht in der Zeile ihres Tages mit Uhrzeit; an einem Tag ohne Unterricht bekommt sie eine eigene Zeile (wie eine
-  Nachholstunde), an einem Ferientag ist die Zeile gelb. Pro: klar getrennt von bearbeitbaren Einheiten, nichts an
-  Doppelstunden und Editor ändert sich. Contra: Eine Überschneidung mit einer regulären Einheit sieht man nur an der
-  Uhrzeit.
-- **B: im Zeitfenster, das sie zeitlich überschneidet**, sonst in einer eigenen Spalte. Pro: Überschneidungen sofort
-  sichtbar. Contra: Schnupperstunden und bearbeitbare Einheiten in derselben Zelle; eine leere Zelle mit
-  Schnupperstunde würde Doppelstunden anbieten, das müsste man ausnehmen.
+- Schnupperstunden stehen als Liste über dem Raster und werden leicht übersehen. Für Sonja sind sie gleich viel Arbeit
+  wie reguläre Einheiten.
+- Seit C4f gibt es eine Zeile je Tag. Der Spaltenkopf mit Uhrzeit, Name, Zählung und „Nachholstunde fällig“ passt
+  nicht mehr, sobald es mehr als einen Unterrichtstag gibt.
+- Do 15:00 und Fr 15:30 stünden in Spalten untereinander, obwohl sie zeitlich versetzt sind.
 
-Umfang (A): `CourseGrid::build()` bekommt die Schnupperstunden, `rows()` legt ihre Tage an, `GridRow::$trials`; im
-Template eine Spalte mehr (auch in der roten Zeile), die Liste oben entfällt; Tests. Klein, ein Schritt.
+Mikes Vorgaben:
 
-**Fragen:** 1. A oder B? 2. Sollen Überschneidungen mit einer regulären Einheit markiert werden (z. B. rot umrandet)?
-Empfehlung: vorerst nicht, Sonja vergibt Schnupperstunden in freie Zeiten.
+- Schnupperstunden kommen dorthin, wo sie zeitlich liegen (Option B), Überschneidungen sichtbar.
+- Uhrzeit, „die wievielte Einheit“ und „Nachholstunde fällig“ stehen in der Box.
+- Der Name verlinkt auf die Seite der Teilnahme; der Rest der Box öffnet den Editor.
+- Statt Spalten eine Zeitachse je Tag: Breite = Dauer, Position = Beginn, gestrichelte Stundenlinien dahinter.
+
+**Aufbau**
+
+- **Tabelle bleibt** mit den Spalten KW (`rowspan`) und Tag wie in C4f. Statt der Zeitfenster-Spalten gibt es eine
+  dritte Zelle je Zeile: die Zeitachse des Tages. Der Kopf zeigt darüber die vollen Stunden (14:00, 15:00 …).
+- **Achse für den ganzen Kurs gleich:** von der frühesten Beginnzeit bis zum spätesten Ende aller Einheiten,
+  Schnupperstunden und Zeitfenster im Raster, auf volle Stunden gerundet. So steht jede Uhrzeit in jeder Zeile an
+  derselben Stelle.
+  - Preis: Ein Ausreißer (Nachholstunde um 19:00) macht alle Zeilen breiter.
+- **Maßstab fest** in Pixel pro Minute, Vorschlag 3 px (50 Minuten ≈ 150 px), am Prototyp nachschärfen. Ist das Raster
+  breiter als der Bildschirm, wird es waagrecht gescrollt. KW und Tag bleiben dabei links stehen (`position: sticky`).
+- **Stundenlinien:** gestrichelt als Hintergrund der Zeitachse (`repeating-linear-gradient`, Abstand 60 Minuten). Die
+  Achse beginnt immer zu einer vollen Stunde, also auch die erste Linie.
+
+**Boxen**
+
+- **Inhalt einer Einheit:**
+  - Zeile 1: Uhrzeit und Zählung, z. B. „15:00 · 7/15“.
+  - Zeile 2: Name als Link auf die Teilnahme (`admin_enrollment_show`).
+  - Darunter wie bisher Abzeichen (Nachholstunde für …, aus Schnupperstunde, Nachholstunde fällig), Minuten bei
+    abweichender Dauer und die Notiz.
+  - Was nicht in die Breite passt, wird abgeschnitten; der volle Text steht im Tooltip.
+- **Zählung „7/15“:**
+  - 7 = die wievielte zählende Einheit der Teilnahme, nach Beginnzeit (Regel aus `Lesson::counts()`: Absagen durch
+    Sonja zählen nicht, Absagen durch die Schüler:in schon).
+  - 15 = Anzahl der Teilnahme (C7). Eine nicht zählende Einheit bekommt keine Nummer.
+  - Berechnet einmal je Teilnahme in `CourseGrid`, nicht in Twig.
+- **Klickflächen:** Die ganze Box ist ein Link auf „Einheit bearbeiten“; mit JavaScript öffnet er den Editor (wie
+  heute). Der Name ist ein eigener Link darüber.
+  - Zwei verschachtelte `<a>` sind in HTML nicht erlaubt. Darum liegen beide Links nebeneinander: Der Link zur Einheit
+    deckt die Box mit einem Pseudo-Element ab (Bootstrap `.stretched-link`, `vendor/twbs/bootstrap/scss/helpers/_stretched-link.scss`).
+    Der Namenslink liegt mit `position: relative` und höherem `z-index` darüber.
+- **Schnupperstunde:** eigene Farbe, gestrichelter Rahmen, Aufschrift „Schnupperstunde“, Name. Die ganze Box verlinkt
+  auf die Seite der Schnupperstunde (`admin_trial_edit`), kein Editor, keine Zählung. An einem Tag ohne Unterricht
+  bekommt sie eine eigene Zeile, wie eine Nachholstunde. Die Liste über dem Raster entfällt.
+- **Überschneidung:** Liegen zwei stattfindende Termine (Einheiten ohne Absage, Schnupperstunden) am selben Tag
+  zeitlich übereinander, kommen sie auf zwei Spuren untereinander und die Zeile wird höher. Beide bekommen einen roten
+  Rahmen und den Tooltip „überschneidet sich mit …“.
+  - Die Spuren rechnet der Server aus: nach Beginn sortiert, jede Box auf die erste freie Spur. Das ist
+    deterministisch und im Unit-Test prüfbar.
+  - Ein Nachbar, der genau dann beginnt, wenn der andere endet (15:50/15:50), ist keine Überschneidung.
+- **Platzhalter „frei“:** Fällt in ein Zeitfenster einer Teilnahme an einem Unterrichtstag ohne Ferien keine
+  stattfindende Einheit, steht dort ein gestrichelter Platzhalter. Das ist der Fall, wenn die Einheit abgesagt,
+  gelöscht oder verschoben wurde. Er bietet wie heute die Doppelstunde an, also dem Nachbarn davor „danach“ und dem
+  Nachbarn danach „davor“. Ob sie passt, prüft weiter der Server (`LessonController::double()`).
+  - Vor dem Beginn und nach dem Ende einer Teilnahme gibt es keinen Platzhalter.
+  - Liegt eine Schnupperstunde im freien Fenster, gibt es keinen Platzhalter, also auch kein Doppelstunden-Angebot.
+- **Abgesagte Einheiten** bleiben in der niedrigen roten Zeile unter dem Tag, auf derselben Achse an ihrer Zeit.
+
+**Editor**
+
+- Heute wird er in die Zelle eingefügt und macht die Spalte breiter. Auf der Zeitachse würde das die Boxen
+  verschieben. Er erscheint deshalb als schwebendes Feld unter der Box (absolut positioniert im Zeitachsen-Container,
+  nach rechts begrenzt).
+- Schließen mit „Abbrechen“, Escape oder Klick daneben; Fokus zurück auf die Box.
+- Inhalt und Endpunkte bleiben gleich.
+- Bootstrap-Popover wäre möglich: Der Admin lädt `app` und damit Bootstrap 5.3.8 mit Popper 2.11.8
+  (`importmap.php`, `templates/admin/base.html.twig`).
+  - Empfehlung trotzdem ein eigenes Element. Das Popover reinigt HTML-Inhalt nach einer Liste erlaubter Elemente.
+    Ob Buttons und Textarea darauf stehen, habe ich nicht nachgelesen; sonst müsste man die Liste erweitern.
+  - Die Stimulus-Aktionen im geklonten Editor funktionieren heute schon. Es ändert sich nur, wo er eingefügt wird.
+
+**Technik**
+
+- **Position:** Jede Box bekommt `style="--start: 60; --length: 50; --lane: 0"` (Minuten ab Achsenbeginn, Spur).
+  Die SCSS rechnet `left`, `width` und `top` mit `calc()` und `--minute-width` aus.
+  - Geprüft: Eine Content-Security-Policy, die Inline-Styles verbieten würde, gibt es nicht.
+  - Alternative: CSS-Grid mit einer Spalte je Minute (`grid-column: 61 / span 50`). Das Grid könnte die Spuren auch
+    selbst setzen (`grid-auto-flow: dense`). Dieses Verhalten müsste ich vor dem Einsatz gegen die Spezifikation
+    prüfen, und es wäre schwer zu testen. Darum nur, falls die absolute Positionierung Probleme macht.
+  - Flexbox wie in Mikes Skizze: Abstände bräuchten Leer-Elemente, und Überschneidungen gingen nicht.
+- **Modell:**
+  - `CourseGrid` baut statt Spalten je Zeile eine Liste von `GridItem` mit Art (Einheit, Schnupperstunde, frei),
+    Minuten, Spur, Überschneidungen und Nummer. Die Achse kommt als `GridAxis` mit Beginn, Ende und vollen Stunden.
+  - `GridColumn`, `columnFor()` und die Zellen je Spalte entfallen. Die Zeitfenster der Teilnahmen bleiben nur noch
+    für die Platzhalter.
+  - Die Reihenfolge im HTML ist nach Uhrzeit sortiert, damit Tastatur und Screenreader sie in der Zeitfolge
+    durchgehen.
+- **Unverändert:** Planung, Zählung, Endpunkte und CSRF, Ferien und Zeilen aus C4f, das Laden der Schnupperstunden
+  (`TrialLessonRepository::findBetween`).
+- **Tests:**
+  - `tests/Course/CourseGridTest.php`: Achse, Positionen, Spuren und Überschneidung, Platzhalter, Zählung,
+    Schnupperstunde an einem anderen Tag.
+  - `tests/Admin/CourseGridTest.php`: Links in der Box, keine Liste mehr oben.
+  - Dazu ein Blick im Browser (Headless Chrome) auf Breite, Scrollen und Editor.
+- **Doku:** `erklaerungen/18-kursraster.md` (Zeitachse, Spuren, warum absolute Positionierung), `rundgang-admin.md`,
+  Hilfetext unter dem Raster.
+
+**Umfang:** größer als C4f. `CourseGrid`, Template, SCSS, Editor-JavaScript und beide Tests werden großteils neu
+geschrieben. Ein Schritt, zwei Commits (Modell mit Unit-Tests, dann Darstellung mit Editor).
+
+**Fragen:**
+
+1. Maßstab: fest 3 px pro Minute mit waagrechtem Scrollen (Empfehlung, Boxen bleiben lesbar) oder auf die
+   Bildschirmbreite gestaucht (kein Scrollen, auf schmalen Bildschirmen sehr enge Boxen)?
+2. Wo steht „Nachholstunde fällig“?
+   - A (Empfehlung): in der Box der **nächsten** geplanten Einheit der Teilnahme. Dort sieht Sonja es in der
+     aktuellen Woche.
+   - B: in jeder Box der Teilnahme.
+   - C: in der letzten Box der Teilnahme, wo eine Nachholstunde angehängt würde.
+3. Platzhalter „frei“ in Zeitfenstern ohne stattfindende Einheit, mit dem Angebot für die Doppelstunde (Empfehlung: ja)?
+4. Abgesagte Einheiten weiter in der roten Zeile unter dem Tag (Empfehlung) oder blass in der Tageszeile? Blass bräuchten
+   sie eigene Spuren und machten Zeilen höher.
 
 **C5 Schnupperstunden** – erledigt 2026-11-13
 
