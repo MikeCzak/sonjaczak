@@ -246,6 +246,29 @@ einen Ferientag.** Umgesetzt: `GridWeek` (neu), `GridRow` je Tag, Hinweis als ge
    steht sie sichtbar in einer gelben Zeile; Sonja kann in den Ferien bewusst eine Stunde ausmachen), Hinweis beim
    Speichern oder Sperre?
 
+**C4g Schnupperstunden im Raster** (Wunsch Mike, 2026-11-18): Heute stehen die Schnupperstunden im Kurszeitraum als
+Liste über dem Raster und werden leicht übersehen; für Sonja sind sie gleich viel Arbeit wie reguläre Einheiten. Sie
+gehören zu keinem Kurs und keiner Teilnahme (nur Schüler:in, Beginn, Dauer); übernommene werden zur Einheit mit
+„Schnupperstunde“ und gelöscht (`TrialTakeover`), erscheinen also nie doppelt. Bearbeiten wie bisher nur über den Link
+zur Seite der Schnupperstunde, kein Editor im Raster.
+
+Optionen, wo sie stehen:
+
+- **A (Empfehlung): eigene Spalte „Schnupperstunden“ ganz rechts**, nur wenn es im Kurszeitraum welche gibt. Jede
+  steht in der Zeile ihres Tages mit Uhrzeit; an einem Tag ohne Unterricht bekommt sie eine eigene Zeile (wie eine
+  Nachholstunde), an einem Ferientag ist die Zeile gelb. Pro: klar getrennt von bearbeitbaren Einheiten, nichts an
+  Doppelstunden und Editor ändert sich. Contra: Eine Überschneidung mit einer regulären Einheit sieht man nur an der
+  Uhrzeit.
+- **B: im Zeitfenster, das sie zeitlich überschneidet**, sonst in einer eigenen Spalte. Pro: Überschneidungen sofort
+  sichtbar. Contra: Schnupperstunden und bearbeitbare Einheiten in derselben Zelle; eine leere Zelle mit
+  Schnupperstunde würde Doppelstunden anbieten, das müsste man ausnehmen.
+
+Umfang (A): `CourseGrid::build()` bekommt die Schnupperstunden, `rows()` legt ihre Tage an, `GridRow::$trials`; im
+Template eine Spalte mehr (auch in der roten Zeile), die Liste oben entfällt; Tests. Klein, ein Schritt.
+
+**Fragen:** 1. A oder B? 2. Sollen Überschneidungen mit einer regulären Einheit markiert werden (z. B. rot umrandet)?
+Empfehlung: vorerst nicht, Sonja vergibt Schnupperstunden in freie Zeiten.
+
 **C5 Schnupperstunden** – erledigt 2026-11-13
 
 - Entity `TrialLesson`, Anlegen und Liste, Übernahme in eine Teilnahme (Transaktion, `fromTrial`).
