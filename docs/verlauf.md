@@ -530,3 +530,13 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - 2026-11-18: CI-Lauf 44269704195 grün (Tests, Build, Deploy), Migration `Version20261117210541` in Produktion in
   50 ms (`passkey`, `webauthn_handle`). Live geprüft: Login-Seite zeigt den Passkey-Knopf, Login-Optionen liefern
   `rpId: sonjaczak.com`, `userVerification: required`, leere `allowCredentials`.
+- 2026-11-18: Schüler:innen-Seite zeigt „Nimmt an keinem Kurs teil“ statt einer leeren Liste (Mike). In den Fixtures
+  haben nur Nr. 1–6 einen Kurs und Nr. 7–8 eine Schnupperstunde, daher wirkte die Liste kaputt.
+- 2026-11-18, C4f: Raster mit einer Zeile je Unterrichtstag statt je Woche (Vorschlag Mike). Anlass: Die Woche
+  4.–10.1. war gelb (Weihnachtsferien bis Mi 6.1.), obwohl am Fr 8.1. Unterricht ist. Neu `GridWeek` (KW-Zelle mit
+  `rowspan`, „ganze Ferienwoche“ = alle Unterrichtstage frei), `GridRow` je Tag; Nachholstunden an anderen Tagen in
+  eigener Zeile, Doppelstunden nur im Zeitfenster des eigenen Wochentags; CSS färbt Tag und Zellen einzeln (wegen
+  `rowspan` nicht mehr `> *`). Verschieben auf einen Ferientag bleibt erlaubt, mit gelbem Hinweis. Im Browser mit
+  Fixtures geprüft (KW 43 mit Absagen, KW 44 Herbstferien, KW 52/53 gelb, KW 01 weiß). Fallstrick beim Einfügen der
+  Methode: Sie landete zwischen dem Docblock von `readJson()` und der Methode, PHPStan bemerkte den fehlenden
+  Rückgabetyp. 202 Tests grün wie in der CI (mit Xdebug), PHPStan ohne Fehler.

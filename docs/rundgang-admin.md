@@ -39,10 +39,13 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    x entfernt, x angelegt“). Den Ferientag wieder löschen: Die Einheiten an dem Tag kommen zurück, am Ende fallen sie weg.
 3. Neuen Kurs anlegen (z. B. Sommersemester 2027): Die Ferien werden aus der OpenHolidays API vorgeschlagen (braucht
    Internet).
-4. „Raster“ (Knopf auf der Kursseite): Wochen als Zeilen, Zeitfenster als Spalten. Ferienwochen gelb, die Absagen
-   von Sophia Schmied in der roten Zeile unter KW 42 und 43, die aktuelle Woche mit blauem Strich links. Gehaltene
-   Einheiten grau mit ✓, geplante fett. Klick auf eine Einheit öffnet die Bearbeitungsseite. Wer eine Nachholstunde an
-   einem anderen Tag einträgt, findet sie in der Spalte der Teilnahme, mit Wochentag und Uhrzeit.
+4. „Raster“ (Knopf auf der Kursseite): eine Zeile je Unterrichtstag (Freitag), links die Kalenderwoche über alle
+   Tage der Woche, Zeitfenster als Spalten (C4f). Ferientage gelb; sind alle Unterrichtstage einer Woche frei
+   (Herbstferien, KW 52 und 53), ist auch die KW gelb und nennt die Ferien. KW 01 ist nicht gelb: Die Ferien enden am
+   Mittwoch, 6.1., am Freitag ist Unterricht. Absagen in der roten Zeile unter dem Tag, aktuelle Woche mit blauem
+   Strich links, der heutige Tag ebenso. Gehaltene Einheiten grau mit ✓, geplante fett. Klick auf eine Einheit öffnet
+   die Bearbeitungsseite. Eine Nachholstunde an einem anderen Tag bekommt eine eigene Zeile mit ihrem Datum.
+   Verschiebt man eine Einheit dort auf einen Ferientag, erscheint ein gelber Hinweis; sie bleibt trotzdem dort.
 5. Im Raster bearbeiten (braucht JavaScript): Klick auf eine zukünftige Einheit → „abgesagt (ich)“, Notiz, Speichern.
    Die Einheit wandert in die rote Zeile, die Zählung im Kopf sinkt, „1 Nachholstunde fällig“ erscheint. In der frei
    gewordenen Zelle „← + Doppelstunde …“ klicken: Die Nachbarin bekommt eine zweite Einheit (mit Uhrzeit), ihre letzte am
@@ -51,6 +54,7 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    „Löschen“ fragt nach, danach hängt am Kursende eine Einheit an.
 6. Im Raster „Ferien …“ unter einer Kalenderwoche: Das Ferienformular auf der Kursseite ist mit Montag bis Sonntag
    vorbelegt; nach dem Speichern (mit Popup) geht es zurück ins Raster, die Woche ist gelb.
+   Feiertage an Tagen ohne Unterricht (Mariä Empfängnis, Dienstag) erscheinen im Raster nicht.
 
 ## 4. Teilnahme und Einheiten
 

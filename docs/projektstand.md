@@ -12,10 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-- **Raster mit einer Zeile je Unterrichtstag** (`umsetzung-admin.md` C4f, Vorschlag D von Mike): so umsetzen? Ganze
-  Ferienwoche als gelbe Tageszeilen (Empfehlung) oder eine Zeile? Einheit von Hand in die Ferien verschieben: so lassen
-  (Empfehlung), Hinweis oder Sperre?
-  Antwort:
+Keine Frage offen.
 
 **Nächster Schritt:** Passkeys mit Sonja einrichten (MacBook Air und Android-Handy, `umsetzung-admin.md` B5d), dann
 Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
@@ -32,11 +29,17 @@ verlinkten Erklärung.
   gelöscht, bekommt jede Teilnahme an den frei gewordenen Tagen ihre Einheit wieder, wenn sie in der Woche keine hat.
   Hatte Sonja dort vorher eine Einheit absichtlich gelöscht, kommt auch diese zurück (der Grund wird nicht gespeichert).
   Im Test: Petras gelöschte Einheit kam mit. Selten; sonst im Raster wieder löschen.
-- [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b) beim Zeigen mit Sonja prüfen: Gehaltene Einheiten
-  grau mit ✓, geplante fett; Ferienwochen gelb, abgesagte Einheiten in einer roten Zeile darunter, aktuelle Woche mit
-  blauem Strich. Im Spaltenkopf stehen Zeitfenster, Name und Zählung („14 von 15“). Schnupperstunden im Kurszeitraum
-  stehen als Liste über dem Raster (sie gehören zu keinem Kurs). Einheiten, die zu keinem Zeitfenster passen
-  (Nachholstunde an einem anderen Tag), stehen in der Spalte ihrer Teilnahme mit Wochentag und Uhrzeit.
+- [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b, seit 2026-11-18 je Tag, C4f) beim Zeigen
+  mit Sonja prüfen: Eine Zeile je Unterrichtstag, links die KW über alle Tage der Woche. Gehaltene Einheiten grau mit
+  ✓, geplante fett; Ferientage gelb, sind alle Unterrichtstage einer Woche frei, auch die KW mit dem Namen der Ferien.
+  Abgesagte Einheiten in einer roten Zeile darunter, aktuelle Woche und heutiger Tag mit blauem Strich. Im Spaltenkopf
+  Zeitfenster, Name und Zählung („14 von 15“). Schnupperstunden im Kurszeitraum als Liste über dem Raster. Nachholstunden
+  an einem anderen Tag bekommen eine eigene Zeile.
+- [ ] **Ferien an Tagen ohne Unterricht unsichtbar** (2026-11-18, `umsetzung-admin.md` C4f, Auslegung): Feiertage oder
+  Ferientage, auf die kein Unterrichtstag fällt (Mariä Empfängnis am Dienstag, Weihnachtsferien 4.–6.1.), erscheinen im
+  Raster nicht; nur auf der Kursseite.
+- [ ] **Ein freier Freitag gilt als freie Woche** (2026-11-18, C4f, Auslegung): Mit nur einem Unterrichtstag steht auch
+  ein einzelner Feiertag oder schulautonomer Tag am Freitag bei der KW (die Woche hat dann keinen Unterricht).
 - [ ] **Bedienung des Rasters** (2026-11-16, `umsetzung-admin.md` C4d) mit Sonja prüfen: Der Editor macht die Spalte beim
   Öffnen breiter (die Tabelle ordnet sich neu); nach Absage, Doppelstunde oder Löschen lädt die Seite neu. Doppelstunden
   werden in jeder leeren Zelle angeboten, deren Nachbar am selben Tag eine Einheit hat, auch in Wochen ohne Absage
@@ -191,7 +194,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] A1, B1–B4 Grundlagen, Login, Sessions, Passwort vergessen, Benutzerverwaltung (2026-11-13)
 - [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); B5b „Mein Konto“, B5c Login (2026-11-17); B5d lokal geprüft (virtueller Authenticator, Touch ID von Mike, 2026-11-18), gepusht und live 2026-11-18 (CI 44269704195); offen Einrichten mit Sonja
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
-- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16)
+- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
@@ -244,6 +247,7 @@ muss).
 | Speicherdauer | Honorarnoten (PDF und Angaben in der Zeile), Zahlungen und die Zuordnung zur Schüler:in 7 Jahre ab Schluss des Kalenderjahres (§ 132 BAO); alle übrigen Daten bis zum Ende des Folgesemesters nach dem letzten Kurs bzw. der letzten Schnupperstunde (2026-11-17) | Option A, kurze Frist, weil Sonja Kontaktdaten ohnehin selbst hat (Mike). `umsetzung-admin.md` F |
 | Datenschutzerklärung der Website | Kein Wort zum Verwaltungsbereich und seinem Session-Cookie; Steuerberaterin Mag.iur. Ulla Kröll namentlich in der Datenschutz-Information Unterricht (2026-11-17) | Betrifft nur Sonja und Mike, keine Besucher:innen; ein Hinweis weniger für Angreifer (Mike). Ersetzt den Textvorschlag in `planung/rollen.md` 10 |
 | Automatische Löschung | Vor dem Echtbetrieb, täglich per Befehl; Semester fest September–Februar und März–August; übrige Daten bis Ende des Folgesemesters (auch bei einem Semester Pause); bei aufzubewahrender Honorarnote wird die Schüler:in gelöscht, die Teilnahme bleibt ohne Person; Dateiname der Honorarnote mit dem PDF gespeichert; keine Mail, Hinweis im Dashboard 30 Tage vorher; laufendes Verfahren beim Finanzamt nicht abgebildet (2026-11-17) | App soll Sonja Arbeit abnehmen (Mike); ein Name ist nicht anonym. `umsetzung-admin.md` F3 |
+| Raster je Unterrichtstag | Eine Zeile je Unterrichtstag, KW-Spalte mit `rowspan`; ganze Ferienwoche als gelbe Tageszeilen mit Namen bei der KW; Einheit auf Ferientag verschieben erlaubt, mit Hinweis (2026-11-18) | Ferien betreffen einen Tag oder nicht, unmissverständlich (Mike). `umsetzung-admin.md` C4f |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

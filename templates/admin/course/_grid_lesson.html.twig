@@ -1,18 +1,19 @@
-{# One lesson in the course grid. Date always; weekday and time only if they differ from the column (moved, make-up).
-   Without JavaScript the link opens the edit page; with it, the grid controller opens the editor in the cell (C4d). #}
+{# One lesson in the course grid. The row gives the day (C4f); the time only if it differs from the column (moved,
+   make-up). Without JavaScript the link opens the edit page; with it, the grid controller opens the editor in the cell
+   (C4d). #}
 {% set state = lesson_state(lesson) %}
 {% set moved = lesson.startsAt|date('N') != column.weekday or lesson.startsAt|date('H:i') != column.startTime %}
 <a class="grid-lesson grid-lesson--{{ state.value }} d-block text-decoration-none" href="{{ path('admin_lesson_edit', {id: lesson.id}) }}"
    title="{{ state.labelKey|trans({}, 'admin') }}{{ lesson.note ? ': ' ~ lesson.note }}"
    data-action="grid#open:prevent" data-cancelled-by="{{ lesson.cancelledBy.value ?? '' }}" data-note="{{ lesson.note }}">
     <span class="grid-lesson__name">{{ lesson.enrollment.student.fullName }}</span>
-    <span class="grid-lesson__meta d-block small">
-        {%- if moved %}{{ ('weekday_short.' ~ lesson.startsAt|date('N'))|trans({}, 'admin') }} {% endif -%}
-        {{ lesson.startsAt|date('d.m.') }}
-        {%- if moved %} {{ lesson.startsAt|date('H:i') }}{% endif %}
-        {%- if lesson.durationMinutes != lesson.enrollment.lessonMinutes %} · {{ 'grid.minutes'|trans({'%minutes%': lesson.durationMinutes}, 'admin') }}{% endif %}
-        {%- if lesson.cancelled %} · {{ state.labelKey|trans({}, 'admin') }}{% endif %}
-    </span>
+    {% set meta = [] %}
+    {% if moved %}{% set meta = meta|merge([lesson.startsAt|date('H:i')]) %}{% endif %}
+    {% if lesson.durationMinutes != lesson.enrollment.lessonMinutes %}{% set meta = meta|merge(['grid.minutes'|trans({'%minutes%': lesson.durationMinutes}, 'admin')]) %}{% endif %}
+    {% if lesson.cancelled %}{% set meta = meta|merge([state.labelKey|trans({}, 'admin')]) %}{% endif %}
+    {% if meta is not empty %}
+        <span class="grid-lesson__meta d-block small">{{ meta|join(' · ') }}</span>
+    {% endif %}
     {% if lesson.makeUpFor %}
         <span class="badge text-bg-info">{{ 'lesson.make_up_for'|trans({'%date%': lesson.makeUpFor.startsAt|date('d.m.')}, 'admin') }}</span>
     {% endif %}

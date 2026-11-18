@@ -56,6 +56,7 @@ final class LessonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
             $this->addFlash('success', 'lesson.flash.saved');
+            $this->warnAboutBreakDay($lesson);
 
             return $this->redirectToRoute('admin_enrollment_show', ['id' => $lesson->getEnrollment()->getId()]);
         }
@@ -215,6 +216,28 @@ final class LessonController extends AbstractController
             'reload' => true,
             'message' => $trimmed ? null : $this->translator->trans('grid.double.not_trimmed', [], 'admin'),
         ]);
+    }
+
+    /**
+     * A lesson moved onto a break day stays there (Sonja may agree on a lesson during the holidays), but she is told
+     * (umsetzung-admin.md C4f, Mike 2026-11-18). The planner itself never puts lessons there.
+     */
+    private function warnAboutBreakDay(Lesson $lesson): void
+    {
+        $startsAt = $lesson->getStartsAt();
+        if (null === $startsAt) {
+            return;
+        }
+        foreach ($lesson->getEnrollment()->getCourse()->getBreaks() as $break) {
+            if ($break->contains($startsAt)) {
+                $this->addFlash('warning', $this->translator->trans('lesson.flash.break_day', [
+                    '%date%' => $startsAt->format('d.m.Y'),
+                    '%break%' => $break->getLabel(),
+                ], 'admin'));
+
+                return;
+            }
+        }
     }
 
     /**

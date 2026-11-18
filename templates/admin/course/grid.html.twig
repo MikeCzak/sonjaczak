@@ -32,6 +32,7 @@
                 <thead>
                     <tr>
                         <th scope="col" class="grid-week">{{ 'grid.week'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="grid-day">{{ 'grid.day'|trans({}, 'admin') }}</th>
                         {% for column in grid.columns %}
                             <th scope="col" class="grid-slot">
                                 <span class="d-block">{{ ('weekday_short.' ~ column.weekday)|trans({}, 'admin') }} {{ column.startTime }}</span>
@@ -49,51 +50,71 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in grid.rows %}
-                        <tr class="{{ row.breaks is not empty ? 'grid-row--break' }} {{ row.current ? 'grid-row--current' }}">
-                            <th scope="row" class="grid-week">
-                                <span class="d-block">{{ 'grid.week_number'|trans({'%week%': row.weekStart|date('W')}, 'admin') }}</span>
-                                <span class="d-block small fw-normal text-body-secondary">{{ row.weekStart|date('d.m.') }}–{{ row.weekEnd|date('d.m.') }}</span>
-                                {% for break in row.breaks %}
-                                    <span class="badge text-bg-secondary text-wrap">{{ break.label }}</span>
-                                {% endfor %}
-                                {# C4e: the break form on the course page, prefilled with this week; back here after saving #}
-                                <a class="d-block small fw-normal" title="{{ 'course_break.week_link_title'|trans({}, 'admin') }}"
-                                   href="{{ path('admin_course_edit', {id: course.id, ferien_von: row.weekStart|date('Y-m-d'), ferien_bis: row.weekEnd|date('Y-m-d'), zurueck: 'raster'}) }}#ferien">{{ 'course_break.week_link'|trans({}, 'admin') }}</a>
-                            </th>
-                            {% for column in grid.columns %}
-                                <td>
-                                    {% for lesson in row.cells[column.key] ?? [] %}
-                                        {{ include('admin/course/_grid_lesson.html.twig') }}
-                                    {% endfor %}
-                                    {% if row.doubleOffers[column.key] is defined %}
-                                        <div class="grid-doubles d-flex justify-content-between gap-1">
-                                            {% for offer in row.doubleOffers[column.key] %}
-                                                <button type="button" class="btn btn-sm btn-outline-secondary grid-double grid-double--{{ offer.position }}"
-                                                        data-action="grid#double"
-                                                        data-grid-url-param="{{ path('admin_lesson_double', {id: offer.lesson.id}) }}"
-                                                        data-grid-position-param="{{ offer.position }}"
-                                                        title="{{ 'grid.double.title'|trans({'%name%': offer.lesson.enrollment.student.fullName}, 'admin') }}">
-                                                    {{- ('grid.double.' ~ offer.position)|trans({'%name%': offer.lesson.enrollment.student.firstName}, 'admin') -}}
-                                                </button>
+                    {# One row per teaching day, grouped by calendar week (C4f). The week cell spans the days and their
+                       rows of cancelled lessons. A break on every teaching day of the week is named there, once;
+                       otherwise on the day it falls on #}
+                    {% for week in grid.weeks %}
+                        {% set whole_break = week.wholeBreak %}
+                        {% for row in week.rows %}
+                            <tr class="{{ row.breaks is not empty ? 'grid-row--break' }} {{ row.today ? 'grid-row--today' }}">
+                                {% if loop.first %}
+                                    <th scope="rowgroup" rowspan="{{ week.rowspan }}" class="grid-week {{ whole_break ? 'grid-week--break' }} {{ week.current ? 'grid-week--current' }}">
+                                        <span class="d-block">{{ 'grid.week_number'|trans({'%week%': week.weekStart|date('W')}, 'admin') }}</span>
+                                        <span class="d-block small fw-normal text-body-secondary">{{ week.weekStart|date('d.m.') }}–{{ week.weekEnd|date('d.m.') }}</span>
+                                        {% if whole_break %}
+                                            {% for break in week.breaks %}
+                                                <span class="badge text-bg-secondary text-wrap">{{ break.label }}</span>
                                             {% endfor %}
-                                        </div>
+                                        {% endif %}
+                                        {# C4e: the break form on the course page, prefilled with this week; back here after saving #}
+                                        <a class="d-block small fw-normal" title="{{ 'course_break.week_link_title'|trans({}, 'admin') }}"
+                                           href="{{ path('admin_course_edit', {id: course.id, ferien_von: week.weekStart|date('Y-m-d'), ferien_bis: week.weekEnd|date('Y-m-d'), zurueck: 'raster'}) }}#ferien">{{ 'course_break.week_link'|trans({}, 'admin') }}</a>
+                                    </th>
+                                {% endif %}
+                                <th scope="row" class="grid-day">
+                                    <span class="d-block">{{ ('weekday_short.' ~ row.weekday)|trans({}, 'admin') }} {{ row.day|date('d.m.') }}</span>
+                                    {% if not whole_break %}
+                                        {% for break in row.breaks %}
+                                            <span class="badge text-bg-secondary text-wrap">{{ break.label }}</span>
+                                        {% endfor %}
                                     {% endif %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                        {% if row.hasCancelled %}
-                            <tr class="grid-row--cancelled">
-                                <th scope="row" class="grid-week small fw-normal">{{ 'grid.cancelled'|trans({}, 'admin') }}</th>
+                                </th>
                                 {% for column in grid.columns %}
-                                    <td>
-                                        {% for lesson in row.cancelled[column.key] ?? [] %}
+                                    {% set lessons = row.cells[column.key] ?? [] %}
+                                    {# Slot of another weekday: no lesson there unless one was moved in #}
+                                    <td class="{{ column.weekday != row.weekday and lessons is empty ? 'grid-cell--off' }}">
+                                        {% for lesson in lessons %}
                                             {{ include('admin/course/_grid_lesson.html.twig') }}
                                         {% endfor %}
+                                        {% if row.doubleOffers[column.key] is defined %}
+                                            <div class="grid-doubles d-flex justify-content-between gap-1">
+                                                {% for offer in row.doubleOffers[column.key] %}
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary grid-double grid-double--{{ offer.position }}"
+                                                            data-action="grid#double"
+                                                            data-grid-url-param="{{ path('admin_lesson_double', {id: offer.lesson.id}) }}"
+                                                            data-grid-position-param="{{ offer.position }}"
+                                                            title="{{ 'grid.double.title'|trans({'%name%': offer.lesson.enrollment.student.fullName}, 'admin') }}">
+                                                        {{- ('grid.double.' ~ offer.position)|trans({'%name%': offer.lesson.enrollment.student.firstName}, 'admin') -}}
+                                                    </button>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </td>
                                 {% endfor %}
                             </tr>
-                        {% endif %}
+                            {% if row.hasCancelled %}
+                                <tr class="grid-row--cancelled">
+                                    <th scope="row" class="grid-day small fw-normal">{{ 'grid.cancelled'|trans({}, 'admin') }}</th>
+                                    {% for column in grid.columns %}
+                                        <td>
+                                            {% for lesson in row.cancelled[column.key] ?? [] %}
+                                                {{ include('admin/course/_grid_lesson.html.twig') }}
+                                            {% endfor %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
                 </tbody>
             </table>

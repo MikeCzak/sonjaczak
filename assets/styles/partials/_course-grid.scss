@@ -10,8 +10,18 @@
         background: var(--bs-body-bg);
     }
 
+    .grid-day {
+        min-width: 5.5rem;
+        white-space: nowrap;
+    }
+
     .grid-slot {
         min-width: 10rem;
+    }
+
+    // Slot of another weekday in this day's row (C4f): nothing can take place there
+    .grid-cell--off {
+        background: var(--bs-tertiary-bg);
     }
 
     .grid-lesson {
@@ -48,15 +58,24 @@
         max-width: 14rem;
     }
 
-    .grid-row--break > * {
+    // Break days and weeks: the day's own cells, and the week cell if every teaching day of the week is a break day.
+    // Not "> *": the week cell sits in the week's first row only (rowspan)
+    .grid-row--break > .grid-day,
+    .grid-row--break > td,
+    .grid-week--break {
         background: var(--bs-warning-bg-subtle);
     }
 
-    .grid-row--current > .grid-week {
+    .grid-week--current {
         box-shadow: inset 4px 0 0 var(--bs-primary);
     }
 
-    // Low red row below a week: cancelled lessons, their slot above is free
+    .grid-row--today > .grid-day {
+        box-shadow: inset 4px 0 0 var(--bs-primary);
+        font-weight: 600;
+    }
+
+    // Low red row below a day: cancelled lessons, their slot above is free
     .grid-row--cancelled > * {
         padding-top: 0;
         padding-bottom: 0;

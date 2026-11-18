@@ -47,6 +47,10 @@ final class CourseGridTest extends WebTestCase
         self::assertCount(15, $crawler->filter('a.grid-lesson[href^="/admin/einheiten/"]'));
         self::assertCount(1, $crawler->filter('tr.grid-row--cancelled a.grid-lesson'));
         self::assertSelectorTextContains('tr.grid-row--cancelled', 'Anna Rasterfrau');
+        // One row per Friday (C4f); the week cell spans the day and, once, its low row of cancelled lessons
+        self::assertCount(1, $crawler->filter('tbody th.grid-week[rowspan="2"]'));
+        self::assertCount($crawler->filter('tbody th.grid-week')->count(), $crawler->filter('tbody tr:not(.grid-row--cancelled) th.grid-day'));
+        self::assertStringStartsWith('Fr ', trim($crawler->filter('tbody th.grid-day')->first()->text()));
     }
 
     public function testCourseWithoutEnrollments(): void

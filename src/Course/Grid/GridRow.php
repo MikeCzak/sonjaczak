@@ -8,8 +8,9 @@ use App\Entity\CourseBreak;
 use App\Entity\Lesson;
 
 /**
- * One calendar week of the course grid. Cancelled lessons are kept apart: they are shown in a low second row below
- * the week, so their time slot is visibly free (umsetzung-admin.md C4, question 8).
+ * One day of the course grid: a teaching day of the course, or another day with a lesson (e.g. a make-up lesson on a
+ * Wednesday). Cancelled lessons are kept apart: they are shown in a low second row below the day, so their time slot
+ * is visibly free (umsetzung-admin.md C4, question 8; rows per day since C4f).
  */
 final class GridRow
 {
@@ -36,18 +37,21 @@ final class GridRow
     public array $doubleOffers = [];
 
     /**
-     * @param list<CourseBreak> $breaks breaks that touch this week
+     * @param list<CourseBreak> $breaks breaks that contain this day
      */
     public function __construct(
-        public readonly \DateTimeImmutable $weekStart,
+        public readonly \DateTimeImmutable $day,
         public readonly array $breaks,
-        public readonly bool $current,
+        public readonly bool $today,
     ) {
     }
 
-    public function weekEnd(): \DateTimeImmutable
+    /**
+     * ISO weekday, 1 = Monday, as GridColumn::$weekday.
+     */
+    public function weekday(): int
     {
-        return $this->weekStart->modify('+6 days');
+        return (int) $this->day->format('N');
     }
 
     public function add(string $columnKey, Lesson $lesson): void

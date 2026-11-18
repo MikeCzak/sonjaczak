@@ -200,7 +200,7 @@ Entscheidungen (Mike, 2026-11-14 bis 2026-11-16):
   - Ferien per Woche: Link „Ferien …“ in jeder Wochenzeile öffnet das Ferienformular vorbelegt, danach zurück ins Raster.
 - **Kursname:** abgeleitet, Wochentage aus den Teilnahmen angehängt („Wintersemester 2026/27 (Fr)“), kein Feld.
 
-**C4f Ferienwochen im Raster** (Frage von Mike, 2026-11-18): Eine Zeile ist gelb, sobald Ferien die Woche auch nur
+**C4f Ferienwochen im Raster** – erledigt 2026-11-18 (Vorschlag D). Frage von Mike, 2026-11-18: Eine Zeile ist gelb, sobald Ferien die Woche auch nur
 an einem Tag berühren (`CourseGrid::breaksIn`). Fixtures: Weihnachtsferien 24.12.–6.1. (Do–Mi) → drei gelbe Wochen,
 in der dritten (4.–10.1.) stehen die Freitagseinheiten vom 8.1., der kein Ferientag ist. Richtig geplant, aber
 missverständlich.
@@ -232,6 +232,10 @@ Zeitraum; C Ferientage je Zelle.
 Pro: Ferien sind eindeutig, weil sie einen Tag betreffen oder nicht; Nachholstunden an anderen Tagen bekommen ihre
 eigene Zeile. Contra: bei mehreren Unterrichtstagen viele graue Zellen (bei zwei Tagen die Hälfte); etwas mehr Umbau
 als A.
+
+Antworten Mike, 2026-11-18: **D umsetzen; 2 gelbe Tageszeilen; 3 so lassen, aber mit Hinweis beim Verschieben auf
+einen Ferientag.** Umgesetzt: `GridWeek` (neu), `GridRow` je Tag, Hinweis als gelbe Meldung in
+`LessonController::edit()`; Datum in der Zelle entfällt (steht in der Zeile).
 
 **Fragen:**
 

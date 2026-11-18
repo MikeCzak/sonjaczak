@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Admin;
 
+use App\Entity\CourseBreak;
 use App\Entity\Enrollment;
 use App\Entity\Enum\CancelledBy;
 use App\Entity\Lesson;
@@ -100,6 +101,34 @@ final class EnrollmentTest extends WebTestCase
         self::assertSelectorTextContains('main', '15 von 15');
         self::assertSelectorTextContains('main', 'Nachholstunde für 09.10.2026');
         self::assertSelectorNotExists('a:contains("Nachholstunde eintragen")');
+    }
+
+    /**
+     * Moving a lesson onto a break day is allowed, with a hint (umsetzung-admin.md C4f, Mike 2026-11-18).
+     */
+    public function testMovingOntoABreakDayWarns(): void
+    {
+        $client = $this->loggedInClient();
+        $enrollment = EnrollmentFactory::createOne();
+        $course = $enrollment->getCourse();
+        $course->addBreak(new CourseBreak('Schulautonom', new \DateTimeImmutable('2026-10-14')));
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->persist($course);
+        $entityManager->flush();
+        $first = $enrollment->getLessons()->first();
+        self::assertInstanceOf(Lesson::class, $first);
+
+        $client->request('GET', '/admin/einheiten/'.$first->getId());
+        $client->submitForm('Speichern', ['lesson[startsAt]' => '2026-10-15T15:30']);
+        $client->followRedirect();
+        self::assertSelectorNotExists('.alert-warning');
+
+        $client->request('GET', '/admin/einheiten/'.$first->getId());
+        $client->submitForm('Speichern', ['lesson[startsAt]' => '2026-10-14T15:30']);
+        self::assertResponseRedirects('/admin/teilnahmen/'.$enrollment->getId());
+        $client->followRedirect();
+        self::assertSelectorTextContains('.alert-warning', 'Der 14.10.2026 ist ein Ferientag (Schulautonom)');
+        self::assertSame('2026-10-14 15:30', self::getContainer()->get(LessonRepository::class)->find((int) $first->getId())?->getStartsAt()?->format('Y-m-d H:i'));
     }
 
     /**

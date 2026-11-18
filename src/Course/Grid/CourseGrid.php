@@ -10,12 +10,13 @@ use App\Entity\Enrollment;
 use App\Entity\Lesson;
 
 /**
- * Builds the course grid (umsetzung-admin.md C4b): one row per calendar week, one column per weekly time slot.
+ * Builds the course grid (umsetzung-admin.md C4b, rows per day since C4f): one column per weekly time slot, one row
+ * per teaching day (every weekday that has a slot) and per other day with a lesson, grouped by calendar week.
  *
  * Which column a lesson goes to (question 8, points 1 and 8):
  * 1. its own enrollment's slot, if the lesson overlaps it (the normal case, also a slightly moved lesson);
  * 2. otherwise the slot on the same weekday it overlaps most, e.g. a double lesson of B in A's freed slot;
- * 3. otherwise its own enrollment's column, e.g. a make-up lesson on another day. The cell then shows date and time.
+ * 3. otherwise its own enrollment's column, e.g. a make-up lesson on another day; it gets a row for its day.
  */
 final class CourseGrid
 {
@@ -34,9 +35,8 @@ final class CourseGrid
                     if (null === $startsAt) {
                         continue;
                     }
-                    $week = $this->monday($startsAt)->format('Y-m-d');
-                    // rows() covers every lesson, so the week always exists
-                    $rows[$week]->add($this->columnFor($lesson, $column, $columns)->key, $lesson);
+                    // rows() has a row for every day with a lesson
+                    $rows[$startsAt->format('Y-m-d')]->add($this->columnFor($lesson, $column, $columns)->key, $lesson);
                 }
             }
         }
@@ -57,7 +57,28 @@ final class CourseGrid
             $this->offerDoubles($row, $columnList);
         }
 
-        return new Grid($columnList, array_values($rows));
+        return new Grid($columnList, $this->weeks($rows, $now));
+    }
+
+    /**
+     * @param array<string, GridRow> $rows ordered by day
+     *
+     * @return list<GridWeek>
+     */
+    private function weeks(array $rows, \DateTimeInterface $now): array
+    {
+        $byWeek = [];
+        foreach ($rows as $row) {
+            $byWeek[$this->monday($row->day)->format('Y-m-d')][] = $row;
+        }
+        $currentWeek = $this->monday(\DateTimeImmutable::createFromInterface($now))->format('Y-m-d');
+
+        $weeks = [];
+        foreach ($byWeek as $monday => $weekRows) {
+            $weeks[] = new GridWeek(new \DateTimeImmutable($monday), $weekRows, $monday === $currentWeek);
+        }
+
+        return $weeks;
     }
 
     /**
@@ -70,7 +91,8 @@ final class CourseGrid
     private function offerDoubles(GridRow $row, array $columns): void
     {
         foreach ($columns as $i => $column) {
-            if ([] !== ($row->cells[$column->key] ?? [])) {
+            // Only in the slots of this weekday; a make-up lesson's row has no slot of its own
+            if ($column->weekday !== $row->weekday() || [] !== ($row->cells[$column->key] ?? [])) {
                 continue;
             }
             $left = $columns[$i - 1] ?? null;
@@ -119,34 +141,43 @@ final class CourseGrid
     }
 
     /**
-     * Calendar weeks from the course start to its end, widened if a lesson lies outside (e.g. a late make-up lesson).
+     * Days from the course start to its end, widened if a lesson lies outside (e.g. a late make-up lesson): every
+     * weekday that has a slot, and every day with a lesson.
      *
      * @param array<string, GridColumn> $columns
      *
-     * @return array<string, GridRow> keyed by the Monday, "Y-m-d"
+     * @return array<string, GridRow> keyed by the day, "Y-m-d", ordered
      */
     private function rows(Course $course, array $columns, \DateTimeInterface $now): array
     {
-        $days = array_filter([$course->getStartsOn(), $course->getEndsOn()]);
+        $bounds = array_filter([$course->getStartsOn(), $course->getEndsOn()]);
+        $lessonDays = [];
         foreach ($columns as $column) {
             foreach ($column->enrollments as $enrollment) {
                 foreach ($enrollment->getLessons() as $lesson) {
                     if (null !== $lesson->getStartsAt()) {
-                        $days[] = $lesson->getStartsAt();
+                        $bounds[] = $lesson->getStartsAt();
+                        $lessonDays[$lesson->getStartsAt()->format('Y-m-d')] = true;
                     }
                 }
             }
         }
-        if ([] === $days) {
+        if ([] === $bounds) {
             return [];
         }
 
-        $currentWeek = $this->monday(\DateTimeImmutable::createFromInterface($now))->format('Y-m-d');
-        $last = $this->monday(max($days));
+        $teachingWeekdays = [];
+        foreach ($columns as $column) {
+            $teachingWeekdays[$column->weekday] = true;
+        }
+        $today = \DateTimeImmutable::createFromInterface($now)->format('Y-m-d');
+        $last = max($bounds)->setTime(0, 0);
         $rows = [];
-        for ($week = $this->monday(min($days)); $week <= $last; $week = $week->modify('+1 week')) {
-            $key = $week->format('Y-m-d');
-            $rows[$key] = new GridRow($week, $this->breaksIn($course, $week), $key === $currentWeek);
+        for ($day = min($bounds)->setTime(0, 0); $day <= $last; $day = $day->modify('+1 day')) {
+            $key = $day->format('Y-m-d');
+            if (isset($teachingWeekdays[(int) $day->format('N')]) || isset($lessonDays[$key])) {
+                $rows[$key] = new GridRow($day, $this->breaksOn($course, $day), $key === $today);
+            }
         }
 
         return $rows;
@@ -182,14 +213,9 @@ final class CourseGrid
     /**
      * @return list<CourseBreak>
      */
-    private function breaksIn(Course $course, \DateTimeImmutable $weekStart): array
+    private function breaksOn(Course $course, \DateTimeImmutable $day): array
     {
-        $weekEnd = $weekStart->modify('+6 days');
-
-        return array_values($course->getBreaks()->filter(
-            static fn (CourseBreak $break): bool => null !== $break->getFirstDay() && null !== $break->getLastDay()
-                && $break->getFirstDay() <= $weekEnd && $break->getLastDay() >= $weekStart,
-        )->toArray());
+        return array_values($course->getBreaks()->filter(static fn (CourseBreak $break): bool => $break->contains($day))->toArray());
     }
 
     private function monday(\DateTimeImmutable $day): \DateTimeImmutable

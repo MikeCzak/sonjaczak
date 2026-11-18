@@ -131,7 +131,15 @@ zurückgelegt. `fillUpAtEnd()` beginnt erst nach der letzten regulären Einheit.
 
 1. Überschneidet die Einheit das Zeitfenster ihrer eigenen Teilnahme → dort (auch eine leicht verschobene).
 2. Sonst das Zeitfenster am selben Tag mit der größten Überschneidung (Doppelstunde von B im Zeitfenster von A).
-3. Sonst die eigene Spalte (Nachholstunde an einem anderen Tag); die Zelle zeigt dann Wochentag und Uhrzeit.
+3. Sonst die eigene Spalte (Nachholstunde an einem anderen Tag); seit C4f (2026-11-18) in einer eigenen Zeile für
+   diesen Tag, die Zelle zeigt die Uhrzeit.
+
+**Zeilen** (seit C4f, `CourseGrid::rows()`, `GridWeek`): je Tag eine Zeile, an jedem Wochentag mit Zeitfenster und an
+jedem Tag mit Einheit, vom Kursbeginn (bzw. der frühesten Einheit) bis zum Ende (bzw. der letzten Einheit). Die
+KW-Zelle hat `rowspan` über Tage und rote Zeilen der Woche. Sie ist gelb und nennt die Ferien, wenn alle Tage der
+Woche Ferientage sind (`GridWeek::isWholeBreak()`); sonst steht die Ferienbezeichnung beim Tag. Weil die KW-Zelle nur
+in der ersten Zeile der Woche steht, färbt das CSS nicht mehr mit `.grid-row--break > *`, sondern Tag und Zellen
+einzeln. Doppelstunden werden nur in Zeitfenstern des eigenen Wochentags angeboten.
 
 Zeiten rechnet `GridColumn` in Minuten nach Mitternacht; Überschneidung ist dann
 `min(Ende1, Ende2) − max(Beginn1, Beginn2) > 0`.

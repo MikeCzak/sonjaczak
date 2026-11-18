@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace App\Course\Grid;
 
 /**
- * The course grid as built by CourseGrid: columns are weekly time slots, rows are calendar weeks.
+ * The course grid as built by CourseGrid: columns are weekly time slots, rows are teaching days grouped by calendar
+ * week (umsetzung-admin.md C4f).
  */
 final readonly class Grid
 {
     /**
      * @param list<GridColumn> $columns
-     * @param list<GridRow>    $rows
+     * @param list<GridWeek>   $weeks
      */
     public function __construct(
         public array $columns,
-        public array $rows,
+        public array $weeks,
     ) {
     }
 }
