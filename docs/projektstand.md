@@ -12,7 +12,7 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-**Nächster Schritt:** Backups ohne Mikes Mac. Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
+**Nächster Schritt:** Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
@@ -174,7 +174,7 @@ verlinkten Erklärung.
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
   `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11), Mike sichert sie
   auf einer externen Festplatte von Sonja. Später lieber ein Backup-Server, der die Sicherungen holt bzw. empfängt,
-  ohne Mikes Rechner. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
+  ohne Mikes Rechner. Plan dazu freigegeben (2026-11-18), Umsetzung später, wenn Mike will: `planung/backups-ohne-mac.md`. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
   age-Schlüssel ausgedruckt? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
   bei einem Wechsel prüfen, ob das noch stimmt.
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
@@ -267,6 +267,7 @@ muss).
 | Automatische Löschung | Vor dem Echtbetrieb, täglich per Befehl; Semester fest September–Februar und März–August; übrige Daten bis Ende des Folgesemesters (auch bei einem Semester Pause); bei aufzubewahrender Honorarnote wird die Schüler:in gelöscht, die Teilnahme bleibt ohne Person; Dateiname der Honorarnote mit dem PDF gespeichert; keine Mail, Hinweis im Dashboard 30 Tage vorher; laufendes Verfahren beim Finanzamt nicht abgebildet (2026-11-17) | App soll Sonja Arbeit abnehmen (Mike); ein Name ist nicht anonym. `umsetzung-admin.md` F3 |
 | Raster je Unterrichtstag | Eine Zeile je Unterrichtstag, KW-Spalte mit `rowspan`; ganze Ferienwoche als gelbe Tageszeilen mit Namen bei der KW; Einheit auf Ferientag verschieben erlaubt, mit Hinweis (2026-11-18) | Ferien betreffen einen Tag oder nicht, unmissverständlich (Mike). `umsetzung-admin.md` C4f |
 | Raster als Zeitachse | Je Tag eine Zeitachse statt Spalten je Zeitfenster, fest 3 px pro Minute mit waagrechtem Scrollen; Schnupperstunden an ihrer Zeit, Überschneidungen rot und untereinander; Zählung, Name (Link zur Teilnahme) und „Nachholstunde fällig“ (bei der nächsten Einheit) in der Box; Platzhalter „frei“ mit Doppelstunde; Abgesagte in niedriger roter Zeile (2026-11-18) | Uhrzeiten verschiedener Tage stehen minutengenau untereinander, Schnupperstunden werden nicht übersehen (Mike). `umsetzung-admin.md` C4g |
+| Backups ohne Mac | Plan freigegeben mit allen Empfehlungen: Hetzner Storage Box BX11, Server lädt täglich 12:00 hoch, Snapshots täglich (10 Tage Schutz gegen Löschen), Sonja bestellt und schließt den AVV, Mac-Sicherung abschalten nach 2 Wochen ohne Fehler und einer Rücksicherung aus der Storage Box; **noch nicht umgesetzt**, vorerst bleibt der Mac (2026-11-18) | Täglich unabhängig von Mikes Rechner, Kopien im Rechenzentrum (Mike). `planung/backups-ohne-mac.md` |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration
