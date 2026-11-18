@@ -175,6 +175,7 @@ student:
     edit:
         title: Schüler:in
         lessons: Kurse und Schnupperstunden
+        no_enrollment: Nimmt an keinem Kurs teil. Teilnahmen legst du im Kurs an („Teilnahme hinzufügen“).
     retention:
         until: Gespeichert bis %date% (Ende des Semesters nach der letzten Einheit oder Schnupperstunde), danach werden die Daten gelöscht.
         invoices: Honorarnoten und Zahlungen bleiben bis %date% (§ 132 BAO), bis dahin die Teilnahmen ohne Personendaten.

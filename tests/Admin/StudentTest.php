@@ -85,6 +85,8 @@ final class StudentTest extends WebTestCase
 
         self::assertSelectorTextContains('#student-retention', 'Gespeichert bis 31.08.2027');
         self::assertSelectorTextNotContains('#student-retention', 'Honorarnoten');
+        // Without enrollments the list says so instead of staying empty (Mike 2026-11-18)
+        self::assertSelectorTextContains('#student-lessons', 'Nimmt an keinem Kurs teil.');
     }
 
     public function testSearchFindsByNameAndGuardian(): void
