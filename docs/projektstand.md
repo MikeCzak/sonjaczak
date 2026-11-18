@@ -12,8 +12,8 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-**Nächster Schritt:** Passkeys mit Sonja einrichten (MacBook Air und Android-Handy, `umsetzung-admin.md` B5d), dann
-Backups ohne Mikes Mac. Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
+**Nächster Schritt:** Backups ohne Mikes Mac. Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
+„Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
 ## Später zu klären
@@ -23,6 +23,10 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
+- [ ] **Passkeys einrichten, wenn Mike Sonja die Website zeigt** (verschoben 2026-11-18, Mike: bis dahin arbeitet er
+  ohne sie; `umsetzung-admin.md` B5d): je ein Passkey auf ihrem MacBook Air und ihrem Android-Handy. Code ist live,
+  es fehlt nur das Einrichten. **Nicht vergessen:** Für Sonja ist der Fingerabdruck viel einfacher als z. B. ein
+  Einmalcode (OTP).
 - [ ] **Ferien löschen gibt auch gelöschte Einheiten zurück** (2026-11-16, `umsetzung-admin.md` C4-0): Wird eine Ferienwoche
   gelöscht, bekommt jede Teilnahme an den frei gewordenen Tagen ihre Einheit wieder, wenn sie in der Woche keine hat.
   Hatte Sonja dort vorher eine Einheit absichtlich gelöscht, kommt auch diese zurück (der Grund wird nicht gespeichert).
@@ -148,9 +152,6 @@ verlinkten Erklärung.
   Elternteil ohne Kind anlegt, hinterlässt einen Elternteil, den kein Lauf erfasst (es gibt kein Anlegedatum). Selten;
   Abhilfe wäre `guardian.created_at` und dieselbe Frist.
 
-- [ ] **Passkeys** (`umsetzung-admin.md` B5). Zeitpunkt entschieden 2026-11-14: darf auch erst im Echtbetrieb kommen
-  (ein gutes Passwort ist nicht per se unsicher), aber **nicht vergessen**: Für Sonja ist der Fingerabdruck viel
-  einfacher als z. B. ein Einmalcode (OTP).
 - [ ] **Nachholstunde wird zur regulären Einheit** (2026-11-18, `umsetzung-admin.md` C3/C4, im Code gefolgert, nicht
   getestet): Wird die abgesagte Einheit gelöscht (im Raster oder durch nachträgliche Ferien), setzt die Datenbank den
   Verweis der Nachholstunde auf `NULL` (`Lesson.php`, `onDelete: 'SET NULL'`). Danach zählt der Planer sie als reguläre
@@ -209,7 +210,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 **Admin-Bereich** (Plan `planung/umsetzung-admin.md`, Erklärungen in `erklaerungen/08`–`18`):
 
 - [x] A1, B1–B4 Grundlagen, Login, Sessions, Passwort vergessen, Benutzerverwaltung (2026-11-13)
-- [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); B5b „Mein Konto“, B5c Login (2026-11-17); B5d lokal geprüft (virtueller Authenticator, Touch ID von Mike, 2026-11-18), gepusht und live 2026-11-18 (CI 44269704195); offen Einrichten mit Sonja
+- [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); B5b „Mein Konto“, B5c Login (2026-11-17); B5d lokal geprüft (virtueller Authenticator, Touch ID von Mike, 2026-11-18), gepusht und live 2026-11-18 (CI 44269704195); offen Einrichten mit Sonja (beim Zeigen der Website, verschoben 2026-11-18)
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18); C4g Raster als Zeitachse mit Schnupperstunden (2026-11-18, gepusht und live 2026-11-18, CI 44342529876)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)

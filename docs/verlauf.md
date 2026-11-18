@@ -557,3 +557,5 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `OrderBy(startsAt)` sortiert und auf der Seite frisch geladen. 206 Tests grün wie in der CI, PHPStan ohne Fehler.
 - 2026-11-18: C4g und die Abzeichen-Links gepusht (vier Commits bis af5e284), CI 44342529876 mit Tests, Build und
   Deploy grün, live.
+- 2026-11-18: Passkeys mit Sonja (B5d) verschoben, bis Mike ihr die Website zeigt; nächster Schritt sind die Backups
+  ohne Mikes Mac.
