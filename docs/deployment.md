@@ -502,9 +502,19 @@ Beim ersten Verbinden fragt ssh nach dem Host-Key: Fingerabdruck mit dem RSA-Wer
 Rücksicherung testen (privater age-Schlüssel aus dem Passwort-Manager in der Zwischenablage; sftp fragt nach dem
 Passwort des Lese-Unterkontos, das also erst danach in die Zwischenablage):
 
+**Alles am Mac** (Prompt `…@mikebookair`), nie in einer SSH-Sitzung am Server: Der private age-Schlüssel darf nie auf
+den Server, sonst kann, wer den Server übernimmt, alle Sicherungen lesen.
+
 ```bash
 sftp READ_USER@READ_HOST:$(date +%F).dump.age /tmp/sb.dump.age
+ls -l /tmp/sb.dump.age
+# jetzt den age-Schlüssel aus dem Passwort-Manager kopieren
 age -d -i <(pbpaste) /tmp/sb.dump.age | ssh mike@sonjaczak.com sudo /usr/local/sbin/sonjaczak-restore-test
+```
+
+Erst nach der Tabelle mit `ok` aufräumen (nicht in einem Zug mit dem Test, sonst ist die Datei bei einem Fehler weg):
+
+```bash
 rm /tmp/sb.dump.age; pbcopy < /dev/null
 ```
 
