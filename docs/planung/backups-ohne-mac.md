@@ -1,7 +1,8 @@
 # Backups ohne Mikes Mac
 
-Stand: 2026-11-18, **freigegeben (alle Empfehlungen), noch nicht umgesetzt.** Mike bleibt vorerst bei der Sicherung am
-Mac; umgesetzt wird später (`projektstand.md`, „Später zu klären“, Technisch). Ergänzt
+Stand: 2026-11-18, **freigegeben (alle Empfehlungen), in Umsetzung** (Mike, 2026-11-18). Schritt 1 (Skript
+`deploy/backup-push.sh`, Anleitung `deployment.md` S13) erledigt; Bestellung und Server stehen aus
+(`projektstand.md`, „Jetzt“). Ergänzt
 `planung/backups.md`. Was dort steht, bleibt gleich: Was gesichert wird (nur die Datenbank, Sessions ohne Inhalt), `pg_dump -Fc`,
 Verschlüsselung mit age am Server, privater Schlüssel nur im Passwort-Manager, Aufbewahrung 14 Tage + 12 Monate. Neu
 ist nur, **wer die Sicherung abholt bzw. wo sie liegt**.
@@ -87,6 +88,20 @@ Ein geplanter Workflow holt wie der Mac und legt die Datei irgendwo ab (bräucht
 - Contra: „In a public repository, scheduled workflows are automatically disabled when no repository activity has
   occurred in 60 days“ (docs.github.com, „Disable and enable workflows“). Wenn Mike ein paar Monate nichts pusht,
   hören die Backups still auf. Zusätzlich lägen der Backup-Key und der Speicherzugang in GitHub. **Nicht empfohlen.**
+
+### A2. Hetzner Storage Box, der Mac schickt (verworfen 2026-11-19)
+
+Frage von Mike: Der Mac holt wie heute und lädt danach selbst in die Storage Box; der Server hätte dann weiterhin
+keinen Zugang zu den Kopien.
+
+- Pro: Der Server kann die Kopien weder sehen noch löschen.
+- Contra: Ohne laufenden Mac keine Sicherung, fällt Mike aus, hören sie auf (Ziel 1 verfehlt, genau die Abhängigkeit,
+  die weg soll). Der Schlüssel mit Schreibrecht liegt dann auf dem Mac, der mit Browser, Mails und Downloads eher
+  angreifbar ist als der Server; das Risiko wechselt nur den Ort. Schutz gegen Löschen in beiden Fällen nur durch die
+  Snapshots.
+- Wäre „der Server kann nichts löschen“ zwingend, dann Option B (Object Lock), nicht der Mac.
+
+**Entscheidung (Mike, 2026-11-19):** ohne Mac, Option A bleibt.
 
 ### E. Zweiter kleiner VPS, der holt
 

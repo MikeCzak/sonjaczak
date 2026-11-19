@@ -12,7 +12,12 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 **So beantworten:** direkt hier in die Zeile „Antwort“ schreiben (oder im Chat). Claude überträgt die Antwort danach
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
-**Nächster Schritt:** Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
+**Nächster Schritt: Backups in die Hetzner Storage Box** (`planung/backups-ohne-mac.md`, Anleitung `deployment.md`
+S13). Skript im Repo fertig und lokal getestet (2026-11-18). Jetzt: Sonja bestellt BX11 in Falkenstein und schließt
+den AVV (Frage 2 im Plan), dann richtet Mike Console, Server und Mac nach S13 ein (Teile 1–5). Der Mac sichert bis
+dahin weiter.
+
+Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
 
@@ -171,11 +176,19 @@ verlinkten Erklärung.
 - [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
   `planung/backups.md`, „Rücksicherung“). Der Test in die temporäre Datenbank deckt das Einspielen ab, nicht den
   ganzen Ablauf.
+- [ ] **Annahmen beim Skript für die Storage Box** (2026-11-18, `backups-ohne-mac.md` Umsetzung 1,
+  `deployment.md` S13):
+  - Nur SFTP auf Port 22 mit Key im RFC4716-Format; „SSH support“ (Port 23) bleibt aus. Ob „External Reachability“
+    für Port 22 nötig ist, sagt die Doku nicht eindeutig: beim ersten Test sehen.
+  - Snapshots täglich 13:00, eine Stunde nach dem Hochladen.
+  - Monatsmail am 1. um 13:00; „veraltet“ heißt dort: neueste Sicherung älter als 1 Tag.
+  - Format des Unterkonto-Benutzernamens laut Doku nicht belegt (Beispiel nur für den Host `uXXXXX-subX`): aus der
+    Console abschreiben.
+  - Ob ein Unterkonto `.zfs` sieht, steht nicht in der Doku: Test gegen Löschen (S13, Teil 5).
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
   `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11). Kopie auf eine
   externe Festplatte von Sonja geplant, aber noch nicht gemacht (Stand 2026-11-18): Die Sicherungen liegen derzeit nur
-  am Mac. Später lieber ein Backup-Server, der die Sicherungen holt bzw. empfängt,
-  ohne Mikes Rechner. Plan dazu freigegeben (2026-11-18), Umsetzung später, wenn Mike will: `planung/backups-ohne-mac.md`. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
+  am Mac. Umsetzung mit der Hetzner Storage Box begonnen (2026-11-18, „Jetzt“): `planung/backups-ohne-mac.md`. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
   age-Schlüssel ausgedruckt? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
   bei einem Wechsel prüfen, ob das noch stimmt.
 - [ ] **Notfallzettel und Zugang ohne Mike** (2026-11-18, Mike): Entwurf `claude_references/notfallzettel.html` (lokal,
@@ -221,6 +234,8 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18); C4g Raster als Zeitachse mit Schnupperstunden (2026-11-18, gepusht und live 2026-11-18, CI 44342529876)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
+- [ ] Backups ohne Mac (`planung/backups-ohne-mac.md`): 1 Skript und Anleitung S13 (2026-11-18); offen 2–6
+  Bestellung, Server, Rücksicherung, Test gegen Löschen, Mac abschalten
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -273,7 +288,7 @@ muss).
 | Automatische Löschung | Vor dem Echtbetrieb, täglich per Befehl; Semester fest September–Februar und März–August; übrige Daten bis Ende des Folgesemesters (auch bei einem Semester Pause); bei aufzubewahrender Honorarnote wird die Schüler:in gelöscht, die Teilnahme bleibt ohne Person; Dateiname der Honorarnote mit dem PDF gespeichert; keine Mail, Hinweis im Dashboard 30 Tage vorher; laufendes Verfahren beim Finanzamt nicht abgebildet (2026-11-17) | App soll Sonja Arbeit abnehmen (Mike); ein Name ist nicht anonym. `umsetzung-admin.md` F3 |
 | Raster je Unterrichtstag | Eine Zeile je Unterrichtstag, KW-Spalte mit `rowspan`; ganze Ferienwoche als gelbe Tageszeilen mit Namen bei der KW; Einheit auf Ferientag verschieben erlaubt, mit Hinweis (2026-11-18) | Ferien betreffen einen Tag oder nicht, unmissverständlich (Mike). `umsetzung-admin.md` C4f |
 | Raster als Zeitachse | Je Tag eine Zeitachse statt Spalten je Zeitfenster, fest 3 px pro Minute mit waagrechtem Scrollen; Schnupperstunden an ihrer Zeit, Überschneidungen rot und untereinander; Zählung, Name (Link zur Teilnahme) und „Nachholstunde fällig“ (bei der nächsten Einheit) in der Box; Platzhalter „frei“ mit Doppelstunde; Abgesagte in niedriger roter Zeile (2026-11-18) | Uhrzeiten verschiedener Tage stehen minutengenau untereinander, Schnupperstunden werden nicht übersehen (Mike). `umsetzung-admin.md` C4g |
-| Backups ohne Mac | Plan freigegeben mit allen Empfehlungen: Hetzner Storage Box BX11, Server lädt täglich 12:00 hoch, Snapshots täglich (10 Tage Schutz gegen Löschen), Sonja bestellt und schließt den AVV, Mac-Sicherung abschalten nach 2 Wochen ohne Fehler und einer Rücksicherung aus der Storage Box; **noch nicht umgesetzt**, vorerst bleibt der Mac (2026-11-18) | Täglich unabhängig von Mikes Rechner, Kopien im Rechenzentrum (Mike). `planung/backups-ohne-mac.md` |
+| Backups ohne Mac | Plan freigegeben mit allen Empfehlungen: Hetzner Storage Box BX11, Server lädt täglich 12:00 hoch, Snapshots täglich (10 Tage Schutz gegen Löschen), Sonja bestellt und schließt den AVV, Mac-Sicherung abschalten nach 2 Wochen ohne Fehler und einer Rücksicherung aus der Storage Box (2026-11-18); Umsetzung begonnen 2026-11-18 (Mike) | Täglich unabhängig von Mikes Rechner, Kopien im Rechenzentrum (Mike). `planung/backups-ohne-mac.md` |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

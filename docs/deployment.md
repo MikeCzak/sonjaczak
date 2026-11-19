@@ -367,6 +367,143 @@ Hinweise:
 - **Rollback:** Gibt es schon Teilnahmen ohne Person, kann eine Version vor F3b sie nicht anzeigen
   (`enrollment.student` wäre leer). Vor einem Rollback hinter F3b den Cronjob auskommentieren und prüfen.
 
+### S13. Backups in die Hetzner Storage Box (Hetzner Console, Server, Mac)
+
+Plan und Begründungen: `docs/planung/backups-ohne-mac.md` (Option A). Setzt S11 voraus: `sonjaczak-backup` und
+`/srv/sonjaczak/backup-recipient.txt` bleiben, das neue Skript ruft sie auf. Hetzner-Doku gelesen 2026-11-18
+(docs.hetzner.com/storage/storage-box/general, …/access/access-ssh-rsync-borg, …/ssh-keys/add-ssh-keys,
+…/snapshots).
+
+Was wir benutzen: nur **SFTP auf Port 22**. Der Port erlaubt laut Hetzner „only SCP and SFTP, no interactive access“
+und ist immer aktiv. „SSH support“ (Port 23, rsync/Borg) und „External Reachability“ brauchen wir dafür nicht;
+ob Letzteres für Port 22 von außerhalb des Hetzner-Netzes nötig ist, beim ersten Test sehen (die Doku nennt es bei
+Port 23). Port 22 verlangt den öffentlichen Key im **RFC4716-Format** (Tabelle auf der general-Seite).
+
+**1. Hetzner Console** (Sonja bestellt, Mike richtet ein, `backups-ohne-mac.md` Frage 2):
+
+1. BX11 in Falkenstein bestellen, AVV unter accounts.hetzner.com/account/dpa abschließen.
+2. Beim Anlegen nur ein **Passwort** für das Hauptkonto (lang, zufällig, in den Passwort-Manager), **keinen SSH-Key**.
+   Das Hauptkonto sieht alle Verzeichnisse, auch die der Unterkonten („complete access to all directories“); der
+   Server-Key darf deshalb nie dorthin. Ein Key beim Anlegen schaltet das Passwort ohnehin nicht ab („it does not
+   disable password authentication“), und später lässt er sich in der Console nicht mehr ergänzen (beides
+   `getting-started/creating-a-storage-box`, gelesen 2026-11-19). Das Hauptkonto wird für nichts automatisiert benutzt.
+3. Unterkonto **Upload** anlegen, Verzeichnis z. B. `backups`, Schreibrecht. Benutzername und Host aus der Console
+   abschreiben (laut Doku Host `uXXXXX-subX.your-storagebox.de`). Vorübergehendes Passwort für **dieses Unterkonto**
+   vergeben (nur für das Hinterlegen des Keys in Teil 2). Wie das Formular für Unterkonten aussieht, beschreibt die
+   Doku nicht; bietet es ein Feld für einen SSH-Key, Anleitung anpassen.
+4. Unterkonto **Lesen** für den Mac, **dasselbe Verzeichnis, read-only** („Then the sub-account users cannot upload
+   or delete files“).
+5. Snapshots: automatisch **täglich 13:00**, 10 Plätze (nach dem Hochladen um 12:00).
+
+**2. Server: Key, Fingerabdruck, Skript** (als mike):
+
+```bash
+# Mac, im Projektordner
+scp deploy/backup-push.sh mike@SERVER_IP:/tmp/
+
+# Server: Werte des Upload-Unterkontos aus der Console einsetzen (gelten nur in dieser Shell-Sitzung)
+UPLOAD_USER=u123456-sub1
+UPLOAD_HOST=u123456-sub1.your-storagebox.de
+
+sudo install -o root -g root -m 755 /tmp/backup-push.sh /usr/local/sbin/sonjaczak-backup-push
+rm /tmp/backup-push.sh
+
+# Schlüsselpaar nur für die Storage Box, ohne Passphrase (cron kann keine eingeben). Privat: storagebox_ed25519,
+# öffentlich: storagebox_ed25519.pub (OpenSSH-Format, damit meldet sich sftp an)
+sudo ssh-keygen -t ed25519 -N "" -C "sonjaczak-storagebox-upload" -f /root/.ssh/storagebox_ed25519
+# Kein neuer Key: derselbe öffentliche Teil im RFC4716-Format, das Port 22 der Storage Box verlangt. Nur zum Hochladen.
+sudo sh -c 'ssh-keygen -e -f /root/.ssh/storagebox_ed25519.pub > /root/.ssh/storagebox_ed25519_rfc.pub'
+
+# Host-Key der Storage Box abfragen, Fingerabdruck berechnen und MIT DEM AUGE VERGLEICHEN.
+# ssh-keyscan glaubt jedem, der antwortet; erst der Vergleich mit dem veröffentlichten Wert macht es sicher.
+ssh-keyscan -t ed25519 "$UPLOAD_HOST" 2>/dev/null > /tmp/sb_hostkey
+ssh-keygen -lf /tmp/sb_hostkey
+# erwartet laut general-Seite: 256 SHA256:XqONwb1S0zuj5A1CDxpOSuD2hnAArV1A3wKY7Z3sdgM … (ED25519)
+# Nur wenn er stimmt: speichern. Ab dann verweigern sftp und das Skript jede Box mit anderem Host-Key.
+sudo install -o root -g root -m 600 /tmp/sb_hostkey /root/.ssh/known_hosts_storagebox && rm /tmp/sb_hostkey
+
+# Key beim Upload-Unterkonto hinterlegen (Option 3 der Hetzner-Doku, Port 22; fragt nach dem Unterkonto-Passwort).
+# Überschreibt .ssh/authorized_keys des Unterkontos, bei einem frischen Unterkonto egal.
+echo "mkdir .ssh" | sudo sftp -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox "$UPLOAD_USER@$UPLOAD_HOST"
+sudo scp -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox \
+  /root/.ssh/storagebox_ed25519_rfc.pub "$UPLOAD_USER@$UPLOAD_HOST:.ssh/authorized_keys"
+
+# Test mit Key statt Passwort (darf nicht mehr nach dem Passwort fragen): listet .ssh
+echo "ls -a" | sudo sftp -b - -i /root/.ssh/storagebox_ed25519 -o BatchMode=yes \
+  -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox "$UPLOAD_USER@$UPLOAD_HOST"
+
+# Einstellungen, nur root lesbar (MAIL_TO = Mikes Adresse, nicht ins Repo)
+sudo install -o root -g root -m 600 /dev/null /srv/sonjaczak/backup-push.env
+sudo nano /srv/sonjaczak/backup-push.env
+```
+
+Inhalt von `/srv/sonjaczak/backup-push.env`:
+
+```
+STORAGE_USER=uXXXXX-subX
+STORAGE_HOST=uXXXXX-subX.your-storagebox.de
+MAIL_TO=<adresse>
+```
+
+Danach in der Console das vorübergehende Passwort des Upload-Unterkontos durch ein langes zufälliges ersetzen
+(Passwort-Manager); ab jetzt nur noch der Key.
+
+**3. Erster Lauf von Hand, dann Cronjob:**
+
+```bash
+sudo /usr/local/sbin/sonjaczak-backup-push            # erwartet: "Uploaded JJJJ-MM-TT.dump.age (… bytes)"
+sudo /usr/local/sbin/sonjaczak-backup-push status     # erwartet: Mail „Sicherungen vorhanden: neueste vom …“
+sudo crontab -e
+```
+
+```
+# Backup to the Hetzner Storage Box (docs/deployment.md S13); errors go out by mail, details in journalctl -u cron
+0 12 * * * /usr/local/sbin/sonjaczak-backup-push > /dev/null
+# Monthly status mail: newest backup and count, so a cron job that never runs is noticed
+0 13 1 * * /usr/local/sbin/sonjaczak-backup-push status
+```
+
+Erwartete Zeile im Journal beim ersten Lauf eines Tages: `remote delete …: No such file or directory` (das Skript
+ersetzt eine ältere Datei desselben Tages, beim ersten Lauf gibt es keine).
+
+**Was das Skript tut** (`deploy/backup-push.sh`): ruft `sonjaczak-backup` auf, schreibt in ein temporäres Verzeichnis
+unter `/var/tmp` (verschlüsselt, wird immer gelöscht), prüft Exit-Code und age-Kopfzeile, lädt unter einem
+temporären Namen hoch und benennt um, vergleicht die Größe, rotiert danach wie `bin/backup-pull` (14 Tage, 1. des
+Monats 12 Monate). Jeder Fehler schickt eine Mail über `mailer:test` (wie S6). Fällt der PHP-Container aus, geht auch
+die Mail nicht; dann fällt es spätestens bei der Monatsmail auf. Lokal getestet gegen einen SFTP-Container
+(2026-11-18, `verlauf.md`).
+
+**4. Mac: Lesen und Rücksicherung**
+
+```bash
+ssh-keygen -t ed25519 -N "" -C "sonjaczak-storagebox-read" -f ~/.ssh/sonjaczak_storagebox_read
+ssh-keygen -e -f ~/.ssh/sonjaczak_storagebox_read.pub > ~/.ssh/sonjaczak_storagebox_read_rfc.pub
+# Fingerabdruck wie oben prüfen, dann wie beim Server mit READ_USER@READ_HOST hinterlegen (sftp mkdir, scp)
+```
+
+Rücksicherung testen (privater age-Schlüssel aus dem Passwort-Manager in der Zwischenablage):
+
+```bash
+sftp -i ~/.ssh/sonjaczak_storagebox_read READ_USER@READ_HOST:$(date +%F).dump.age /tmp/sb.dump.age
+age -d -i <(pbpaste) /tmp/sb.dump.age | ssh mike@sonjaczak.com sudo /usr/local/sbin/sonjaczak-restore-test
+rm /tmp/sb.dump.age; pbcopy < /dev/null
+```
+
+**5. Test gegen Löschen** (`backups-ohne-mac.md`, Umsetzung 5; erst nach dem ersten Snapshot):
+
+```bash
+sudo sftp -i /root/.ssh/storagebox_ed25519 -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox UPLOAD_USER@UPLOAD_HOST
+# sftp> rm JJJJ-MM-TT.dump.age        → soll klappen (danach Skript erneut laufen lassen)
+# sftp> ls /.zfs/snapshot  bzw.  ls .zfs/snapshot
+# sftp> rmdir / rm in einem Snapshot  → muss scheitern
+```
+
+Erwartet: Das Upload-Unterkonto kann keine Snapshots löschen; die gelöschte Datei liegt noch im Snapshot (mit dem
+Lese-Unterkonto oder in der Console prüfen). Sieht das Unterkonto `.zfs` gar nicht, in der Console nachsehen, ob der
+Snapshot die Datei enthält. Lässt sich ein Snapshot löschen: zurück zu Option B.
+
+**Skript aktualisieren:** Ändert sich `deploy/backup-push.sh`, die `scp`- und `install`-Zeile wiederholen.
+
 ## Erster Deploy
 
 Erst wenn S1–S5, S9 und S10 erledigt sind und `dig` die VPS-Adressen zeigt: pushen und den Lauf beobachten

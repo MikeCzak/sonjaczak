@@ -393,3 +393,14 @@ Bei uns für `deploy` und `dbbackup`.
 **LaunchAgent** – Hintergrundjob von macOS (launchd) für den angemeldeten Benutzer; holt verpasste Termine nach dem
 Aufwachen nach, anders als cron. Bei uns: `com.sonjaczak.backup`.
 
+
+**Storage Box** – Speicherplatz von Hetzner, erreichbar u. a. per SFTP. Bei uns BX11, der Server lädt die
+verschlüsselten Dumps hoch (`deployment.md` S13). **Unterkonto**: eigener Zugang, sieht nur sein Verzeichnis,
+auf Wunsch read-only.
+
+**ZFS-Snapshot (Storage Box)** – Stand des ganzen Speichers zu einem Zeitpunkt, von Hetzner nach Zeitplan angelegt,
+im Verzeichnis `.zfs/snapshot` nur lesbar. Schützt bei uns gegen Löschen mit dem Upload-Key (10 Tage). Nicht zu
+verwechseln mit dem **Snapshot** im Datenmodell.
+
+**RFC4716** – Anderes Textformat für öffentliche SSH-Keys (`---- BEGIN SSH2 PUBLIC KEY ----`), erzeugt mit
+`ssh-keygen -e`. Port 22 der Storage Box verlangt es.

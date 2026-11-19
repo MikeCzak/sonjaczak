@@ -559,3 +559,17 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Deploy grün, live.
 - 2026-11-18: Passkeys mit Sonja (B5d) verschoben, bis Mike ihr die Website zeigt; nächster Schritt sind die Backups
   ohne Mikes Mac.
+- 2026-11-18: Backups in die Hetzner Storage Box begonnen (Mike), `planung/backups-ohne-mac.md` Umsetzung 1. Neu
+  `deploy/backup-push.sh` (Hochladen per SFTP Port 22, Prüfung der age-Kopfzeile und der Größe, Rotation 14 Tage +
+  Monatsersten, Mail bei Fehler, Monatsmail mit `status`) und `deployment.md` S13. Hetzner-Doku gelesen (Ports,
+  RFC4716 für Port 22, Unterkonten, Fingerabdrücke, Snapshots). Lokal getestet in Ubuntu 24.04 (OpenSSH 9.6p1) gegen
+  `atmoz/sftp`, mit Attrappen für `sonjaczak-backup` und `docker`: Hochladen, zweiter Lauf am selben Tag, Rotation
+  (gelöscht 15 und 40 Tage alt und 2024-01-01, behalten 1.9., 14 und 3 Tage), Monatsmail normal und veraltet, Dump
+  scheitert, falscher Host-Key, Storage Box aus; jedes Mal Mail. Dabei gefunden: Die Größenprüfung las die
+  Echo-Zeile `sftp> ls -l …` mit, und die `EXIT`-Falle griff auf eine lokale Variable zu, die nach dem Ende der
+  Funktion nicht mehr existiert (`unbound variable`, temporäres Verzeichnis blieb liegen). Beides behoben.
+- 2026-11-19: Variante „Mac schickt in die Storage Box“ verworfen (Mike), als A2 im Plan. `deployment.md` S13
+  nachgeschärft nach Mikes Fragen: Hauptkonto nur mit Passwort, nie mit dem Server-Key; Platzhalter als
+  Shell-Variablen; Erklärung der zwei `ssh-keygen`-Aufrufe und des Fingerabdruck-Vergleichs; Test der Anmeldung mit
+  Key. Hetzner-Doku `getting-started/creating-a-storage-box` gelesen: Ein Key beim Anlegen schaltet das Passwort nicht
+  ab und lässt sich später nicht in der Console ergänzen.
