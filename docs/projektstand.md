@@ -14,8 +14,10 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 
 **Nächster Schritt: Backups in die Hetzner Storage Box** (`planung/backups-ohne-mac.md`, Anleitung `deployment.md`
 S13). Skript im Repo fertig und lokal getestet (2026-11-18). Storage Box von Mike bestellt und verfügbar
-(2026-11-19); jetzt AVV im Hetzner-Konto, dann Console, Server und Mac nach S13 (Teile 1–5). Der Mac sichert bis
-dahin weiter.
+(2026-11-19), AVV abgeschlossen, Unterkonten und Snapshots eingerichtet, Upload am Server und Rücksicherung aus der
+Storage Box getestet (S13 Teile 1–4, 2026-11-19). Offen: Cronjobs (S13 Teil 3, falls noch nicht eingetragen), Test
+gegen Löschen (Teil 5, frühestens nach dem ersten Snapshot mit Datei), Hetzner in der Datenschutz-Information, nach 2
+Wochen ohne Fehler Mac abschalten. Der Mac sichert bis dahin weiter.
 
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
@@ -201,6 +203,9 @@ verlinkten Erklärung.
   - Format des Unterkonto-Benutzernamens laut Doku nicht belegt (Beispiel nur für den Host `uXXXXX-subX`): aus der
     Console abschreiben.
   - Ob ein Unterkonto `.zfs` sieht, steht nicht in der Doku: Test gegen Löschen (S13, Teil 5).
+- [ ] **Zweite Kopie des privaten age-Schlüssels** (2026-11-19, beim Test der Rücksicherung): Der Schlüssel war
+  im Passwort-Manager zeitweise nicht auffindbar. Ohne ihn ist jede Sicherung wertlos. Ausdrucken und sicher
+  verwahren (Notfallzettel), bevor echte Daten kommen.
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
   `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11). Kopie auf eine
   externe Festplatte von Sonja geplant, aber noch nicht gemacht (Stand 2026-11-18): Die Sicherungen liegen derzeit nur
@@ -250,8 +255,9 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18); C4g Raster als Zeitachse mit Schnupperstunden (2026-11-18, gepusht und live 2026-11-18, CI 44342529876)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
-- [ ] Backups ohne Mac (`planung/backups-ohne-mac.md`): 1 Skript und Anleitung S13 (2026-11-18); offen 2–6
-  Bestellung, Server, Rücksicherung, Test gegen Löschen, Mac abschalten
+- [ ] Backups ohne Mac (`planung/backups-ohne-mac.md`): 1 Skript und Anleitung S13 (2026-11-18); 2 Bestellung, AVV,
+  Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
+  2026-11-19); offen 5 Test gegen Löschen, 6 Mac abschalten
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

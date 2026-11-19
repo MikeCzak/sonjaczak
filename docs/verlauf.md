@@ -580,3 +580,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Passwortabfrage endete mit „Killed“ (kein OOM im Kernel-Log, Website lief weiter); interaktiv klappte es. Anmeldung
   mit Key über Port 22 (RFC4716) getestet. Gefunden: Gleiches Basisverzeichnis heißt gemeinsame `authorized_keys`;
   das Lese-Unterkonto bekommt deshalb keinen Key, nur ein Passwort.
+- 2026-11-19: S13 Teil 3 und 4. Erster Lauf von Hand: `Uploaded 2026-11-19.dump.age (39519 bytes)`, Monatsmail
+  angekommen. Lese-Unterkonto `-sub2`: Host-Key RSA wie beim Upload-Konto, `get` klappt, `rm` scheitert mit
+  „Permission denied“ (read-only wirkt). Rücksicherung aus der Storage Box am Mac erfolgreich. Stolpersteine: Der
+  private age-Schlüssel war im Passwort-Manager zeitweise nicht auffindbar (gefunden); Aufräumzeile lief mit dem
+  gescheiterten Test und löschte den Download (Anleitung trennt sie jetzt); der Test wurde einmal in der SSH-Sitzung
+  am Server gestartet und scheiterte an `pbpaste` (Anleitung sagt jetzt ausdrücklich „am Mac“). Der abgebrochene
+  Test hinterlässt keine Testdatenbank (`trap … EXIT` in `restore-test.sh`).
