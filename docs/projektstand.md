@@ -13,8 +13,8 @@ Schritte der Server-Einrichtung „`deployment.md` S8“. Ist ein Punkt geklärt
 in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Contra stehen im verlinkten Abschnitt.
 
 **Nächster Schritt: Backups in die Hetzner Storage Box** (`planung/backups-ohne-mac.md`, Anleitung `deployment.md`
-S13). Skript im Repo fertig und lokal getestet (2026-11-18). Jetzt: Sonja bestellt BX11 in Falkenstein und schließt
-den AVV (Frage 2 im Plan), dann richtet Mike Console, Server und Mac nach S13 ein (Teile 1–5). Der Mac sichert bis
+S13). Skript im Repo fertig und lokal getestet (2026-11-18). Storage Box von Mike bestellt und verfügbar
+(2026-11-19); jetzt AVV im Hetzner-Konto, dann Console, Server und Mac nach S13 (Teile 1–5). Der Mac sichert bis
 dahin weiter.
 
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
@@ -141,6 +141,19 @@ verlinkten Erklärung.
   namentlich genannt, der Text spricht von „einem IT-Dienstleister, der die Website technisch betreut und die Daten nur
   in meinem Auftrag verarbeitet“ (Mike hat Zugang als Super-Admin und lädt die Backups). Zu klären: Braucht es dafür
   eine Vereinbarung zur Auftragsverarbeitung zwischen Sonja und Mike (Art. 28 DSGVO, nicht nachgelesen)?
+- [ ] **Hetzner-Konto läuft auf Mike** (2026-11-19, `backups-ohne-mac.md` Frage 2, abweichend von der Empfehlung
+  „Sonja bestellt“): Mike schließt den AVV mit Hetzner, Hetzner ist damit Unterauftragsverarbeiter von Mike. Gehört in
+  die Vereinbarung Sonja–Mike (Punkt „IT-Dienstleister“ darunter), samt Sonjas Zustimmung zu Hetzner (Art. 28 Abs. 2
+  DSGVO, nicht nachgelesen). Alternative: Konto später auf Sonja übertragen (siehe auch „Notfallzettel“).
+- [ ] **Hetzner in der Datenschutz-Information Unterricht nennen** (2026-11-19, S13): Abschnitt „Wer die Daten erhält“
+  nennt nur IONOS als Auftragsverarbeiterin. Vor dem ersten Hochladen echter Daten ergänzen (Hetzner Online GmbH,
+  Sicherungskopien, Deutschland); Anschrift aus dem AVV übernehmen.
+- [ ] **Angaben im AVV mit Hetzner** (2026-11-19, Auslegung, keine Rechtsberatung): Angehakt „Personal master data“,
+  „Communication data“, „Contractual master data“, „Contract invoicing and payment data“ (nicht „Log data“: die
+  Sicherung enthält keine Protokolle); Betroffene „The Client's customers and interested parties“ (Schüler:innen,
+  auch Minderjährige, Eltern, Schnupperstunden), nicht „… and employees“. Keine Option für Sonjas IBAN und die
+  Zugangsdaten von Sonja und Mike; Hetzner schließt nur die Standardvorlage. Daten sind mit age verschlüsselt, bleiben
+  aber personenbezogen.
 - [ ] **Admin-Cookie nicht in der Datenschutzerklärung** (2026-11-17, Auslegung zu Mikes Entscheidung): § 165 Abs. 3
   TKG 2021 (RIS, gelesen 2026-11-17) verlangt, „den Nutzer oder Benutzer“ über Daten, Rechtsgrundlage, Zweck und Dauer
   zu informieren, „in geeigneter Form … spätestens bei Beginn der Rechtsbeziehungen“; eine Einwilligung braucht es
