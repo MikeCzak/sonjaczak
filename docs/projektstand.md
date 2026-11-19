@@ -178,8 +178,9 @@ verlinkten Erklärung.
   ganzen Ablauf.
 - [ ] **Annahmen beim Skript für die Storage Box** (2026-11-18, `backups-ohne-mac.md` Umsetzung 1,
   `deployment.md` S13):
-  - Nur SFTP auf Port 22 mit Key im RFC4716-Format; „SSH support“ (Port 23) bleibt aus. Ob „External Reachability“
-    für Port 22 nötig ist, sagt die Doku nicht eindeutig: beim ersten Test sehen.
+  - Nur SFTP auf Port 22 mit Key im RFC4716-Format; „SSH support“ (Port 23) bleibt aus, „External Reachability“
+    an (korrigiert 2026-11-19 nach Mikes Hinweis). Hinterlegen des Keys über Port 22 (Option 3) gegen eine echte Box
+    ungetestet; Ausweg in S13.
   - Snapshots täglich 13:00, eine Stunde nach dem Hochladen.
   - Monatsmail am 1. um 13:00; „veraltet“ heißt dort: neueste Sicherung älter als 1 Tag.
   - Format des Unterkonto-Benutzernamens laut Doku nicht belegt (Beispiel nur für den Host `uXXXXX-subX`): aus der

@@ -375,9 +375,16 @@ Plan und Begründungen: `docs/planung/backups-ohne-mac.md` (Option A). Setzt S11
 …/snapshots).
 
 Was wir benutzen: nur **SFTP auf Port 22**. Der Port erlaubt laut Hetzner „only SCP and SFTP, no interactive access“
-und ist immer aktiv. „SSH support“ (Port 23, rsync/Borg) und „External Reachability“ brauchen wir dafür nicht;
-ob Letzteres für Port 22 von außerhalb des Hetzner-Netzes nötig ist, beim ersten Test sehen (die Doku nennt es bei
-Port 23). Port 22 verlangt den öffentlichen Key im **RFC4716-Format** (Tabelle auf der general-Seite).
+und ist „always active and cannot be disabled“. Port 22 verlangt den öffentlichen Key im **RFC4716-Format** (Tabelle
+auf der general-Seite).
+
+- **External Reachability: an.** „To connect from outside the Hetzner network … you have to enable External
+  Reachability“; der Server steht bei IONOS, der Mac zu Hause. Bietet das Formular für Unterkonten einen eigenen
+  Schalter, dort ebenfalls.
+- **SSH support: aus.** „The option 'SSH Support' only enables port 23“ (eingeschränkte Shell, rsync, Borg). Der
+  Hinweis in „Storage Box SSH Keys“, SSH support einzuschalten, gilt für das Hochladen des Keys „via SSH“ (Optionen 1
+  und 2, Port 23); wir nehmen Option 3 über Port 22. Klappt die nicht (gegen eine echte Box ungetestet): SSH support
+  vorübergehend an, Key mit Option 1 (`install-ssh-key`) hinterlegen, wieder aus.
 
 **1. Hetzner Console** (Sonja bestellt, Mike richtet ein, `backups-ohne-mac.md` Frage 2):
 
