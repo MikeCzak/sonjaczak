@@ -28,6 +28,8 @@ verlinkten Erklärung.
 
 ### Mit Sonja
 
+- [ ] **AVV mit Hetzner an Sonja schicken** (2026-11-19, S13, Mike): Sonja ist Verantwortliche und braucht eine Kopie
+  (auch für den Notfall ohne Mike). Erst wenn Mike ihr die Website zeigt (Überraschung).
 - [ ] **Passkeys einrichten, wenn Mike Sonja die Website zeigt** (verschoben 2026-11-18, Mike: bis dahin arbeitet er
   ohne sie; `umsetzung-admin.md` B5d): je ein Passkey auf ihrem MacBook Air und ihrem Android-Handy. Code ist live,
   es fehlt nur das Einrichten. **Nicht vergessen:** Für Sonja ist der Fingerabdruck viel einfacher als z. B. ein
