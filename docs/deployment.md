@@ -394,11 +394,13 @@ auf der general-Seite).
    Server-Key darf deshalb nie dorthin. Ein Key beim Anlegen schaltet das Passwort ohnehin nicht ab („it does not
    disable password authentication“), und später lässt er sich in der Console nicht mehr ergänzen (beides
    `getting-started/creating-a-storage-box`, gelesen 2026-11-19). Das Hauptkonto wird für nichts automatisiert benutzt.
-3. Unterkonto **Upload** anlegen, Verzeichnis z. B. `backups`, Schreibrecht. Benutzername und Host aus der Console
-   abschreiben (laut Doku Host `uXXXXX-subX.your-storagebox.de`). Vorübergehendes Passwort für **dieses Unterkonto**
+3. Unterkonto **Upload** anlegen, **Basisverzeichnis `backups`**, kein Unterverzeichnis (das Skript legt die Dateien
+   direkt dort ab), Schreibrecht. Einen Namen vergibt man nicht: Hetzner nummeriert `uXXXXX-sub1`, `-sub2`, …; Upload
+   zuerst anlegen, dann ist es `-sub1`. Benutzername und Host aus der Console abschreiben (laut Doku Host
+   `uXXXXX-subX.your-storagebox.de`), Zuordnung im Passwort-Manager notieren. Vorübergehendes Passwort für **dieses Unterkonto**
    vergeben (nur für das Hinterlegen des Keys in Teil 2). Wie das Formular für Unterkonten aussieht, beschreibt die
    Doku nicht; bietet es ein Feld für einen SSH-Key, Anleitung anpassen.
-4. Unterkonto **Lesen** für den Mac, **dasselbe Verzeichnis, read-only** („Then the sub-account users cannot upload
+4. Unterkonto **Lesen** für den Mac, **dasselbe Basisverzeichnis `backups`, read-only** („Then the sub-account users cannot upload
    or delete files“).
 5. Snapshots: automatisch **täglich 13:00**, 10 Plätze (nach dem Hochladen um 12:00).
 
