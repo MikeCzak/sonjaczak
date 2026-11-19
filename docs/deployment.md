@@ -426,9 +426,14 @@ sudo sh -c 'ssh-keygen -e -f /root/.ssh/storagebox_ed25519.pub > /root/.ssh/stor
 
 # Host-Key der Storage Box abfragen, Fingerabdruck berechnen und MIT DEM AUGE VERGLEICHEN.
 # ssh-keyscan glaubt jedem, der antwortet; erst der Vergleich mit dem veröffentlichten Wert macht es sicher.
-ssh-keyscan -t ed25519 "$UPLOAD_HOST" 2>/dev/null > /tmp/sb_hostkey
+# Jeder Host-Server hat laut Hetzner nur EINEN der veröffentlichten Keys („only have one of the fingerprints listed
+# below“). Unsere Box (u724152) hat nur RSA (2026-11-19, „SSH-2.0-mod_sftp“); mit -t ed25519 bliebe die Datei leer
+# und ssh-keygen meldet „not a public key file“. Bei einer anderen Box erst ohne -t nachsehen: ssh-keyscan "$UPLOAD_HOST"
+ssh-keyscan -t rsa "$UPLOAD_HOST" 2>/dev/null > /tmp/sb_hostkey
 ssh-keygen -lf /tmp/sb_hostkey
-# erwartet laut general-Seite: 256 SHA256:XqONwb1S0zuj5A1CDxpOSuD2hnAArV1A3wKY7Z3sdgM … (ED25519)
+# erwartet laut general-Seite: 2048 SHA256:EMlfI8GsRIfpVkoW1H2u0zYVpFGKkIMKHFZIRkf2ioI … (RSA)
+# (die anderen veröffentlichten: ED25519 SHA256:XqONwb1S0zuj5A1CDxpOSuD2hnAArV1A3wKY7Z3sdgM,
+#  ECDSA SHA256:oDHZqKXnoMtgvPBjjC57pcuFez28roaEuFcfwyg8O5c)
 # Nur wenn er stimmt: speichern. Ab dann verweigern sftp und das Skript jede Box mit anderem Host-Key.
 sudo install -o root -g root -m 600 /tmp/sb_hostkey /root/.ssh/known_hosts_storagebox && rm /tmp/sb_hostkey
 
