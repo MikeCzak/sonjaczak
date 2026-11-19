@@ -573,3 +573,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Shell-Variablen; Erklärung der zwei `ssh-keygen`-Aufrufe und des Fingerabdruck-Vergleichs; Test der Anmeldung mit
   Key. Hetzner-Doku `getting-started/creating-a-storage-box` gelesen: Ein Key beim Anlegen schaltet das Passwort nicht
   ab und lässt sich später nicht in der Console ergänzen.
+- 2026-11-19: Storage Box (u724152, von Mike bestellt), AVV, Unterkonten `-sub1` Upload und `-sub2` read-only, beide
+  Basisverzeichnis `backups`, External Reachability an; Snapshots eingerichtet. S13 Teil 2 am Server: Skript
+  installiert, Key erzeugt. Die Box hat nur einen RSA-Host-Key (`SSH-2.0-mod_sftp`), `ssh-keyscan -t ed25519` lieferte
+  eine leere Datei; RSA-Fingerabdruck stimmte mit der Hetzner-Liste. `echo "mkdir .ssh" | sudo sftp …` mit
+  Passwortabfrage endete mit „Killed“ (kein OOM im Kernel-Log, Website lief weiter); interaktiv klappte es. Anmeldung
+  mit Key über Port 22 (RFC4716) getestet. Gefunden: Gleiches Basisverzeichnis heißt gemeinsame `authorized_keys`;
+  das Lese-Unterkonto bekommt deshalb keinen Key, nur ein Passwort.

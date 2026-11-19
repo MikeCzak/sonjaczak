@@ -437,11 +437,14 @@ ssh-keygen -lf /tmp/sb_hostkey
 # Nur wenn er stimmt: speichern. Ab dann verweigern sftp und das Skript jede Box mit anderem Host-Key.
 sudo install -o root -g root -m 600 /tmp/sb_hostkey /root/.ssh/known_hosts_storagebox && rm /tmp/sb_hostkey
 
-# Key beim Upload-Unterkonto hinterlegen (Option 3 der Hetzner-Doku, Port 22; fragt nach dem Unterkonto-Passwort).
-# Überschreibt .ssh/authorized_keys des Unterkontos, bei einem frischen Unterkonto egal.
-echo "mkdir .ssh" | sudo sftp -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox "$UPLOAD_USER@$UPLOAD_HOST"
-sudo scp -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox \
-  /root/.ssh/storagebox_ed25519_rfc.pub "$UPLOAD_USER@$UPLOAD_HOST:.ssh/authorized_keys"
+# Key beim Upload-Unterkonto hinterlegen (Option 3 der Hetzner-Doku, Port 22), interaktiv, fragt einmal nach dem
+# Passwort des Unterkontos. NICHT als `echo "mkdir .ssh" | sudo sftp …`: Pipe + sudo + Passwortabfrage endete am
+# 2026-11-19 mit „Killed“ (kein OOM, Ursache nicht geklärt; vermutlich sudo mit use_pty, nicht nachgelesen).
+sudo sftp -o UserKnownHostsFile=/root/.ssh/known_hosts_storagebox "$UPLOAD_USER@$UPLOAD_HOST"
+#   sftp> mkdir .ssh
+#   sftp> put /root/.ssh/storagebox_ed25519_rfc.pub .ssh/authorized_keys
+#   sftp> ls -l .ssh
+#   sftp> bye
 
 # Test mit Key statt Passwort (darf nicht mehr nach dem Passwort fragen): listet .ssh
 echo "ls -a" | sudo sftp -b - -i /root/.ssh/storagebox_ed25519 -o BatchMode=yes \
@@ -488,18 +491,19 @@ Monats 12 Monate). Jeder Fehler schickt eine Mail über `mailer:test` (wie S6). 
 die Mail nicht; dann fällt es spätestens bei der Monatsmail auf. Lokal getestet gegen einen SFTP-Container
 (2026-11-18, `verlauf.md`).
 
-**4. Mac: Lesen und Rücksicherung**
+**4. Mac: Lesen und Rücksicherung** (Lese-Unterkonto **nur mit Passwort, ohne Key**)
+
+Beide Unterkonten haben dasselbe Basisverzeichnis `backups` und damit **dieselbe** `.ssh/authorized_keys` (dort liegt
+der Server-Key). Ein Mac-Key darin gälte auch für das Upload-Unterkonto, mit Schreibrecht. Der Mac liest nur von Hand,
+also reicht das Passwort aus dem Passwort-Manager.
+
+Beim ersten Verbinden fragt ssh nach dem Host-Key: Fingerabdruck mit dem RSA-Wert oben vergleichen.
+
+Rücksicherung testen (privater age-Schlüssel aus dem Passwort-Manager in der Zwischenablage; sftp fragt nach dem
+Passwort des Lese-Unterkontos, das also erst danach in die Zwischenablage):
 
 ```bash
-ssh-keygen -t ed25519 -N "" -C "sonjaczak-storagebox-read" -f ~/.ssh/sonjaczak_storagebox_read
-ssh-keygen -e -f ~/.ssh/sonjaczak_storagebox_read.pub > ~/.ssh/sonjaczak_storagebox_read_rfc.pub
-# Fingerabdruck wie oben prüfen, dann wie beim Server mit READ_USER@READ_HOST hinterlegen (sftp mkdir, scp)
-```
-
-Rücksicherung testen (privater age-Schlüssel aus dem Passwort-Manager in der Zwischenablage):
-
-```bash
-sftp -i ~/.ssh/sonjaczak_storagebox_read READ_USER@READ_HOST:$(date +%F).dump.age /tmp/sb.dump.age
+sftp READ_USER@READ_HOST:$(date +%F).dump.age /tmp/sb.dump.age
 age -d -i <(pbpaste) /tmp/sb.dump.age | ssh mike@sonjaczak.com sudo /usr/local/sbin/sonjaczak-restore-test
 rm /tmp/sb.dump.age; pbcopy < /dev/null
 ```
