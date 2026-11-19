@@ -266,7 +266,7 @@ privacy_lessons:
     recipients:
         heading: Wer die Daten erhält
         body: |-
-            Die Daten liegen in einem passwortgeschützten Verwaltungsbereich dieser Website. Zugriff haben nur ich und ein IT-Dienstleister, der die Website technisch betreut und die Daten nur in meinem Auftrag verarbeitet. Server und E-Mail betreibt die IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, Deutschland, als Auftragsverarbeiterin nach Art. 28 DSGVO.
+            Die Daten liegen in einem passwortgeschützten Verwaltungsbereich dieser Website. Zugriff haben nur ich und ein IT-Dienstleister, der die Website technisch betreut und die Daten nur in meinem Auftrag verarbeitet. Server und E-Mail betreibt die IONOS SE, Elgendorfer Str. 57, 56410 Montabaur, Deutschland, als Auftragsverarbeiterin nach Art. 28 DSGVO. Die Sicherungskopien liegen verschlüsselt bei der Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Deutschland, ebenfalls als Auftragsverarbeiterin; Hetzner kann ihren Inhalt nicht lesen.
 
             Honorarnoten, Gutschriften und Zahlungen gebe ich an meine Steuerberaterin Mag.iur. Ulla Kröll weiter, auf Verlangen auch an das Finanzamt.
 
@@ -278,4 +278,4 @@ privacy_lessons:
 
             Alle anderen Daten lösche ich bis zum Ende des Semesters, das auf den letzten Kurs oder die letzte Schnupperstunde folgt. Als Semester gelten September bis Februar und März bis August. Ist dann noch eine Honorarnote aufzubewahren, bleibt nur die Honorarnote selbst mit den Angaben darauf erhalten.
 
-            Von den Daten wird täglich eine verschlüsselte Sicherungskopie erstellt und außerhalb des Servers aufbewahrt. Gelöschte Daten sind darin noch bis zu 12 Monate enthalten, bis die jeweilige Kopie gelöscht wird.
+            Von den Daten wird täglich eine verschlüsselte Sicherungskopie erstellt und außerhalb des Servers in einem Rechenzentrum in Deutschland aufbewahrt. Gelöschte Daten sind darin noch bis zu 13 Monate enthalten, bis die jeweilige Kopie gelöscht wird.

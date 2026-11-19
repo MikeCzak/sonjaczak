@@ -130,8 +130,8 @@ Mac (Mike, bei Bedarf)  ◄── Unterkonto „sonjaczak-read“, read-only (f�
    Hauptzugang wird für nichts automatisiert benutzt; sein Passwort kommt in den Passwort-Manager.
 4. **Snapshots:** automatisch täglich (z. B. 13:00, nach dem Hochladen). Die 10 Plätze heißen: Was ein Angreifer
    löscht, ist noch 10 Tage im Snapshot. Die Rotation selbst macht das Skript.
-5. **Aufbewahrung wie bisher**, also bleibt der Satz in der Datenschutz-Information („bis zu 12 Monate“) richtig. Ein
-   gelöschter Monats-Dump steckt danach höchstens noch 10 Tage in Snapshots (12 Monate + 10 Tage); siehe Frage 4.
+5. **Aufbewahrung wie bisher.** Ein gelöschter Monats-Dump steckt danach höchstens noch 10 Tage in Snapshots
+   (12 Monate + 10 Tage); siehe Frage 4. Die Datenschutz-Information sagt deshalb seit 2026-11-19 „bis zu 13 Monate“.
 6. **Auffallen, wenn es ausbleibt:** Bei einem Fehler schickt das Skript eine Mail an Mike. Ein Cronjob, der gar nicht
    läuft, schickt keine; deshalb zusätzlich am 1. jedes Monats eine kurze Mail „Sicherungen vorhanden: neueste vom …,
    Anzahl …“ (nur Dateinamen, keine Daten). Alternative: ein externer Dienst, der Alarm schlägt, wenn ein Ping

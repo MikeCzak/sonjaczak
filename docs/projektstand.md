@@ -15,9 +15,8 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 **Nächster Schritt: Backups in die Hetzner Storage Box** (`planung/backups-ohne-mac.md`, Anleitung `deployment.md`
 S13). Skript im Repo fertig und lokal getestet (2026-11-18). Storage Box von Mike bestellt und verfügbar
 (2026-11-19), AVV abgeschlossen, Unterkonten und Snapshots eingerichtet, Upload am Server und Rücksicherung aus der
-Storage Box getestet (S13 Teile 1–4, 2026-11-19). Offen: Cronjobs (S13 Teil 3, falls noch nicht eingetragen), Test
-gegen Löschen (Teil 5, frühestens nach dem ersten Snapshot mit Datei), Hetzner in der Datenschutz-Information, nach 2
-Wochen ohne Fehler Mac abschalten. Der Mac sichert bis dahin weiter.
+Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzner in der Datenschutz-Information
+(2026-11-19). Offen: Test gegen Löschen (Teil 5), nach 2 Wochen ohne Fehler (frühestens 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
@@ -149,15 +148,18 @@ verlinkten Erklärung.
   „Sonja bestellt“): Mike schließt den AVV mit Hetzner, Hetzner ist damit Unterauftragsverarbeiter von Mike. Gehört in
   die Vereinbarung Sonja–Mike (Punkt „IT-Dienstleister“ darunter), samt Sonjas Zustimmung zu Hetzner (Art. 28 Abs. 2
   DSGVO, nicht nachgelesen). Alternative: Konto später auf Sonja übertragen (siehe auch „Notfallzettel“).
-- [ ] **Hetzner in der Datenschutz-Information Unterricht nennen** (2026-11-19, S13): Abschnitt „Wer die Daten erhält“
-  nennt nur IONOS als Auftragsverarbeiterin. Vor dem ersten Hochladen echter Daten ergänzen (Hetzner Online GmbH,
-  Sicherungskopien, Deutschland); Anschrift aus dem AVV übernehmen.
 - [ ] **Angaben im AVV mit Hetzner** (2026-11-19, Auslegung, keine Rechtsberatung): Angehakt „Personal master data“,
   „Communication data“, „Contractual master data“, „Contract invoicing and payment data“ (nicht „Log data“: die
   Sicherung enthält keine Protokolle); Betroffene „The Client's customers and interested parties“ (Schüler:innen,
   auch Minderjährige, Eltern, Schnupperstunden), nicht „… and employees“. Keine Option für Sonjas IBAN und die
   Zugangsdaten von Sonja und Mike; Hetzner schließt nur die Standardvorlage. Daten sind mit age verschlüsselt, bleiben
   aber personenbezogen.
+- [ ] **Text zu Hetzner in der Datenschutz-Information** (2026-11-19, S13, Auslegung): „Die Sicherungskopien liegen
+  verschlüsselt bei der Hetzner Online GmbH … Hetzner kann ihren Inhalt nicht lesen“; Aufbewahrung „in einem
+  Rechenzentrum in Deutschland“ und **„bis zu 13 Monate“ statt 12** (Monatskopie bis 366 Tage, danach bis 10 Tage in
+  Snapshots). Bis die Mac-Sicherung abgeschaltet ist, liegen Kopien auch bei Mike; beim Abschalten die Kopien am Mac
+  löschen. Die Datenschutzerklärung der Website bleibt unverändert (Sicherungen enthalten keine Daten von
+  Besucher:innen, Anfragen werden nur gemailt).
 - [ ] **Admin-Cookie nicht in der Datenschutzerklärung** (2026-11-17, Auslegung zu Mikes Entscheidung): § 165 Abs. 3
   TKG 2021 (RIS, gelesen 2026-11-17) verlangt, „den Nutzer oder Benutzer“ über Daten, Rechtsgrundlage, Zweck und Dauer
   zu informieren, „in geeigneter Form … spätestens bei Beginn der Rechtsbeziehungen“; eine Einwilligung braucht es
@@ -203,14 +205,11 @@ verlinkten Erklärung.
   - Format des Unterkonto-Benutzernamens laut Doku nicht belegt (Beispiel nur für den Host `uXXXXX-subX`): aus der
     Console abschreiben.
   - Ob ein Unterkonto `.zfs` sieht, steht nicht in der Doku: Test gegen Löschen (S13, Teil 5).
-- [ ] **Zweite Kopie des privaten age-Schlüssels** (2026-11-19, beim Test der Rücksicherung): Der Schlüssel war
-  im Passwort-Manager zeitweise nicht auffindbar. Ohne ihn ist jede Sicherung wertlos. Ausdrucken und sicher
-  verwahren (Notfallzettel), bevor echte Daten kommen.
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
   `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11). Kopie auf eine
   externe Festplatte von Sonja geplant, aber noch nicht gemacht (Stand 2026-11-18): Die Sicherungen liegen derzeit nur
-  am Mac. Umsetzung mit der Hetzner Storage Box begonnen (2026-11-18, „Jetzt“): `planung/backups-ohne-mac.md`. Bis dahin prüfen: Läuft Time Machine mit (dann liegen Kopien auch dort), und ist der private
-  age-Schlüssel ausgedruckt? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
+  am Mac. Umsetzung mit der Hetzner Storage Box begonnen (2026-11-18, „Jetzt“): `planung/backups-ohne-mac.md`. Privater age-Schlüssel ausgedruckt und im Passwort-Manager (2026-11-19). Noch prüfen: Läuft Time
+  Machine mit (dann liegen Kopien auch dort)? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
   bei einem Wechsel prüfen, ob das noch stimmt.
 - [ ] **Notfallzettel und Zugang ohne Mike** (2026-11-18, Mike): Entwurf `claude_references/notfallzettel.html` (lokal,
   nicht im Repo) mit age-Schlüssel, Ort der Sicherungen, Verweis auf die Anleitung im Repo. Das IONOS-Konto (Domain,
@@ -257,7 +256,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
 - [ ] Backups ohne Mac (`planung/backups-ohne-mac.md`): 1 Skript und Anleitung S13 (2026-11-18); 2 Bestellung, AVV,
   Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
-  2026-11-19); offen 5 Test gegen Löschen, 6 Mac abschalten
+  2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); offen 5 Test gegen Löschen, 6 Mac abschalten
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

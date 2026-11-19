@@ -587,3 +587,7 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   gescheiterten Test und löschte den Download (Anleitung trennt sie jetzt); der Test wurde einmal in der SSH-Sitzung
   am Server gestartet und scheiterte an `pbpaste` (Anleitung sagt jetzt ausdrücklich „am Mac“). Der abgebrochene
   Test hinterlässt keine Testdatenbank (`trap … EXIT` in `restore-test.sh`).
+- 2026-11-19: Cronjobs für S13 eingetragen (Mike), erster automatischer Snapshot angelegt, privater age-Schlüssel
+  ausgedruckt. Datenschutz-Information Unterricht: Hetzner Online GmbH als Auftragsverarbeiterin der verschlüsselten
+  Sicherungen (Anschrift aus hetzner.com/legal/legal-notice), Aufbewahrung „in einem Rechenzentrum in Deutschland“,
+  „bis zu 13 Monate“ statt 12. Seite und PDF lokal geprüft, `PublicPagesTest` grün.

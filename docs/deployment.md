@@ -363,7 +363,8 @@ Hinweise:
   holt es nach.
 - **Abschalten** (z. B. bei einem laufenden Verfahren beim Finanzamt, `umsetzung-admin.md` F3 Frage 5): Zeile mit
   `#` auskommentieren.
-- **Backups:** Gelöschtes bleibt in den Sicherungen bis zu 12 Monate (S11, so in der Datenschutz-Information).
+- **Backups:** Gelöschtes bleibt in den Sicherungen bis zu 13 Monate (Monatskopie bis 366 Tage, danach bis 10 Tage in
+  den Snapshots der Storage Box, S13; so in der Datenschutz-Information).
 - **Rollback:** Gibt es schon Teilnahmen ohne Person, kann eine Version vor F3b sie nicht anzeigen
   (`enrollment.student` wäre leer). Vor einem Rollback hinter F3b den Cronjob auskommentieren und prüfen.
 
