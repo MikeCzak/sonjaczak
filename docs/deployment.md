@@ -379,8 +379,8 @@ und ist „always active and cannot be disabled“. Port 22 verlangt den öffent
 auf der general-Seite).
 
 - **External Reachability: an.** „To connect from outside the Hetzner network … you have to enable External
-  Reachability“; der Server steht bei IONOS, der Mac zu Hause. Bietet das Formular für Unterkonten einen eigenen
-  Schalter, dort ebenfalls.
+  Reachability“; der Server steht bei IONOS, der Mac zu Hause. Unterkonten haben einen eigenen Schalter (in der
+  Console gesehen, 2026-11-19): bei beiden an.
 - **SSH support: aus.** „The option 'SSH Support' only enables port 23“ (eingeschränkte Shell, rsync, Borg). Der
   Hinweis in „Storage Box SSH Keys“, SSH support einzuschalten, gilt für das Hochladen des Keys „via SSH“ (Optionen 1
   und 2, Port 23); wir nehmen Option 3 über Port 22. Klappt die nicht (gegen eine echte Box ungetestet): SSH support
@@ -397,7 +397,8 @@ auf der general-Seite).
 3. Unterkonto **Upload** anlegen, **Basisverzeichnis `backups`**, kein Unterverzeichnis (das Skript legt die Dateien
    direkt dort ab), Schreibrecht. Einen Namen vergibt man nicht: Hetzner nummeriert `uXXXXX-sub1`, `-sub2`, …; Upload
    zuerst anlegen, dann ist es `-sub1`. Benutzername und Host aus der Console abschreiben (laut Doku Host
-   `uXXXXX-subX.your-storagebox.de`), Zuordnung im Passwort-Manager notieren. Vorübergehendes Passwort für **dieses Unterkonto**
+   `uXXXXX-subX.your-storagebox.de`), Zuordnung im Passwort-Manager notieren. External Reachability an, weitere
+   Protokolle (SSH support, Samba, WebDAV) aus. Vorübergehendes Passwort für **dieses Unterkonto**
    vergeben (nur für das Hinterlegen des Keys in Teil 2). Wie das Formular für Unterkonten aussieht, beschreibt die
    Doku nicht; bietet es ein Feld für einen SSH-Key, Anleitung anpassen.
 4. Unterkonto **Lesen** für den Mac, **dasselbe Basisverzeichnis `backups`, read-only** („Then the sub-account users cannot upload
