@@ -137,6 +137,13 @@ verwechseln mit „Bootstrapping“ (Anlegen des Projekts) und dem CSS-Framework
 Autoloader `/app/vendor/autoload.php`, Default configuration file `/app/phpunit.dist.xml` (Pfade im Container).
 Der Compose-Parser von PhpStorm kennt kein `name:` bei Ports; deshalb fehlt es in `compose.yaml` (2026-11-20).
 
+**Web Debug Toolbar / Profiler** – Leiste unten auf jeder HTML-Seite in `dev`: Controller, Route, Templates,
+Datenbank-Abfragen, Benutzer, Zeit. Klick darauf öffnet den Profiler mit allen Details; JSON-Anfragen (z. B. das
+Raster) stehen unter `/_profiler`. Paket `symfony/profiler-pack` (bringt `symfony/web-profiler-bundle` und
+`symfony/stopwatch`), nur `require-dev`, Bundle nur für `dev` und `test` (`config/bundles.php`), in `test` ohne
+Sammeln (`config/packages/web_profiler.yaml`). Das Produktions-Image baut mit `--no-dev` und enthält es nicht.
+Aufklappbares `dump()` in Twig käme erst mit `symfony/debug-bundle` (nicht installiert).
+
 **Test-Umgebung** – `APP_ENV=test`, Werte aus `.env.test`. Eigene Datenbank `app_test` (Suffix aus
 `config/packages/doctrine.yaml`), damit Tests nie die Dev-Daten verändern.
 

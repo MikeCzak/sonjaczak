@@ -14,4 +14,5 @@ return [
     Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
     // Registered by hand: Flex ignores recipes from recipes-contrib here (umsetzung-admin.md B5)
     Webauthn\Bundle\WebauthnBundle::class => ['all' => true],
+    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
 ];

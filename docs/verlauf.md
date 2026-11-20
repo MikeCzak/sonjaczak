@@ -609,4 +609,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   „Invalid length for x coordinate“. Ursache im Test, nicht in `compose.yaml`: `openssl_pkey_get_details()` liefert
   Koordinaten ohne führende Null-Bytes, gemessen 31 von 3000 Schlüsseln mit 31 statt 32 Byte; `Ec2Key` verlangt genau
   32. Test füllt jetzt auf 32 Byte auf; mit einem gezielt erzeugten kurzen Schlüssel geprüft (ohne Auffüllen
-  abgelehnt, mit Auffüllen Signatur gültig).
+  abgelehnt, mit Auffüllen Signatur gültig).  Danach CI 44809710222 grün (Tests, Build, Deploy); `compose.yaml` ohne Port-Namen live: HTTPS 200 über HTTP/2,
+  `alt-svc: h3=":443"` (HTTP/3 angeboten), HTTP leitet mit 308 auf HTTPS weiter.
+- 2026-11-20: Web Debug Toolbar: `composer require --dev symfony/profiler-pack` (web-profiler-bundle v8.1.11,
+  stopwatch). Flex-Rezept legte `config/packages/web_profiler.yaml` und `config/routes/web_profiler.yaml` an, trug das
+  Bundle für `dev`/`test` ein und löschte dabei den Kommentar über `WebauthnBundle` in `config/bundles.php`
+  (wiederhergestellt). Lokal: `x-debug-token-link` im Header, Leiste im HTML. Tests, PHPStan, YAML-Lint und
+  `cache:warmup` grün.
