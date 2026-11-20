@@ -305,7 +305,7 @@ grid:
         before: '+ Doppelstunde %name% →'
         title: 'Zweite Einheit von %name% in diesem Zeitfenster anlegen (zählt als eigene Einheit, die letzte am Kursende fällt dafür weg)'
         not_trimmed: Am Kursende war keine Einheit mehr zum Weglassen. Die Teilnahme hat jetzt eine Einheit mehr als geplant.
-    help: Jede Zeile ist ein Tag, die Einheiten stehen an ihrer Uhrzeit. Klick auf eine Einheit öffnet Absage und Notiz, der Name führt zur Teilnahme. „7/15“ heißt siebente von 15 Einheiten. Schnupperstunden sind gestrichelt und blau, rot umrandet ist, was sich zeitlich überschneidet. Gelbe Tage sind Ferien oder freie Tage; sind alle Unterrichtstage einer Woche frei, steht der Grund bei der Woche. Abgesagte Einheiten stehen in der roten Zeile darunter. In einem freien Zeitfenster kann die Nachbarin oder der Nachbar eine Doppelstunde bekommen.
+    help: Jede Zeile ist ein Tag, die Einheiten stehen an ihrer Uhrzeit. Klick auf eine Einheit öffnet Absage und Notiz, der Name führt zur Teilnahme. „7/15“ heißt siebente von 15 Einheiten. Schnupperstunden sind gestrichelt und blau, rot umrandet ist, was sich zeitlich überschneidet. Gelbe Tage sind Ferien oder freie Tage; sind alle Unterrichtstage einer Woche frei, steht der Grund bei der Woche. Abgesagte Einheiten stehen in der roten Zeile darunter. In einem freien Zeitfenster kann die Nachbarin oder der Nachbar eine Doppelstunde bekommen. Geplante Einheiten lassen sich mit der Maus innerhalb ihres Tages ziehen, in Schritten von 5 Minuten und nur auf freie Zeit.
 weekday:
     1: Montag
     2: Dienstag

@@ -16,6 +16,7 @@
     {% set draggable = not compact and state.value == 'planned' %}
     <div class="grid-item grid-lesson grid-lesson--{{ state.value }} {{ overlap_hint ? 'grid-item--overlap' }} {{ draggable ? 'grid-lesson--draggable' }}" style="{{ position }}"
          data-lesson-id="{{ lesson.id }}"
+         {% if draggable %}data-action="pointerdown->grid#grab dragstart->grid#preventNativeDrag"{% endif %}
          title="{{ [state.labelKey|trans({}, 'admin') ~ (lesson.note ? ': ' ~ lesson.note), overlap_hint]|filter(t => t)|join(' · ') }}">
         <a class="stretched-link" href="{{ path('admin_lesson_edit', {id: lesson.id}) }}"
            aria-label="{{ 'grid.edit_lesson'|trans({'%time%': item.startTime, '%date%': lesson.startsAt|date('d.m.')}, 'admin') }}"

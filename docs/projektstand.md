@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-18. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-20. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -171,6 +171,12 @@ verlinkten Erklärung.
 
 ### Technisch (Mike)
 
+- [ ] **Ziehen nicht in die Vergangenheit** (2026-11-20, `umsetzung-admin.md` C4h, Auslegung): Der neue Beginn einer
+  gezogenen Einheit muss in der Zukunft liegen, sonst wäre sie nach dem Ablegen „gehalten“. Weitere Annahmen (C4h):
+  Als Überschneidung zählen nur Einheiten **desselben Kurses** (wie bei der Doppelstunde) und alle Schnupperstunden;
+  ein zweiter Kurs am selben Tag wird nicht geprüft. Die Einzelseite „Einheit bearbeiten“ prüft weiter nicht auf
+  Überschneidung.
+
 - [ ] **Elternteile ohne Kind bleiben** (2026-11-17, `umsetzung-admin.md` F3b, Annahme): Der Löschlauf löscht einen
   Elternteil nur, wenn im selben Lauf alle seine Kinder gelöscht werden. Wer von Hand ein Kind löscht oder einen
   Elternteil ohne Kind anlegt, hinterlässt einen Elternteil, den kein Lauf erfasst (es gibt kein Anlegedatum). Selten;
@@ -251,7 +257,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] A1, B1–B4 Grundlagen, Login, Sessions, Passwort vergessen, Benutzerverwaltung (2026-11-13)
 - [ ] B5 Passkeys: B5a Grundlage (Bundle, Tabelle `passkey`, Zufallskennung, 2026-11-17); B5b „Mein Konto“, B5c Login (2026-11-17); B5d lokal geprüft (virtueller Authenticator, Touch ID von Mike, 2026-11-18), gepusht und live 2026-11-18 (CI 44269704195); offen Einrichten mit Sonja (beim Zeigen der Website, verschoben 2026-11-18)
 - [x] C1–C3, C5, C6 Schüler:innen, Kurse und Ferien, Teilnahmen, Schnupperstunden, Einstellungen (2026-11-13)
-- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18); C4g Raster als Zeitachse mit Schnupperstunden (2026-11-18, gepusht und live 2026-11-18, CI 44342529876)
+- [x] C4 Kursraster, C7 Anzahl je Teilnahme (2026-11-16, gepusht 2026-11-16); C4f Raster je Unterrichtstag, Hinweis bei Einheit im Ferientag (2026-11-18); C4g Raster als Zeitachse mit Schnupperstunden (2026-11-18, gepusht und live 2026-11-18, CI 44342529876); C4h Einheiten ziehen (2026-11-20, gepusht 2026-11-20)
 - [x] D1, D3–D5, E Honorarnoten, Zahlungen und Gutschriften, Erinnerung (Cronjob läuft), Export, Dashboard (2026-11-13)
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
 - [ ] Backups ohne Mac (`planung/backups-ohne-mac.md`): 1 Skript und Anleitung S13 (2026-11-18); 2 Bestellung, AVV,
@@ -310,6 +316,7 @@ muss).
 | Raster je Unterrichtstag | Eine Zeile je Unterrichtstag, KW-Spalte mit `rowspan`; ganze Ferienwoche als gelbe Tageszeilen mit Namen bei der KW; Einheit auf Ferientag verschieben erlaubt, mit Hinweis (2026-11-18) | Ferien betreffen einen Tag oder nicht, unmissverständlich (Mike). `umsetzung-admin.md` C4f |
 | Raster als Zeitachse | Je Tag eine Zeitachse statt Spalten je Zeitfenster, fest 3 px pro Minute mit waagrechtem Scrollen; Schnupperstunden an ihrer Zeit, Überschneidungen rot und untereinander; Zählung, Name (Link zur Teilnahme) und „Nachholstunde fällig“ (bei der nächsten Einheit) in der Box; Platzhalter „frei“ mit Doppelstunde; Abgesagte in niedriger roter Zeile (2026-11-18) | Uhrzeiten verschiedener Tage stehen minutengenau untereinander, Schnupperstunden werden nicht übersehen (Mike). `umsetzung-admin.md` C4g |
 | Backups ohne Mac | Plan freigegeben mit allen Empfehlungen: Hetzner Storage Box BX11, Server lädt täglich 12:00 hoch, Snapshots täglich (10 Tage Schutz gegen Löschen), Sonja bestellt und schließt den AVV, Mac-Sicherung abschalten nach 2 Wochen ohne Fehler und einer Rücksicherung aus der Storage Box (2026-11-18); Umsetzung begonnen 2026-11-18 (Mike) | Täglich unabhängig von Mikes Rechner, Kopien im Rechenzentrum (Mike). `planung/backups-ohne-mac.md` |
+| Einheiten ziehen | Nur innerhalb des Tages, nur geplante Einheiten, 5-Minuten-Raster, Ablegen nur ohne Überschneidung mit Einheiten des Kurses und Schnupperstunden; Pointer Events ohne Bibliothek, kein Ziehen mit dem Finger; danach ersetzt die vom Server gezeichnete Tageszeile die alte, ohne Neuladen (2026-11-20) | Abkürzung für Editor → Einzelseite → Beginn ändern (Mike). `umsetzung-admin.md` C4h |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

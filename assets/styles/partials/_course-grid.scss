@@ -235,6 +235,52 @@
     }
 }
 
+// Dragging a planned lesson within its day (C4h, grid controller). While dragging, the box itself moves to the snapped
+// time and shows it; red where it cannot be dropped
+.course-grid {
+    .grid-lesson--draggable {
+        cursor: grab;
+        user-select: none;
+    }
+
+    .grid-item--dragging {
+        z-index: 3;
+        outline: 2px solid var(--sc-accent);
+        box-shadow: var(--bs-box-shadow);
+    }
+
+    .grid-item--blocked {
+        outline-color: var(--bs-danger);
+        background: var(--bs-danger-bg-subtle);
+    }
+
+    .grid-item--saving {
+        opacity: .6;
+    }
+
+    // Covers the box's text (and its links, z-index 1 and 2) with the new time
+    .grid-drag-time {
+        position: absolute;
+        z-index: 3;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--bs-body-bg-rgb), .85);
+        font-weight: 600;
+    }
+
+    .grid-item--blocked .grid-drag-time {
+        background: rgba(var(--bs-danger-rgb), .2);
+        color: var(--bs-danger-text-emphasis);
+    }
+}
+
+.grid-is-dragging,
+.grid-is-dragging * {
+    cursor: grabbing !important;
+}
+
 // Tablet and phone: bigger buttons for fingers (Mike: fine below the laptop breakpoint)
 @include media-breakpoint-down(lg) {
     .course-grid .grid-editor .btn {

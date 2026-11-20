@@ -591,3 +591,11 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   ausgedruckt. Datenschutz-Information Unterricht: Hetzner Online GmbH als Auftragsverarbeiterin der verschlüsselten
   Sicherungen (Anschrift aus hetzner.com/legal/legal-notice), Aufbewahrung „in einem Rechenzentrum in Deutschland“,
   „bis zu 13 Monate“ statt 12. Seite und PDF lokal geprüft, `PublicPagesTest` grün.
+- 2026-11-20: C4h Einheiten im Raster ziehen (Plan und Antworten Mike am selben Tag). PATCH `/admin/einheiten/{id}`
+  mit `startsAt`: nur geplante Einheiten, gleicher Tag, volle 5 Minuten, nicht in die Vergangenheit, keine
+  Überschneidung mit Einheiten des Kurses oder Schnupperstunden (409); Antwort mit der neu gezeichneten Tageszeile.
+  Ziehen mit Pointer Events in `grid_controller.js`. Tests: 209 grün, PHPStan ohne Fehler. Headless Chrome (Fixtures,
+  Einheit Fr 20.11. 13:40): über einer Einheit rot, zurückgesprungen; Escape bricht ab; auf freie Zeit gespeichert,
+  ohne Neuladen, Fokus auf der Box; Klick auf die neue Zeile öffnet den Editor (Stimulus verbindet die Aktionen).
+  Danach Einheit per SQL auf 13:40 zurückgesetzt. Gefunden beim Test: Ein Klick in die Mitte der Box trifft den
+  Namenslink (Absicht, wie C4g).

@@ -59,6 +59,11 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
    Kursende fällt weg. Dann die abgesagte Einheit öffnen → „Absage aufheben“: Ein Popup nennt die Doppelstunde, nach
    „OK“ ist sie weg und die Nachbarin hat ihre letzte Einheit wieder. Nur die Notiz ändern: Die Seite lädt nicht neu.
    „Löschen“ fragt nach, danach hängt am Kursende eine Einheit an.
+   Ziehen (C4h, mit Maus oder Touchpad): eine geplante Einheit waagrecht ziehen. Die Box zeigt die neue Zeit
+   („13:00–13:50“) in 5-Minuten-Schritten; über einer anderen Einheit oder Schnupperstunde wird sie rot und springt
+   beim Loslassen zurück. Auf freier Zeit loslassen: Nur die Zeile ändert sich, die Seite lädt nicht neu (am alten
+   Platz erscheint „frei“, wenn er ganz frei wurde). Escape während des Ziehens bricht ab. Gehaltene und abgesagte
+   Einheiten lassen sich nicht ziehen.
 6. Im Raster „Ferien …“ unter einer Kalenderwoche: Das Ferienformular auf der Kursseite ist mit Montag bis Sonntag
    vorbelegt; nach dem Speichern (mit Popup) geht es zurück ins Raster, die Woche ist gelb.
    Feiertage an Tagen ohne Unterricht (Mariä Empfängnis, Dienstag) erscheinen im Raster nicht.

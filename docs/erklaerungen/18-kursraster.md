@@ -102,6 +102,33 @@ Doppelstunde ändern sich Einheiten am Kursende. All das im Browser nachzubauen,
 JavaScript zu wiederholen. Deshalb lädt die Seite nach solchen Änderungen neu (`window.location.reload()`; die Scrollposition
 stellen Chrome und Safari dabei in der Regel wieder her, nicht geprüft für alle Browser). Nur eine geänderte Notiz wird direkt eingetragen.
 
+### Ziehen: die Zeile vom Server statt Neuladen (C4h)
+
+Eine geplante Einheit lässt sich innerhalb ihres Tages ziehen. Weil sie den Tag nicht verlässt und in der Achse
+bleibt, ändert sich nur diese eine Zeile (Spuren, rote Rahmen, Platzhalter „frei“ mit Doppelstunden-Angeboten);
+Zählung „7/15“, „Nachholstunde fällig“ und die Zeile der Abgesagten bleiben gleich. Der Server antwortet deshalb mit
+der neu gezeichneten Zeile (`renderView()` von `_grid_track.html.twig`, gebaut mit `CourseGrid` wie die Seite), und
+das JavaScript tauscht nur das `div.grid-track` aus. So gibt es weiter nur eine Darstellung (Twig) und nur eine
+Logik (`CourseGrid`).
+
+- **Achse:** War die gezogene Einheit die früheste oder späteste des Kurses, kann sich die Achse ändern; dann passte
+  die neue Zeile nicht zu den anderen. Jede Zeile trägt `data-axis="900-1080"` (Minuten ab Mitternacht); weicht der
+  Wert ab, lädt die Seite doch neu.
+- **Aktionen im neuen HTML:** Stimulus beobachtet das Element des Controllers mit einem `MutationObserver`
+  (`childList` und `subtree`) und verbindet `data-action` in eingefügtem HTML selbst (nachgesehen im installierten
+  Code `assets/vendor/@hotwired/stimulus/stimulus.index.js`, Version 3.2.2 laut `importmap.php`; im Browser geprüft:
+  Klick auf die neue Zeile öffnet den Editor).
+- **Pointer Events statt HTML Drag and Drop:** `pointerdown` auf der Box, `pointermove` und `pointerup` auf `window`.
+  Erst ab 5 px Bewegung wird gezogen, sonst bleibt es ein Klick. Nach dem Ziehen schickt der Browser trotzdem einen
+  `click`; ein einmaliger Listener in der Capture-Phase auf `window` schluckt ihn, sonst öffnete sich der Editor oder
+  der Namenslink. Links sind von sich aus ziehbar (`dragstart`); das wird verhindert.
+- **Kein Ziehen mit dem Finger** (`pointerType === 'touch'`): Es würde mit dem waagrechten Scrollen kollidieren.
+- **Einrasten:** Pixel durch Pixel pro Minute, auf 5 Minuten gerundet. Die Achse beginnt immer zu einer vollen
+  Stunde, also sind 5 Minuten ab Achsenbeginn auch 5 Minuten der Uhrzeit.
+- **Kollision zweimal:** Der Browser prüft für die rote Vorschau mit den Positionen der Boxen in der Zeile, der
+  Server prüft maßgeblich (`LessonRepository::findOverlapping`, `TrialLessonRepository::findOverlapping`) und
+  antwortet mit 409. Anders als beim Aufheben einer Absage wird nie etwas gelöscht.
+
 ### Die eine Regel für die Zahl der Einheiten
 
 Jede Teilnahme hat immer `plannedLessons` reguläre Einheiten (alle außer Nachholstunden, abgesagte zählen mit). Die
@@ -184,7 +211,9 @@ Doctrine-Entities mit Collections bis zur Rekursion. Stattdessen Schlüssel `spl
 | **Stimulus + `fetch` (gewählt, 2026-11-14)** | Durchschaubar; eine Anfrage je Änderung; volle Kontrolle | Eigenes JavaScript, eigene Prüfung im Browser |
 | Turbo Frames | Kaum JavaScript, Symfony-Forms bleiben | Je Zelle zwei Anfragen; Zählungen außerhalb des Frames brauchen Turbo Streams |
 | Live Components | Raster wird nach jeder Änderung neu gerendert | Ganzer Zustand hin und zurück; eigene Konzepte, schwerer zu debuggen |
-| Ziehen statt Knöpfe (Drag and Drop) | Natürlich am Laptop | Am Tablet fummelig; Knöpfe am Zellenrand reichen (Mike) |
+| Ziehen statt Knöpfe (Drag and Drop) | Natürlich am Laptop | Am Tablet fummelig; Knöpfe am Zellenrand reichen (Mike, 2026-11-14). Seit C4h zusätzlich zum Editor: Ziehen innerhalb des Tages, mit Maus oder Touchpad |
+| HTML Drag and Drop (`draggable`) für C4h | Eingebaut | Geisterbild statt eingerasteter Vorschau; Touch nicht nachgelesen |
+| Turbo Streams für die neue Zeile (C4h) | Fertiges Protokoll | Neue Abhängigkeit, übernimmt ohne Abschalten die Navigation im ganzen Admin |
 | Ferien-Rückfrage als eigene Seite | Ohne JavaScript | Ein Seitenwechsel mehr (Mike: Popup) |
 | Bearbeiten ohne Neuladen (Zellen im Browser umsetzen) | Flüssiger | Logik von `CourseGrid` doppelt in JavaScript |
 | Spalten je Zeitfenster (bis C4g) | Einfaches HTML, kein Scrollen | Unterschiedliche Uhrzeiten an verschiedenen Tagen stehen ungenau untereinander; Regeln, welche Einheit in welche Spalte kommt |
@@ -205,4 +234,4 @@ Doctrine-Entities mit Collections bis zur Rekursion. Stattdessen Schlüssel `spl
   Raster gibt Twig sie escaped aus.
 - **Testen:** PHPUnit prüft Endpunkte und `CourseGrid`. Das JavaScript wurde mit Headless Chrome über das
   DevTools-Protokoll durchgeklickt (Skript nur lokal, nicht im Repo; Entscheidung Frage 4 gegen Symfony Panther).
-  Ändert sich der Controller, die Abläufe aus `rundgang-admin.md` Abschnitt 3, Punkte 5 und 6 erneut durchgehen.
+  Ändert sich der Controller, die Abläufe aus `rundgang-admin.md` Abschnitt 3, Punkte 5 bis 7 erneut durchgehen.

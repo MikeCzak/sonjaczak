@@ -374,6 +374,114 @@ Art der Absage (mit Zählung passte der Name nicht hinein).
 Nachtrag (Mike, 2026-11-18): Jedes Abzeichen „Nachholstunde fällig“ (Raster, Teilnahme, Kursseite, Dashboard) führt
 zu „Nachholstunde eintragen“ (`_make_up_due.html.twig`).
 
+**C4h Einheiten im Raster verschieben (Ziehen und Ablegen)** – erledigt 2026-11-20 (Wunsch Mike, Plan 2026-11-20).
+
+Anlass: Eine Einheit verschieben heißt heute Box → Editor → „Beginn, Dauer“ → Einzelseite → Beginn ändern →
+speichern; danach landet Sonja auf der Teilnahme, nicht im Raster. Ziehen ist die Abkürzung dafür. Die Doppelstunde
+im Platzhalter „frei“ bleibt wie sie ist.
+
+Mikes Vorgaben: Einrasten im 5-Minuten-Raster; Ablegen nur, wenn nichts kollidiert.
+
+**Ablauf**
+
+- Box greifen und ziehen. Erst ab einer Bewegung von 5 px beginnt das Ziehen; darunter bleibt es ein Klick und öffnet
+  den Editor wie heute.
+- Während des Ziehens steht eine Vorschau an der eingerasteten Stelle mit der neuen Zeit („15:35–16:25“). Kollidiert
+  sie, ist sie rot mit „überschneidet sich mit …“.
+- Loslassen an freier Stelle: Anfrage an den Server, danach lädt die Seite neu (wie bei allen anderen Änderungen im
+  Raster: Spuren, Platzhalter „frei“ und Doppelstunden-Angebote rechnet der Server). Loslassen auf einer Kollision,
+  neben der Achse oder Escape: Die Box springt zurück, nichts wird gespeichert.
+- **Einrasten:** Der Beginn landet auf vollen 5 Minuten der Uhrzeit. Weil die Achse immer zu einer vollen Stunde
+  beginnt (C4g), sind das auch volle 5 Minuten ab Achsenbeginn. Eine Einheit um 13:42 landet auf 13:40 oder 13:45.
+  Die Dauer bleibt.
+- Die Box bleibt innerhalb der Achse (nicht vor deren Beginn, nicht über deren Ende hinaus).
+- Kein „Rückgängig“: Zurückziehen geht, solange der alte Platz frei ist.
+
+**Kollision** (Vorschau im Browser und Prüfung am Server nach derselben Regel; maßgeblich ist der Server)
+
+- Stattfindende Einheiten desselben Kurses am selben Tag (wie `LessonRepository::findOverlapping`, also ohne
+  abgesagte) und Schnupperstunden am selben Tag. Für Schnupperstunden braucht es eine neue Abfrage in
+  `TrialLessonRepository`; die Doppelstunde prüft sie heute nicht.
+- Beginnt die eine, wenn die andere endet (15:50/15:50), ist das keine Kollision (wie in C4g).
+- Der Server antwortet bei Kollision mit 409 und einem Text, ohne Nachfrage (anders als „Absage aufheben“: dort wird
+  nach Rückfrage gelöscht, hier nie).
+
+**Server**
+
+- Der bestehende PATCH-Endpunkt (`admin_lesson_patch`) bekommt den Schlüssel `startsAt`. Prüfungen: Einheit nicht
+  abgesagt und noch nicht gehalten (siehe Frage 2), Minute durch 5 teilbar, gleicher Tag (bei Frage 1 A), keine
+  Kollision.
+  - Alternative: eigener Endpunkt `POST …/verschieben`. PATCH passt besser, weil sich nur ein Teil der Einheit ändert,
+    und Token, JSON-Lesen und Antwort sind schon da.
+  - Format der Zeit beim Umsetzen gegen die gespeicherte Zeit (Zeitzone) prüfen.
+- Die Einzelseite (`LessonType`) bleibt ohne Kollisionsprüfung: Dort kann Sonja bewusst überschneiden, das Raster
+  zeigt es rot.
+
+**Fragen**
+
+1. Wohin darf gezogen werden?
+   - **A (Empfehlung): nur innerhalb des Tages, also waagrecht.** Der häufige Fall ist „diese Woche 15 Minuten
+     später“. Pro: einfach, kein senkrechtes Scrollen beim Ziehen, Zählung „7/15“ bleibt gleich. Contra: Auf einen
+     anderen Tag weiter über die Einzelseite (oder „Nachholstunde eintragen“).
+   - B: auch auf jede andere Tageszeile (andere Woche, anderer Unterrichtstag, Ferientag mit Hinweis wie in C4f).
+     Pro: alles mit der Maus. Contra: Das Raster ist rund 20 Wochen lang, beim Ziehen muss die Seite selbst scrollen
+     (eigener Code); man legt leicht in der falschen Woche ab; Tage ohne eigene Zeile (ein Mittwoch ohne Unterricht)
+     gehen trotzdem nicht. Lässt sich später auf A aufsetzen.
+2. Welche Boxen lassen sich ziehen?
+   - **Empfehlung: nur geplante Einheiten** (noch nicht gehalten, nicht abgesagt), auch Nachholstunden. Nicht:
+     gehaltene (Vergangenheit; zur Korrektur weiter über die Einzelseite), abgesagte (die rote Zeile zeigt, wann sie
+     gewesen wären), Schnupperstunden (eigene Seite, eigene Entität), Platzhalter „frei“.
+   - Alternative: auch gehaltene Einheiten oder Schnupperstunden (Letztere bräuchten einen eigenen Endpunkt).
+3. Technik im Browser?
+   - **A (Empfehlung): Pointer Events** (`pointerdown`, `pointermove`, `pointerup`) mit eigenem Code, keine
+     Bibliothek. Pro: Einrasten, Vorschau und die Grenze Klick/Ziehen ganz in der Hand; wenige Zeilen; Maus, Touchpad
+     und Stift mit demselben Code. Contra: alles selbst geschrieben.
+   - B: HTML Drag and Drop (`draggable`, `dragstart`, `drop`). Pro: eingebaut. Contra: Der Browser zeigt ein eigenes
+     Geisterbild unter dem Mauszeiger statt einer eingerasteten Vorschau; Unterstützung auf Touch-Geräten nicht
+     nachgelesen.
+   - C: Bibliothek (z. B. interact.js; Version und Lizenz vor dem Einbau prüfen). Pro: Einrasten eingebaut. Contra:
+     eine Abhängigkeit mehr für wenig eigenen Code.
+4. Auf dem Handy?
+   - **Empfehlung: kein Ziehen mit dem Finger**, Antippen öffnet weiter den Editor. Mit dem Finger würde das Ziehen
+     einer Box mit dem waagrechten Scrollen des Rasters kollidieren; abhelfen ließe sich nur mit „lange drücken, dann
+     ziehen“ (mehr Code, schwer zu entdecken).
+   - Alternative: lange drücken (etwa eine halbe Sekunde), dann ziehen.
+
+Antworten Mike, 2026-11-20: **1–4 wie empfohlen.** Dazu (Auslegung): Der neue Beginn darf nicht in der Vergangenheit
+liegen, sonst wäre die Einheit nach dem Ablegen „gehalten“.
+
+5. Nach dem Ablegen neu laden oder nur die Zeile ersetzen? (Frage Mike, 2026-11-20)
+   - **A (Empfehlung): Der Server schickt die neu gezeichnete Tageszeile mit.** Weil nur innerhalb des Tages gezogen
+     wird (Frage 1 A) und die Box in der Achse bleibt, ändert sich nichts außerhalb dieser Zeile: Spuren,
+     Überschneidungen, der neue Platzhalter „frei“ mit Doppelstunden-Angeboten liegen alle dort; Achse, Zeile der
+     Abgesagten, Zählung und „Nachholstunde fällig“ bleiben gleich. Nötig: Der Endpunkt baut das Raster mit
+     `CourseGrid::build()` wie die Seite, nimmt die Zeile des Tages und rendert `_grid_track.html.twig` mit
+     `renderView()` in die JSON-Antwort; das JavaScript schließt den Editor, ersetzt das `div.grid-track` und setzt den
+     Fokus auf die verschobene Box. Stimulus erkennt `data-action` in neu eingefügtem HTML selbst (beim Umsetzen in der
+     Stimulus-Doku nachlesen). Pro: kein Springen, Scrollposition bleibt, eine Darstellung (Twig). Contra: etwas mehr
+     Code im Endpunkt; ein Test, der das HTML der Antwort prüft.
+   - B: Turbo Streams (`symfony/ux-turbo`, nicht installiert). Contra: neue Abhängigkeit, die ohne Abschalten auch die
+     Navigation im ganzen Admin übernimmt (Turbo Drive), für eine Stelle.
+   - C: Nur im Browser verschieben (`--start` setzen) und Spuren, Überschneidungen, „frei“ und Doppelstunden in
+     JavaScript nachrechnen. Contra: dieselbe Logik wie in `CourseGrid` ein zweites Mal, die beiden laufen
+     auseinander.
+   - Absage, Löschen und Doppelstunde laden weiter neu: Sie ändern die Zählung über viele Wochen und füllen am Ende auf.
+
+Antwort Mike, 2026-11-20: **5 wie empfohlen.** Umgesetzt: PATCH mit `startsAt` (`LessonController::move()`,
+`renderRow()`), `TrialLessonRepository::findOverlapping()` und `findInCourse()`, `TrialLesson::getEndsAt()`,
+`Grid::rowOn()`, `LessonDescriber::describeTrials()`; `data-day`, `data-axis` an der Zeile; Ziehen in
+`grid_controller.js` (`grab`, `dragMove`, `drop`). Tests in `tests/Admin/LessonPatchTest.php`, Ziehen im Headless
+Chrome geprüft.
+
+**Barrierefreiheit:** Ziehen geht nur mit dem Zeiger. Mit der Tastatur bleibt der Weg über Editor und Einzelseite.
+
+**Tests:** Funktionstest für PATCH mit `startsAt` (verschoben; Kollision mit Einheit und mit Schnupperstunde;
+Grenze 15:50/15:50; keine 5 Minuten; gehaltene, abgesagte; anderer Tag; ohne Token). Für JavaScript gibt es keine
+Tests im Projekt; Prüfung im Browser.
+
+**Umfang:** mittel, zwei Commits (Endpunkt mit Tests, dann Ziehen im Raster). Doku: `erklaerungen/18-kursraster.md`,
+`rundgang-admin.md`, Hilfetext unter dem Raster.
+
 **C5 Schnupperstunden** – erledigt 2026-11-13
 
 - Entity `TrialLesson`, Anlegen und Liste, Übernahme in eine Teilnahme (Transaktion, `fromTrial`).
