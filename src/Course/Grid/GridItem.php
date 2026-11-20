@@ -98,6 +98,11 @@ final class GridItem
         return \sprintf('%02d:%02d', intdiv($this->startMinute, 60), $this->startMinute % 60);
     }
 
+    public function endTime(): string
+    {
+        return \sprintf('%02d:%02d', intdiv($this->endMinute, 60), $this->endMinute % 60);
+    }
+
     /**
      * Name for the overlap hint: the student, or nothing if the person was deleted (F3).
      */

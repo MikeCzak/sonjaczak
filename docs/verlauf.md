@@ -615,4 +615,7 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   stopwatch). Flex-Rezept legte `config/packages/web_profiler.yaml` und `config/routes/web_profiler.yaml` an, trug das
   Bundle für `dev`/`test` ein und löschte dabei den Kommentar über `WebauthnBundle` in `config/bundles.php`
   (wiederhergestellt). Lokal: `x-debug-token-link` im Header, Leiste im HTML. Tests, PHPStan, YAML-Lint und
-  `cache:warmup` grün.
+  `cache:warmup` grün.  Nach dem Deploy (CI 44812400968 grün) in Produktion geprüft: Startseite 200 ohne `x-debug-token`, `/_profiler/` und
+  `/_wdt/…` antworten 404.
+- 2026-11-20: Raster zeigt in der Box auch die Endzeit, „15:30-16:20 · 1/15“ (Mike, `GridItem::endTime()`). Zwei Tests
+  auf den neuen Text angepasst (`CourseGridTest`, `LessonPatchTest`); 209 Tests und PHPStan grün.

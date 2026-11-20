@@ -232,7 +232,7 @@ final class LessonPatchTest extends WebTestCase
         $row = $answer['row']['html'] ?? '';
         self::assertStringContainsString('data-day="2026-10-16"', $row);
         self::assertStringContainsString('data-lesson-id="'.$lesson->getId().'"', $row);
-        self::assertStringContainsString('16:20 · 2/15', $row);
+        self::assertStringContainsString('16:20-17:10 · 2/15', $row);
         self::assertStringContainsString('15:30 · frei', $row, 'the slot it left');
         // The lesson now ends at 17:10, so the axis reaches 18:00 instead of 17:00: the browser reloads then
         self::assertStringContainsString('data-axis="900-1080"', $row);

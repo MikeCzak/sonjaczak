@@ -281,6 +281,7 @@ Mikes Vorgaben:
 
 - **Inhalt einer Einheit:**
   - Zeile 1: Uhrzeit und Zählung, z. B. „15:00 · 7/15“.
+    Seit 2026-11-20 mit Endzeit (Mike): „15:00-15:50 · 7/15“ (`GridItem::endTime()`).
   - Zeile 2: Name als Link auf die Teilnahme (`admin_enrollment_show`).
   - Darunter wie bisher Abzeichen (Nachholstunde für …, aus Schnupperstunde, Nachholstunde fällig), Minuten bei
     abweichender Dauer und die Notiz.

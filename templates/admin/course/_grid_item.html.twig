@@ -8,7 +8,7 @@
     {% set lesson = item.lesson %}
     {% set enrollment = lesson.enrollment %}
     {% set state = lesson_state(lesson) %}
-    {% set meta = [item.startTime] %}
+    {% set meta = [item.startTime ~ '-' ~ item.endTime] %}
     {% if item.number %}{% set meta = meta|merge(['grid.number'|trans({'%number%': item.number, '%planned%': enrollment.plannedLessons}, 'admin')]) %}{% endif %}
     {% if lesson.durationMinutes != enrollment.lessonMinutes %}{% set meta = meta|merge(['grid.minutes'|trans({'%minutes%': lesson.durationMinutes}, 'admin')]) %}{% endif %}
     {% if lesson.cancelled %}{% set meta = meta|merge([state.labelKey|trans({}, 'admin')]) %}{% endif %}
