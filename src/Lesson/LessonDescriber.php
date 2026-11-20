@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lesson;
 
 use App\Entity\Lesson;
+use App\Entity\TrialLesson;
 use Psr\Clock\ClockInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -38,5 +39,24 @@ final readonly class LessonDescriber
                 null !== $lesson->getNote() ? ' ('.$lesson->getNote().')' : '',
             );
         }, $lessons));
+    }
+
+    /**
+     * Trial lessons the same way, e.g. "Clara Probe, Fr 16.10. 15:30, Schnupperstunde".
+     *
+     * @param list<TrialLesson> $trials
+     */
+    public function describeTrials(array $trials): string
+    {
+        return implode("\n", array_map(function (TrialLesson $trial): string {
+            $startsAt = $trial->getStartsAt();
+
+            return \sprintf('%s, %s %s, %s',
+                $trial->getStudent()?->getFullName() ?? '?',
+                null !== $startsAt ? $this->translator->trans('weekday_short.'.$startsAt->format('N'), [], 'admin') : '',
+                $startsAt?->format('d.m. H:i') ?? '',
+                $this->translator->trans('grid.trial', [], 'admin'),
+            );
+        }, $trials));
     }
 }

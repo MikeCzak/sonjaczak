@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Course;
 use App\Entity\TrialLesson;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,5 +52,31 @@ class TrialLessonRepository extends ServiceEntityRepository
             ->orderBy('t.startsAt')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Trial lessons in the course's time span, as shown in the course grid (umsetzung-admin.md C4g).
+     *
+     * @return list<TrialLesson>
+     */
+    public function findInCourse(Course $course): array
+    {
+        $from = $course->getStartsOn();
+        $until = $course->getEndsOn()?->modify('+1 day');
+
+        return null !== $from && null !== $until ? $this->findBetween($from, $until) : [];
+    }
+
+    /**
+     * Trial lessons that overlap the given time (same rule as LessonRepository::findOverlapping(): back to back is no
+     * overlap). Before a lesson is moved in the grid (umsetzung-admin.md C4h).
+     *
+     * @return list<TrialLesson>
+     */
+    public function findOverlapping(\DateTimeImmutable $startsAt, \DateTimeImmutable $endsAt): array
+    {
+        $sameDay = $this->findBetween($startsAt->setTime(0, 0), $endsAt);
+
+        return array_values(array_filter($sameDay, static fn (TrialLesson $trial): bool => $trial->getEndsAt() > $startsAt));
     }
 }

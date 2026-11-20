@@ -12,6 +12,7 @@ use App\Repository\LessonRepository;
 use App\Tests\Factory\CourseFactory;
 use App\Tests\Factory\EnrollmentFactory;
 use App\Tests\Factory\StudentFactory;
+use App\Tests\Factory\TrialLessonFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -22,7 +23,7 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * The course grid's endpoints (umsetzung-admin.md C4c/C4d): PATCH and DELETE /admin/einheiten/{id},
- * POST /admin/einheiten/{id}/doppelstunde.
+ * POST /admin/einheiten/{id}/doppelstunde. Moving by drag and drop (C4h) is PATCH with startsAt.
  * Anonymous access is covered by AdminRoutesRequireLoginTest.
  */
 final class LessonPatchTest extends WebTestCase
@@ -216,6 +217,90 @@ final class LessonPatchTest extends WebTestCase
     }
 
     /**
+     * Dragged within the day (C4h): saved, and the answer carries the day's row drawn anew, with the lesson at its new
+     * time and a free slot where it was.
+     */
+    public function testMoveWithinTheDay(): void
+    {
+        $course = CourseFactory::createOne();
+        $lesson = $this->lessonOn(EnrollmentFactory::createOne(['course' => $course]), '2026-10-16');
+
+        $answer = $this->patch($lesson, ['startsAt' => '2026-10-16T16:20'], $this->token($course));
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('2026-10-16 16:20', $this->reload($lesson)->getStartsAt()?->format('Y-m-d H:i'));
+        $row = $answer['row']['html'] ?? '';
+        self::assertStringContainsString('data-day="2026-10-16"', $row);
+        self::assertStringContainsString('data-lesson-id="'.$lesson->getId().'"', $row);
+        self::assertStringContainsString('16:20 · 2/15', $row);
+        self::assertStringContainsString('15:30 · frei', $row, 'the slot it left');
+        // The lesson now ends at 17:10, so the axis reaches 18:00 instead of 17:00: the browser reloads then
+        self::assertStringContainsString('data-axis="900-1080"', $row);
+    }
+
+    public function testMoveIsRefusedWhereSomethingTakesPlace(): void
+    {
+        $course = CourseFactory::createOne();
+        $anna = EnrollmentFactory::createOne(['course' => $course]);
+        EnrollmentFactory::createOne([
+            'course' => $course,
+            'student' => StudentFactory::new(['firstName' => 'Berta', 'lastName' => 'Nachbar']),
+            'startTime' => new \DateTimeImmutable('16:30'),
+        ]);
+        TrialLessonFactory::createOne([
+            'student' => StudentFactory::new(['firstName' => 'Clara', 'lastName' => 'Probe']),
+            'startsAt' => new \DateTimeImmutable('2026-10-16 13:00'),
+        ]);
+        $lesson = $this->lessonOn($anna, '2026-10-16');
+        $token = $this->token($course);
+
+        $answer = $this->patch($lesson, ['startsAt' => '2026-10-16T15:45'], $token);
+        self::assertResponseStatusCodeSame(409);
+        self::assertStringContainsString('Berta Nachbar, Fr 16.10. 16:30, geplant', $answer['error']);
+
+        $answer = $this->patch($lesson, ['startsAt' => '2026-10-16T13:30'], $token);
+        self::assertResponseStatusCodeSame(409);
+        self::assertStringContainsString('Clara Probe, Fr 16.10. 13:00, Schnupperstunde', $answer['error']);
+        self::assertSame('15:30', $this->reload($lesson)->getStartsAt()?->format('H:i'));
+
+        // Back to back on both sides is no overlap: 13:50 after the trial lesson, ends 16:30 before Berta
+        $this->patch($lesson, ['startsAt' => '2026-10-16T13:50'], $token);
+        self::assertResponseIsSuccessful();
+        $this->patch($lesson, ['startsAt' => '2026-10-16T15:40'], $token);
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testMoveRules(): void
+    {
+        $course = CourseFactory::createOne();
+        $enrollment = EnrollmentFactory::createOne(['course' => $course]);
+        $lesson = $this->lessonOn($enrollment, '2026-10-16');
+        $token = $this->token($course);
+
+        foreach (['2026-10-16T15:33', '2026-10-17T15:30', '16:00', 1530, null] as $startsAt) {
+            $this->patch($lesson, ['startsAt' => $startsAt], $token);
+            self::assertResponseStatusCodeSame(422, 'refused: '.var_export($startsAt, true));
+        }
+
+        $cancelled = $this->lessonOn($enrollment, '2026-10-23');
+        $this->patch($cancelled, ['cancelledBy' => 'student'], $token);
+        $answer = $this->patch($cancelled, ['startsAt' => '2026-10-23T16:00'], $token);
+        self::assertResponseStatusCodeSame(422);
+        self::assertStringContainsString('nur geplante Einheiten', $answer['error']);
+
+        // On the day itself: not into the past, and a lesson that is over cannot be moved at all
+        self::mockTime(new \DateTimeImmutable('2026-10-16 14:00'));
+        $answer = $this->patch($lesson, ['startsAt' => '2026-10-16T13:00'], $token);
+        self::assertResponseStatusCodeSame(422);
+        self::assertStringContainsString('Vergangenheit', $answer['error']);
+        $held = $this->lessonOn($enrollment, '2026-10-09');
+        $this->patch($held, ['startsAt' => '2026-10-09T17:00'], $token);
+        self::assertResponseStatusCodeSame(422);
+
+        self::assertSame('2026-10-16 15:30', $this->reload($lesson)->getStartsAt()?->format('Y-m-d H:i'));
+    }
+
+    /**
      * @param array<string, mixed> $data
      *
      * @return array{error: string, message: string|null}
@@ -244,7 +329,7 @@ final class LessonPatchTest extends WebTestCase
      *
      * The shape of every answer, error, confirm and success merged; each test reads only the keys of its case.
      *
-     * @return array{lesson: array{cancelledBy: string|null, note: string|null, state: string, stateLabel: string}, enrollments: list<array{count: string, makeUpLabel: string|null}>, deleted: list<int>, added: int, error: string, confirm: string}
+     * @return array{lesson: array{cancelledBy: string|null, note: string|null, state: string, stateLabel: string}, enrollments: list<array{count: string, makeUpLabel: string|null}>, deleted: list<int>, added: int, row: array{html: string}|null, error: string, confirm: string}
      */
     private function patch(Lesson $lesson, array $data, string $token): array
     {
@@ -253,7 +338,7 @@ final class LessonPatchTest extends WebTestCase
             'HTTP_X_CSRF_TOKEN' => $token,
         ], content: json_encode($data, \JSON_THROW_ON_ERROR));
 
-        /** @var array{lesson: array{cancelledBy: string|null, note: string|null, state: string, stateLabel: string}, enrollments: list<array{count: string, makeUpLabel: string|null}>, deleted: list<int>, added: int, error: string, confirm: string} */
+        /** @var array{lesson: array{cancelledBy: string|null, note: string|null, state: string, stateLabel: string}, enrollments: list<array{count: string, makeUpLabel: string|null}>, deleted: list<int>, added: int, row: array{html: string}|null, error: string, confirm: string} */
         return json_decode((string) $this->client->getResponse()->getContent(), true, flags: \JSON_THROW_ON_ERROR);
     }
 

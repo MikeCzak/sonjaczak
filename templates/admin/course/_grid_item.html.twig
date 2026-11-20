@@ -1,5 +1,6 @@
 {# One box on a day's time axis (umsetzung-admin.md C4g): placed by minutes from the start of the axis and its lane.
-   A lesson: the whole box opens the editor (C4d; without JavaScript the edit page), the name leads to the enrollment.
+   A lesson: the whole box opens the editor (C4d; without JavaScript the edit page), the name leads to the enrollment;
+   a planned one can be dragged within its day (C4h).
    A trial lesson: the whole box leads to its page. A free slot: offers a double lesson to its neighbours. #}
 {% set position = '--start: ' ~ (item.startMinute - axis.startMinute) ~ '; --length: ' ~ (item.endMinute - item.startMinute) ~ '; --lane: ' ~ item.lane %}
 {% set overlap_hint = item.overlaps is empty ? '' : 'grid.overlaps'|trans({'%items%': item.overlaps|map(o => o.startTime ~ ' ' ~ o.name)|join(', ')}, 'admin') %}
@@ -11,7 +12,10 @@
     {% if item.number %}{% set meta = meta|merge(['grid.number'|trans({'%number%': item.number, '%planned%': enrollment.plannedLessons}, 'admin')]) %}{% endif %}
     {% if lesson.durationMinutes != enrollment.lessonMinutes %}{% set meta = meta|merge(['grid.minutes'|trans({'%minutes%': lesson.durationMinutes}, 'admin')]) %}{% endif %}
     {% if lesson.cancelled %}{% set meta = meta|merge([state.labelKey|trans({}, 'admin')]) %}{% endif %}
-    <div class="grid-item grid-lesson grid-lesson--{{ state.value }} {{ overlap_hint ? 'grid-item--overlap' }}" style="{{ position }}"
+    {# Planned lessons can be dragged within their day (C4h); the server checks again #}
+    {% set draggable = not compact and state.value == 'planned' %}
+    <div class="grid-item grid-lesson grid-lesson--{{ state.value }} {{ overlap_hint ? 'grid-item--overlap' }} {{ draggable ? 'grid-lesson--draggable' }}" style="{{ position }}"
+         data-lesson-id="{{ lesson.id }}"
          title="{{ [state.labelKey|trans({}, 'admin') ~ (lesson.note ? ': ' ~ lesson.note), overlap_hint]|filter(t => t)|join(' · ') }}">
         <a class="stretched-link" href="{{ path('admin_lesson_edit', {id: lesson.id}) }}"
            aria-label="{{ 'grid.edit_lesson'|trans({'%time%': item.startTime, '%date%': lesson.startsAt|date('d.m.')}, 'admin') }}"

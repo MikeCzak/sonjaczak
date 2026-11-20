@@ -65,14 +65,14 @@
                                     {% endif %}
                                 </th>
                                 <td class="grid-timeline">
-                                    {{ include('admin/course/_grid_track.html.twig', {axis: grid.axis, items: row.items, lanes: row.lanes, compact: false}) }}
+                                    {{ include('admin/course/_grid_track.html.twig', {axis: grid.axis, items: row.items, lanes: row.lanes, compact: false, day: row.day}) }}
                                 </td>
                             </tr>
                             {% if row.hasCancelled %}
                                 <tr class="grid-row--cancelled">
                                     <th scope="row" class="grid-day small fw-normal">{{ 'grid.cancelled'|trans({}, 'admin') }}</th>
                                     <td class="grid-timeline">
-                                        {{ include('admin/course/_grid_track.html.twig', {axis: grid.axis, items: row.cancelled, lanes: row.cancelledLanes, compact: true}) }}
+                                        {{ include('admin/course/_grid_track.html.twig', {axis: grid.axis, items: row.cancelled, lanes: row.cancelledLanes, compact: true, day: row.day}) }}
                                     </td>
                                 </tr>
                             {% endif %}

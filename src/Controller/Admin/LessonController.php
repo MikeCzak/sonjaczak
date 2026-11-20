@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Course\Grid\CourseGrid;
 use App\Entity\Enrollment;
 use App\Entity\Enum\CancelledBy;
+use App\Entity\Enum\LessonState;
 use App\Entity\Lesson;
 use App\Entity\User;
 use App\Form\Admin\LessonType;
 use App\Lesson\LessonDescriber;
 use App\Lesson\LessonPlanner;
 use App\Lesson\MakeUpRule;
+use App\Repository\EnrollmentRepository;
 use App\Repository\LessonRepository;
+use App\Repository\TrialLessonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * A single lesson: the edit page (GET/POST, HTML) and the course grid's endpoints (JSON, steps C4c/C4d): PATCH
- * changes cancellation and note, DELETE removes the lesson, POST …/doppelstunde adds a second lesson next to it.
+ * changes cancellation and note and moves a lesson within its day (C4h), DELETE removes the lesson, POST …/doppelstunde adds a second lesson next to it.
  * Same address for page and PATCH/DELETE, because the grid cell is the lesson; one route per kind keeps HTML and
  * JSON apart.
  *
@@ -44,6 +48,9 @@ final class LessonController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ClockInterface $clock,
         private readonly LessonDescriber $describer,
+        private readonly TrialLessonRepository $trials,
+        private readonly EnrollmentRepository $enrollments,
+        private readonly CourseGrid $courseGrid,
     ) {
     }
 
@@ -65,8 +72,8 @@ final class LessonController extends AbstractController
     }
 
     /**
-     * Changes cancellation and/or note. Only the keys sent are changed (PATCH = change parts):
-     * {"cancelledBy": "student"|"teacher"|null, "note": "…"|null}.
+     * Changes cancellation, note and/or start. Only the keys sent are changed (PATCH = change parts):
+     * {"cancelledBy": "student"|"teacher"|null, "note": "…"|null, "startsAt": "2026-10-16T15:35"}.
      *
      * Withdrawing a cancellation puts the lesson back into its slot. Lessons that were put into that slot in the
      * meantime (e.g. a double lesson of the neighbour) overlap it; they are only deleted with "deleteOverlapping":
@@ -79,6 +86,16 @@ final class LessonController extends AbstractController
         $data = $this->readJson($request, $lesson);
         if ($data instanceof JsonResponse) {
             return $data;
+        }
+
+        // Before anything else changes: moving is only allowed for a lesson that is planned as it is now
+        $moved = false;
+        if (\array_key_exists('startsAt', $data)) {
+            $error = $this->move($lesson, $data['startsAt']);
+            if (null !== $error) {
+                return $error;
+            }
+            $moved = true;
         }
 
         $enrollment = $lesson->getEnrollment();
@@ -149,7 +166,76 @@ final class LessonController extends AbstractController
             // Lessons deleted or added elsewhere in the grid: the browser reloads the page instead of rebuilding it
             'deleted' => $deleted,
             'added' => $added,
+            // Moved within its day: the day's row, drawn anew, replaces the old one (C4h, question 5)
+            'row' => $moved ? $this->renderRow($lesson) : null,
         ]);
+    }
+
+    /**
+     * Moves a planned lesson to another start on the same day, dragged in the grid (umsetzung-admin.md C4h): on full
+     * 5 minutes, not into the past, and only where nothing takes place (lessons of the course that are not cancelled,
+     * trial lessons). Unlike withdrawing a cancellation nothing is ever deleted; an overlap is refused. Returns the
+     * error answer, or null if the lesson was moved (not flushed yet).
+     */
+    private function move(Lesson $lesson, mixed $value): ?JsonResponse
+    {
+        $now = $this->clock->now();
+        $oldStart = $lesson->getStartsAt();
+        $newStart = \is_string($value) ? \DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $value) : false;
+        if (false === $newStart || null === $oldStart) {
+            return $this->error('grid.error.invalid_starts_at', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        if (LessonState::Planned !== $lesson->state($now)) {
+            return $this->error('grid.error.move_not_planned', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        if ($newStart->format('Y-m-d') !== $oldStart->format('Y-m-d')) {
+            return $this->error('grid.error.move_other_day', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        if (0 !== (int) $newStart->format('i') % 5) {
+            return $this->error('grid.error.move_five_minutes', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        if ($newStart < $now) {
+            return $this->error('grid.error.move_past', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $newEnd = $newStart->modify(\sprintf('+%d minutes', $lesson->getDurationMinutes()));
+        $lessons = $this->lessons->findOverlapping($lesson->getEnrollment()->getCourse(), $newStart, $newEnd, $lesson);
+        $trials = $this->trials->findOverlapping($newStart, $newEnd);
+        if ([] !== $lessons || [] !== $trials) {
+            return $this->json(['error' => $this->translator->trans('grid.error.move_overlaps', [
+                '%lessons%' => implode("\n", array_filter([$this->describer->describe($lessons), $this->describer->describeTrials($trials)])),
+            ], 'admin')], Response::HTTP_CONFLICT);
+        }
+
+        $lesson->setStartsAt($newStart);
+
+        return null;
+    }
+
+    /**
+     * The time axis of the lesson's day, drawn like on the grid page. Within the day nothing outside this row changes
+     * (numbers, make-up badges, cancelled row stay the same). The axis could, if the moved lesson was the earliest or
+     * latest item of the course; the browser compares data-axis and reloads the page then.
+     *
+     * @return array{html: string}|null
+     */
+    private function renderRow(Lesson $lesson): ?array
+    {
+        $course = $lesson->getEnrollment()->getCourse();
+        $startsAt = $lesson->getStartsAt();
+        $grid = $this->courseGrid->build($course, $this->enrollments->findForGrid($course), $this->trials->findInCourse($course), $this->clock->now());
+        $row = null !== $startsAt ? $grid->rowOn($startsAt) : null;
+        if (null === $row) {
+            return null;
+        }
+
+        return ['html' => $this->renderView('admin/course/_grid_track.html.twig', [
+            'axis' => $grid->axis,
+            'day' => $row->day,
+            'items' => $row->items,
+            'lanes' => $row->lanes(),
+            'compact' => false,
+        ])];
     }
 
     /**

@@ -103,13 +103,9 @@ final class CourseController extends AbstractController
     #[Route('/{id}/raster', name: 'admin_course_grid', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function grid(Course $course, EnrollmentRepository $enrollments, TrialLessonRepository $trials, CourseGrid $courseGrid): Response
     {
-        $from = $course->getStartsOn();
-        $until = $course->getEndsOn()?->modify('+1 day');
-        $trialList = null !== $from && null !== $until ? $trials->findBetween($from, $until) : [];
-
         return $this->render('admin/course/grid.html.twig', [
             'course' => $course,
-            'grid' => $courseGrid->build($course, $enrollments->findForGrid($course), $trialList, $this->clock->now()),
+            'grid' => $courseGrid->build($course, $enrollments->findForGrid($course), $trials->findInCourse($course), $this->clock->now()),
         ]);
     }
 

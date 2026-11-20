@@ -83,6 +83,11 @@ class TrialLesson
         return $this;
     }
 
+    public function getEndsAt(): ?\DateTimeImmutable
+    {
+        return $this->startsAt?->modify(\sprintf('+%d minutes', $this->durationMinutes));
+    }
+
     public function getNote(): ?string
     {
         return $this->note;

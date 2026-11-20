@@ -1,6 +1,9 @@
 {# The time axis of one day (umsetzung-admin.md C4g): dashed hour lines behind the boxes, one lane per overlap.
-   items: the boxes; lanes: how many lanes high; compact: the low row of cancelled lessons #}
-<div class="grid-track {{ compact ? 'grid-track--compact' }}" style="--length: {{ axis.length }}; --lanes: {{ lanes }}">
+   items: the boxes; lanes: how many lanes high; compact: the low row of cancelled lessons; day: the date.
+   data-day and data-axis are read when a lesson is dragged (C4h): the date for the new start, the axis to see whether
+   a row sent by the server still fits the page #}
+<div class="grid-track {{ compact ? 'grid-track--compact' }}" style="--length: {{ axis.length }}; --lanes: {{ lanes }}"
+     data-day="{{ day|date('Y-m-d') }}" data-axis="{{ axis.startMinute }}-{{ axis.endMinute }}">
     {% for hour in axis.hours %}
         <span class="grid-hour" style="--at: {{ hour - axis.startMinute }}" aria-hidden="true"></span>
     {% endfor %}

@@ -23,4 +23,22 @@ final readonly class Grid
     {
         return [] === $this->weeks;
     }
+
+    /**
+     * The row of a day, null if the grid has none for it. After a lesson was moved within its day, the grid page
+     * replaces just this row (umsetzung-admin.md C4h).
+     */
+    public function rowOn(\DateTimeInterface $day): ?GridRow
+    {
+        $key = $day->format('Y-m-d');
+        foreach ($this->weeks as $week) {
+            foreach ($week->rows as $row) {
+                if ($row->day->format('Y-m-d') === $key) {
+                    return $row;
+                }
+            }
+        }
+
+        return null;
+    }
 }
