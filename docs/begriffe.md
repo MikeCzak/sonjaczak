@@ -126,6 +126,17 @@ von Hand.
 **PHPUnit** – Test-Framework. Konfiguration `phpunit.dist.xml` (bricht auch bei Deprecations/Warnungen ab), Tests in
 `tests/`. `KernelTestCase` bootet Symfony und gibt Zugriff auf Services; `WebTestCase` simuliert HTTP-Requests.
 
+**Bootstrap-Datei (PHPUnit)** – PHP-Datei, die PHPUnit einmal ausführt, bevor der erste Test startet. Bei uns
+`tests/bootstrap.php`, eingetragen in `phpunit.dist.xml` (`bootstrap="tests/bootstrap.php"`): lädt den
+Composer-Autoloader und mit `Dotenv::bootEnv()` die `.env`-Dateien, wegen `APP_ENV=test` auch `.env.test` (dort
+u. a. `KERNEL_CLASS`). Startet die IDE PHPUnit ohne `phpunit.dist.xml`, fehlen Bootstrap und Testumgebung. Nicht
+verwechseln mit „Bootstrapping“ (Anlegen des Projekts) und dem CSS-Framework Bootstrap.
+
+**PhpStorm mit Docker** – Tests aus der IDE laufen über einen Docker-Compose-Interpreter (Service `php`, Dateien
+`compose.yaml` und `compose.override.yaml`, „Connect to existing container“). Unter PHP → Test Frameworks:
+Autoloader `/app/vendor/autoload.php`, Default configuration file `/app/phpunit.dist.xml` (Pfade im Container).
+Der Compose-Parser von PhpStorm kennt kein `name:` bei Ports; deshalb fehlt es in `compose.yaml` (2026-11-20).
+
 **Test-Umgebung** – `APP_ENV=test`, Werte aus `.env.test`. Eigene Datenbank `app_test` (Suffix aus
 `config/packages/doctrine.yaml`), damit Tests nie die Dev-Daten verändern.
 

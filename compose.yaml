@@ -18,17 +18,16 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
+    # No "name:" per port (the template has http, https, http3): PhpStorm's Compose parser rejects the field, so the
+    # Docker Compose interpreter found no service. The names were labels only (2026-11-20)
     ports:
-      - name: http
-        target: 80
+      - target: 80
         published: ${HTTP_PORT:-80}
         protocol: tcp
-      - name: https
-        target: 443
+      - target: 443
         published: ${HTTPS_PORT:-443}
         protocol: tcp
-      - name: http3
-        target: 443
+      - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
 

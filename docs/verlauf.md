@@ -599,3 +599,9 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   ohne Neuladen, Fokus auf der Box; Klick auf die neue Zeile öffnet den Editor (Stimulus verbindet die Aktionen).
   Danach Einheit per SQL auf 13:40 zurückgesetzt. Gefunden beim Test: Ein Klick in die Mitte der Box trifft den
   Namenslink (Absicht, wie C4g).
+- 2026-11-20: PHPUnit in PhpStorm: Der Klick auf „Run“ lief mit Homebrew-PHP statt im Container. Docker-Compose-
+  Interpreter angelegt (Mike); PhpStorm meldete „error parsing compose.yaml“ (`idea.log`: `Unrecognized field "name"`
+  in `DockerComposePort`). Port-Namen aus `compose.yaml` entfernt; `docker compose config` für dev und prod vorher und
+  nachher verglichen, nur die drei Zeilen fallen weg. Danach `KERNEL_CLASS` fehlte, weil PHPUnit ohne
+  `phpunit.dist.xml` startete (kein Bootstrap, kein `.env.test`); mit `/app/phpunit.dist.xml` als Default configuration
+  file laufen die Tests in PhpStorm (Mike).
