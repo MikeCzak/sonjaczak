@@ -605,3 +605,8 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   nachher verglichen, nur die drei Zeilen fallen weg. Danach `KERNEL_CLASS` fehlte, weil PHPUnit ohne
   `phpunit.dist.xml` startete (kein Bootstrap, kein `.env.test`); mit `/app/phpunit.dist.xml` als Default configuration
   file laufen die Tests in PhpStorm (Mike).
+- 2026-11-20: CI 44809022056 rot (Build und Deploy übersprungen): `PasskeyLoginTest::testLoginWithPasskey` mit
+  „Invalid length for x coordinate“. Ursache im Test, nicht in `compose.yaml`: `openssl_pkey_get_details()` liefert
+  Koordinaten ohne führende Null-Bytes, gemessen 31 von 3000 Schlüsseln mit 31 statt 32 Byte; `Ec2Key` verlangt genau
+  32. Test füllt jetzt auf 32 Byte auf; mit einem gezielt erzeugten kurzen Schlüssel geprüft (ohne Auffüllen
+  abgelehnt, mit Auffüllen Signatur gültig).

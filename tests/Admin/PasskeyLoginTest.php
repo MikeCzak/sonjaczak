@@ -128,8 +128,8 @@ final class PasskeyLoginTest extends WebTestCase
             ->add(UnsignedIntegerObject::create(1), UnsignedIntegerObject::create(2))
             ->add(UnsignedIntegerObject::create(3), NegativeIntegerObject::create(-7))
             ->add(NegativeIntegerObject::create(-1), UnsignedIntegerObject::create(1))
-            ->add(NegativeIntegerObject::create(-2), ByteStringObject::create($details['ec']['x']))
-            ->add(NegativeIntegerObject::create(-3), ByteStringObject::create($details['ec']['y']));
+            ->add(NegativeIntegerObject::create(-2), ByteStringObject::create(self::coordinate($details['ec']['x'])))
+            ->add(NegativeIntegerObject::create(-3), ByteStringObject::create(self::coordinate($details['ec']['y'])));
 
         $passkey = Passkey::fromRecord(new CredentialRecord(
             self::CREDENTIAL_ID,
@@ -182,6 +182,16 @@ final class PasskeyLoginTest extends WebTestCase
         \assert($key instanceof \OpenSSLAsymmetricKey);
 
         return $key;
+    }
+
+    /**
+     * OpenSSL returns a coordinate as a number without leading zero bytes, so about 1 key in 100 has a coordinate of
+     * 31 bytes (measured 2026-11-20: 31 of 3000). COSE wants exactly 32 for P-256 (Ec2Key::CURVE_KEY_LENGTH), and the
+     * login failed with "Invalid length for x coordinate" (CI 44809022056).
+     */
+    private static function coordinate(string $value): string
+    {
+        return str_pad($value, 32, "\0", \STR_PAD_LEFT);
     }
 
     private function base64Url(string $value): string
