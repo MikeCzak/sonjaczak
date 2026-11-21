@@ -622,3 +622,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - 2026-11-21: CI 44819502054 (Mikes Commit 9bd9089, Halbgeviertstrich „15:30–16:20“ in der Box) rot, Build und Deploy
   übersprungen: `CourseGridTest` und `LessonPatchTest` erwarteten noch den Bindestrich. Tests und Doku angeglichen,
   jetzt wie die Zeitanzeige beim Ziehen.
+- 2026-11-21: CI 44944512370 grün (Tests, Build, Deploy), HTTPS 200.
+- 2026-11-21: Backups S13 Teil 5, Test gegen Löschen (Mike): Drei automatische Snapshots in der Console (19., 20., 21.,
+  je 0 B). Upload-Unterkonto `u724152-sub1` per SFTP vom Server: `ls /.zfs/snapshot` „not found“, auch nach Einschalten
+  von „Display snapshot directory“ (war aus); `/` ist für das Unterkonto der Ordner `backups` (mit `.ssh`).
+  `2026-11-20.dump.age` mit dem Upload-Key gelöscht, mit dem Hauptkonto vom Mac aus `/.zfs/snapshot/…/backups/`
+  geholt: 39519 Bytes wie vorher, `age -d` ok. Hetzner-Doku (Snapshots) gelesen: Snapshot-Inhalt nur über
+  `/.zfs/snapshot`, „Restore“ setzt die ganze Box zurück.

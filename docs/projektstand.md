@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-20. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-21. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -16,7 +16,8 @@ in Plan bzw. Entscheidungen und entfernt den Punkt. Die Optionen mit Pro und Con
 S13). Skript im Repo fertig und lokal getestet (2026-11-18). Storage Box von Mike bestellt und verfügbar
 (2026-11-19), AVV abgeschlossen, Unterkonten und Snapshots eingerichtet, Upload am Server und Rücksicherung aus der
 Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzner in der Datenschutz-Information
-(2026-11-19). Offen: Test gegen Löschen (Teil 5), nach 2 Wochen ohne Fehler (frühestens 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
+(2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
+2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
@@ -210,7 +211,14 @@ verlinkten Erklärung.
   - Monatsmail am 1. um 13:00; „veraltet“ heißt dort: neueste Sicherung älter als 1 Tag.
   - Format des Unterkonto-Benutzernamens laut Doku nicht belegt (Beispiel nur für den Host `uXXXXX-subX`): aus der
     Console abschreiben.
-  - Ob ein Unterkonto `.zfs` sieht, steht nicht in der Doku: Test gegen Löschen (S13, Teil 5).
+  - Ob ein Unterkonto `.zfs` sieht, steht nicht in der Doku. Getestet (S13, Teil 5, 2026-11-21): Das Upload-Unterkonto
+    sieht `.zfs` nicht, auch mit „Display snapshot directory“; das Hauptkonto sieht es (Einstellung an lassen).
+  - **Nur das Hauptkonto holt Dateien aus Snapshots** (2026-11-21, S13 Teil 5): Das Lese-Unterkonto hat dieselbe
+    Basis `backups` und sieht `.zfs` vermutlich auch nicht (nicht getestet). Gelöschte oder ältere Sicherungen gibt es
+    also nur mit dem Passwort des Hauptkontos; gehört auf den Notfallzettel.
+  - **Upload-Key kann `.ssh/authorized_keys` überschreiben** (2026-11-21, S13 Teil 5): Die Datei liegt im Ordner
+    `backups` des Upload-Unterkontos. Ein Angreifer mit dem Key könnte uns aussperren, aber nicht an die Snapshots;
+    Abhilfe dann über Console bzw. Hauptkonto. Hinnehmbar.
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
   `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11). Kopie auf eine
   externe Festplatte von Sonja geplant, aber noch nicht gemacht (Stand 2026-11-18): Die Sicherungen liegen derzeit nur
@@ -262,7 +270,8 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [x] D2 PDF und Download (dompdf, 2026-11-17, gepusht und live 2026-11-17)
 - [ ] Backups ohne Mac (`planung/backups-ohne-mac.md`): 1 Skript und Anleitung S13 (2026-11-18); 2 Bestellung, AVV,
   Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
-  2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); offen 5 Test gegen Löschen, 6 Mac abschalten
+  2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); 5 Test gegen Löschen (2026-11-21); offen 6 Mac
+  abschalten
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

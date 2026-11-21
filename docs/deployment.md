@@ -528,9 +528,24 @@ sudo sftp -i /root/.ssh/storagebox_ed25519 -o UserKnownHostsFile=/root/.ssh/know
 # sftp> rmdir / rm in einem Snapshot  → muss scheitern
 ```
 
-Erwartet: Das Upload-Unterkonto kann keine Snapshots löschen; die gelöschte Datei liegt noch im Snapshot (mit dem
-Lese-Unterkonto oder in der Console prüfen). Sieht das Unterkonto `.zfs` gar nicht, in der Console nachsehen, ob der
-Snapshot die Datei enthält. Lässt sich ein Snapshot löschen: zurück zu Option B.
+Erwartet: Das Upload-Unterkonto kann keine Snapshots löschen; die gelöschte Datei liegt noch im Snapshot. Lässt sich
+ein Snapshot löschen: zurück zu Option B.
+
+Ergebnis 2026-11-21: Das Upload-Unterkonto sieht `.zfs` nicht („not found“), auch mit „Display snapshot directory“
+(Console, muss für das Hauptkonto an sein). Gelöschte Datei mit dem **Hauptkonto** vom Mac zurückgeholt und geprüft:
+
+```bash
+sftp u724152@u724152.your-storagebox.de          # Passwort des Hauptkontos
+# sftp> ls /.zfs/snapshot
+# sftp> get /.zfs/snapshot/<Snapshot>/backups/JJJJ-MM-TT.dump.age /tmp/
+ls -l /tmp/JJJJ-MM-TT.dump.age                   # Größe wie vor dem Löschen
+age -d -i <(pbpaste) /tmp/JJJJ-MM-TT.dump.age > /dev/null && echo ok   # age-Schlüssel vorher kopieren
+rm /tmp/JJJJ-MM-TT.dump.age; pbcopy < /dev/null
+```
+
+Der Weg gilt auch im Ernstfall für Sicherungen, die nicht mehr in `backups` liegen. „Restore“ in der Console setzt
+dagegen die ganze Box zurück und löscht alles Neuere, auch neuere Snapshots (docs.hetzner.com, Storage Box →
+Snapshots).
 
 **Skript aktualisieren:** Ändert sich `deploy/backup-push.sh`, die `scp`- und `install`-Zeile wiederholen.
 
