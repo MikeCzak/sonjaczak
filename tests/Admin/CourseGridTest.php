@@ -44,7 +44,7 @@ final class CourseGridTest extends WebTestCase
         self::assertSelectorTextContains('h1', 'Raster: Wintersemester 2026/27');
         // Hours on the axis; time, number and the make-up hint in the boxes (C4g)
         self::assertSelectorTextContains('thead', '15:00');
-        self::assertSelectorTextContains('tbody', '15:30-16:20 · 1/15');
+        self::assertSelectorTextContains('tbody', '15:30–16:20 · 1/15');
         self::assertSelectorTextContains('tbody', '1 Nachholstunde fällig');
         self::assertCount(1, $crawler->filter('.grid-lesson a.badge.grid-item__link[href="/admin/teilnahmen/'.$enrollment->getId().'/nachholen"]'));
         // 15 lessons, each with a link to its edit page and the name to the enrollment; the cancelled one in the low red row

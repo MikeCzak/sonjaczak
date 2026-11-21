@@ -619,3 +619,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `/_wdt/…` antworten 404.
 - 2026-11-20: Raster zeigt in der Box auch die Endzeit, „15:30-16:20 · 1/15“ (Mike, `GridItem::endTime()`). Zwei Tests
   auf den neuen Text angepasst (`CourseGridTest`, `LessonPatchTest`); 209 Tests und PHPStan grün.
+- 2026-11-21: CI 44819502054 (Mikes Commit 9bd9089, Halbgeviertstrich „15:30–16:20“ in der Box) rot, Build und Deploy
+  übersprungen: `CourseGridTest` und `LessonPatchTest` erwarteten noch den Bindestrich. Tests und Doku angeglichen,
+  jetzt wie die Zeitanzeige beim Ziehen.

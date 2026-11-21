@@ -42,7 +42,7 @@ verlinkten Erklärung.
 - [ ] **Darstellung des Rasters** (2026-11-16, `umsetzung-admin.md` C4b, seit 2026-11-18 je Tag, C4f, als Zeitachse,
   C4g) beim Zeigen mit Sonja prüfen: Eine Zeile je Unterrichtstag, links die KW über alle Tage der Woche. Jede Zeile
   ist eine Zeitachse (3 px pro Minute, am Laptop mit sechs Einheiten etwas breiter als der Bildschirm, waagrecht
-  scrollen). In der Box „13:40-14:30 · 5/15“ (Endzeit seit 2026-11-20, Mike), Name (Link zur Teilnahme), Abzeichen, Notiz; was nicht passt, wird
+  scrollen). In der Box „13:40–14:30 · 5/15“ (Endzeit seit 2026-11-20, Mike), Name (Link zur Teilnahme), Abzeichen, Notiz; was nicht passt, wird
   abgeschnitten und steht im Tooltip. Gehaltene grau mit ✓, geplante fett; Schnupperstunden gestrichelt und blau,
   Überschneidungen rot umrandet und untereinander. Ferientage gelb, ganze Ferienwochen auch bei der KW. Abgesagte in
   einer niedrigen roten Zeile darunter, oben an ihrer Stelle „frei“ mit Doppelstunden-Angebot.

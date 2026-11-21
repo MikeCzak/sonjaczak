@@ -42,7 +42,7 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 4. „Raster“ (Knopf auf der Kursseite): eine Zeile je Unterrichtstag (Freitag), links die Kalenderwoche über alle
    Tage der Woche (C4f). Seit C4g ist jede Zeile eine Zeitachse: oben die Stunden, gestrichelte Stundenlinien, die
    Einheiten stehen minutengenau an ihrer Uhrzeit (am schmalen Bildschirm waagrecht scrollen, KW und Tag bleiben stehen).
-   In der Box Beginn, Ende und Zählung („13:40-14:30 · 5/15“), der Name (Link zur Teilnahme) und Abzeichen; „1 Nachholstunde
+   In der Box Beginn, Ende und Zählung („13:40–14:30 · 5/15“), der Name (Link zur Teilnahme) und Abzeichen; „1 Nachholstunde
    fällig“ steht bei Valentins nächster Einheit. Die Schnupperstunde am Mittwoch, 18.11., 17:00 steht gestrichelt und
    blau in einer eigenen Zeile (Link zur Schnupperstunde). Ferientage gelb; sind alle Unterrichtstage einer Woche frei
    (Herbstferien, KW 52 und 53), ist auch die KW gelb und nennt die Ferien. KW 01 ist nicht gelb: Die Ferien enden am
