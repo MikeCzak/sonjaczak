@@ -19,6 +19,12 @@ Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzne
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
+**Nächstes Todo: Recovery Key für den Notfallzettel** (2026-11-21, Mike): Den Recovery Key des Hetzner-Kontos suchen
+(beim Einrichten der 2FA angezeigt). Ohne ihn kommt man ohne Mikes Handy nicht ins Konto; Ersatz laut Hetzner-Doku
+nur nach manueller Prüfung per Post. Nicht gefunden: in den Sicherheitseinstellungen nachsehen, ob sich ein neuer
+erzeugen lässt (in der Doku nicht beschrieben). Dazu prüfen, ob IONOS ebenfalls 2FA hat und einen Recovery Key braucht.
+Antwort:
+
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
 klären“, „Mit Sonja“). Danach dürfen echte Daten eingetragen werden (Echtbetrieb, `umsetzung-admin.md` Meilensteine).
@@ -226,7 +232,8 @@ verlinkten Erklärung.
   Machine mit (dann liegen Kopien auch dort)? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
   bei einem Wechsel prüfen, ob das noch stimmt.
 - [ ] **Notfallzettel und Zugang ohne Mike** (2026-11-18, Mike): Entwurf `claude_references/notfallzettel.html` (lokal,
-  nicht im Repo) mit age-Schlüssel, Ort der Sicherungen, Verweis auf die Anleitung im Repo. Das IONOS-Konto (Domain,
+  nicht im Repo) mit age-Schlüssel, Ort der Sicherungen, Verweis auf die Anleitung im Repo; seit 2026-11-21
+  mit Zugang zur Storage Box (Hetzner-Konto, Hauptkonto), A5 beidseitig, Passwörter von Hand nach dem Druck. Das IONOS-Konto (Domain,
   VPS, Postfächer) läuft auf Mike; fällt Mike aus, kommt Sonja weder an Server noch Domain, und die Sicherungen liegen
   nur auf Mikes Mac. Zu klären: wie Sonja im Notfall an Konto bzw. Sicherungen kommt (Notfallzugang im Passwort-Manager,
   Vertrag auf Sonja übertragen, Kopie bei ihr). Erst laminieren, wenn das steht, sonst veraltet der Zettel.
