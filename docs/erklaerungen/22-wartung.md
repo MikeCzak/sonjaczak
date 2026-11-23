@@ -102,7 +102,12 @@ die offen bleibt und über die der Server Nachrichten nachschiebt. Wer etwas ver
 FrankenPHP eingebaut und läuft unter `/.well-known/mercure`.
 
 Bei uns: Das Template hat ihn eingeschaltet, mit `anonymous` (abonnieren ohne Token) und `subscriptions` (Abfrage
-der Abos). Der Hub antwortet in Produktion (2026-11-23 geprüft), aber niemand veröffentlicht etwas.
+der Abos). Der Hub antwortete in Produktion (2026-11-23 geprüft), aber dort veröffentlichte niemand etwas.
+
+**Lokal wird er doch gebraucht** (beim Umsetzen gefunden): FrankenPHPs **Hot Reload** schickt bei jeder Dateiänderung
+eine Nachricht über den Hub, und das Skript in `templates/base.html.twig` lädt daraufhin die Seite neu. Ohne Hub startet
+der lokale Container nicht („no Mercure hub configured“). Deshalb läuft der Hub seit 2026-11-23 nur noch lokal
+(`compose.override.yaml`), in Produktion gar nicht (W3, Variante A2).
 
 ### Vulcain
 

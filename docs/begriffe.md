@@ -76,9 +76,11 @@ Code im Prod-Image unveränderlich ist; Code-Änderung = neues Image.
 **Xdebug** – Debugger/Profiler für PHP, nur im Dev-Image. Schrittweises Debugging muss eingeschaltet werden
 (`XDEBUG_MODE=develop,debug`).
 
-**Mercure** – Protokoll für Echtzeit-Push vom Server an den Browser, als Caddy-Modul eingebaut. Nutzen wir derzeit nicht.
+**Mercure** – Protokoll für Echtzeit-Push vom Server an den Browser, als Caddy-Modul eingebaut. Bei uns nur lokal für
+den Hot Reload (`compose.override.yaml`), in Produktion aus (seit 2026-11-23, `planung/wartung.md` W3).
 
-**Vulcain** – Protokoll zum Vorladen verknüpfter API-Ressourcen, ebenfalls Caddy-Modul. Nutzen wir derzeit nicht.
+**Vulcain** – Protokoll zum Vorladen verknüpfter API-Ressourcen, ebenfalls Caddy-Modul. Seit 2026-11-23 aus dem
+`Caddyfile` entfernt (W3).
 
 ## Composer und Symfony
 

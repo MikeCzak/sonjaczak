@@ -18,7 +18,24 @@ services:
     environment:
       FRANKENPHP_WORKER_CONFIG: watch
       FRANKENPHP_SITE_CONFIG: hot_reload
-      MERCURE_EXTRA_DIRECTIVES: playground
+      # Hot reload needs a Mercure hub (frankenphp.dev/docs/hot-reload/). Only here, not in production:
+      # inserted into the site block of frankenphp/Caddyfile (docs/planung/wartung.md W3, A2)
+      CADDY_SERVER_EXTRA_DIRECTIVES: |
+        mercure {
+            # One hub shared by the addresses in SERVER_NAME ("localhost, php:80")
+            name default
+            issuer https://localhost {
+                publisher {
+                    jwt {env.MERCURE_DEV_JWT_KEY}
+                }
+                subscriber {
+                    jwt {env.MERCURE_DEV_JWT_KEY}
+                }
+            }
+            anonymous
+        }
+      # Local development key only, the hub is not reachable from outside this machine
+      MERCURE_DEV_JWT_KEY: "!DevOnlyMercureHubJWTSecretKey-NotUsedInProduction!"
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-develop}"
       APP_ENV: "${APP_ENV:-dev}"
@@ -28,8 +45,6 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
 
 ###> doctrine/doctrine-bundle ###
   database:

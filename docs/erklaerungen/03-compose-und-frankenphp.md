@@ -66,16 +66,9 @@ entscheidend** – deshalb funktioniert lokal `https://localhost`, aber nicht `h
 Basis-URL, mit der Symfony absolute Links erzeugt, wenn es keine Anfrage gibt (z. B. Links in E-Mails aus einem
 Konsolenbefehl).
 
-```yaml
-      MERCURE_TRUSTED_ISSUERS: ...
-      MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      MERCURE_SUBSCRIBER_JWT_KEY: ...
-      MERCURE_URL / MERCURE_PUBLIC_URL / MERCURE_JWT_SECRET / MERCURE_JWT_ISSUER
-```
-Konfiguration für **Mercure** – ein im Caddy eingebauter Dienst für Echtzeit-Updates an den Browser (Server-Sent
-Events). Die Schlüssel signieren JWTs, mit denen Symfony Nachrichten veröffentlichen darf. Wir nutzen Mercure derzeit
-nicht (offene Entscheidung im Projektstand). Die `!ChangeThis…`-Standardwerte sind öffentlich bekannt – in Prod
-erzwingt `compose.prod.yaml` eigene Werte.
+**Mercure** (ein im Caddy eingebauter Dienst für Echtzeit-Updates an den Browser, Server-Sent Events): Das Template
+hatte hier die Variablen `MERCURE_*` und erzwang in Prod ein eigenes Secret. Seit 2026-11-23 entfernt; der Hub läuft nur
+noch lokal für den Hot Reload (`compose.override.yaml`, `planung/wartung.md` W3, `erklaerungen/22`, Abschnitt 3).
 
 ```yaml
       DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-!ChangeMe!}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-18}&charset=${POSTGRES_CHARSET:-utf8}
@@ -102,12 +95,8 @@ Deploy ein neues Zertifikat angefordert – Let's Encrypt begrenzt das.
 Veröffentlichte Ports: `target` = Port im Container, `published` = Port auf dem Host. HTTP/3 läuft über **UDP**
 (Protokoll QUIC) – deshalb die ufw-Regel für 443/udp.
 
-```yaml
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
-```
-Leere Flex-Marker: verhindern, dass das Mercure-Recipe bei Installation einen **zusätzlichen** Mercure-Container
-einträgt (Mercure ist ja schon in Caddy eingebaut).
+Die leeren Flex-Marker `###> symfony/mercure-bundle ###` aus dem Template sind seit 2026-11-23 entfernt (W3). Sie
+verhinderten, dass das Mercure-Recipe einen eigenen Mercure-Container einträgt; wir installieren das Bundle nicht.
 
 ```yaml
   database:
@@ -185,13 +174,20 @@ Lokal das **Dev-Image** bauen (Stage `frankenphp_dev`), Kontext = Projektordner.
     environment:
       FRANKENPHP_WORKER_CONFIG: watch
       FRANKENPHP_SITE_CONFIG: hot_reload
-      MERCURE_EXTRA_DIRECTIVES: playground
+      CADDY_SERVER_EXTRA_DIRECTIVES: |
+        mercure { name default … anonymous }
+      MERCURE_DEV_JWT_KEY: "!DevOnly…!"
       XDEBUG_MODE: "${XDEBUG_MODE:-develop}"
       APP_ENV: "${APP_ENV:-dev}"
 ```
 - `watch` – Worker starten bei Änderungen an PHP/YAML/Twig/.env neu (FrankenPHP-Doku).
-- `hot_reload` – Browser lädt bei Änderungen neu (FrankenPHP-Doku *Hot reloading*, nicht im Detail geprüft).
-- `playground` – Mercure-Testoberfläche; laut Mercure-Doku **nur für Dev** (vergibt einen Token mit Vollzugriff).
+- `hot_reload` – Browser lädt bei Änderungen neu: Beim Ändern einer Datei schickt FrankenPHP eine Nachricht über den
+  Mercure-Hub („When a file is modified, it pushes a Mercure update to the browser“, frankenphp.dev/docs/hot-reload/).
+  Das Skript dafür bindet `templates/base.html.twig` nur ein, wenn `FRANKENPHP_HOT_RELOAD` gesetzt ist.
+- `CADDY_SERVER_EXTRA_DIRECTIVES` – setzt den Mercure-Hub in den Site-Block des `Caddyfile` ein, **nur lokal** (seit
+  2026-11-23, W3). `name default`, weil der Block für zwei Adressen gilt (`localhost, php:80`) und Mercure sonst zwei
+  Hubs anlegen will. `MERCURE_DEV_JWT_KEY` ist ein fester Entwicklungsschlüssel. Die Testoberfläche `playground` aus dem
+  Template ist entfernt.
 - `XDEBUG_MODE`, `APP_ENV` – überschreibbar über die Shell, z. B. `XDEBUG_MODE=debug docker compose up --wait`.
 
 ```yaml
@@ -301,15 +297,8 @@ ersetzt. **Prinzip, das wir später brauchen:** Geheimnisse und personenbezogene
   das ist eine wichtige Schutzschicht.
 - `encode` – Antworten komprimieren, in dieser Vorzugsreihenfolge (je nachdem, was der Browser kann).
 
-```caddy
-	mercure { … anonymous … subscriptions … }
-	vulcain
-```
-- Mercure-Hub unter `/.well-known/mercure` (siehe oben). `anonymous` erlaubt Abonnenten ohne Token, nur **öffentliche**
-  Updates zu empfangen; `subscriptions` aktiviert die Abo-API (beides laut Mercure-Doku standardmäßig aus – der Kommentar
-  in der Datei sagt zu Recht „double-check that it's what you want“).
-- `vulcain` – Protokoll-Erweiterung für APIs (Preload/Push verknüpfter Ressourcen). Nutzen wir nicht.
-- → Beides ist offene Entscheidung: Nicht genutzte Funktionen sind unnötige Angriffsfläche. Entfernen ist einfach.
+Der Hub (`mercure { … }`) und `vulcain` standen hier bis 2026-11-23. Seither: Vulcain entfernt, der Hub nur noch
+lokal über `{$CADDY_SERVER_EXTRA_DIRECTIVES}` (siehe `compose.override.yaml` oben, `planung/wartung.md` W3).
 
 ```caddy
 	@phpRoute {
@@ -488,7 +477,7 @@ Reihenfolge: `php.ini` → `conf.d/*.ini` (Extensions) → `app.conf.d/*.ini` al
 | Keine Standardpasswörter in Prod | ✅ `${VAR:?}` erzwingt Werte |
 | Nur `public/` vom Webserver erreichbar | ✅ `root /app/public`, `hide *.php` |
 | Secrets/Tokens nicht in Logs | ✅ für Mercure-Token; später für eigene Logs beachten (DSGVO) |
-| Ungenutzte Dienste abschalten | ⚠️ Mercure (mit `anonymous`, `subscriptions`) und Vulcain aktiv, aber ungenutzt → entscheiden |
+| Ungenutzte Dienste abschalten | ✅ Vulcain entfernt, Mercure nur lokal für den Hot Reload (2026-11-23, W3) |
 | Automatischer Neustart | ✅ `restart: unless-stopped` |
 | Persistente Daten im Volume | ✅ getestet; ❌ Backups fehlen noch |
 | Worker-Modus: kein Zustand zwischen Anfragen | Beim Schreiben eigener Services beachten |

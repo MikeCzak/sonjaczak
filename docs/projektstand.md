@@ -19,7 +19,8 @@ Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzne
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
-**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2 und W1 umgesetzt, danach W3, W4, W5.
+**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2, W1 und W3 umgesetzt, danach W4, W5.
+Am Server (Mike, ohne Eile): Zeile `CADDY_MERCURE_JWT_SECRET` aus der Umgebungsdatei löschen (wird nicht mehr gelesen).
 Von Mike: Dependabot alerts einschalten (GitHub → Settings → Advanced Security bzw. Code security).
 
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
@@ -194,7 +195,6 @@ verlinkten Erklärung.
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
-- [ ] **Mercure und Vulcain** (2026-11-03, `erklaerungen/03`): im Plan `planung/wartung.md` W3, freigegeben.
 - [ ] **OPcache** (2026-11-03): im Plan `planung/wartung.md` W4, freigegeben.
 - [ ] **Gekürzte IPs in den Server-Logs prüfen** (`docker compose logs php`, 2026-11-11, Release-Schritt 4).
 - [ ] **Bootstrap-CSS verkleinern** (2026-11-11): im Plan `planung/wartung.md` W5 (243 KB, übertragen 30 KB mit
@@ -270,7 +270,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
   Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
   2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); 5 Test gegen Löschen (2026-11-21); offen 6 Mac
   abschalten
-- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI (2026-11-23); offen W3, W4, W5
+- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt (2026-11-23); offen W4, W5
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -327,7 +327,7 @@ muss).
 | Einheiten ziehen | Nur innerhalb des Tages, nur geplante Einheiten, 5-Minuten-Raster, Ablegen nur ohne Überschneidung mit Einheiten des Kurses und Schnupperstunden; Pointer Events ohne Bibliothek, kein Ziehen mit dem Finger; danach ersetzt die vom Server gezeichnete Tageszeile die alte, ohne Neuladen (2026-11-20) | Abkürzung für Editor → Einzelseite → Beginn ändern (Mike). `umsetzung-admin.md` C4h |
 | Port-Namen in `compose.yaml` | Entfernt (`http`, `https`, `http3` aus dem Template); Ports unverändert (2026-11-20) | PhpStorms Compose-Parser lehnt `name:` bei Ports ab, der Docker-Compose-Interpreter für Tests aus der IDE fand sonst keinen Service (Mike). `begriffe.md` „PhpStorm mit Docker“ |
 | Web Debug Toolbar | `symfony/profiler-pack` als `require-dev`, nur die Leiste und der Profiler, ohne `symfony/debug-bundle` (2026-11-20) | Mike will sehen, welcher Controller und welche Templates eine Seite erzeugen; nicht in Produktion (`--no-dev`). `begriffe.md` |
-| Wartung | Plan `planung/wartung.md` mit allen Empfehlungen freigegeben: `composer audit --locked --abandoned=report` in der CI, Runner `ubuntu-26.04`, Mercure und Vulcain aus der Konfiguration entfernen, OPcache über Admin-Seite „System“ messen, Bootstrap nur mit benötigten Teilen (abbrechen unter einem Drittel Ersparnis) (2026-11-23) | Begründungen im Plan (Mike) |
+| Wartung | Plan `planung/wartung.md` mit allen Empfehlungen freigegeben: `composer audit --locked --abandoned=report` in der CI, Runner `ubuntu-26.04`, Vulcain entfernen, Mercure nur noch lokal für den Hot Reload (Variante A2, nachträglich 2026-11-23), OPcache über Admin-Seite „System“ messen, Bootstrap nur mit benötigten Teilen (abbrechen unter einem Drittel Ersparnis) (2026-11-23) | Begründungen im Plan (Mike) |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

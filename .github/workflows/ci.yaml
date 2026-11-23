@@ -47,8 +47,6 @@ jobs:
         run: curl -v --fail-with-body http://localhost
       - name: Check HTTPS reachability
         run: curl -v --insecure --fail-with-body https://localhost
-      - name: Check Mercure reachability
-        run: curl -vI --insecure --fail-with-body https://localhost/.well-known/mercure?match=test
       - name: Lint Twig templates
         run: docker compose exec -T php bin/console lint:twig templates
       - name: Lint YAML files
@@ -85,7 +83,6 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
       # Dummy values, only for the smoke test below; real secrets live on the server
       APP_SECRET: ci-smoke-test
-      CADDY_MERCURE_JWT_SECRET: ci-smoke-test-mercure-jwt-secret
       POSTGRES_PASSWORD: ci-smoke-test
       MAILER_DSN: null://null
     steps:

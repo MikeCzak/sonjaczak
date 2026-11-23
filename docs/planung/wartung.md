@@ -1,6 +1,6 @@
 # Wartung: CI absichern und Aufräumen
 
-Stand: 2026-11-23, **freigegeben mit allen Empfehlungen** (Mike, 2026-11-23), in Umsetzung: W2, W1 erledigt. Erklärungen zu den Begriffen:
+Stand: 2026-11-23, **freigegeben mit allen Empfehlungen** (Mike, 2026-11-23), in Umsetzung: W2, W1, W3 (Variante A2, Mike 2026-11-23) erledigt. Erklärungen zu den Begriffen:
 `erklaerungen/22-wartung.md`. Die Schritte heißen W1–W5 und sind unabhängig voneinander; jeder ist ein eigener Commit.
 
 | Schritt | Was | Aufwand | Wirkung |
@@ -143,9 +143,43 @@ den CI-Schritt „Check Mercure reachability“ und `CADDY_MERCURE_JWT_SECRET` i
 - Pro: Kleinste Änderung.
 - Contra: Ungenutzter Dienst bleibt, samt Secret und CI-Schritt.
 
+### Nachtrag 2026-11-23: Mercure wird lokal gebraucht
+
+Beim Umsetzen von A startete der lokale Container nicht mehr: „unable to enable hot reloading: no Mercure hub
+configured“. `compose.override.yaml` setzt `FRANKENPHP_SITE_CONFIG: hot_reload`, und `templates/base.html.twig` bindet
+das Hot-Reload-Skript ein (Browser lädt neu, wenn eine Datei sich ändert). Laut FrankenPHP braucht das einen Hub: „To
+enable hot reloading, enable Mercure, then add the hot_reload sub-directive“ (frankenphp.dev/docs/hot-reload/); die
+Doku sagt auch „intended for development environments only“. Die Aussage „wir nutzen Mercure nicht“ stimmt also nur für
+Produktion. Der Entwurf liegt als `git stash` („W3 Entwurf“), lokal läuft wieder alles.
+
+**A2. Hub nur lokal, Produktion ohne (neue Empfehlung)**
+
+Den `mercure`-Block aus dem `Caddyfile` nehmen und lokal über die schon vorhandene Lücke
+`{$CADDY_SERVER_EXTRA_DIRECTIVES}` in `compose.override.yaml` einsetzen (mit festem Entwicklungs-Schlüssel, ohne
+`subscriptions`). Vulcain überall weg.
+
+- Pro: Hot Reload bleibt; in Produktion kein Hub, kein Secret, kein offener Endpunkt.
+- Pro: Die CI testet mit `compose.override.yaml`, hat also weiter einen Hub; der Build-Job (prod) keinen.
+- Contra: Ein mehrzeiliger Caddy-Block als YAML-Text in einer Umgebungsvariable ist weniger übersichtlich als im
+  `Caddyfile`.
+
+**A3. Hot Reload aufgeben, Mercure überall entfernen (wie A)**
+
+Dazu `hot_reload` aus `compose.override.yaml` und die Zeilen aus `base.html.twig` und `page/home.html.twig` entfernen.
+`watch` startet den Worker bei PHP-Änderungen weiterhin neu, nur der Browser lädt nicht mehr von selbst.
+
+- Pro: Am einfachsten, gleiche Konfiguration überall.
+- Contra: Nach jeder Änderung selbst neu laden. Die Hot-Reload-Einbindung im Template wurde eigens gebaut (samt
+  `data-frankenphp-hot-reload-preserve` für den Slider).
+
+**A4. Alles lassen, nur Vulcain entfernen**
+
+- Pro: Kleinste Änderung.
+- Contra: Hub und Secret bleiben in Produktion, der eigentliche Grund für W3.
+
 ### Umsetzung
 
-1. Änderungen wie bei A.
+1. Änderungen wie bei A, dazu A2: Hub in `compose.override.yaml` (entschieden 2026-11-23).
 2. Lokal: `docker compose up --wait`, Seiten laden, `/.well-known/mercure` antwortet jetzt mit Symfonys 404.
 3. CI grün, Smoke-Test grün.
 4. Nach dem Deploy: `curl -I https://sonjaczak.com/.well-known/mercure` → 404. RAM vorher/nachher mit `docker stats`

@@ -637,3 +637,10 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - 2026-11-23: W1: Schritt „Audit Composer packages“ (`composer audit --locked --abandoned=report`) im Job „Tests“.
   Lokal geprüft: Kopie von `composer.lock` mit `symfony/http-kernel` v4.4.0 → 3 Advisories, Exit-Code 1; echte
   Lock-Datei → keine, Exit-Code 0. Erklärung `erklaerungen/23-assetmapper.md` (AssetMapper, Alternativen).
+- 2026-11-23: W3: Mercure-Hub und Vulcain aus `Caddyfile`, `MERCURE_*` und Flex-Marker aus den Compose-Dateien, CI-Schritt
+  „Check Mercure reachability“ und `CADDY_MERCURE_JWT_SECRET` aus der CI entfernt. Danach startete der lokale Container
+  nicht: „unable to enable hot reloading: no Mercure hub configured“ (`hot_reload` in `compose.override.yaml`). Entwurf
+  per `git stash` beiseite, Variante A2 (Mike): Hub nur lokal über `CADDY_SERVER_EXTRA_DIRECTIVES`. Zweiter Fehler „only
+  one unnamed Mercure hub is allowed per configuration“ (Site-Block für `localhost, php:80`), behoben mit `name default`.
+  Lokal: Startseite 200, Hub antwortet, nach `touch templates/base.html.twig` kommt das Hot-Reload-Ereignis an;
+  `docker compose -f compose.yaml -f compose.prod.yaml config` ohne Mercure-Variable gültig.

@@ -83,9 +83,11 @@ Inhalt (je einen der Zufallswerte einsetzen):
 SERVER_NAME=sonjaczak.com
 APP_SECRET=<zufallswert 1>
 POSTGRES_PASSWORD=<zufallswert 2>
-CADDY_MERCURE_JWT_SECRET=<zufallswert 3>
 MAILER_DSN=smtps://anfrage%40sonjaczak.com:<passwort, URL-kodiert>@smtp.ionos.de:465
 ```
+
+Bis 2026-11-23 stand hier auch `CADDY_MERCURE_JWT_SECRET`; seit dem Entfernen des Mercure-Hubs aus der Produktion
+(`planung/wartung.md` W3) wird die Zeile nicht mehr gelesen und kann aus der Datei am Server gelöscht werden.
 
 `MAILER_DSN` (seit Schritt 6a): Zugang des IONOS-Postfachs `anfrage@sonjaczak.com`, Server und Port laut IONOS-Hilfe
 „Serverinformationen für IMAP, POP3 und SMTP“. Benutzername und Passwort müssen URL-kodiert sein (`@` → `%40`,
