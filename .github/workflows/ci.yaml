@@ -53,6 +53,10 @@ jobs:
         run: docker compose exec -T php bin/console lint:twig templates
       - name: Lint YAML files
         run: docker compose exec -T php bin/console lint:yaml config translations --parse-tags
+      # Known vulnerabilities in composer.lock fail the run, so nothing gets built or deployed;
+      # abandoned packages are only listed (docs/planung/wartung.md W1)
+      - name: Audit Composer packages
+        run: docker compose exec -T php composer audit --locked --abandoned=report --no-interaction
       - name: Create test database
         run: docker compose exec -T php bin/console -e test doctrine:database:create
       - name: Run migrations

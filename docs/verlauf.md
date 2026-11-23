@@ -634,3 +634,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   16510 B); Mercure-Hub antwortet in Produktion (`/.well-known/mercure?topic=test` 400, `…/subscriptions` 401);
   `composer audit` lokal ohne Befund (Composer 2.11.1); letzter CI-Lauf 45133550109 schon auf "Image: ubuntu-26.04".
 - 2026-11-23: W2: `runs-on: ubuntu-26.04` in allen drei Jobs.
+- 2026-11-23: W1: Schritt „Audit Composer packages“ (`composer audit --locked --abandoned=report`) im Job „Tests“.
+  Lokal geprüft: Kopie von `composer.lock` mit `symfony/http-kernel` v4.4.0 → 3 Advisories, Exit-Code 1; echte
+  Lock-Datei → keine, Exit-Code 0. Erklärung `erklaerungen/23-assetmapper.md` (AssetMapper, Alternativen).

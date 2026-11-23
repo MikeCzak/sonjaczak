@@ -1,6 +1,6 @@
 # Wartung: CI absichern und Aufräumen
 
-Stand: 2026-11-23, **freigegeben mit allen Empfehlungen** (Mike, 2026-11-23), in Umsetzung: W2. Erklärungen zu den Begriffen:
+Stand: 2026-11-23, **freigegeben mit allen Empfehlungen** (Mike, 2026-11-23), in Umsetzung: W2, W1 erledigt. Erklärungen zu den Begriffen:
 `erklaerungen/22-wartung.md`. Die Schritte heißen W1–W5 und sind unabhängig voneinander; jeder ist ein eigener Commit.
 
 | Schritt | Was | Aufwand | Wirkung |

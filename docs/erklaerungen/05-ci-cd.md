@@ -40,7 +40,7 @@ Workflow (ci.yaml)  ── ausgelöst durch Ereignis (push, pull_request, …)
 
 ```
 git push
- → Tests:  Dev-Image bauen → Stack starten → HTTP/Mercure prüfen → Test-DB, Migrationen, PHPUnit, Schema, PHPStan
+ → Tests:  Dev-Image bauen → Stack starten → HTTP/Mercure prüfen → Lint, `composer audit` → Test-DB, Migrationen, PHPUnit, Schema, PHPStan
  → Build:  Prod-Image bauen → Prod-Stack in der CI starten → Smoke-Test → Push nach ghcr.io (Tag = Commit-Hash)
  → Deploy: SSH zum Server mit eingeschränktem Key → deploy.sh <hash> → pull, Compose-Dateien aus Image, up, migrate
 ```
@@ -172,6 +172,15 @@ Startet den Dev-Stack (wie lokal), `--wait` wartet auf `healthy`, `--no-build` n
 - `http://localhost` antwortet mit einer Weiterleitung auf HTTPS (Status 308, kein Fehler) – prüft nur, dass Caddy
   läuft. Der HTTPS-Check ist auskommentiert, weil `/` noch 404 liefert → **aktivieren, sobald es eine Startseite gibt**.
 - Mercure: `-I` = nur Header (HEAD-Anfrage), `--insecure` = lokales Caddy-Zertifikat nicht prüfen.
+
+```yaml
+      - name: Audit Composer packages
+        run: docker compose exec -T php composer audit --locked --abandoned=report --no-interaction
+```
+Seit 2026-11-23 (`planung/wartung.md` W1, Erklärung in `erklaerungen/22`, Abschnitt 1). Prüft `composer.lock` gegen die
+Sicherheitsmeldungen von Packagist. Ein Fund endet mit Exit-Code 1: Der Job wird rot, Build und Deploy laufen nicht.
+Aufgegebene Pakete werden nur aufgelistet (`--abandoned=report`). Lokal geprüft: mit `symfony/http-kernel` v4.4.0 in
+einer Kopie der Lock-Datei „Found 3 security vulnerability advisories“, Exit-Code 1.
 
 ```yaml
       - name: Create test database
