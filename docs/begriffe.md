@@ -115,6 +115,10 @@ Request parsen muss.
 Containerstart erledigt (`composer create-project symfony/skeleton`), weil `composer.json` nur `{}` enthielt.
 Die Ordner `config/`, `bin/`, `public/` usw. haben dabei die Rezepte der Grundpakete angelegt.
 
+**Advisory / `composer audit`** – Sicherheitsmeldung zu einer Paketversion (Kennung CVE-… oder GHSA-…).
+`composer audit` prüft die Pakete gegen die Meldungen von Packagist und endet bei einem Fund mit Exit-Code ungleich 0.
+Plan W1 (`planung/wartung.md`), `erklaerungen/22`.
+
 **Composer-Plugin** – Paket, das Code bei jedem Composer-Lauf ausführt (z. B. Flex). Muss in `composer.json` unter
 `allow-plugins` ausdrücklich erlaubt werden.
 
@@ -153,6 +157,10 @@ Konfiguration `phpstan.dist.neon`. Die Symfony-Erweiterung liest den kompilierte
 
 **GitHub Actions** – CI von GitHub. Workflows in `.github/workflows/*.yaml`; ein Workflow hat Jobs, ein Job hat
 Steps. Läuft bei jedem Push auf `main` und bei Pull Requests.
+
+**Runner / Runner-Label** – Virtuelle Maschine von GitHub, auf der ein Job läuft. `runs-on:` wählt sie per Label:
+`ubuntu-26.04` bleibt bei dieser Version, `ubuntu-latest` wandert mit (seit November 2026 auf 26.04). Plan W2
+(`planung/wartung.md`), `erklaerungen/22`.
 
 **Docker Bake** – Build-Werkzeug von Docker (`docker buildx bake`), das mehrere Images aus einer Beschreibung baut.
 Kann Compose-Dateien lesen: Jeder Service mit `build:` wird ein Build-Ziel, das Feld `image:` wird zum Tag.
