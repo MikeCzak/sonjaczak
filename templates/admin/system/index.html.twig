@@ -1,0 +1,71 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'system.title'|trans({}, 'admin') }}{% endblock %}
+
+{% macro mb(bytes) %}{{ (bytes / 1048576)|number_format(1, ',', '.') }} MB{% endmacro %}
+
+{% block body %}
+    <h1 class="h3 mb-4">{{ 'system.title'|trans({}, 'admin') }}</h1>
+    <p class="text-body-secondary">{{ 'system.php'|trans({'%version%': phpVersion, '%sapi%': sapi}, 'admin') }}</p>
+
+    <h2 class="h5 mt-4">{{ 'system.opcache.title'|trans({}, 'admin') }}</h2>
+    {% if opcache is null %}
+        <div class="alert alert-secondary" id="opcache-off">{{ 'system.opcache.off'|trans({}, 'admin') }}</div>
+    {% else %}
+        <p class="text-body-secondary">{{ 'system.opcache.since'|trans({'%date%': opcache.startedAt|date('d.m.Y H:i')}, 'admin') }}</p>
+        <div class="table-responsive">
+            <table class="table w-auto" id="opcache">
+                <tbody>
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.reserved'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ _self.mb(opcache.memoryConsumption) }}</td>
+                        <td class="text-body-secondary">opcache.memory_consumption</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.used'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ _self.mb(opcache.usedMemory) }}</td>
+                        <td class="text-body-secondary">{{ opcache.usedPercent|number_format(0, ',', '.') }} %</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.free'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ _self.mb(opcache.freeMemory) }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.wasted'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ _self.mb(opcache.wastedMemory) }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.interned'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ _self.mb(opcache.internedUsedMemory) }} / {{ _self.mb(opcache.internedBufferSize) }}</td>
+                        <td class="text-body-secondary">{{ 'system.opcache.strings'|trans({'%count%': opcache.numberOfStrings}, 'admin') }}</td>
+                    </tr>
+                    {% if opcache.preloadMemory is not null %}
+                        <tr>
+                            <th scope="row">{{ 'system.opcache.preload'|trans({}, 'admin') }}</th>
+                            <td class="text-end">{{ _self.mb(opcache.preloadMemory) }}</td>
+                            <td></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.scripts'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ opcache.cachedScripts|number_format(0, ',', '.') }}</td>
+                        <td class="text-body-secondary">{{ 'system.opcache.max_scripts'|trans({'%max%': opcache.maxCachedKeys|number_format(0, ',', '.')}, 'admin') }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">{{ 'system.opcache.hit_rate'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ opcache.hitRate|number_format(1, ',', '.') }} %</td>
+                        <td class="text-body-secondary">{{ 'system.opcache.hits'|trans({'%hits%': opcache.hits|number_format(0, ',', '.'), '%misses%': opcache.misses|number_format(0, ',', '.')}, 'admin') }}</td>
+                    </tr>
+                    <tr{% if opcache.oomRestarts > 0 or opcache.cacheFull %} class="table-danger"{% endif %}>
+                        <th scope="row">{{ 'system.opcache.restarts'|trans({}, 'admin') }}</th>
+                        <td class="text-end">{{ opcache.oomRestarts }}</td>
+                        <td class="text-body-secondary">{{ opcache.cacheFull ? 'system.opcache.full'|trans({}, 'admin') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="small text-body-secondary">{{ 'system.opcache.hint'|trans({}, 'admin') }}</p>
+    {% endif %}
+{% endblock %}

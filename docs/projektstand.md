@@ -19,7 +19,9 @@ Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzne
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
-**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2, W1 und W3 umgesetzt, danach W4, W5.
+**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2, W1, W3 und W4 umgesetzt, danach W5. **Nach einigen Tagen Betrieb (ab ca. 2026-11-30):**
+`/admin/system` in Produktion ablesen und hier eintragen; dann entscheiden, ob `opcache.memory_consumption` sinkt (W4,
+„Danach entscheiden“).
 Am Server (Mike, ohne Eile): Zeile `CADDY_MERCURE_JWT_SECRET` aus der Umgebungsdatei löschen (wird nicht mehr gelesen).
 Von Mike: Dependabot alerts einschalten (GitHub → Settings → Advanced Security bzw. Code security).
 
@@ -195,7 +197,6 @@ verlinkten Erklärung.
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
-- [ ] **OPcache** (2026-11-03): im Plan `planung/wartung.md` W4, freigegeben.
 - [ ] **Gekürzte IPs in den Server-Logs prüfen** (`docker compose logs php`, 2026-11-11, Release-Schritt 4).
 - [ ] **Bootstrap-CSS verkleinern** (2026-11-11): im Plan `planung/wartung.md` W5 (243 KB, übertragen 30 KB mit
   Brotli, 2026-11-23), freigegeben.
@@ -270,7 +271,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
   Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
   2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); 5 Test gegen Löschen (2026-11-21); offen 6 Mac
   abschalten
-- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt (2026-11-23); offen W4, W5
+- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt, W4 Seite „System“ (2026-11-23); offen W4 Werte ablesen, W5
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren

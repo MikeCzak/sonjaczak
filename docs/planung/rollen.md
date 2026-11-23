@@ -14,7 +14,7 @@ in `vendor/`. Stand der Planung (inzwischen umgesetzt, B1–B4): `symfony/securi
 | Rolle | Wer | Darf |
 |---|---|---|
 | `ROLE_ADMIN` | Sonja | Den ganzen Admin-Bereich: Kurse, Schüler:innen, Einheiten, Honorarnoten, Zahlungen, Einstellungen |
-| `ROLE_SUPER_ADMIN` | Mike | Alles wie `ROLE_ADMIN`, dazu Benutzerverwaltung; sieht alle Daten (Antwort 1) |
+| `ROLE_SUPER_ADMIN` | Mike | Alles wie `ROLE_ADMIN`, dazu Benutzerverwaltung und Seite „System“ (seit 2026-11-23, `wartung.md` W4); sieht alle Daten (Antwort 1) |
 | `ROLE_STUDENT` | Schüler:innen, **später** | Nur die eigenen Einheiten und Honorarnoten (Abschnitt 6) |
 | – | Besucher:innen | Öffentliche Seiten; weiterhin ohne Cookie und ohne Session |
 
@@ -61,6 +61,7 @@ muss vor der allgemeinen (`^/admin`) stehen.
 access_control:
     - { path: ^/admin/login, roles: PUBLIC_ACCESS }
     - { path: ^/admin/benutzer, roles: ROLE_SUPER_ADMIN }
+    - { path: ^/admin/system, roles: ROLE_SUPER_ADMIN }
     - { path: ^/admin, roles: ROLE_ADMIN }
 ```
 

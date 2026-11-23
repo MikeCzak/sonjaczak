@@ -15,6 +15,7 @@ nav:
     invoices: Honorarnoten
     income: Einnahmen
     settings: Einstellungen
+    system: System
 action:
     save: Speichern
     cancel: Abbrechen
@@ -580,3 +581,24 @@ income:
         description: Leistung
         method: Zahlungsart
         amount: Betrag
+system:
+    title: System
+    php: 'PHP %version% (%sapi%)'
+    opcache:
+        title: OPcache
+        off: 'OPcache ist in diesem Prozess nicht aktiv (z. B. in Tests oder auf der Konsole).'
+        since: 'Werte seit dem letzten Start des Servers am %date%.'
+        reserved: Reserviert
+        used: Belegt
+        free: Frei
+        wasted: Verschwendet
+        interned: Interned Strings
+        strings: '%count% Zeichenketten'
+        preload: Davon Preloading
+        scripts: Dateien im Cache
+        max_scripts: 'höchstens %max%'
+        hit_rate: Trefferquote
+        hits: '%hits% Treffer, %misses% Fehlgriffe'
+        restarts: Neustarts wegen vollem Speicher
+        full: Cache voll
+        hint: 'Belegt enthält die reservierten Interned Strings. Erst nach einigen Tagen Betrieb und einem Aufruf aller Seiten aussagekräftig.'

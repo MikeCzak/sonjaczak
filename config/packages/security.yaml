@@ -64,6 +64,7 @@ security:
         # "Passwort vergessen" and setting a password from a mailed link (App\Controller\Admin\PasswordController)
         - { path: ^/admin/passwort-(vergessen|setzen), roles: PUBLIC_ACCESS }
         - { path: ^/admin/benutzer, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/admin/system, roles: ROLE_SUPER_ADMIN }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:

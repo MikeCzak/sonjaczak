@@ -149,7 +149,8 @@ Mit den Fixtures ist nichts dran. Was nach Ablauf passiert (Person gelöscht, Te
 1. „Benutzer“: Konto anlegen → Einladungslink in Mailpit → Passwort setzen. Rolle ändern, deaktivieren (Login danach
    nicht mehr möglich). Das eigene Konto lässt sich nicht ändern.
 2. Abmelden → „Passwort vergessen“ → Link in Mailpit. „Mein Konto“: Passwort ändern.
-3. Mit `sonja@example.com` ist „Benutzer“ nicht sichtbar, `/admin/benutzer` ergibt 403.
+3. Mit `sonja@example.com` ist „Benutzer“ nicht sichtbar, `/admin/benutzer` ergibt 403. Dasselbe gilt für „System“
+   (`/admin/system`, OPcache-Werte des laufenden Servers, nur Super-Admin).
 4. **Passkey** (Chrome oder Safari auf dem Mac, `https://localhost`): „Mein Konto“ → Name eingeben → „Passkey
    hinzufügen“ → Touch ID. Ein zweites Mal am selben Gerät lehnt der Browser ab. Abmelden, `/admin/kurse` aufrufen →
    „Mit Passkey anmelden“ → Touch ID → man landet auf „Kurse“, in „Mein Konto“ steht „zuletzt genutzt“. Ohne Touch ID:

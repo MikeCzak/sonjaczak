@@ -170,6 +170,22 @@ Wie viel davon belegt ist, hängt von unserer App ab (Zahl der Dateien, Größe 
 und OPcache ist für die CLI standardmäßig aus (`opcache.enable_cli`, Standard 0). Ein Befehl misst also nichts
 Brauchbares. Darum eine Seite im Admin: Sie läuft im FrankenPHP-Worker und sieht den echten Cache.
 
+### Fallstrick: falsche Werte im FrankenPHP-Worker (gemessen 2026-11-23)
+
+FrankenPHP läuft mit Thread-Sicherheit (`PHP_ZTS` = true, PHP 8.5.12). In den Worker-Threads meldete
+`opcache_get_configuration()` für `opcache.memory_consumption` und `opcache.interned_strings_buffer` jeweils **0**, und
+`memory_usage.used_memory` kam als **minus** `free_memory` heraus (−203 MB). `ini_get('opcache.memory_consumption')`
+lieferte dort richtig `256`; `free_memory`, `wasted_memory` und die Interned Strings waren plausibel. Die Seite
+„System“ nimmt deshalb die Größe aus `ini_get()` und rechnet **Belegt = Reserviert − Frei − Verschwendet**. In der CLI,
+wo PHP die Werte richtig meldet, ergibt diese Rechnung genau PHPs eigenes `used_memory` (268.435.456 − 233.319.192 =
+35.116.264). Ob das ein Fehler in PHP oder FrankenPHP ist, habe ich nicht nachgeforscht.
+
+### Interned Strings liegen im OPcache-Speicher
+
+In der CLI meldete OPcache ohne eine einzige Datei im Cache schon 35 MB belegt, bei 32 MB Puffer für Interned Strings.
+Der Puffer wird also vom reservierten Speicher (`memory_consumption`) abgezogen, nicht zusätzlich belegt (gemessen,
+nicht in der Doku nachgelesen). „Belegt“ auf der Seite enthält ihn deshalb immer ganz.
+
 ### Reserviert ist nicht belegt
 
 256 MB sind **reserviert**, nicht unbedingt im RAM. Linux ordnet einem Prozess Speicherseiten in der Regel erst zu,

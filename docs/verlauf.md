@@ -644,3 +644,9 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   one unnamed Mercure hub is allowed per configuration“ (Site-Block für `localhost, php:80`), behoben mit `name default`.
   Lokal: Startseite 200, Hub antwortet, nach `touch templates/base.html.twig` kommt das Hot-Reload-Ereignis an;
   `docker compose -f compose.yaml -f compose.prod.yaml config` ohne Mercure-Variable gültig.
+- 2026-11-23: W4: Seite „System“ (`/admin/system`, `SystemController`, `App\System\OpcacheStatus`), nur `ROLE_SUPER_ADMIN`
+  (`#[IsGranted]` und `access_control`), Eintrag in der Navigation. Beim Ansehen im lokalen FrankenPHP: „Reserviert
+  0,0 MB“, „Belegt −198,5 MB“. Ursache: Im Worker (ZTS) meldet `opcache_get_configuration()` die Speichergrößen als 0
+  und `used_memory` als minus `free_memory`; `ini_get()` liefert 256. Korrigiert: Größe aus `ini_get()`, Belegt =
+  Reserviert − Frei − Verschwendet. Lokal danach 256 MB reserviert, 70,6 MB belegt (13,7 MB Interned Strings), 2.411
+  Dateien. 215 Tests, PHPStan ohne Fehler (nach `rm -rf /tmp/phpstan` wegen des neuen Ordners `src/System`).
