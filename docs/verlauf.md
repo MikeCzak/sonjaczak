@@ -650,3 +650,8 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   und `used_memory` als minus `free_memory`; `ini_get()` liefert 256. Korrigiert: Größe aus `ini_get()`, Belegt =
   Reserviert − Frei − Verschwendet. Lokal danach 256 MB reserviert, 70,6 MB belegt (13,7 MB Interned Strings), 2.411
   Dateien. 215 Tests, PHPStan ohne Fehler (nach `rm -rf /tmp/phpstan` wegen des neuen Ordners `src/System`).
+- 2026-11-23: W5 probeweise umgesetzt und gemessen: Bootstrap-Teilimport (ohne zwölf ungenutzte Komponenten, 40
+  ungenutzte Gruppen von Hilfsklassen, responsive Hilfsklassen nur für `flex-direction`) hätte `app.css` von 242.990
+  auf 149.551 B verkleinert (gzip 33.824 → 22.884 B); 66 Screenshots und Regelvergleich ohne Unterschied. Mike hat
+  verworfen: Ersparnis nicht spürbar, alle Klassen sollen verfügbar bleiben. Bootstrap-JS einzeln hätte 51.303 statt
+  61.171 B ergeben, ebenfalls nicht umgesetzt.

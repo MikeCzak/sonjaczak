@@ -1,7 +1,7 @@
 # Wartung: CI absichern und Aufräumen
 
 Stand: 2026-11-23, **freigegeben mit allen Empfehlungen** (Mike, 2026-11-23), in Umsetzung: W2, W1, W3 (Variante A2, Mike 2026-11-23), W4 (Seite „System“) erledigt; Werte ablesen und
-entscheiden offen. Erklärungen zu den Begriffen:
+entscheiden offen. W5 nach Messung nicht umgesetzt (Mike, 2026-11-23). Erklärungen zu den Begriffen:
 `erklaerungen/22-wartung.md`. Die Schritte heißen W1–W5 und sind unabhängig voneinander; jeder ist ein eigener Commit.
 
 | Schritt | Was | Aufwand | Wirkung |
@@ -274,6 +274,17 @@ A in Ruhe: zuerst eine Liste der benutzten Komponenten (ich erstelle sie aus Tem
 messen und alle Seiten in allen drei Themes im Browser durchsehen (Headless-Screenshots vorher/nachher). Bringt es
 weniger als etwa ein Drittel, lassen wir es bei C und schließen den Punkt. Das JavaScript (nur benötigte Plugins
 importieren) wäre ein eigener Schritt danach.
+
+### Ergebnis (2026-11-23): nicht umgesetzt, Variante C
+
+Probeweise umgesetzt und gemessen: ohne die zwölf ungenutzten Komponenten (Modal, Card, Offcanvas …), ohne 40
+ungenutzte Gruppen von Hilfsklassen und ohne responsive Hilfsklassen außer `flex-direction` wäre `app.css` von
+242.990 auf 149.551 B geschrumpft (−38 %), mit gzip von 33.824 auf 22.884 B (rund 11 KB weniger je erstem Aufruf).
+Screenshots und ein Regelvergleich zeigten keinen Unterschied. Die ungenutzten Komponenten allein hätten nur 18 %
+gebracht.
+
+**Entscheidung Mike:** verworfen. Die Ersparnis ist bei diesen Größen nicht spürbar; wichtiger ist, dass später alle
+Bootstrap-Klassen ohne Anpassung am SCSS zur Verfügung stehen. `app.scss` importiert weiter `bootstrap` ganz.
 
 ## Fragen an Mike
 

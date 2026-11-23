@@ -19,7 +19,7 @@ Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzne
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
-**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2, W1, W3 und W4 umgesetzt, danach W5. **Nach einigen Tagen Betrieb (ab ca. 2026-11-30):**
+**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2, W1, W3 und W4 umgesetzt, W5 nach Messung verworfen. **Nach einigen Tagen Betrieb (ab ca. 2026-11-30):**
 `/admin/system` in Produktion ablesen und hier eintragen; dann entscheiden, ob `opcache.memory_consumption` sinkt (W4,
 „Danach entscheiden“).
 Am Server (Mike, ohne Eile): Zeile `CADDY_MERCURE_JWT_SECRET` aus der Umgebungsdatei löschen (wird nicht mehr gelesen).
@@ -198,8 +198,6 @@ verlinkten Erklärung.
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
 - [ ] **Gekürzte IPs in den Server-Logs prüfen** (`docker compose logs php`, 2026-11-11, Release-Schritt 4).
-- [ ] **Bootstrap-CSS verkleinern** (2026-11-11): im Plan `planung/wartung.md` W5 (243 KB, übertragen 30 KB mit
-  Brotli, 2026-11-23), freigegeben.
 - [ ] **Alte Images in ghcr.io aufräumen** (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit
   1 Monat Vorlauf).
 - [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
@@ -271,7 +269,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
   Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
   2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); 5 Test gegen Löschen (2026-11-21); offen 6 Mac
   abschalten
-- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt, W4 Seite „System“ (2026-11-23); offen W4 Werte ablesen, W5
+- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt, W4 Seite „System“, W5 verworfen (2026-11-23); offen W4 Werte ablesen
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -329,6 +327,7 @@ muss).
 | Port-Namen in `compose.yaml` | Entfernt (`http`, `https`, `http3` aus dem Template); Ports unverändert (2026-11-20) | PhpStorms Compose-Parser lehnt `name:` bei Ports ab, der Docker-Compose-Interpreter für Tests aus der IDE fand sonst keinen Service (Mike). `begriffe.md` „PhpStorm mit Docker“ |
 | Web Debug Toolbar | `symfony/profiler-pack` als `require-dev`, nur die Leiste und der Profiler, ohne `symfony/debug-bundle` (2026-11-20) | Mike will sehen, welcher Controller und welche Templates eine Seite erzeugen; nicht in Produktion (`--no-dev`). `begriffe.md` |
 | Wartung | Plan `planung/wartung.md` mit allen Empfehlungen freigegeben: `composer audit --locked --abandoned=report` in der CI, Runner `ubuntu-26.04`, Vulcain entfernen, Mercure nur noch lokal für den Hot Reload (Variante A2, nachträglich 2026-11-23), OPcache über Admin-Seite „System“ messen, Bootstrap nur mit benötigten Teilen (abbrechen unter einem Drittel Ersparnis) (2026-11-23) | Begründungen im Plan (Mike) |
+| Bootstrap-CSS | Ganz Bootstrap importieren, kein Teilimport (2026-11-23) | Teilimport gemessen −38 % (243 → 150 KB, gzip 34 → 23 KB), bei diesen Größen nicht spürbar; alle Klassen sollen später ohne Anpassung verfügbar sein (Mike). `planung/wartung.md` W5 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration
