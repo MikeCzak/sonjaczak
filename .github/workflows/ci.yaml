@@ -18,7 +18,8 @@ concurrency:
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-latest
+    # Pinned so the OS only changes when we change this label (docs/planung/wartung.md W2)
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -70,7 +71,7 @@ jobs:
     needs: tests
     # Only commits on main produce deployable images, pull requests are tested only
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
@@ -133,7 +134,7 @@ jobs:
     name: Deploy
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Secrets of the "production" environment are only available to this job
     environment: production
     # Never run two deployments at once, and never cancel a running one

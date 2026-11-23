@@ -22,7 +22,7 @@ die DB erreichbar ist. **Mit wachsender App müssen die Tests mitwachsen**, sons
 ```
 Workflow (ci.yaml)  ── ausgelöst durch Ereignis (push, pull_request, …)
  └─ Run (ein Durchlauf, z. B. 41657250962)
-     ├─ Job „Tests“   ── läuft auf eigenem Runner (frische VM, ubuntu-latest)
+     ├─ Job „Tests“   ── läuft auf eigenem Runner (frische VM, ubuntu-26.04)
      │   └─ Steps     ── nacheinander: Action (uses:) oder Shell-Befehl (run:)
      ├─ Job „Build“   ── needs: tests  → startet erst, wenn Tests grün
      └─ Job „Deploy“  ── needs: build
@@ -102,9 +102,11 @@ Doku: „at most one running job or workflow in a concurrency group at any time�
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 ```
-Job-ID `tests` (für `needs:`), Anzeigename, Runner-Typ (aktuelle Ubuntu-VM von GitHub, Docker vorinstalliert).
+Job-ID `tests` (für `needs:`), Anzeigename, Runner-Typ (Ubuntu-VM von GitHub, Docker vorinstalliert). Bis 2026-11-23
+stand hier `ubuntu-latest`; seither fest auf 26.04, damit das Betriebssystem nur wechselt, wenn wir das Label ändern
+(`planung/wartung.md` W2, `erklaerungen/22`, Abschnitt 2).
 
 ```yaml
     steps:
@@ -215,7 +217,7 @@ billiger als später nachzurüsten.
     name: Build
     needs: tests
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 ```
 - `needs: tests` – erst nach erfolgreichem Test-Job.
 - `if:` – nur bei Push (oder manuellem Start) auf `main`. PRs bekommen kein Image – vor allem, weil Code aus einem PR
@@ -297,7 +299,7 @@ Erst **nach** bestandenem Smoke-Test anmelden und hochladen – ein kaputtes Ima
     name: Deploy
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     environment: production
 ```
 - `environment: production` – nur dadurch sind `SSH_PRIVATE_KEY`, `SSH_HOST`, `SSH_KNOWN_HOSTS` verfügbar. Jobs

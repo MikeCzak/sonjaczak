@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-21. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-23. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -19,10 +19,8 @@ Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzne
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
-**Nächstes Todo: Notfallzettel fertig machen** (2026-11-21, Mike): Recovery Key des Hetzner-Kontos gefunden
-(2026-11-23); kommt von Hand auf den Zettel und in den Passwort-Manager. Wird er einmal benutzt, ist die 2FA aus: neu
-einrichten und den neuen Key an beiden Stellen ersetzen. IONOS hat keine 2FA (Mike, 2026-11-23). Zettel jetzt
-eine Seite A4. Offen: drucken, von Hand ausfüllen, nach dem Abschalten des Mac laminieren.
+**Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2 umgesetzt, danach W1, W3, W4, W5.
+Von Mike: Dependabot alerts einschalten (GitHub → Settings → Advanced Security bzw. Code security).
 
 Passkeys richtet Mike erst ein, wenn er Sonja die Website zeigt (siehe
 „Später zu klären“, „Mit Sonja“). Parallel: Text der Datenschutz-Information mit Sonja durchgehen (F1/F2 live seit 2026-11-17) (siehe „Später zu
@@ -196,12 +194,11 @@ verlinkten Erklärung.
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
-- [ ] **Mercure und Vulcain** sind im `Caddyfile` aktiv, werden aber nicht genutzt: entfernen oder behalten?
-  (2026-11-03, `erklaerungen/03`)
-- [ ] **OPcache** (`opcache.memory_consumption = 256`): tatsächliche Belegung messen, sobald die App gewachsen ist,
-  ggf. senken (2026-11-03).
+- [ ] **Mercure und Vulcain** (2026-11-03, `erklaerungen/03`): im Plan `planung/wartung.md` W3, freigegeben.
+- [ ] **OPcache** (2026-11-03): im Plan `planung/wartung.md` W4, freigegeben.
 - [ ] **Gekürzte IPs in den Server-Logs prüfen** (`docker compose logs php`, 2026-11-11, Release-Schritt 4).
-- [ ] **Bootstrap-CSS verkleinern:** nur benutzte Teile importieren (derzeit 237 KB vor gzip, 2026-11-11).
+- [ ] **Bootstrap-CSS verkleinern** (2026-11-11): im Plan `planung/wartung.md` W5 (243 KB, übertragen 30 KB mit
+  Brotli, 2026-11-23), freigegeben.
 - [ ] **Alte Images in ghcr.io aufräumen** (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit
   1 Monat Vorlauf).
 - [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
@@ -227,23 +224,19 @@ verlinkten Erklärung.
 - [ ] **Backups ohne Mikes Mac** (2026-11-17, Mike; ersetzt „Zweite Kopie außer Haus“ vom 2026-11-15,
   `erklaerungen/16`, Abschnitt 5): Heute holt Mikes Mac die Sicherungen (launchd, `deployment.md` S11). Kopie auf eine
   externe Festplatte von Sonja geplant, aber noch nicht gemacht (Stand 2026-11-18): Die Sicherungen liegen derzeit nur
-  am Mac. Umsetzung mit der Hetzner Storage Box begonnen (2026-11-18, „Jetzt“): `planung/backups-ohne-mac.md`. Privater age-Schlüssel ausgedruckt und im Passwort-Manager (2026-11-19). Noch prüfen: Läuft Time
-  Machine mit (dann liegen Kopien auch dort)? Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
+  am Mac. Umsetzung mit der Hetzner Storage Box begonnen (2026-11-18, „Jetzt“): `planung/backups-ohne-mac.md`. Privater age-Schlüssel ausgedruckt und im Passwort-Manager (2026-11-19). Die Datenschutz-Information sagt nur „außerhalb des Servers“ und „bis zu 12 Monate“;
   bei einem Wechsel prüfen, ob das noch stimmt.
-- [ ] **Notfallzettel und Zugang ohne Mike** (2026-11-18, Mike): Entwurf `claude_references/notfallzettel.html` (lokal,
-  nicht im Repo) mit age-Schlüssel, Ort der Sicherungen, Verweis auf die Anleitung im Repo; seit 2026-11-21
-  mit Zugang zur Storage Box (Hetzner-Konto, Hauptkonto), eine Seite A4, Passwörter von Hand nach dem Druck. Das IONOS-Konto (Domain,
-  VPS, Postfächer) läuft auf Mike; fällt Mike aus, kommt Sonja weder an Server noch Domain, und die Sicherungen liegen
-  nur auf Mikes Mac. Zu klären: wie Sonja im Notfall an Konto bzw. Sicherungen kommt (Notfallzugang im Passwort-Manager,
-  Vertrag auf Sonja übertragen, Kopie bei ihr). Erst laminieren, wenn das steht, sonst veraltet der Zettel.
+- [ ] **Notfallzettel an Sonja übergeben** (2026-11-18, Mike; ausgefüllt 2026-11-23): eine Seite A4 mit age-Schlüssel,
+  Ort der Sicherungen, Zugang zu Storage Box (Hetzner-Konto mit Recovery Key, Hauptkonto) und IONOS, Verweis auf die
+  Anleitung im Repo. Ausgefüllt nur verschlüsselt gespeichert (`claude_references/notfallzettel.html.age`, lokal).
+  Recovery Key auch im Passwort-Manager; wird er benutzt, 2FA neu einrichten und an beiden Stellen ersetzen. Nach dem
+  Abschalten des Mac (S13 Teil 6) die Zeile „Auf Mikes Mac“ streichen, dann drucken, laminieren und beim Zeigen der
+  Website übergeben. Konten laufen weiter auf Mike; ob sie später auf Sonja übergehen, ist offen.
 - [ ] **Postfächer:** Mail-Hosting für Sonjas Adressen unter sonjaczak.com (`music@` liegt bereits bei IONOS; prüfen, ob
   noch etwas offen ist).
-- [ ] **Runner-Label `ubuntu-latest`** (2026-11-15): wechselt laut GitHub-Hinweis im CI-Lauf ab 2026-10-19 schrittweise
-  auf Ubuntu 26 (github.com/actions/runner-images/issues/14748). Stört derzeit nicht; ggf. auf `ubuntu-24.04` pinnen,
-  damit der Wechsel bewusst passiert.
 - [ ] Kandidaten aus der Durchsicht des Templates (2026-11-03):
   - Symfony Language Server aus dem Dev-Image entfernen (lädt ungepinnt die neueste Version, wird nicht genutzt)
-  - `composer audit` als CI-Schritt
+  - `composer audit` als CI-Schritt: im Plan `planung/wartung.md` W1
   - GitHub Actions auf Commit-SHA statt Tag pinnen; zizmor für Workflow-Sicherheit
   - Image-Scan auf bekannte Schwachstellen (`docker scout` oder Trivy) in der CI
   - Ungenutzten `allow-plugins`-Eintrag `php-http/discovery` entfernen
@@ -278,6 +271,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
   Unterkonten, Snapshots, 3 Server (Key, erster Lauf, Monatsmail), 4 Rücksicherung aus der Storage Box (alle
   2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); 5 Test gegen Löschen (2026-11-21); offen 6 Mac
   abschalten
+- [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt (2026-11-23); offen W1, W3, W4, W5
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -334,6 +328,7 @@ muss).
 | Einheiten ziehen | Nur innerhalb des Tages, nur geplante Einheiten, 5-Minuten-Raster, Ablegen nur ohne Überschneidung mit Einheiten des Kurses und Schnupperstunden; Pointer Events ohne Bibliothek, kein Ziehen mit dem Finger; danach ersetzt die vom Server gezeichnete Tageszeile die alte, ohne Neuladen (2026-11-20) | Abkürzung für Editor → Einzelseite → Beginn ändern (Mike). `umsetzung-admin.md` C4h |
 | Port-Namen in `compose.yaml` | Entfernt (`http`, `https`, `http3` aus dem Template); Ports unverändert (2026-11-20) | PhpStorms Compose-Parser lehnt `name:` bei Ports ab, der Docker-Compose-Interpreter für Tests aus der IDE fand sonst keinen Service (Mike). `begriffe.md` „PhpStorm mit Docker“ |
 | Web Debug Toolbar | `symfony/profiler-pack` als `require-dev`, nur die Leiste und der Profiler, ohne `symfony/debug-bundle` (2026-11-20) | Mike will sehen, welcher Controller und welche Templates eine Seite erzeugen; nicht in Produktion (`--no-dev`). `begriffe.md` |
+| Wartung | Plan `planung/wartung.md` mit allen Empfehlungen freigegeben: `composer audit --locked --abandoned=report` in der CI, Runner `ubuntu-26.04`, Mercure und Vulcain aus der Konfiguration entfernen, OPcache über Admin-Seite „System“ messen, Bootstrap nur mit benötigten Teilen (abbrechen unter einem Drittel Ersparnis) (2026-11-23) | Begründungen im Plan (Mike) |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

@@ -629,3 +629,8 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   `2026-11-20.dump.age` mit dem Upload-Key gelöscht, mit dem Hauptkonto vom Mac aus `/.zfs/snapshot/…/backups/`
   geholt: 39519 Bytes wie vorher, `age -d` ok. Hetzner-Doku (Snapshots) gelesen: Snapshot-Inhalt nur über
   `/.zfs/snapshot`, „Restore“ setzt die ganze Box zurück.
+- 2026-11-23: Plan `planung/wartung.md` (W1–W5) und `erklaerungen/22-wartung.md` geschrieben, freigegeben mit allen
+  Empfehlungen (Mike). Gemessen: `app.css` 243102 B, mit Brotli 30177 B, gzip 37844 B; Bootstrap-JS 61061 B (Brotli
+  16510 B); Mercure-Hub antwortet in Produktion (`/.well-known/mercure?topic=test` 400, `…/subscriptions` 401);
+  `composer audit` lokal ohne Befund (Composer 2.11.1); letzter CI-Lauf 45133550109 schon auf "Image: ubuntu-26.04".
+- 2026-11-23: W2: `runs-on: ubuntu-26.04` in allen drei Jobs.
