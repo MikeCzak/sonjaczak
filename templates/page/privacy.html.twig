@@ -10,29 +10,23 @@
             <div class="sc-prose">
             <h1>{{ 'title.privacy'|trans }}</h1>
             <hr class="sc-accent-line">
-            <p>{{ 'privacy.intro'|trans({}, 'content') }}</p>
+            <p{{ page_text_attr('privacy.intro') }}>{{ 'privacy.intro'|trans({}, 'content') }}</p>
             <p>
-                {{ 'privacy.lessons_notice'|trans({}, 'content') }}
+                <span{{ page_text_attr('privacy.lessons_notice') }}>{{ 'privacy.lessons_notice'|trans({}, 'content') }}</span>
                 <a href="{{ path('app_privacy_lessons') }}">{{ 'title.privacy_lessons'|trans }}</a>.
             </p>
 
-            <h2 class="h4 mt-5">{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
+            <h2 class="h4 mt-5"{{ page_text_attr('privacy.controller.heading') }}>{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
             {{ include('_partials/controller_address.html.twig') }}
 
-            {% for section in [
-                {heading: 'privacy.hosting.heading'|trans({}, 'content'), body: 'privacy.hosting.body'|trans({}, 'content')},
-                {heading: 'privacy.logs.heading'|trans({}, 'content'), body: 'privacy.logs.body'|trans({}, 'content')},
-                {heading: 'privacy.cookies.heading'|trans({}, 'content'), body: 'privacy.cookies.body'|trans({}, 'content')},
-                {heading: 'privacy.fonts.heading'|trans({}, 'content'), body: 'privacy.fonts.body'|trans({}, 'content')},
-                {heading: 'privacy.email.heading'|trans({}, 'content'), body: 'privacy.email.body'|trans({'%email%': contact_email}, 'content')},
-                {heading: 'privacy.links.heading'|trans({}, 'content'), body: 'privacy.links.body'|trans({}, 'content')},
-                {heading: 'privacy.rights.heading'|trans({}, 'content'), body: 'privacy.rights.body'|trans({}, 'content')},
-            ] %}
-                <h2 class="h4 mt-5">{{ section.heading }}</h2>
-                {{ text.paragraphs(section.body) }}
+            {% for section in ['hosting', 'logs', 'cookies', 'fonts', 'email', 'links', 'rights'] %}
+                {% set key = 'privacy.' ~ section %}
+                <h2 class="h4 mt-5"{{ page_text_attr(key ~ '.heading') }}>{{ (key ~ '.heading')|trans({}, 'content') }}</h2>
+                {# %email% is only used in privacy.email.body #}
+                {{ text.paragraphs((key ~ '.body')|trans({'%email%': contact_email}, 'content'), '', page_text_attr(key ~ '.body')) }}
             {% endfor %}
 
-            <p class="text-body-secondary mt-5 mb-0">{{ 'privacy.updated'|trans({}, 'content') }}</p>
+            <p class="text-body-secondary mt-5 mb-0"{{ page_text_attr('privacy.updated') }}>{{ 'privacy.updated'|trans({}, 'content') }}</p>
             </div>
         </div>
     </section>

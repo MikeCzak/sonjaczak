@@ -394,7 +394,7 @@ bezahlt“ legt eine Zahlung über den offenen Restbetrag mit dem heutigen Datum
 
 ### Später (nicht Teil dieses Entwurfs)
 
-Repertoireliste (Song: Titel, Interpret, Kategorie, Tonart) und Preisschätzung fürs Booking, kleines CMS für Texte.
+Repertoireliste (Song: Titel, Interpret, Kategorie, Tonart) und Preisschätzung fürs Booking. Das kleine CMS für Texte (Tabelle `page_text`) steht in `planung/cms.md`.
 
 ## 4. Arbeitsansicht: Kursraster
 

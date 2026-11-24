@@ -36,11 +36,12 @@ final class AdminRoutesRequireLoginTest extends WebTestCase
                 continue;
             }
 
-            // Placeholders like {id} get a dummy value that fits the route's requirement ({year} needs four digits);
+            // Placeholders like {id} get a dummy value that fits the route's requirement ({year} needs four digits,
+            // {key} of the page texts a dotted key);
             // access is checked before the object is loaded
             $path = (string) preg_replace_callback('/\{([^}]+)\}/', static function (array $match) use ($route, $name): string {
                 $requirement = $route->getRequirement($match[1]) ?? '[^/]+';
-                foreach (['1', '2026', 'x'] as $candidate) {
+                foreach (['1', '2026', 'x', 'x.y'] as $candidate) {
                     if (1 === preg_match('#^(?:'.$requirement.')$#', $candidate)) {
                         return $candidate;
                     }

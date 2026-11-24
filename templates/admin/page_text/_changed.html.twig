@@ -1,0 +1,5 @@
+{# Marker for a text changed in the admin area (docs/planung/cms.md, point 4) #}
+<span class="badge text-bg-warning">{{ 'page_text.changed'|trans({
+    '%date%': changed.updatedAt|date('d.m.Y H:i'),
+    '%user%': changed.updatedBy ? changed.updatedBy.email : 'page_text.deleted_user'|trans({}, 'admin'),
+}, 'admin') }}</span>

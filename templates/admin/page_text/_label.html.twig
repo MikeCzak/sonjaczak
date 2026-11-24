@@ -1,0 +1,3 @@
+{# Readable name of a page text: section heading and kind of text (PageTextController::label()) #}
+{%- if label.section %}{{ label.section }} · {% elseif label.sectionKey %}{{ ('page_text.section.' ~ label.sectionKey)|trans({}, 'admin') }} · {% endif -%}
+{{ ('page_text.part.' ~ label.part)|trans({}, 'admin') -}}

@@ -1,0 +1,41 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ 'page_text.edit.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <p class="mb-1"><a href="{{ path('admin_page_text_index', {_fragment: page}) }}">← {{ ('page_text.page.' ~ page)|trans({}, 'admin') }}</a></p>
+    <h1 class="h3 mb-1">{{ include('admin/page_text/_label.html.twig') }}</h1>
+    <p class="text-body-secondary small mb-4"><code>{{ key }}</code>
+        {% if changed %} {{ include('admin/page_text/_changed.html.twig') }}{% endif %}</p>
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            {{ form_start(form) }}
+                {{ form_row(form.body) }}
+                <p class="small text-body-secondary" id="kind-hint">{{ hint }}</p>
+                {% if placeholders is not empty %}
+                    <p class="small text-body-secondary" id="placeholders">
+                        {{ 'page_text.edit.placeholders'|trans({'%placeholders%': placeholders|join(', ')}, 'admin') }}
+                    </p>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">{{ 'action.save'|trans({}, 'admin') }}</button>
+                <a class="btn btn-link" href="{{ path('admin_page_text_index', {_fragment: page}) }}">{{ 'action.cancel'|trans({}, 'admin') }}</a>
+            {{ form_end(form) }}
+
+            {% if changed %}
+                {{ include('admin/_delete.html.twig', {
+                    action: path('admin_page_text_reset', {key: key}),
+                    token_id: 'page-text',
+                    label: 'page_text.reset.label',
+                    confirm: 'page_text.reset.confirm',
+                }) }}
+            {% endif %}
+        </div>
+        <div class="col-lg-5">
+            <h2 class="h6">{{ 'page_text.edit.default'|trans({}, 'admin') }}</h2>
+            <div class="border rounded p-3 bg-body-tertiary small" id="default-text" style="white-space: pre-line">
+                {{- default is empty ? 'page_text.empty'|trans({}, 'admin') : default -}}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -15,18 +15,18 @@
 
     <section class="sc-section">
         <div class="container">
-            <p class="col-lg-8 fs-5">{{ 'lessons.intro'|trans({}, 'content') }}</p>
+            <p class="col-lg-8 fs-5"{{ page_text_attr('lessons.intro') }}>{{ 'lessons.intro'|trans({}, 'content') }}</p>
             <div class="row g-5 mt-0">
                 <div class="col-md-6">
-                    <h2>{{ 'lessons.content.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('lessons.content.heading') }}>{{ 'lessons.content.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    {{ text.list('lessons.content.items'|trans({}, 'content'), 'sc-list') }}
-                    <p>{{ 'lessons.content.styles'|trans({}, 'content') }}</p>
+                    {{ text.list('lessons.content.items'|trans({}, 'content'), 'sc-list', page_text_attr('lessons.content.items')) }}
+                    <p{{ page_text_attr('lessons.content.styles') }}>{{ 'lessons.content.styles'|trans({}, 'content') }}</p>
                 </div>
                 <div class="col-md-6">
-                    <h2>{{ 'lessons.audience.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('lessons.audience.heading') }}>{{ 'lessons.audience.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    <p>{{ 'lessons.audience.body'|trans({}, 'content') }}</p>
+                    <p{{ page_text_attr('lessons.audience.body') }}>{{ 'lessons.audience.body'|trans({}, 'content') }}</p>
                 </div>
             </div>
         </div>
@@ -34,10 +34,10 @@
 
     <section class="sc-section sc-section--surface">
         <div class="container">
-            <h2>{{ 'lessons.teacher.heading'|trans({}, 'content') }}</h2>
+            <h2{{ page_text_attr('lessons.teacher.heading') }}>{{ 'lessons.teacher.heading'|trans({}, 'content') }}</h2>
             <hr class="sc-accent-line">
-            <p class="col-lg-8">{{ 'lessons.teacher.body'|trans({}, 'content') }}</p>
-            <a href="{{ path('app_about') }}">{{ 'lessons.teacher.link'|trans({}, 'content') }}</a>
+            <p class="col-lg-8"{{ page_text_attr('lessons.teacher.body') }}>{{ 'lessons.teacher.body'|trans({}, 'content') }}</p>
+            <a href="{{ path('app_about') }}"{{ page_text_attr('lessons.teacher.link') }}>{{ 'lessons.teacher.link'|trans({}, 'content') }}</a>
         </div>
     </section>
 
@@ -45,37 +45,40 @@
         <div class="container">
             <div class="row g-5">
                 <div class="col-md-4">
-                    <h2>{{ 'lessons.location.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('lessons.location.heading') }}>{{ 'lessons.location.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
                     {% set address = 'lessons.location.address'|trans({}, 'content') %}
-                    <address>{{ address|nl2br }}</address>
-                    <a href="https://www.google.com/maps/search/?api=1&query={{ address|replace({"\n": ', '})|url_encode }}" rel="noopener">{{ 'lessons.location.map_link'|trans({}, 'content') }}</a>
+                    <address{{ page_text_attr('lessons.location.address') }}>{{ address|nl2br }}</address>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ address|replace({"\n": ', '})|url_encode }}" rel="noopener"{{ page_text_attr('lessons.location.map_link') }}>{{ 'lessons.location.map_link'|trans({}, 'content') }}</a>
                 </div>
                 <div class="col-md-4">
-                    <h2>{{ 'lessons.dates.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('lessons.dates.heading') }}>{{ 'lessons.dates.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    <p>{{ 'lessons.dates.body'|trans({}, 'content') }}</p>
+                    <p{{ page_text_attr('lessons.dates.body') }}>{{ 'lessons.dates.body'|trans(site.lessonParameters, 'content') }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h2>{{ 'lessons.prices.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('lessons.prices.heading') }}>{{ 'lessons.prices.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    <p>{{ 'lessons.prices.body'|trans({}, 'content') }}</p>
+                    <p{{ page_text_attr('lessons.prices.body') }}>{{ 'lessons.prices.body'|trans(site.lessonParameters, 'content') }}</p>
                 </div>
             </div>
         </div>
     </section>
 
-    {# Texts by Sonja, hidden while empty #}
-    {% for section in [
-        {heading: 'lessons.rules.heading'|trans({}, 'content'), body: 'lessons.rules.body'|trans({}, 'content')},
-        {heading: 'lessons.faq.heading'|trans({}, 'content'), body: 'lessons.faq.body'|trans({}, 'content')},
-    ] %}
-        {% if section.body is not empty %}
-            <section class="sc-section">
+    {# Texts by Sonja, hidden while empty; in edit mode an empty section shows a placeholder to click (cms.md K4) #}
+    {% for section in ['rules', 'faq'] %}
+        {% set key = 'lessons.' ~ section %}
+        {% set body = (key ~ '.body')|trans({}, 'content') %}
+        {% if body is not empty or page_text_editor() %}
+            <section class="sc-section{{ body is empty ? ' sc-page-text-hidden' }}">
                 <div class="container">
-                    <h2>{{ section.heading }}</h2>
+                    <h2{{ page_text_attr(key ~ '.heading') }}>{{ (key ~ '.heading')|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    {{ text.paragraphs(section.body) }}
+                    {% if body is not empty %}
+                        {{ text.paragraphs(body, '', page_text_attr(key ~ '.body')) }}
+                    {% else %}
+                        {{ include('_partials/page_text_empty.html.twig', {key: key ~ '.body'}) }}
+                    {% endif %}
                 </div>
             </section>
         {% endif %}
@@ -83,11 +86,11 @@
 
     <section class="sc-section sc-section--surface">
         <div class="container">
-            <h2>{{ 'lessons.inquiry.heading'|trans({}, 'content') }}</h2>
+            <h2{{ page_text_attr('lessons.inquiry.heading') }}>{{ 'lessons.inquiry.heading'|trans({}, 'content') }}</h2>
             <hr class="sc-accent-line">
             <div class="col-lg-8">
-                <p>{{ 'lessons.inquiry.body'|trans({}, 'content') }}</p>
-                <p class="small">{{ 'lessons.inquiry.minor_hint'|trans({}, 'content') }}</p>
+                <p{{ page_text_attr('lessons.inquiry.body') }}>{{ 'lessons.inquiry.body'|trans({}, 'content') }}</p>
+                <p class="small"{{ page_text_attr('lessons.inquiry.minor_hint') }}>{{ 'lessons.inquiry.minor_hint'|trans({}, 'content') }}</p>
                 <p class="small"><a href="{{ path('app_privacy_lessons') }}">{{ 'title.privacy_lessons'|trans }}</a></p>
                 {{ include('_partials/inquiry_form.html.twig', {
                     form: form,

@@ -15,6 +15,7 @@ nav:
     invoices: Honorarnoten
     income: Einnahmen
     settings: Einstellungen
+    page_texts: Texte
     system: System
 action:
     save: Speichern
@@ -440,7 +441,9 @@ settings:
         theme_help: Gilt sofort für alle Besucher:innen. Vorher ansehen mit ?theme=… an einer beliebigen Seitenadresse.
         lesson_minutes: Standarddauer einer Einheit (Minuten)
         planned_lessons: Einheiten pro Semester
-        planned_lessons_help: Vorschlag für neue Kurse. Die Einheiten eines Kurses sind zugleich die Mindestzahl, die du schuldest. Sagst du ab und wird sie dadurch unterschritten, ist eine Nachholstunde fällig. Absagen von Schüler:innen werden nie nachgeholt.
+        lesson_price: Preis pro Semester
+        lesson_price_help: Vorschlag für neue Kurse und Preis auf der Seite „Unterricht“.
+        planned_lessons_help: Vorschlag für neue Kurse und Zahl auf der Seite „Unterricht“. Die Einheiten eines Kurses sind zugleich die Mindestzahl, die du schuldest. Sagst du ab und wird sie dadurch unterschritten, ist eine Nachholstunde fällig. Absagen von Schüler:innen werden nie nachgeholt.
         sender_name: Name
         sender_title: Titel
         iban: IBAN
@@ -602,3 +605,77 @@ system:
         restarts: Neustarts wegen vollem Speicher
         full: Cache voll
         hint: 'Belegt enthält die reservierten Interned Strings. Erst nach einigen Tagen Betrieb und einem Aufruf aller Seiten aussagekräftig.'
+page_text:
+    index:
+        title: Texte der Website
+        intro: 'Am einfachsten änderst du Texte direkt auf der Website: angemeldet unten rechts „Texte bearbeiten“ einschalten und auf den Stift beim Text klicken. Hier siehst du alle Texte auf einen Blick, auch die ohne sichtbaren Platz (z. B. Bildbeschreibungen). Was du speicherst, gilt sofort. Geänderte Texte sind gelb markiert und lassen sich auf den ursprünglichen Text zurücksetzen.'
+        pages: Seiten
+        view: Seite ansehen
+    edit:
+        title: Text bearbeiten
+        default: Ursprünglicher Text
+        placeholders: 'Platzhalter, die die Website ersetzt: %placeholders%. Preis und Einheiten kommen aus den Einstellungen.'
+    # What a line break does, by how the template shows the text (App\Content\PageTexts::kind())
+    kind:
+        list: Jede Zeile wird ein eigener Punkt der Liste.
+        paragraphs: Eine Leerzeile beginnt einen neuen Absatz.
+        lines: Jede Zeile steht auch auf der Seite in einer eigenen Zeile.
+        line: Ein Zeilenumbruch erscheint auf der Seite als Leerzeichen.
+        hidden_when_empty: Bleibt das Feld leer, wird der Abschnitt nicht angezeigt.
+    # Editing in place on the public pages (templates/_partials/page_editor.html.twig)
+    editor:
+        switch: Texte bearbeiten
+        admin: Admin-Bereich
+        edit: Text bearbeiten
+        empty: Noch kein Text. Zum Hinzufügen bearbeiten.
+        error: Das hat nicht geklappt. Bitte lade die Seite neu und versuche es noch einmal.
+        expired: Deine Sitzung ist abgelaufen. Bitte lade die Seite neu.
+        not_found: Diesen Text gibt es nicht mehr.
+    reset:
+        label: Auf ursprünglichen Text zurücksetzen
+        confirm: Deine Änderung wird gelöscht, die Seite zeigt wieder den ursprünglichen Text.
+    field:
+        body: Text
+    flash:
+        saved: Text gespeichert.
+        reset: Text zurückgesetzt.
+    changed: geändert am %date% von %user%
+    deleted_user: gelöschtem Konto
+    empty: (leer)
+    page:
+        home: Startseite
+        about: Über mich
+        booking: Booking (Übersicht)
+        booking_solo: Booking solo
+        booking_band: Booking mit Band
+        lessons: Unterricht
+        contact: Kontakt
+        imprint: Impressum
+        privacy: Datenschutzerklärung
+        privacy_lessons: Datenschutz-Information Unterricht
+    # Sections without a heading of their own
+    section:
+        hero: Titelbild
+        solo: Sonja solo
+        band: Sonja mit Band
+    part:
+        heading: Überschrift
+        body: Text
+        claim: Satz unter dem Titel
+        intro: Einleitung
+        items: Liste
+        note: Hinweis
+        clauses: Bedingungen
+        link: Linktext
+        styles: Stilrichtungen
+        address: Adresse
+        map_link: Linktext Karte
+        image_alt: Bildbeschreibung (für Screenreader)
+        minor_hint: Hinweis für unter 14-Jährige
+        email_alternative: Hinweis E-Mail
+        hint: Hinweis
+        name: Name
+        purpose: Unternehmensgegenstand
+        lessons_notice: Hinweis auf die Information für den Unterricht
+        updated: Stand
+        website_notice: Verweis auf die Datenschutzerklärung

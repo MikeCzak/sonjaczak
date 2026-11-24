@@ -41,36 +41,43 @@
             <p class="lead mb-0">{{ 'site.tagline'|trans }}</p>
             {% set claim = 'home.hero.claim'|trans({}, 'content') %}
             {% if claim is not empty %}
-                <p class="mt-3 fs-5">{{ claim }}</p>
+                <p class="mt-3 fs-5"{{ page_text_attr('home.hero.claim') }}>{{ claim }}</p>
+            {% elseif page_text_editor() %}
+                {{ include('_partials/page_text_empty.html.twig', {key: 'home.hero.claim', class: 'mt-3'}) }}
             {% endif %}
         </div>
     </section>
 
     <section class="sc-section">
         <div class="container">
-            <h2>{{ 'home.intro.heading'|trans({}, 'content') }}</h2>
+            <h2{{ page_text_attr('home.intro.heading') }}>{{ 'home.intro.heading'|trans({}, 'content') }}</h2>
             <hr class="sc-accent-line">
             {% set intro = 'home.intro.body'|trans({}, 'content') %}
             {% if intro is not empty %}
-                <p>{{ intro }}</p>
+                <p{{ page_text_attr('home.intro.body') }}>{{ intro }}</p>
+            {% elseif page_text_editor() %}
+                {{ include('_partials/page_text_empty.html.twig', {key: 'home.intro.body'}) }}
             {% endif %}
             <a href="{{ path('app_about') }}">{{ 'action.more'|trans }}</a>
         </div>
     </section>
 
     {{ include('page/_offer.html.twig', {
+        key: 'home.offers.solo',
         heading: 'home.offers.solo.heading'|trans({}, 'content'),
         body: 'home.offers.solo.body'|trans({}, 'content'),
         url: path('app_booking_solo'),
         surface: true,
     }) }}
     {{ include('page/_offer.html.twig', {
+        key: 'home.offers.band',
         heading: 'home.offers.band.heading'|trans({}, 'content'),
         body: 'home.offers.band.body'|trans({}, 'content'),
         url: path('app_booking_band'),
         surface: false,
     }) }}
     {{ include('page/_offer.html.twig', {
+        key: 'home.offers.lessons',
         heading: 'home.offers.lessons.heading'|trans({}, 'content'),
         body: 'home.offers.lessons.body'|trans({}, 'content'),
         url: path('app_lessons'),

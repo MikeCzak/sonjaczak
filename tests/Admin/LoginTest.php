@@ -45,11 +45,12 @@ final class LoginTest extends WebTestCase
         $client->submitForm('Anmelden', ['email' => 'Sonja@Example.com', 'password' => UserFactory::PASSWORD]);
 
         self::assertResponseRedirects('/admin');
-        // The session cookie is only sent back to /admin (framework.session.cookie_path). In tests the session
-        // storage is a mock (framework.yaml, when@test) whose cookie is called MOCKSESSID instead of PHPSESSID.
-        $cookie = $client->getCookieJar()->get('MOCKSESSID', '/admin');
+        // Since 2026-11-24 the session cookie goes to the whole site (framework.session.cookie_path, cms.md K4), so
+        // public pages show Sonja the editing buttons. In tests the session storage is a mock (framework.yaml,
+        // when@test) whose cookie is called MOCKSESSID instead of PHPSESSID.
+        $cookie = $client->getCookieJar()->get('MOCKSESSID', '/');
         self::assertNotNull($cookie);
-        self::assertSame('/admin', $cookie->getPath());
+        self::assertSame('/', $cookie->getPath());
         self::assertTrue($cookie->isHttpOnly());
 
         $client->followRedirect();

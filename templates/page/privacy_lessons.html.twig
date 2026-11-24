@@ -13,7 +13,7 @@
 
             {{ include('page/_privacy_lessons_sections.html.twig') }}
 
-            <p class="text-body-secondary mt-5 mb-0">{{ 'privacy.updated'|trans({}, 'content') }}</p>
+            <p class="text-body-secondary mt-5 mb-0"{{ page_text_attr('privacy.updated') }}>{{ 'privacy.updated'|trans({}, 'content') }}</p>
             </div>
         </div>
     </section>

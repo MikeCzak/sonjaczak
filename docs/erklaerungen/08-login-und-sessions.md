@@ -26,11 +26,24 @@ Code (Symfony 8.1.11 laut `composer.lock`).
    Zugangsdaten“), egal ob die Adresse unbekannt oder das Passwort falsch ist. So kann niemand herausfinden, welche
    Adressen ein Konto haben. Die deutschen Texte liefert Symfony mit (`security.de.xlf`, Domain `security`).
 
-### Warum nur eine Firewall für `/admin`
+### Eine Firewall: bis 2026-11-23 nur für `/admin`, seither für die ganze Website
 
-Öffentliche Seiten passen auf keine Firewall. Dort gibt es keine Anmeldung, keine Session und kein Cookie, und
-`PublicPagesTest` prüft für jede Seite, dass kein `Set-Cookie` kommt. Die Kehrseite: Auf öffentlichen Seiten weiß
-Symfony nicht, wer angemeldet ist (kein „Zum Admin“-Link). Sonja nutzt ein Lesezeichen auf `/admin`.
+**Bis 2026-11-23** galt die Firewall nur für `^/admin`, und das Session-Cookie hatte den Pfad `/admin`. Öffentliche
+Seiten passten auf keine Firewall; der Browser schickte das Cookie gar nicht an sie. Die Kehrseite: Auf öffentlichen
+Seiten wusste Symfony nicht, wer angemeldet ist.
+
+**Seit 2026-11-24** (Mike, `planung/cms.md` K4, Frage 1) gilt die Firewall für alle Pfade (kein `pattern` mehr), und
+das Cookie hat den Pfad `/`. Grund: Sonja soll Texte direkt auf der öffentlichen Seite bearbeiten, also muss die Seite
+wissen, dass sie angemeldet ist. Was gleich blieb:
+
+- **Besucher:innen bekommen weiter kein Cookie.** Die Firewall ist `lazy`, und ohne mitgeschicktes Session-Cookie
+  liest sie keine Session (`vendor/symfony/security-http/Firewall/ContextListener.php` Zeile 91,
+  `hasPreviousSession()`), legt also auch keine an. `PublicPagesTest` prüft für jede Seite, dass kein `Set-Cookie`
+  kommt, und `PageTextTest::testVisitorsGetNoEditingMarkup` zusätzlich, dass kein Bearbeiten-Markup im HTML steht.
+- **`/admin` bleibt geschützt** durch `access_control` (nicht durch die Firewall): Die Regel `^/admin` verlangt
+  `ROLE_ADMIN`.
+- Neu: Für Sonja und Mike geht das Cookie bei jedem Aufruf der Website mit. Die öffentliche Seite liest dann die
+  Session aus der Datenbank (eine Abfrage) und zeigt die Leiste „Texte bearbeiten“.
 
 `lazy: true` heißt: Die Session wird erst gestartet, wenn ein Recht geprüft wird. Die Login-Seite selbst prüft kein
 Recht (`PUBLIC_ACCESS`), und das CSRF-Token ist zustandslos (Token-ID `authenticate` in `config/packages/csrf.yaml`).
@@ -106,9 +119,10 @@ läuft weiter. Lokal geprüft: angemeldet, `docker compose up -d --force-recreat
 - **Cookie höchstens 12 Stunden:** `cookie_lifetime: 43200`. Ohne Angabe verschwände das Cookie beim Beenden des
   Browsers. Laut Symfony-Doku gehört die eigentliche Ablaufprüfung auf den Server (der Browser kann das Cookie
   verlängern), das übernimmt `gc_maxlifetime`.
-- **Nur für `/admin`:** `cookie_path: /admin`. `HttpOnly`, `Secure` (bei HTTPS) und `SameSite=Lax` sind Symfonys
-  Standard. Lokal mit `curl` geprüft:
-  `Set-Cookie: PHPSESSID=…; Max-Age=43200; path=/admin; secure; httponly; samesite=lax`.
+- **Pfad `/`** (seit 2026-11-24, vorher `/admin`, siehe oben): `cookie_path: /`. `HttpOnly`, `Secure` (bei HTTPS)
+  und `SameSite=Lax` sind Symfonys Standard. Damals lokal mit `curl` geprüft (noch mit `/admin`):
+  `Set-Cookie: PHPSESSID=…; Max-Age=43200; path=/admin; secure; httponly; samesite=lax`. Den Pfad prüft heute
+  `LoginTest::testAdminLogsInWithAnyCaseOfTheEmailAddress`.
 - **In Tests** ersetzt `framework.session.storage_factory_id: session.storage.factory.mock_file` die echte Ablage;
   das Cookie heißt dort `MOCKSESSID`.
 

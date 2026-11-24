@@ -3,9 +3,10 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    # Only the admin area uses a session (docs/planung/rollen.md 3); the browser sends the cookie only to /admin
+    # Only logged-in accounts have a session (docs/planung/rollen.md 3). Cookie path "/" since 2026-11-24 (before:
+    # /admin), so public pages see the login and offer editing of page texts (docs/planung/cms.md K4)
     session:
-        cookie_path: /admin
+        cookie_path: /
         # Stored in PostgreSQL instead of files in the container, so a deploy (new container) logs nobody out.
         # Table "sessions" comes with a normal migration (docs/planung/rollen.md 6).
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler

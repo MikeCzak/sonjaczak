@@ -99,6 +99,17 @@ registrieren, Konfiguration nach `config/packages/` kopieren, Variablen in `.env
 
 **`symfony.lock`** – Hält fest, welche Rezepte in welcher Version gelaufen sind.
 
+**Decorator** – Ein Dienst, der einen anderen Dienst umhüllt: Er bekommt das Original injiziert
+(`#[AutowireDecorated]`), bietet dieselbe Schnittstelle an und gibt Aufrufe weiter, ändert aber einzelne davon.
+`#[AsDecorator('translator')]` lässt den Container überall, wo `translator` gebraucht wird, den Decorator einsetzen.
+Bei uns `App\Content\PageTextTranslator`: geänderte Seitentexte aus der Tabelle `page_text` statt aus
+`content.de.yaml` (`planung/cms.md`). Symfony selbst macht es in dev genauso (`DataCollectorTranslator` für den
+Profiler).
+
+**`kernel.reset`** – Tag für Dienste, deren Zustand nach jeder Anfrage gelöscht werden muss; Symfony ruft dann ihre
+Methode `reset()` auf. Dienste mit `ResetInterface` bekommen den Tag automatisch. Wichtig im Worker-Modus von
+FrankenPHP, wo ein Dienst viele Anfragen überlebt.
+
 **Pack** – Sammelpaket ohne eigenen Code, das mehrere Pakete installiert (z. B. `symfony/orm-pack`).
 
 **Skeleton** – Minimales Symfony-Startprojekt (`symfony/skeleton`), ohne Twig, Doctrine usw.

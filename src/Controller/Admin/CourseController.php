@@ -65,7 +65,8 @@ final class CourseController extends AbstractController
         $settings = $this->settings->current();
         $course = new Course()
             ->setLessonMinutes($settings->getLessonMinutes())
-            ->setPlannedLessons($settings->getPlannedLessons());
+            ->setPlannedLessons($settings->getPlannedLessons())
+            ->setPriceCents($settings->getLessonPriceCents());
         $form = $this->createForm(CourseType::class, $course);
         $form->handleRequest($request);
 

@@ -67,6 +67,11 @@ access_control:
 
 ## 3. Firewall: Admin mit Session, öffentliche Seiten ohne
 
+> **Geändert 2026-11-24** (Mike, `planung/cms.md` K4, Frage 1): Die Firewall gilt für die ganze Website, das
+> Session-Cookie hat den Pfad `/`, damit Sonja Texte direkt auf den öffentlichen Seiten bearbeiten kann. Besucher:innen
+> bekommen weiter keine Session und kein Cookie (`lazy`, `PublicPagesTest`); `/admin` schützt `access_control`.
+> Der folgende Abschnitt beschreibt den ursprünglichen Plan; aktueller Stand in `erklaerungen/08`.
+
 Die öffentlichen Seiten setzen heute kein Cookie, und ein Test prüft das. Das soll so bleiben: kein Cookie-Hinweis
 nötig, und die Datenschutzerklärung stimmt weiter. Deshalb gibt es **nur eine Firewall für `/admin`**:
 
@@ -307,7 +312,8 @@ Was sich für wen ändert:
   bestehenden Tests (`assertResponseNotHasHeader('Set-Cookie')`) bleiben und werden um die Startseite ergänzt.
 - **Login-Seite ohne Absenden:** kein Cookie. Das CSRF-Token für den Login ist zustandslos (`authenticate` in
   `config/packages/csrf.yaml`), die Firewall ist `lazy`.
-- **Nach dem Anmelden:** ein Session-Cookie, gültig nur für Pfade unter `/admin` (`cookie_path`), `HttpOnly`
+- **Nach dem Anmelden:** ein Session-Cookie, gültig nur für Pfade unter `/admin` (`cookie_path`; seit 2026-11-24 `/`,
+  siehe Abschnitt 3), `HttpOnly`
   (JavaScript kann es nicht lesen), `Secure` (nur über HTTPS), `SameSite=Lax`, höchstens 12 Stunden. Die Werte für
   `HttpOnly`, `Secure` und `SameSite` sind Symfonys Standard (`cookie_httponly: true`, `cookie_secure: auto`,
   `cookie_samesite: lax` in `vendor/symfony/framework-bundle/DependencyInjection/Configuration.php`).

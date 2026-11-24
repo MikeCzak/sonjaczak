@@ -1,0 +1,5 @@
+{# Placeholder for an empty page text in edit mode (docs/planung/cms.md K4): without it there would be nothing to click.
+   Only rendered for admins, hidden by CSS until "Texte bearbeiten" is switched on. Expects key, optional class. #}
+<p class="sc-page-text-hidden sc-page-text-empty{{ class is defined ? ' ' ~ class }}"{{ page_text_attr(key) }}>
+    {{- 'page_text.editor.empty'|trans({}, 'admin') -}}
+</p>

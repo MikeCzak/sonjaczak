@@ -1,9 +1,10 @@
-{# One offer section on the home page. Expects translated heading and body, the target url and surface (bool). #}
+{# One offer section on the home page. Expects translated heading and body, their key prefix (key, for editing in
+   place), the target url and surface (bool). #}
 <section class="sc-section{{ surface ? ' sc-section--surface' }}">
     <div class="container">
-        <h2>{{ heading }}</h2>
+        <h2{{ page_text_attr(key ~ '.heading') }}>{{ heading }}</h2>
         <hr class="sc-accent-line">
-        <p class="col-lg-8">{{ body }}</p>
+        <p class="col-lg-8"{{ page_text_attr(key ~ '.body') }}>{{ body }}</p>
         <a class="btn btn-primary" href="{{ url }}">{{ 'action.more'|trans }}</a>
     </div>
 </section>

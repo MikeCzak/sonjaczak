@@ -12,7 +12,9 @@
             <h1>{{ 'title.booking_band'|trans }}</h1>
             {% set claim = 'booking_band.hero.claim'|trans({}, 'content') %}
             {% if claim is not empty %}
-                <p class="col-lg-7 fs-5 mb-0">{{ claim }}</p>
+                <p class="col-lg-7 fs-5 mb-0"{{ page_text_attr('booking_band.hero.claim') }}>{{ claim }}</p>
+            {% elseif page_text_editor() %}
+                {{ include('_partials/page_text_empty.html.twig', {key: 'booking_band.hero.claim'}) }}
             {% endif %}
         </div>
     </section>
@@ -21,15 +23,15 @@
         <div class="container">
             <div class="row g-5">
                 <div class="col-md-6">
-                    <h2>{{ 'booking_band.occasions.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('booking_band.occasions.heading') }}>{{ 'booking_band.occasions.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    {{ text.list('booking_band.occasions.items'|trans({}, 'content'), 'sc-list') }}
+                    {{ text.list('booking_band.occasions.items'|trans({}, 'content'), 'sc-list', page_text_attr('booking_band.occasions.items')) }}
                 </div>
                 <div class="col-md-6">
-                    <h2>{{ 'booking_band.website.heading'|trans({}, 'content') }}</h2>
+                    <h2{{ page_text_attr('booking_band.website.heading') }}>{{ 'booking_band.website.heading'|trans({}, 'content') }}</h2>
                     <hr class="sc-accent-line">
-                    <p>{{ 'booking_band.website.body'|trans({}, 'content') }}</p>
-                    <a class="btn btn-primary" href="{{ band_url }}" rel="noopener">{{ 'booking_band.website.link'|trans({}, 'content') }}</a>
+                    <p{{ page_text_attr('booking_band.website.body') }}>{{ 'booking_band.website.body'|trans({}, 'content') }}</p>
+                    <a class="btn btn-primary" href="{{ band_url }}" rel="noopener"{{ page_text_attr('booking_band.website.link') }}>{{ 'booking_band.website.link'|trans({}, 'content') }}</a>
                 </div>
             </div>
         </div>

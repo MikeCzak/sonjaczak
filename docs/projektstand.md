@@ -1,6 +1,6 @@
 # Projektstand: sonjaczak.com
 
-Stand: 2026-11-23. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
+Stand: 2026-11-24. **Die eine Datei für alles Offene.** Reihenfolge: was jetzt auf Mike wartet, was später zu klären
 ist, Termine, Fortschritt, getroffene Entscheidungen, Server. Was wann im Detail passiert ist: `verlauf.md`.
 
 **Verweise:** Schritte des Umsetzungsplans heißen „`umsetzung-admin.md` C4“ (`docs/planung/umsetzung-admin.md`),
@@ -18,6 +18,11 @@ S13). Skript im Repo fertig und lokal getestet (2026-11-18). Storage Box von Mik
 Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzner in der Datenschutz-Information
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
+
+**Mini-CMS gepusht** (K1–K3 2026-11-23, K4 Bearbeiten direkt auf der Seite 2026-11-24; `planung/cms.md`,
+ausprobieren `rundgang-admin.md` 6a, Erklärung `erklaerungen/25`). Mike in Produktion vorher abgemeldet. Von Mike:
+in Produktion anmelden, auf einer öffentlichen Seite „Texte bearbeiten“ einschalten und einen Text probeweise ändern
+und zurücksetzen. Falls die Anmeldung hängt: Cookies von sonjaczak.com löschen (`planung/cms.md` K4).
 
 **Wartung W1–W5** (Plan `planung/wartung.md`, freigegeben 2026-11-23): W2, W1, W3 und W4 umgesetzt, W5 nach Messung verworfen. **Nach einigen Tagen Betrieb (ab ca. 2026-11-30):**
 `/admin/system` in Produktion ablesen und hier eintragen; dann entscheiden, ob `opcache.memory_consumption` sinkt (W4,
@@ -120,6 +125,10 @@ verlinkten Erklärung.
   Abschnitte bleiben bis dahin ausgeblendet.
 - [ ] **KI-Bilder durch Fotos ersetzen** (2026-11-12): `hero-wedding.jpg`, `hero-lessons.jpg`, sobald Fotos da sind.
 
+- [ ] **Texte der Website selbst ändern** (2026-11-23, `planung/cms.md`) beim Zeigen erklären: angemeldet auf der
+  Website unten rechts „Texte bearbeiten“, Stift am Text, gelbe Markierung, Zurücksetzen; Übersicht im Menü „Texte“; Preis und Einheiten pro Semester in den Einstellungen gelten auch für die Unterrichtsseite
+  (Platzhalter `%price%` im Text nicht löschen).
+
 ### Mit der Steuerberatung
 
 - [ ] **Gutschrift und Zahlung als ein Konto** (2026-11-13, D3, `erklaerungen/13`): zu zahlen = Betrag minus
@@ -198,6 +207,17 @@ verlinkten Erklärung.
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
 - [ ] **Gekürzte IPs in den Server-Logs prüfen** (`docker compose logs php`, 2026-11-11, Release-Schritt 4).
+- [ ] **Annahmen beim Mini-CMS** (2026-11-23, `planung/cms.md` „Auslegungen“):
+  - Sonja kann auch Impressum, Datenschutzerklärung und Datenschutz-Information ändern („alle Seitentexte“); niemand
+    prüft diese Änderungen dann gegen die Quellen.
+  - Lesen über einen Decorator um den Translator statt einer eigenen Twig-Funktion.
+  - Die Unterrichtsseite zeigt den Preis aus den Einstellungen, nicht den eines Kurses.
+  - Ein geleerter Text blendet nur Regeln, FAQ und den Satz auf der Startseite aus; sonst bleibt eine leere Stelle.
+  - Benennt Mike einen Schlüssel im YAML um, wirkt ein geänderter Text dazu nicht mehr (bleibt in `page_text`).
+  - K4 (2026-11-24): Nach Speichern lädt die Seite neu; Seitentitel und Menü bleiben im Repo; Admins bekommen auf
+    öffentlichen Seiten Stimulus (Einstieg `admin`) und die Leiste, Besucher:innen nicht.
+  - K4: Sonjas und Mikes Session-Cookie geht jetzt an alle Seiten (Pfad `/`). Die Datenschutzerklärung bleibt richtig
+    (Besucher:innen bekommen kein Cookie); laut Entscheidung 2026-11-17 kein Wort zum Verwaltungsbereich.
 - [ ] **Alte Images in ghcr.io aufräumen** (derzeit kostenlos, laut GitHub-Doku „currently free“, Änderung mit
   1 Monat Vorlauf).
 - [ ] **Backups im Ernstfall:** genaue Befehle für das Einspielen auf einem neuen Server ausarbeiten (2026-11-14,
@@ -270,6 +290,8 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
   2026-11-19), Cronjobs, Datenschutz-Information (2026-11-19); 5 Test gegen Löschen (2026-11-21); offen 6 Mac
   abschalten
 - [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt, W4 Seite „System“, W5 verworfen (2026-11-23); offen W4 Werte ablesen
+- [ ] Mini-CMS (`planung/cms.md`): K1 Tabelle `page_text` und Decorator, K2 Admin „Texte“, K3 Preis in den
+  Einstellungen (2026-11-23); K4 Bearbeiten auf der Seite mit Hinweis je Art des Textes (2026-11-24, gepusht)
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -328,6 +350,8 @@ muss).
 | Web Debug Toolbar | `symfony/profiler-pack` als `require-dev`, nur die Leiste und der Profiler, ohne `symfony/debug-bundle` (2026-11-20) | Mike will sehen, welcher Controller und welche Templates eine Seite erzeugen; nicht in Produktion (`--no-dev`). `begriffe.md` |
 | Wartung | Plan `planung/wartung.md` mit allen Empfehlungen freigegeben: `composer audit --locked --abandoned=report` in der CI, Runner `ubuntu-26.04`, Vulcain entfernen, Mercure nur noch lokal für den Hot Reload (Variante A2, nachträglich 2026-11-23), OPcache über Admin-Seite „System“ messen, Bootstrap nur mit benötigten Teilen (abbrechen unter einem Drittel Ersparnis) (2026-11-23) | Begründungen im Plan (Mike) |
 | Bootstrap-CSS | Ganz Bootstrap importieren, kein Teilimport (2026-11-23) | Teilimport gemessen −38 % (243 → 150 KB, gzip 34 → 23 KB), bei diesen Größen nicht spürbar; alle Klassen sollen später ohne Anpassung verfügbar sein (Mike). `planung/wartung.md` W5 |
+| Mini-CMS | Eigene Tabelle `page_text`, YAML als Standard; alle Seitentexte; reiner Text; Marker „geändert“ und Zurücksetzen; Preis als Wert in den Einstellungen, beim Kurs vorbelegt und änderbar (2026-11-23) | Sonja ändert Texte ohne Mike und Deploy (Mike). `planung/cms.md` |
+| Bearbeiten auf der Seite | Firewall für die ganze Website, Session-Cookie mit Pfad `/` (hebt `rollen.md` 3 teilweise auf); Leiste mit Schalter „Texte bearbeiten“; Liste `/admin/texte` bleibt als Übersicht; nur Seitentexte (`content`), keine Seitentitel und Menüs (2026-11-24) | Sonja ändert Texte dort, wo sie stehen; Besucher:innen unverändert ohne Cookie (Mike). `planung/cms.md` K4 |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

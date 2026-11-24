@@ -12,13 +12,14 @@
                 <div class="col-lg-7">
                     <h1>{{ 'title.about'|trans }}</h1>
                     <hr class="sc-accent-line">
-                    {{ text.paragraphs('about.body'|trans({}, 'content')) }}
+                    {{ text.paragraphs('about.body'|trans({}, 'content'), '', page_text_attr('about.body')) }}
                     <p class="d-flex flex-wrap gap-3 mt-4 mb-0">
                         <a class="btn btn-primary" href="{{ path('app_booking') }}">{{ 'nav.booking'|trans }}</a>
                         <a class="btn btn-outline-primary" href="{{ path('app_lessons') }}">{{ 'nav.lessons'|trans }}</a>
                     </p>
                 </div>
-                <div class="col-lg-5">
+                {# Image description (alt): the edit button sits on the image #}
+                <div class="col-lg-5"{{ page_text_attr('about.image_alt') }}>
                     {{ media.image('hero-sonja', 'about.image_alt'|trans({}, 'content'), {
                         class: 'img-fluid rounded sc-portrait',
                         sizes: '(min-width: 992px) 40vw, 100vw',

@@ -45,6 +45,14 @@ class Settings
     #[Assert\Range(min: 1, max: 40)]
     private int $plannedLessons = 15;
 
+    /**
+     * Price per term in cents: default for new courses and the price shown on /unterricht (docs/planung/cms.md K3).
+     * Default is the price published since the first release.
+     */
+    #[ORM\Column(options: ['default' => 49500])]
+    #[Assert\PositiveOrZero]
+    private int $lessonPriceCents = 49500;
+
     #[ORM\Column(length: 100, nullable: true)]
     #[Assert\Length(max: 100)]
     private ?string $senderName = null;
@@ -131,6 +139,18 @@ class Settings
     public function setPlannedLessons(int $plannedLessons): static
     {
         $this->plannedLessons = $plannedLessons;
+
+        return $this;
+    }
+
+    public function getLessonPriceCents(): int
+    {
+        return $this->lessonPriceCents;
+    }
+
+    public function setLessonPriceCents(int $lessonPriceCents): static
+    {
+        $this->lessonPriceCents = $lessonPriceCents;
 
         return $this;
     }

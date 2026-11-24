@@ -93,6 +93,24 @@ des Jahres, darunter der laufende Kurs mit der zuletzt gehaltenen Einheit je Per
 2. Absenderdaten ansehen, IBAN falsch eingeben (Fehlermeldung), eine Unterschrift als PNG hochladen (irgendein PNG zum
    Testen), Vorschau, wieder entfernen.
 
+## 6a. Texte der Website
+
+**Direkt auf der Seite (K4):** Angemeldet https://localhost/unterricht öffnen. Unten rechts „Texte bearbeiten“
+einschalten: Jeder Text bekommt einen Stift, leere Abschnitte (Regeln, FAQ) erscheinen mit „Noch kein Text“. Stift bei
+„Preise“ → Feld mit `%price%` … → ändern, speichern; die Seite lädt neu, der Modus bleibt an. Wieder öffnen →
+„Auf ursprünglichen Text zurücksetzen“. In einem privaten Fenster (nicht angemeldet) prüfen: keine Leiste, keine
+Stifte.
+
+**Übersicht (`/admin/texte`):**
+
+1. „Texte“ → Unterricht → „Für wen · Text“ ändern, speichern. Die Zeile ist gelb markiert („geändert am … von …“);
+   https://localhost/unterricht zeigt den neuen Text.
+2. Den Text wieder öffnen, „Auf ursprünglichen Text zurücksetzen“.
+3. „Preise · Text“: Platzhalter `%price%`, `%lessons%`, `%per_lesson%` werden ersetzt. In den Einstellungen den
+   Preis ändern, die Seite zeigt ihn sofort; „Neuer Kurs“ ist damit vorbelegt. Ein erfundener Platzhalter
+   (`%preis%`) wird abgelehnt.
+4. „Häufige Fragen · Text“ mit Inhalt füllen: der Abschnitt erscheint auf der Unterrichtsseite; wieder leeren.
+
 ## 7. Honorarnoten, Zahlungen, Gutschriften
 
 1. Eine Teilnahme ohne Honorarnote öffnen → „Honorarnote erstellen“: Empfänger:in und Betrag werden angezeigt, Daten

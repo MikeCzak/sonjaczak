@@ -44,7 +44,7 @@ Fortschritt und offene Punkte stehen im Projektstand (`docs/projektstand.md`), n
 **B2 Sessions in PostgreSQL** (`rollen.md` 6) – erledigt 2026-11-13 (zusammen mit B1 committet)
 
 - `PdoSessionHandler` mit der Doctrine-Verbindung, Migration für die Tabelle `sessions`.
-- `cookie_path: /admin`, `gc_maxlifetime: 28800`, `cookie_lifetime: 43200`.
+- `cookie_path: /admin` (seit 2026-11-24 `/`, `planung/cms.md` K4), `gc_maxlifetime: 28800`, `cookie_lifetime: 43200`.
 - Prüfen nach dem Deploy: angemeldet bleiben über einen Deploy hinweg.
 
 **B3 Passwort vergessen** (`rollen.md` 4.2) – erledigt 2026-11-13
@@ -700,4 +700,4 @@ Kein eigener Demo-Termin (Entscheidung 2026-11-13, Projektstand): Mike sieht sic
 ## Später (außerhalb dieses Plans)
 
 `HomeSlide` mit Bild-Upload, Zugang für Schüler:innen (`ROLE_STUDENT`, ggf. Login für Elternteile), Repertoireliste,
-CMS für Texte, FAQ und Unterrichtsregeln von Sonja.
+CMS für Texte, FAQ und Unterrichtsregeln von Sonja (eigener Plan `planung/cms.md`, umgesetzt 2026-11-23).

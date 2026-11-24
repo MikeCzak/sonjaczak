@@ -1,10 +1,10 @@
-{# One image section on the booking overview. Expects image (name), position (crop), translated heading and body, the target url and priority (first section). #}
+{# One image section on the booking overview. Expects image (name), position (crop), translated heading and body, the key of the body (body_key, for editing in place), the target url and priority (first section). #}
 {% import '_macros/image.html.twig' as media %}
 <section class="sc-hero sc-hero--section">
     {{ media.image(image, '', {class: 'sc-hero__image', position: position, priority: priority}) }}
     <div class="container pb-5">
         <h2>{{ heading }}</h2>
-        <p class="col-lg-6 fs-5">{{ body }}</p>
+        <p class="col-lg-6 fs-5"{{ page_text_attr(body_key) }}>{{ body }}</p>
         <a class="btn btn-primary" href="{{ url }}">{{ 'action.more'|trans }}</a>
     </div>
 </section>

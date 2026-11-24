@@ -655,3 +655,29 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   auf 149.551 B verkleinert (gzip 33.824 → 22.884 B); 66 Screenshots und Regelvergleich ohne Unterschied. Mike hat
   verworfen: Ersparnis nicht spürbar, alle Klassen sollen verfügbar bleiben. Bootstrap-JS einzeln hätte 51.303 statt
   61.171 B ergeben, ebenfalls nicht umgesetzt.
+- 2026-11-23: Mini-CMS (`planung/cms.md`) nach Mikes Entscheidungen umgesetzt: Tabelle `page_text` (Migration
+  `Version20261123202219`, dazu `settings.lesson_price_cents` mit Vorgabe 49500), `PageTextTranslator` als Decorator um
+  `translator` (nur Domain `content`, eine Abfrage je Anfrage, `reset()` nach jeder Anfrage; im Worker per `curl`
+  geprüft, dass ein geänderter Text sofort und nach dem Löschen wieder der YAML-Text erscheint). Admin „Texte“ mit
+  Liste nach Seite, Bearbeiten, Marker und Zurücksetzen. Preis und Einheiten auf `/unterricht` als Platzhalter aus den
+  Einstellungen, „Neuer Kurs“ mit dem Preis vorbelegt. `PageTexts` brauchte `#[Autowire(service: 'translator')]`
+  (kein Autowiring-Alias für `TranslatorBagInterface`); `AdminRoutesRequireLoginTest` kennt jetzt den Platzhalter
+  `{key}` (`x.y`). 223 Tests grün, PHPStan ohne Fehler, prod `cache:warmup` ok. Nicht committet.
+- 2026-11-24: Mike wünscht Bearbeiten direkt auf der Seite statt der Liste. Plan `planung/cms.md` K4 mit Fragen 1–4
+  (Session auf öffentlichen Seiten, Schalter, Liste behalten, Seitentitel). `PageTextTranslator` nutzt jetzt
+  Symfonys Formatter (`translator.formatter`) statt eines eigenen `strtr()`, damit `%count%` und übersetzbare
+  Parameter wie bei YAML-Texten funktionieren; Tests grün, per `curl` mit `%price%` geprüft. Erklärung
+  `erklaerungen/25-seitentexte-decorator.md`, PDF neu gebaut.
+- 2026-11-24: K4 Bearbeiten direkt auf der Seite (Mike: 1 A, 2 Schalter, 3 Liste behalten, 4 nur Seitentexte).
+  Firewall ohne `pattern`, `cookie_path: /`; `PageTextEditorExtension` (`page_text_attr()`, `page_text_editor()`), 13
+  Templates markiert, Makros mit `attrs`, leere Abschnitte für Admins versteckt im HTML. Leiste mit Schalter
+  (`sessionStorage`), Stimulus-Controller `page_editor`, JSON-Endpunkte mit Session-Token `page-text`. Im echten Chrome
+  (eigener DevTools-Client) zwei Fehler gefunden: `data-action` wirkt nicht im Feld außerhalb des Controllers
+  (Formular wurde normal abgeschickt, nichts gespeichert); Stift im Akkordeon-Knopf und Feld im `<h2>`. Beide behoben,
+  danach Speichern, Fehlermeldung, Zurücksetzen und Akkordeon geprüft. Lokal gemessen: PHP nimmt bei zwei Cookies
+  gleichen Namens das erste; der Browser schickt das mit `/admin` zuerst → vor dem Push in Produktion abmelden.
+  230 Tests grün, PHPStan ohne Fehler, prod `cache:warmup` ok. Nicht committet.
+- 2026-11-24: Hinweis im Bearbeitungsfeld je Art des Textes (Liste, Absätze, Zeilen, einzeilig, „leer blendet aus“),
+  Art in `PageTexts::kind()`, `PageTextKindTest` vergleicht mit dem gerenderten HTML aller 9 öffentlichen Seiten
+  (111 Prüfungen). Im Browser geprüft. 231 Tests grün, PHPStan ohne Fehler. Mike hat sich in Produktion abgemeldet;
+  K1–K4 committet und gepusht.

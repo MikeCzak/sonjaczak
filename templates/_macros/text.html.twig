@@ -1,13 +1,16 @@
-{# Render multi-line translations: blank lines separate paragraphs, line breaks separate list items. #}
+{# Render multi-line translations: blank lines separate paragraphs, line breaks separate list items.
+   attrs: page_text_attr(key) for editing in place (docs/planung/cms.md K4), empty for visitors. #}
 
-{% macro paragraphs(text, class = '') %}
+{% macro paragraphs(text, class = '', attrs = '') %}
+    {%- if attrs is not empty %}<div{{ attrs }}>{% endif -%}
     {%- for paragraph in text|split("\n\n") -%}
         <p{% if class %} class="{{ class }}"{% endif %}>{{ paragraph }}</p>
     {%- endfor -%}
+    {%- if attrs is not empty %}</div>{% endif -%}
 {% endmacro %}
 
-{% macro list(text, class = '') %}
-    <ul{% if class %} class="{{ class }}"{% endif %}>
+{% macro list(text, class = '', attrs = '') %}
+    <ul{% if class %} class="{{ class }}"{% endif %}{{ attrs }}>
         {%- for item in text|split("\n") -%}
             <li>{{ item }}</li>
         {%- endfor -%}

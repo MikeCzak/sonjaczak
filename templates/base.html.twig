@@ -13,7 +13,8 @@
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {# Admins also get Stimulus for editing page texts in place (cms.md K4); visitors only "app" #}
+            {% block importmap %}{{ importmap(page_text_editor() ? ['app', 'admin'] : 'app') }}{% endblock %}
         {% endblock %}
 
         {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
@@ -31,5 +32,9 @@
         </main>
 
         {{ include('_partials/footer.html.twig') }}
+
+        {% if page_text_editor() %}
+            {{ include('_partials/page_editor.html.twig') }}
+        {% endif %}
     </body>
 </html>

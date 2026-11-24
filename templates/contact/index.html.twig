@@ -9,7 +9,7 @@
             <h1>{{ 'title.contact'|trans }}</h1>
             <hr class="sc-accent-line">
             <div class="col-lg-8">
-                <p class="fs-5">{{ 'contact.intro'|trans({}, 'content') }}</p>
+                <p class="fs-5"{{ page_text_attr('contact.intro') }}>{{ 'contact.intro'|trans({}, 'content') }}</p>
                 {{ include('_partials/inquiry_form.html.twig', {
                     form: form,
                     status: inquiry_status,
@@ -18,12 +18,12 @@
                     address: 'formal',
                 }) }}
                 <p class="mt-4">
-                    {{ 'contact.email_alternative'|trans({}, 'content') }}
+                    <span{{ page_text_attr('contact.email_alternative') }}>{{ 'contact.email_alternative'|trans({}, 'content') }}</span>
                     <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
                 </p>
             </div>
 
-            <p class="col-lg-8 mt-5">{{ 'contact.hint'|trans({}, 'content') }}</p>
+            <p class="col-lg-8 mt-5"{{ page_text_attr('contact.hint') }}>{{ 'contact.hint'|trans({}, 'content') }}</p>
             <ul class="sc-list">
                 <li><a href="{{ path('app_booking_solo') }}">{{ 'title.booking_solo'|trans }}</a></li>
                 <li><a href="{{ path('app_booking_band') }}">{{ 'title.booking_band'|trans }}</a></li>
@@ -38,15 +38,15 @@
             <hr class="sc-accent-line">
             <div class="row g-5">
                 <div class="col-md-6">
-                    <h3 class="h5">{{ 'imprint.provider.heading'|trans({}, 'content') }}</h3>
+                    <h3 class="h5"{{ page_text_attr('imprint.provider.heading') }}>{{ 'imprint.provider.heading'|trans({}, 'content') }}</h3>
                     {{ include('_partials/controller_address.html.twig') }}
-                    <p>{{ 'imprint.provider.purpose'|trans({}, 'content') }}</p>
+                    <p{{ page_text_attr('imprint.provider.purpose') }}>{{ 'imprint.provider.purpose'|trans({}, 'content') }}</p>
                     {# No supervisory authority, chamber or professional regulations (§ 5 Abs. 1 Z 5, 6 ECG): no trade
                      # licence (Neue Selbständige). No VAT ID (Z 7). #}
                 </div>
                 <div class="col-md-6">
-                    <h3 class="h5">{{ 'imprint.credits.heading'|trans({}, 'content') }}</h3>
-                    <p>{{ 'imprint.credits.body'|trans({}, 'content') }}</p>
+                    <h3 class="h5"{{ page_text_attr('imprint.credits.heading') }}>{{ 'imprint.credits.heading'|trans({}, 'content') }}</h3>
+                    <p{{ page_text_attr('imprint.credits.body') }}>{{ 'imprint.credits.body'|trans({}, 'content') }}</p>
                 </div>
             </div>
         </div>

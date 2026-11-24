@@ -1,6 +1,6 @@
 {# Name, address and e-mail of the site owner, shared by imprint and privacy policy #}
 <address>
-    {{ 'imprint.provider.name'|trans({}, 'content') }}<br>
-    {{ 'imprint.provider.address'|trans({}, 'content')|nl2br }}<br>
+    <span{{ page_text_attr('imprint.provider.name') }}>{{ 'imprint.provider.name'|trans({}, 'content') }}</span><br>
+    <span{{ page_text_attr('imprint.provider.address') }}>{{ 'imprint.provider.address'|trans({}, 'content')|nl2br }}</span><br>
     {{ 'footer.email'|trans }}: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
 </address>

@@ -3,20 +3,20 @@
     only once. Absolute URLs: the PDF has no base address.
 #}
 {% import '_macros/text.html.twig' as text %}
-<p>{{ 'privacy_lessons.intro'|trans({}, 'content') }}</p>
+<p{{ page_text_attr('privacy_lessons.intro') }}>{{ 'privacy_lessons.intro'|trans({}, 'content') }}</p>
 <p>
-    {{ 'privacy_lessons.website_notice'|trans({}, 'content') }}
+    <span{{ page_text_attr('privacy_lessons.website_notice') }}>{{ 'privacy_lessons.website_notice'|trans({}, 'content') }}</span>
     <a href="{{ url('app_privacy') }}">{{ 'inquiry.privacy_link'|trans }}</a>.
 </p>
 
-<h2 class="h4 mt-5">{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
+<h2 class="h4 mt-5"{{ page_text_attr('privacy.controller.heading') }}>{{ 'privacy.controller.heading'|trans({}, 'content') }}</h2>
 {{ include('_partials/controller_address.html.twig') }}
 
 {% for section in ['data', 'purpose', 'required', 'recipients', 'storage'] %}
-    <h2 class="h4 mt-5">{{ ('privacy_lessons.' ~ section ~ '.heading')|trans({}, 'content') }}</h2>
-    {{ text.paragraphs(('privacy_lessons.' ~ section ~ '.body')|trans({}, 'content')) }}
+    <h2 class="h4 mt-5"{{ page_text_attr('privacy_lessons.' ~ section ~ '.heading') }}>{{ ('privacy_lessons.' ~ section ~ '.heading')|trans({}, 'content') }}</h2>
+    {{ text.paragraphs(('privacy_lessons.' ~ section ~ '.body')|trans({}, 'content'), '', page_text_attr('privacy_lessons.' ~ section ~ '.body')) }}
 {% endfor %}
 
 {# Same rights as on the website, one text for both #}
-<h2 class="h4 mt-5">{{ 'privacy.rights.heading'|trans({}, 'content') }}</h2>
-{{ text.paragraphs('privacy.rights.body'|trans({}, 'content')) }}
+<h2 class="h4 mt-5"{{ page_text_attr('privacy.rights.heading') }}>{{ 'privacy.rights.heading'|trans({}, 'content') }}</h2>
+{{ text.paragraphs('privacy.rights.body'|trans({}, 'content'), '', page_text_attr('privacy.rights.body')) }}

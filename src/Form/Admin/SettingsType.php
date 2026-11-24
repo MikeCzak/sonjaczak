@@ -9,6 +9,7 @@ use App\Theme\Theme;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,6 +37,13 @@ final class SettingsType extends AbstractType
             ->add('plannedLessons', IntegerType::class, [
                 'label' => 'settings.field.planned_lessons',
                 'help' => 'settings.field.planned_lessons_help',
+            ])
+            // Cents in the entity, euros in the form (as in CourseType)
+            ->add('lessonPriceCents', MoneyType::class, [
+                'label' => 'settings.field.lesson_price',
+                'help' => 'settings.field.lesson_price_help',
+                'currency' => 'EUR',
+                'divisor' => 100,
             ])
             ->add('senderName', TextType::class, ['label' => 'settings.field.sender_name'] + $optional)
             ->add('senderTitle', TextType::class, ['label' => 'settings.field.sender_title'] + $optional)

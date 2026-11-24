@@ -15,6 +15,7 @@
         priority: true,
         heading: 'title.booking_solo'|trans,
         body: 'booking.solo.body'|trans({}, 'content'),
+        body_key: 'booking.solo.body',
         url: path('app_booking_solo'),
     }) }}
     {{ include('booking/_section.html.twig', {
@@ -23,6 +24,7 @@
         priority: false,
         heading: 'title.booking_band'|trans,
         body: 'booking.band.body'|trans({}, 'content'),
+        body_key: 'booking.band.body',
         url: path('app_booking_band'),
     }) }}
 {% endblock %}

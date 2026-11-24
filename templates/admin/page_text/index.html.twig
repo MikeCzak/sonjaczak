@@ -1,0 +1,51 @@
+{% extends 'admin/base.html.twig' %}
+
+{# Public page of each group (first segment of the key); the imprint is a section of /kontakt #}
+{% set routes = {
+    home: 'app_home', about: 'app_about', booking: 'app_booking', booking_solo: 'app_booking_solo',
+    booking_band: 'app_booking_band', lessons: 'app_lessons', contact: 'app_contact', imprint: 'app_contact',
+    privacy: 'app_privacy', privacy_lessons: 'app_privacy_lessons',
+} %}
+
+{% block title %}{{ 'page_text.index.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">{{ 'page_text.index.title'|trans({}, 'admin') }}</h1>
+    <p class="text-body-secondary">{{ 'page_text.index.intro'|trans({}, 'admin') }}</p>
+
+    <nav class="mb-4" aria-label="{{ 'page_text.index.pages'|trans({}, 'admin') }}">
+        {% for page in pages|keys %}
+            <a class="me-3" href="#{{ page }}">{{ ('page_text.page.' ~ page)|trans({}, 'admin') }}</a>
+        {% endfor %}
+    </nav>
+
+    {% for page, texts in pages %}
+        <section class="mb-5" id="{{ page }}">
+            <h2 class="h5 d-flex gap-3 align-items-baseline">
+                {{ ('page_text.page.' ~ page)|trans({}, 'admin') }}
+                {% if routes[page] is defined %}
+                    <a class="small fw-normal" href="{{ path(routes[page]) }}" target="_blank">{{ 'page_text.index.view'|trans({}, 'admin') }}</a>
+                {% endif %}
+            </h2>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <tbody>
+                        {% for key, entry in texts %}
+                            <tr>
+                                <td class="w-25">
+                                    <a href="{{ path('admin_page_text_edit', {key: key}) }}">{{ include('admin/page_text/_label.html.twig', {label: entry.label}) }}</a>
+                                </td>
+                                <td class="text-body-secondary">
+                                    {{ entry.text is empty ? 'page_text.empty'|trans({}, 'admin') : (entry.text|length > 120 ? entry.text|slice(0, 120) ~ '…' : entry.text) }}
+                                </td>
+                                <td class="text-end">
+                                    {% if entry.changed %}{{ include('admin/page_text/_changed.html.twig', {changed: entry.changed}) }}{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endfor %}
+{% endblock %}

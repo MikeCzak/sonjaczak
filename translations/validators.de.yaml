@@ -32,3 +32,5 @@ invoice:
 payment:
     too_high: Der Betrag ist höher als der offene Betrag.
     in_future: Das Datum liegt in der Zukunft.
+page_text:
+    unknown_placeholder: 'Diese Platzhalter gibt es hier nicht: %placeholders%. Erlaubt sind nur die aus dem ursprünglichen Text.'

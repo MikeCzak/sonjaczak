@@ -1,11 +1,12 @@
-# Page content, grouped by page and section. Parts of this move to the CMS later.
+# Page content, grouped by page and section. These are the defaults: Sonja can change every text in the admin area
+# (Texte, docs/planung/cms.md); a changed text is stored in the table page_text and wins over the text here.
 # An empty string hides the section in the template.
 # Multi-line values (|-): a blank line starts a new paragraph, in lists every line is one item.
 # "Draft" marks texts written by Claude from the known facts, to be reviewed by Mike.
 
 home:
     hero:
-        # One sentence by Sonja, editable in the CMS later
+        # One sentence by Sonja (admin area, Texte)
         claim: ''
     intro:
         heading: Willkommen
@@ -142,11 +143,12 @@ lessons:
     dates:
         heading: Termine
         body: >-
-            Der Unterricht richtet sich nach dem Schuljahr und den Schulferien. Ein Semester hat 15 Einheiten und
+            Der Unterricht richtet sich nach dem Schuljahr und den Schulferien. Ein Semester hat %lessons% Einheiten und
             beginnt meist im Oktober. Unterrichtet wird an einem fixen Tag pro Woche, die Uhrzeit vereinbarst du mit mir.
     prices:
         heading: Preise
-        body: € 495,– pro Semester (15 Einheiten, entspricht € 33,– pro Einheit). Unterricht zu zweit ist auf Anfrage möglich.
+        # Placeholders from the settings (App\Theme\SiteSettings::lessonParameters(), cms.md K3); also allowed in dates.body
+        body: '%price% pro Semester (%lessons% Einheiten, entspricht %per_lesson% pro Einheit). Unterricht zu zweit ist auf Anfrage möglich.'
     # Rules (cancellations, make-up lessons) and FAQ: texts by Sonja, still open (inhalte.md E42, E44)
     rules:
         heading: Regeln

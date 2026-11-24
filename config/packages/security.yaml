@@ -22,9 +22,11 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler(/|$)|(_wdt|assets|build)/)
             security: false
-        # The only firewall: public pages match none, so they never start a session or set a cookie
+        # One firewall for the whole site (docs/planung/cms.md K4, question 1, Mike 2026-11-24): public pages know
+        # whether Sonja is logged in and show her the buttons for editing texts. Visitors are not affected: without a
+        # session cookie the firewall reads no session (ContextListener::authenticate(), hasPreviousSession()) and
+        # sets no cookie (PublicPagesTest). access_control below still protects /admin.
         admin:
-            pattern: ^/admin
             # The session starts only when access is actually checked (not when the login page is shown)
             lazy: true
             provider: app_user_provider

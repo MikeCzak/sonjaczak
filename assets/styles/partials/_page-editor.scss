@@ -1,0 +1,58 @@
+// Editing page texts in place (templates/_partials/page_editor.html.twig, docs/planung/cms.md K4). Only admins get
+// the markup; for visitors these rules match nothing.
+
+// Bar at the bottom, above everything else
+.sc-page-editor__bar {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1080;
+}
+
+// Empty texts (placeholder) and empty sections exist only for admins and stay hidden until edit mode is on
+.sc-page-text-hidden {
+    display: none;
+}
+
+.sc-editing .sc-page-text-hidden {
+    display: block;
+}
+
+.sc-page-text-empty {
+    font-style: italic;
+    opacity: .7;
+}
+
+// Marked texts in edit mode: dashed outline, button in the top right corner
+.sc-page-editor__target {
+    position: relative;
+    outline: 1px dashed var(--bs-warning);
+    outline-offset: 4px;
+}
+
+.sc-page-editor__button {
+    position: absolute;
+    top: -.9rem;
+    right: -.9rem;
+    z-index: 5;
+    padding: 0 .4rem;
+    line-height: 1.5;
+    // Inside headings and links the button keeps its own size
+    font-size: .875rem;
+    font-weight: normal;
+}
+
+// The editor is a form inside the page; it uses the page's text colour, not that of a hero image
+.sc-page-editor__panel {
+    position: relative;
+    z-index: 6;
+    max-width: 48rem;
+    color: var(--bs-body-color);
+    // Inserted next to headings and inside hero sections: always the normal body text
+    font-family: var(--bs-body-font-family);
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: var(--bs-body-line-height);
+    text-transform: none;
+    letter-spacing: normal;
+}
