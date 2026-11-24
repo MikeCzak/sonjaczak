@@ -21,20 +21,24 @@
                                 aria-controls="admin-nav" aria-expanded="false" aria-label="{{ 'layout.nav_toggle'|trans({}, 'admin') }}">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div class="collapse navbar-collapse" id="admin-nav">
-                            <ul class="navbar-nav me-auto">
+                        {# flex-wrap: from md upwards the entries break into a second line instead of making the page wider #}
+                        <div class="collapse navbar-collapse flex-wrap column-gap-3" id="admin-nav">
+                            <ul class="navbar-nav flex-wrap me-auto">
                                 {% block admin_nav %}
                                     {{ include('admin/_nav.html.twig') }}
                                 {% endblock %}
                             </ul>
-                            {# Way back to the public pages; the bar there links to the admin area (cms.md K4) #}
-                            <a class="nav-link small me-3" href="{{ path('app_home') }}">{{ 'layout.website'|trans({}, 'admin') }}</a>
-                            <a class="nav-link small me-3" href="{{ path('admin_account') }}">{{ 'layout.account'|trans({}, 'admin') }} ({{ app.user.userIdentifier }})</a>
-                            {# POST with CSRF token, so no other site can log Sonja out with a link or an image #}
-                            <form method="post" action="{{ path('admin_logout') }}" class="d-inline">
-                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
-                                <button type="submit" class="btn btn-outline-secondary btn-sm">{{ 'layout.logout'|trans({}, 'admin') }}</button>
-                            </form>
+                            {# Way back to the public pages; the bar there links to the admin area (cms.md K4).
+                               px-md-2: same padding as the links in .navbar-nav, so a wrapped line lines up #}
+                            <div class="d-flex flex-wrap align-items-center column-gap-2">
+                                <a class="nav-link small px-md-2" href="{{ path('app_home') }}">{{ 'layout.website'|trans({}, 'admin') }}</a>
+                                <a class="nav-link small px-md-2" href="{{ path('admin_account') }}">{{ 'layout.account'|trans({}, 'admin') }} ({{ app.user.userIdentifier }})</a>
+                                {# POST with CSRF token, so no other site can log Sonja out with a link or an image #}
+                                <form method="post" action="{{ path('admin_logout') }}" class="d-inline">
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm">{{ 'layout.logout'|trans({}, 'admin') }}</button>
+                                </form>
+                            </div>
                         </div>
                     {% endif %}
                 </div>

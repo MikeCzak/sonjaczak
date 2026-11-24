@@ -690,3 +690,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - 2026-11-24: Mike hat K4 in Produktion getestet, funktioniert. Admin-Bereich oben: Link „Zur Website“ (nur angemeldet,
   wie die ganze Navigation; die Leiste auf der Website hatte schon „Admin-Bereich“). Test
   `testAdminAreaLinksToTheWebsiteOnlyWhenLoggedIn`. Nicht committet.
+- 2026-11-24: Admin-Menü bricht um statt die Seite zu verbreitern (`flex-wrap` an `.navbar-collapse`, `.navbar-nav` und
+  der Gruppe rechts). Vorher bis ca. 1256 px Fensterbreite waagrechter Scrollbalken (Seite 1256 px breit). Gemessen
+  im Headless-Chrome: 800 px drei Zeilen, 1000–1400 px zwei, ab ca. 1410 px eine; nirgends breiter als das Fenster.
