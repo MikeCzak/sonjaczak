@@ -291,7 +291,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
   abschalten
 - [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt, W4 Seite „System“, W5 verworfen (2026-11-23); offen W4 Werte ablesen
 - [ ] Mini-CMS (`planung/cms.md`): K1 Tabelle `page_text` und Decorator, K2 Admin „Texte“, K3 Preis in den
-  Einstellungen (2026-11-23); K4 Bearbeiten auf der Seite mit Hinweis je Art des Textes (2026-11-24, gepusht)
+  Einstellungen (2026-11-23); K4 Bearbeiten auf der Seite mit Hinweis je Art des Textes (2026-11-24, gepusht und live 2026-11-24, CI 45402095795 nach Sicherheitsupdate Twig/WebAuthn)
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
