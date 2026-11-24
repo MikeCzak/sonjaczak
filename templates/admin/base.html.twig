@@ -27,6 +27,8 @@
                                     {{ include('admin/_nav.html.twig') }}
                                 {% endblock %}
                             </ul>
+                            {# Way back to the public pages; the bar there links to the admin area (cms.md K4) #}
+                            <a class="nav-link small me-3" href="{{ path('app_home') }}">{{ 'layout.website'|trans({}, 'admin') }}</a>
                             <a class="nav-link small me-3" href="{{ path('admin_account') }}">{{ 'layout.account'|trans({}, 'admin') }} ({{ app.user.userIdentifier }})</a>
                             {# POST with CSRF token, so no other site can log Sonja out with a link or an image #}
                             <form method="post" action="{{ path('admin_logout') }}" class="d-inline">

@@ -5,6 +5,7 @@ layout:
     nav_toggle: Navigation ein- oder ausblenden
     logout: Abmelden
     account: Mein Konto
+    website: Zur Website
 nav:
     dashboard: Übersicht
     users: Benutzer

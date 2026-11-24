@@ -174,6 +174,21 @@ final class PageTextTest extends WebTestCase
         self::assertSelectorExists('span[data-page-text="imprint.provider.address"]');
     }
 
+    public function testAdminAreaLinksToTheWebsiteOnlyWhenLoggedIn(): void
+    {
+        $client = self::createClient();
+        $client->request('GET', '/admin/login');
+        self::assertSelectorNotExists('header a[href="/"]');
+
+        $client->loginUser(UserFactory::new()->admin()->create(), 'admin');
+        $client->request('GET', '/admin');
+        self::assertSelectorTextContains('header a[href="/"]', 'Zur Website');
+
+        // ... and the bar on the public pages links back
+        $client->request('GET', '/');
+        self::assertSelectorExists('.sc-page-editor a[href="/admin"]');
+    }
+
     public function testEditorLoadsTheRawText(): void
     {
         $client = $this->loggedInClient();

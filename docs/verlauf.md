@@ -687,3 +687,6 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Update `twig/twig` 3.30.0 → 3.31.1, `web-auth/webauthn-lib` und `-symfony-bundle` 5.3.13 → 5.3.17 (Composer hebt
   wegen `bump-after-update` auch die Untergrenze in `composer.json`). Danach meldete ein Test „Unknown function
   page_text_editor“: veralteter Test-Cache, nach `rm -rf var/cache/test` zweimal 231 Tests grün.
+- 2026-11-24: Mike hat K4 in Produktion getestet, funktioniert. Admin-Bereich oben: Link „Zur Website“ (nur angemeldet,
+  wie die ganze Navigation; die Leiste auf der Website hatte schon „Admin-Bereich“). Test
+  `testAdminAreaLinksToTheWebsiteOnlyWhenLoggedIn`. Nicht committet.
