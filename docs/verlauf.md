@@ -681,3 +681,9 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
   Art in `PageTexts::kind()`, `PageTextKindTest` vergleicht mit dem gerenderten HTML aller 9 öffentlichen Seiten
   (111 Prüfungen). Im Browser geprüft. 231 Tests grün, PHPStan ohne Fehler. Mike hat sich in Produktion abgemeldet;
   K1–K4 committet und gepusht.
+- 2026-11-24: CI-Lauf 45401161376 rot im Schritt `composer audit` (W1 hat zum ersten Mal angeschlagen): neue Meldungen
+  zu `twig/twig` (9, meist Sandbox, die wir nicht nutzen; CVE-2026-133771 Autoescaping) und
+  `web-auth/webauthn-symfony-bundle` (Benutzerprüfung beim Anlegen eines Passkeys). Kein Deploy, Produktion unverändert.
+  Update `twig/twig` 3.30.0 → 3.31.1, `web-auth/webauthn-lib` und `-symfony-bundle` 5.3.13 → 5.3.17 (Composer hebt
+  wegen `bump-after-update` auch die Untergrenze in `composer.json`). Danach meldete ein Test „Unknown function
+  page_text_editor“: veralteter Test-Cache, nach `rm -rf var/cache/test` zweimal 231 Tests grün.
