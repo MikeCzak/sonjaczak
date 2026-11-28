@@ -19,6 +19,10 @@ Storage Box getestet (S13 Teile 1–4, 2026-11-19). Cronjobs eingetragen, Hetzne
 (2026-11-19). Test gegen Löschen bestanden (Teil 5, 2026-11-21). Offen: nach 2 Wochen ohne Fehler (frühestens
 2026-12-03) Mac abschalten. Der Mac sichert bis dahin weiter.
 
+**Spam über das Kontaktformular** (`planung/spam.md`, freigegeben 2026-11-27): SP1–SP4 umgesetzt (2026-11-27), gepusht
+2026-11-28. Von Mike: SP5 Filter „Betreff beginnt mit [Spam?]“ im
+Postfach `music@` bei IONOS. **Ab ca. 2026-12-04:** Logs auswerten (`spam.md` Abschnitt 4), Wortliste nachschärfen.
+
 **Mini-CMS gepusht** (K1–K3 2026-11-23, K4 Bearbeiten direkt auf der Seite 2026-11-24; `planung/cms.md`,
 ausprobieren `rundgang-admin.md` 6a, Erklärung `erklaerungen/25`). Mike in Produktion vorher abgemeldet. Von Mike:
 in Produktion anmelden, auf einer öffentlichen Seite „Texte bearbeiten“ einschalten und einen Text probeweise ändern
@@ -203,6 +207,9 @@ verlinkten Erklärung.
   Verweis der Nachholstunde auf `NULL` (`Lesson.php`, `onDelete: 'SET NULL'`). Danach zählt der Planer sie als reguläre
   Einheit: Eine Doppelstunde oder „Anzahl senken“ könnte sie wegnehmen, und beim Auffüllen fehlt dann eine. Selten;
   Abhilfe wäre, die Nachholstunde mitzulöschen oder sie als Nachholstunde zu markieren, auch ohne Verweis.
+- [ ] **Wortliste gegen Spam** (2026-11-27, `planung/spam.md` SP3, Auslegung): Startliste aus den zwei Beispielen,
+  „Google“ allein bewusst nicht (normale Anfragen schreiben „über Google gefunden“), dafür die eigene Domain im Text.
+  Nach einer Woche anhand der Logs nachschärfen (`spam.md` Abschnitt 4).
 - [ ] **Advisory Lock statt Wiederholung** bei der Nummernvergabe (2026-11-13, D1, `erklaerungen/13`): Abweichung vom
   Datenmodell.
 - [ ] **BIC nur per Regex** (2026-11-13, C6, `erklaerungen/12`): `Assert\Bic` bräuchte `symfony/intl`.
@@ -292,6 +299,7 @@ Layout und Menü, drei Themes, Seiten mit Inhalt, Bilder, Formulare mit Mailvers
 - [ ] Wartung (`planung/wartung.md`): W2 Runner auf `ubuntu-26.04` gepinnt, W1 `composer audit` in der CI, W3 Mercure nur lokal, Vulcain entfernt, W4 Seite „System“, W5 verworfen (2026-11-23); offen W4 Werte ablesen
 - [ ] Mini-CMS (`planung/cms.md`): K1 Tabelle `page_text` und Decorator, K2 Admin „Texte“, K3 Preis in den
   Einstellungen (2026-11-23); K4 Bearbeiten auf der Seite mit Hinweis je Art des Textes (2026-11-24, gepusht und live 2026-11-24, CI 45402095795 nach Sicherheitsupdate Twig/WebAuthn)
+- [ ] Spam (`planung/spam.md`): SP1 Logger ab `warning`, SP2 Honeypot mit `warning`, SP3 Wortliste und „[Spam?]“, SP4 Tests (2026-11-27, gepusht 2026-11-28); offen SP5 Filter im Postfach, Logs nach einer Woche
 - [ ] F Vor den echten Daten: Backups (2026-11-15), Datenschutz-Information als Seite und PDF (F1, F2, 2026-11-17, gepusht und live 2026-11-17). F3 automatische Löschung (Befehl `app:privacy:purge`, Cronjob 03:30, 2026-11-17, live)
 
 **Zum Ausprobieren:** `rundgang-admin.md` (lokal mit Fixtures, inklusive was vor dem Zeigen in Produktion passieren
@@ -352,6 +360,7 @@ muss).
 | Bootstrap-CSS | Ganz Bootstrap importieren, kein Teilimport (2026-11-23) | Teilimport gemessen −38 % (243 → 150 KB, gzip 34 → 23 KB), bei diesen Größen nicht spürbar; alle Klassen sollen später ohne Anpassung verfügbar sein (Mike). `planung/wartung.md` W5 |
 | Mini-CMS | Eigene Tabelle `page_text`, YAML als Standard; alle Seitentexte; reiner Text; Marker „geändert“ und Zurücksetzen; Preis als Wert in den Einstellungen, beim Kurs vorbelegt und änderbar (2026-11-23) | Sonja ändert Texte ohne Mike und Deploy (Mike). `planung/cms.md` |
 | Bearbeiten auf der Seite | Firewall für die ganze Website, Session-Cookie mit Pfad `/` (hebt `rollen.md` 3 teilweise auf); Leiste mit Schalter „Texte bearbeiten“; Liste `/admin/texte` bleibt als Übersicht; nur Seitentexte (`content`), keine Seitentitel und Menüs (2026-11-24) | Sonja ändert Texte dort, wo sie stehen; Besucher:innen unverändert ohne Cookie (Mike). `planung/cms.md` K4 |
+| Spam in Anfragen | Verdächtige Anfragen markieren („[Spam?]“ im Betreff), nicht verwerfen; Log in Produktion ab `warning`, Honeypot, Rate-Limit und Markierung mit `warning` (2026-11-27) | Kein Fehlalarm geht verloren; Logs bleiben klein (Mike). Plan freigegeben 2026-11-27: `planung/spam.md` |
 | Dokumentation | Offenes nur in `projektstand.md`, Geschichte in `verlauf.md`, Erklärungen nur zum Verstehen; Server-Schritte S1–S10 (2026-11-14) | Offene Punkte waren über sieben Stellen verstreut, Kürzel doppelt vergeben (B1–B8 in `deployment.md` und in `umsetzung-admin.md`) |
 
 ## Server-Konfiguration

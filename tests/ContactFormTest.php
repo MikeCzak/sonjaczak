@@ -87,6 +87,19 @@ final class ContactFormTest extends WebTestCase
         self::assertEmailCount(0);
     }
 
+    public function testSuspectedSpamIsMarkedButStillSent(): void
+    {
+        $client = $this->openForm();
+        $client->submitForm('Senden', ['contact_inquiry[message]' => 'We can bring your website to the first page of Google with SEO.'] + self::VALID);
+
+        // The sender sees the same confirmation; only the subject tells Sonja
+        self::assertResponseRedirects('/kontakt?gesendet=1#anfrage', 303);
+        self::assertEmailCount(1);
+        $email = self::getMailerMessage();
+        self::assertNotNull($email);
+        self::assertEmailHeaderSame($email, 'Subject', '[Spam?] Kontaktanfrage von Erika Muster');
+    }
+
     public function testSubmissionFromForeignSiteIsRejected(): void
     {
         $client = $this->openForm();

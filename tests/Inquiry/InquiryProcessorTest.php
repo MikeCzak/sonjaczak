@@ -7,6 +7,7 @@ namespace App\Tests\Inquiry;
 use App\Inquiry\ContactInquiry;
 use App\Inquiry\InquiryProcessor;
 use App\Inquiry\InquiryStatus;
+use App\Inquiry\SpamDetector;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +43,7 @@ final class InquiryProcessorTest extends TestCase
             }
         };
         $limiter = new RateLimiterFactory(['id' => 'test', 'policy' => 'no_limit'], new InMemoryStorage());
-        $processor = new InquiryProcessor($mailer, new IdentityTranslator(), $limiter, $logger, 'music@sonjaczak.com', 'secret');
+        $processor = new InquiryProcessor($mailer, new IdentityTranslator(), $limiter, $logger, new SpamDetector([]), 'music@sonjaczak.com', 'secret');
 
         $inquiry = new ContactInquiry();
         $inquiry->name = 'Erika Muster';

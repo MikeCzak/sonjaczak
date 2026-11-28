@@ -693,3 +693,11 @@ Aus der früheren Tabelle „Offene Entscheidungen“ im Projektstand:
 - 2026-11-24: Admin-Menü bricht um statt die Seite zu verbreitern (`flex-wrap` an `.navbar-collapse`, `.navbar-nav` und
   der Gruppe rechts). Vorher bis ca. 1256 px Fensterbreite waagrechter Scrollbalken (Seite 1256 px breit). Gemessen
   im Headless-Chrome: 800 px drei Zeilen, 1000–1400 px zwei, ab ca. 1410 px eine; nirgends breiter als das Fenster.
+- 2026-11-27: Spam über die Anfrageformulare (`planung/spam.md` SP1–SP4). Anlass: SEO-Angebote über das
+  Kontaktformular (englisch, Gmail, keine Links), am Honeypot vorbei. Dabei gefunden: In Produktion loggte der
+  eingebaute Logger (ohne Monolog, nach stderr) erst ab `error`, Honeypot (`info`) und Rate-Limit (`warning`) fehlten
+  im Log. SP1 eigener Service `logger` unter `when@prod` mit Stufe `warning` (`bin/console -e prod debug:container
+  logger` zeigt `warning`); SP2 Honeypot mit `warning`; SP3 `App\Inquiry\SpamDetector` mit Parameter
+  `app.inquiry_spam_phrases`, Treffer bekommen „[Spam?]“ im Betreff (`mail.subject.spam`) und Log „Inquiry marked as
+  spam“; SP4 `SpamDetectorTest` (beide Beispiele markiert, „über Google gefunden“ und „Seong“ nicht) und
+  `ContactFormTest::testSuspectedSpamIsMarkedButStillSent`. 241 Tests grün, PHPStan ohne Fehler. Gepusht 2026-11-28.

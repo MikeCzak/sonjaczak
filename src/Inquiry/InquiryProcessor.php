@@ -16,7 +16,7 @@ use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Mails a validated inquiry to Sonja, after the honeypot and rate limit checks.
+ * Mails a validated inquiry to Sonja, after the honeypot and rate limit checks; suspected spam is marked in the subject.
  *
  * Sent synchronously (no Messenger worker on the small server). Nothing from the form ends up in the log (GDPR).
  */
@@ -28,6 +28,7 @@ final readonly class InquiryProcessor
         #[Target('inquiry')]
         private RateLimiterFactoryInterface $limiter,
         private LoggerInterface $logger,
+        private SpamDetector $spamDetector,
         #[Autowire(param: 'app.contact_email')]
         private string $recipient,
         #[Autowire(param: 'kernel.secret')]
@@ -42,7 +43,8 @@ final readonly class InquiryProcessor
     {
         // Probably a bot: pretend success, so it learns nothing
         if (null !== $inquiry->website) {
-            $this->logger->info('Inquiry discarded by honeypot', ['type' => $type]);
+            // warning, because production only logs from warning upwards (config/services.yaml, when@prod)
+            $this->logger->warning('Inquiry discarded by honeypot', ['type' => $type]);
 
             return InquiryStatus::Sent;
         }
@@ -55,11 +57,18 @@ final readonly class InquiryProcessor
             return InquiryStatus::RateLimited;
         }
 
+        // Only marked, not dropped: a false positive still reaches Sonja. Checked after the rate limit, so it counts.
+        $subject = $this->translator->trans('mail.subject.'.$type, ['%name%' => $inquiry->name]);
+        if ($this->spamDetector->isSuspicious($inquiry)) {
+            $this->logger->warning('Inquiry marked as spam', ['type' => $type]);
+            $subject = $this->translator->trans('mail.subject.spam', ['%subject%' => $subject]);
+        }
+
         // From comes from config/packages/mailer.yaml; IONOS only accepts our own domain as sender
         $email = (new TemplatedEmail())
             ->to($this->recipient)
             ->replyTo(new Address((string) $inquiry->email, (string) $inquiry->name))
-            ->subject($this->translator->trans('mail.subject.'.$type, ['%name%' => $inquiry->name]))
+            ->subject($subject)
             ->textTemplate('email/inquiry/'.$type.'.txt.twig')
             ->context(['inquiry' => $inquiry]);
 

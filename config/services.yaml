@@ -9,6 +9,22 @@
 parameters:
     # Public address and recipient of all inquiry forms (sender: config/packages/mailer.yaml)
     app.contact_email: 'music@sonjaczak.com'
+    # Inquiries containing one of these get "[Spam?]" in the subject (App\Inquiry\SpamDetector, docs/planung/spam.md).
+    # Whole words, case-insensitive, plain text (no regex). Not "Google" alone: real inquiries say "found you on Google".
+    app.inquiry_spam_phrases:
+        - 'seo'
+        - 'backlink'
+        - 'backlinks'
+        - 'ranking'
+        - 'rankings'
+        - 'organic traffic'
+        - 'digital marketing'
+        - 'search engine'
+        - 'first page of google'
+        - 'google search'
+        - 'google searches'
+        # Pitches address the website ("Hi http://sonjaczak.com"), real inquiries address Sonja
+        - 'sonjaczak.com'
     # Home page slides (App\Theme\SiteSettings): image name and object-position, shown in this order.
     # Later managed by Sonja in the admin area (HomeSlide); the theme already comes from App\Entity\Settings.
     app.home_slides:
@@ -41,6 +57,17 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+when@prod:
+    services:
+        # Built-in logger (no Monolog) from warning upwards. Without this, LoggerPass registers it with level error
+        # when writing to stderr, which hides honeypot, rate limit and spam marks (docs/planung/spam.md SP1).
+        # Same arguments and tag as Symfony\Component\HttpKernel\DependencyInjection\LoggerPass, only the level differs.
+        logger:
+            class: Symfony\Component\HttpKernel\Log\Logger
+            arguments: ['warning', null, null, '@request_stack']
+            tags:
+                - { name: kernel.reset, method: clear, on_invalid: ignore }
 
 when@test:
     services:

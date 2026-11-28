@@ -97,6 +97,8 @@ mail:
         contact: 'Kontaktanfrage von %name%'
         booking_solo: 'Booking-Anfrage (solo) von %name%'
         lessons: 'Unterrichtsanfrage von %name%'
+        # Prefix for suspected spam (App\Inquiry\SpamDetector); Sonja can filter on it in her mailbox
+        spam: '[Spam?] %subject%'
     contact:
         intro: Neue Nachricht über das Kontaktformular auf sonjaczak.com.
     booking_solo:
